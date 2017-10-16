@@ -8,4 +8,7 @@
 target
 out
 log
-*.log
+*test.log
+.DS_Store
+test.py
+*.pyc
