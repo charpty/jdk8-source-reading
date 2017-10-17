@@ -221,6 +221,13 @@ import sun.misc.Unsafe;
  * "fast-path" checks, possibly prechecking {@link #hasContended}
  * and/or {@link #hasQueuedThreads} to only do so if the synchronizer
  * is likely not to be contended.
+ *
+ * 对于大多数应用，吞吐量和可伸缩性通常是更重要的，默认的也是采用非公平的锁实现，通过也称为贪婪策略。
+ * 非公平策略不保证完全按来的先后顺序分配锁，处于等待队列中的线程和恰好到来的线程需要重新竞争。
+ * 当无法获取资源时，某些场景下还会通过自旋方式多次检验资源，之后再进入等待队列。（考虑到线程上下文切换到开销）
+ * 这种方式在调用者持锁时间很短时极大的减少了上下文切换带来的损耗。
+ * 如果你想要达到这种效果的话，你可以通过提前检查是否有线程处于等待来实现，但前提是并发量不高的情况下。
+ *
  * <p>
  * <p>This class provides an efficient and scalable basis for
  * synchronization in part by specializing its range of use to
@@ -230,6 +237,11 @@ import sun.misc.Unsafe;
  * {@link java.util.concurrent.atomic atomic} classes, your own custom
  * {@link java.util.Queue} classes, and {@link LockSupport} blocking
  * support.
+ *
+ * 该类为大多数同步器提供了一个有效且可扩展的基础，它们可以使用原子状态变量state和内置的先进先去等待队列等来实现同步语义。
+ * 如果不想使用该类，你可以使用atomic包下的原子类、自定义的队列、以及阻塞工具类LockSupport来实现同步语义。
+ *
+ * 以下即是使用示例，这一部分可以参见在test同名目录下的示例
  * <p>
  * <h3>Usage Examples</h3>
  * <p>
@@ -240,6 +252,10 @@ import sun.misc.Unsafe;
  * thread, this class does so anyway to make usage easier to monitor.
  * It also supports conditions and exposes
  * one of the instrumentation methods:
+ *
+ * 以下类是利用该类实现的一个不可重入的独占锁，它利用状态变量state为0时表示无锁，为1表示有锁。
+ * 由于是不可重入的锁，所以也就不要求记录是谁持有锁，这也是为了让示例更加简单，同时此锁也支持条件队列。
+ *
  * <p>
  * <pre> {@code
  * class Mutex implements Lock, java.io.Serializable {
@@ -304,6 +320,10 @@ import sun.misc.Unsafe;
  * except that it only requires a single {@code signal} to
  * fire. Because a latch is non-exclusive, it uses the {@code shared}
  * acquire and release methods.
+ *
+ * 以下是一个和CountDownLatch类似的闭锁实现，只不过它仅支持单个信号。
+ * 和CountDownLatch一样，它使用非独占方式实现。
+ *
  * <p>
  * <pre> {@code
  * class BooleanLatch {
@@ -696,8 +716,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * 		the node
 	 */
 	private void unparkSuccessor(Node node) {
-        /*
-         * If status is negative (i.e., possibly needing signal) try
+		/*
+		 * If status is negative (i.e., possibly needing signal) try
          * to clear in anticipation of signalling.  It is OK if this
          * fails or if status is changed by waiting thread.
          */
@@ -707,7 +727,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		}
 
         /*
-         * Thread to unpark is held in successor, which is normally
+		 * Thread to unpark is held in successor, which is normally
          * just the next node.  But if cancelled or apparently null,
          * traverse backwards from tail to find the actual
          * non-cancelled successor.
