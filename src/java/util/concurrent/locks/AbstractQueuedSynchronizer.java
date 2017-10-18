@@ -380,6 +380,13 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * first in the queue. But being first does not guarantee success;
 	 * it only gives the right to contend.  So the currently released
 	 * contender thread may need to rewait.
+	 *
+	 * 等待队列实际上是一个CLH锁，CLH一般用于自旋锁。
+	 * 该类其实并没有使用他们来阻塞同步器，而是使用类似的原理来保存各等待节点前一个节点的信息。
+	 * 如果一个节点的前一个节点释放了控制，那么当前节点会收到通知。
+	 * 这样每一个节点都既是一个等待线程也是一个事件通知器。状态变量state不负责控制一个线程能否获得锁。
+	 * 线程处于等待队列首部时有机会可以获得锁但不保证一定能成功，只是有获得锁的机会。（与新来线程竞争）
+	 *
 	 * <p>
 	 * <p>To enqueue into a CLH lock, you atomically splice it in as new
 	 * tail. To dequeue, you just set the head field.
@@ -388,6 +395,9 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * head |      | <---- |     | <---- |     |  tail
 	 *      +------+       +-----+       +-----+
 	 * </pre>
+	 *
+	 * 当在CLH锁上等待时，将自动添加一个节点到等待队列尾部，当不再等待时当然也就是去除首部节点。
+	 *
 	 * <p>
 	 * <p>Insertion into a CLH queue requires only a single atomic
 	 * operation on "tail", so there is a simple atomic point of
@@ -396,6 +406,11 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * more work for nodes to determine who their successors are,
 	 * in part to deal with possible cancellation due to timeouts
 	 * and interrupts.
+	 *
+	 * 插入到CLH的尾部仅需要对队列尾部实行一个原子操作，所以对于加入等待队列的动作仅需一个原子操作。
+	 * 类似的，退出等待队列也只是更新头部节点，但还需要额外做的事情是确定该节点的下一个节点是谁以便通知它，
+	 * 另外也是为了处理由于中断或超时引起的退出等待。
+	 *
 	 * <p>
 	 * <p>The "prev" links (not used in original CLH locks), are mainly
 	 * needed to handle cancellation. If a node is cancelled, its
@@ -403,6 +418,11 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * predecessor. For explanation of similar mechanics in the case
 	 * of spin locks, see the papers by Scott and Scherer at
 	 * http://www.cs.rochester.edu/u/scott/synchronization/
+	 *
+	 * 和真正的CLH锁不同的是，前置节点是需要负责处理取消的。
+	 * 当一个等待节点取消等待了，它的下一个节点需要重新挂载到再上一个有效的节点。
+	 * 如果想要了解更多自旋锁相关问题请参考：http://www.cs.rochester.edu/u/scott/synchronization/
+	 *
 	 * <p>
 	 * <p>We also use "next" links to implement blocking mechanics.
 	 * The thread id for each node is kept in its own node, so a
@@ -414,6 +434,11 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * updated "tail" when a node's successor appears to be null.
 	 * (Or, said differently, the next-links are an optimization
 	 * so that we don't usually need a backward scan.)
+	 *
+	 * 该类使用节点指针方式实现等待链，每个节点指向下一个等待节点。
+	 * 每个节点中都存储有等待线程的ID，。。。。。。。 // TODO 休息了
+	 *
+	 *
 	 * <p>
 	 * <p>Cancellation introduces some conservatism to the basic
 	 * algorithms.  Since we must poll for cancellation of other
@@ -752,8 +777,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * to calling unparkSuccessor of head if it needs signal.)
 	 */
 	private void doReleaseShared() {
-        /*
-         * Ensure that a release propagates, even if there are other
+		/*
+		 * Ensure that a release propagates, even if there are other
          * in-progress acquires/releases.  This proceeds in the usual
          * way of trying to unparkSuccessor of head if it needs
          * signal. But if it does not, status is set to PROPAGATE to
