@@ -436,7 +436,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * so that we don't usually need a backward scan.)
 	 *
 	 * 该类使用节点指针方式实现等待链，每个节点指向下一个等待节点。
-	 * 每个节点中都存储有等待线程的ID，。。。。。。。 // TODO 休息了
+	 * 每个节点中都存储有等待线程的ID，上一个节点唤起当前的节点的方式是通过指向本节点的指针。
+	 * 判断下一个节点的操作必须考虑到新加入到节点到并发竞争问题。这可以通过CAS操作本身来实现。
 	 *
 	 *
 	 * <p>
@@ -447,12 +448,20 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * successors upon cancellation, allowing them to stabilize on
 	 * a new predecessor, unless we can identify an uncancelled
 	 * predecessor who will carry this responsibility.
+	 *
+	 * 该类的实现删除了基本算法的一些保守主义思想。由于我们必须响应其它节点的取消信息，所以我们可能丢失对其它节点（下个节点）的通知信号。
+	 * 所以每次取消节点等待时都唤醒下一个节点，并允许它重新挂载到一个可靠的节点上。
+	 *
 	 * <p>
 	 * <p>CLH queues need a dummy header node to get started. But
 	 * we don't create them on construction, because it would be wasted
 	 * effort if there is never contention. Instead, the node
 	 * is constructed and head and tail pointers are set upon first
 	 * contention.
+	 *
+	 * CLH队列需要一个假的头节点作为起始。但是我们不在构造同步器的时候就创建这个假节点，
+	 * 因为如果不发生竞争的话就是浪费。这个假节点是第一次发生竞争时生成的（第一次需要加入等待队列）。
+	 *
 	 * <p>
 	 * <p>Threads waiting on Conditions use the same nodes, but
 	 * use an additional link. Conditions only need to link nodes
@@ -461,11 +470,19 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * inserted into a condition queue.  Upon signal, the node is
 	 * transferred to the main queue.  A special value of status
 	 * field is used to mark which queue a node is on.
+	 *
+	 * 线程条件队列使用相同的等待节点，只是添加一个连接，连接指向队列。
+	 * 条件队列仅需要简单的队列即可，因为不会发生竞争，但锁被独占时仅会发生访问。
+	 * 使用await时，在条件队列中插入节点，调用signal时，等待节点则被送到CLH队列。
+	 * 这种情况下，state变量用来区分使用的是哪个队列。
+	 *
 	 * <p>
 	 * <p>Thanks go to Dave Dice, Mark Moir, Victor Luchangco, Bill
 	 * Scherer and Michael Scott, along with members of JSR-166
 	 * expert group, for helpful ideas, discussions, and critiques
 	 * on the design of this class.
+	 *
+	 * 感谢大神们的辛勤工作。
 	 */
 	static final class Node {
 		/** Marker to indicate a node is waiting in shared mode */
@@ -821,8 +838,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	private void setHeadAndPropagate(Node node, int propagate) {
 		Node h = head; // Record old head for check below
 		setHead(node);
-        /*
-         * Try to signal next queued node if:
+		/*
+		 * Try to signal next queued node if:
          *   Propagation was indicated by caller,
          *     or was recorded (as h.waitStatus either before
          *     or after setHead) by a previous operation
@@ -912,7 +929,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {
 		int ws = pred.waitStatus;
 		if (ws == Node.SIGNAL)
-            /*
+			/*
              * This node has already set status asking a release
              * to signal it, so it can safely park.
              */ {
