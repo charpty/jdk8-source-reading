@@ -486,24 +486,33 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 */
 	static final class Node {
 		/** Marker to indicate a node is waiting in shared mode */
+		/** 表明当前节点是共享锁方式（默认的）*/
 		static final Node SHARED = new Node();
+		/** 表明当前节点是独占锁方式*/
 		/** Marker to indicate a node is waiting in exclusive mode */
 		static final Node EXCLUSIVE = null;
 
 		/** waitStatus value to indicate thread has cancelled */
+		/** 状态变量：取消节点 */
 		static final int CANCELLED = 1;
 		/** waitStatus value to indicate successor's thread needs unparking */
+		/** 状态变量：下一个节点需要唤醒 */
 		static final int SIGNAL = -1;
 		/** waitStatus value to indicate thread is waiting on condition */
+		/** 状态变量：当前节点在等待通知（条件队列回调） */
 		static final int CONDITION = -2;
 		/**
 		 * waitStatus value to indicate the next acquireShared should
 		 * unconditionally propagate
 		 */
+		/** 状态变量：表明该节点应该直接传递通知信息 */
 		static final int PROPAGATE = -3;
 
 		/**
 		 * Status field, taking on only the values:
+		 *
+		 * 状态变量有且仅有以下几种可能值：
+		 *
 		 * SIGNAL:     The successor of this node is (or will soon be)
 		 * blocked (via park), so the current node must
 		 * unpark its successor when it releases or
@@ -511,15 +520,26 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		 * first indicate they need a signal,
 		 * then retry the atomic acquire, and then,
 		 * on failure, block.
+		 *
+		 * SIGNAL：当前节点的后驱节点（下一个节点）处于等待通知状态（阻塞），所以当前节点如果释放了资源或者被取消了都要通知后驱节点。
+		 *         为了避免竞争，acquire方法应当首先表明等待节点需要信号，再尝试原子方式调用acquire，未能获取再进入阻塞。
+		 *
 		 * CANCELLED:  This node is cancelled due to timeout or interrupt.
 		 * Nodes never leave this state. In particular,
 		 * a thread with cancelled node never again blocks.
+		 *
+		 * CANCELLED：当前节点由于超时或者中断已经被取消。等待节点不会停留在这个状态上
+		 * 			  值得注意的是，被取消的节点是不会再进入阻塞状态的。
+		 *
 		 * CONDITION:  This node is currently on a condition queue.
 		 * It will not be used as a sync queue node
 		 * until transferred, at which time the status
 		 * will be set to 0. (Use of this value here has
 		 * nothing to do with the other uses of the
 		 * field, but simplifies mechanics.)
+		 *
+		 * // TODO 休息了。。。
+		 *
 		 * PROPAGATE:  A releaseShared should be propagated to other
 		 * nodes. This is set (for head node only) in
 		 * doReleaseShared to ensure propagation
