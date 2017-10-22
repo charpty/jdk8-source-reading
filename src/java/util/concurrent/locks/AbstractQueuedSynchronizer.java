@@ -521,15 +521,15 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		 * then retry the atomic acquire, and then,
 		 * on failure, block.
 		 *
-		 * SIGNAL：当前节点的后驱节点（下一个节点）处于等待通知状态（阻塞），所以当前节点如果释放了资源或者被取消了都要通知后驱节点。
+		 * SIGNAL：当前节点的后继节点（下一个节点）处于等待通知状态（阻塞），所以当前节点如果释放了资源或者被取消了都要通知后驱节点。
 		 *         为了避免竞争，acquire方法应当首先表明等待节点需要信号，再尝试原子方式调用acquire，未能获取再进入阻塞。
 		 *
 		 * CANCELLED:  This node is cancelled due to timeout or interrupt.
 		 * Nodes never leave this state. In particular,
 		 * a thread with cancelled node never again blocks.
 		 *
-		 * CANCELLED：当前节点由于超时或者中断已经被取消。等待节点不会停留在这个状态上
-		 * 			  值得注意的是，被取消的节点是不会再进入阻塞状态的。
+		 * CANCELLED：当前节点由于超时或者中断已经被取消。等待节点一旦到达这个状态就不会再改变状态。
+		 * 			  也就是说，被取消的节点是不会再进入阻塞状态的。
 		 *
 		 * CONDITION:  This node is currently on a condition queue.
 		 * It will not be used as a sync queue node
@@ -538,23 +538,34 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		 * nothing to do with the other uses of the
 		 * field, but simplifies mechanics.)
 		 *
-		 * // TODO 休息了。。。
+		 * CONDITION：该节点正等待在条件队列上。
 		 *
 		 * PROPAGATE:  A releaseShared should be propagated to other
 		 * nodes. This is set (for head node only) in
 		 * doReleaseShared to ensure propagation
 		 * continues, even if other operations have
 		 * since intervened.
+		 *
+		 * PROPAGATE：无条件传播一个共享资源的释放通知。
+		 *			  该状态用于保证事件通知的传递性。
+		 *
 		 * 0:          None of the above
 		 * <p>
 		 * The values are arranged numerically to simplify use.
 		 * Non-negative values mean that a node doesn't need to
 		 * signal. So, most code doesn't need to check for particular
 		 * values, just for sign.
+		 *
+		 * 为了使用方便，这些值都被设计为数字。
+		 * 大于0则代表该节点不需要通知信息。这样的话，大多数操作仅需要判断状态值是否大于0即可，而不需要判断具体值。
+		 *
 		 * <p>
 		 * The field is initialized to 0 for normal sync nodes, and
 		 * CONDITION for condition nodes.  It is modified using CAS
 		 * (or when possible, unconditional volatile writes).
+		 *
+		 * 普通的同步器时该状态变量初始化为0，条件队列时初始化为CONDITION。
+		 * 一般来说该状态值通过CAS操作修改。
 		 */
 		volatile int waitStatus;
 
@@ -568,6 +579,10 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		 * head only as a result of successful acquire. A
 		 * cancelled thread never succeeds in acquiring, and a thread only
 		 * cancels itself, not any other node.
+		 *
+		 * 指向前驱节点，用以循环检查状态。在进入等待队列时设置，在不再等待时设置为空，以方便GC回收。
+		 *
+		 *
 		 */
 		volatile Node prev;
 
@@ -583,6 +598,12 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		 * double-check.  The next field of cancelled nodes is set to
 		 * point to the node itself instead of null, to make life
 		 * easier for isOnSyncQueue.
+		 *
+		 * 指向下一个节点，以便当前节点在释放或中断时进行通知。在进入等待队列时设置，在前驱节点取消时修改，
+		 * 在退出等待队列时设空。enq函数仅在末尾设置下个节点，所以当某个节点的下个节点为空时，并不能表明它是末尾节点。
+		 * 如果下一个节点是空，我们可以通过从尾部节点开始利用prev指针进行搜索。
+		 * 当前节点如果取消了，那么next指针则指向自己而不是指向null，这样方便isOnSyncQueue函数的实现。
+		 *
 		 */
 		volatile Node next;
 
