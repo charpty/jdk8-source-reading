@@ -486,7 +486,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 */
 	static final class Node {
 		/** Marker to indicate a node is waiting in shared mode */
-		/** 表明当前节点是共享锁方式（默认的）*/
+		/** 表明当前节点是共享锁方式（默认的） */
 		static final Node SHARED = new Node();
 		/** 表明当前节点是独占锁方式*/
 		/** Marker to indicate a node is waiting in exclusive mode */
@@ -522,14 +522,14 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		 * on failure, block.
 		 *
 		 * SIGNAL：当前节点的后继节点（下一个节点）处于等待通知状态（阻塞），所以当前节点如果释放了资源或者被取消了都要通知后驱节点。
-		 *         为了避免竞争，acquire方法应当首先表明等待节点需要信号，再尝试原子方式调用acquire，未能获取再进入阻塞。
+		 * 为了避免竞争，acquire方法应当首先表明等待节点需要信号，再尝试原子方式调用acquire，未能获取再进入阻塞。
 		 *
 		 * CANCELLED:  This node is cancelled due to timeout or interrupt.
 		 * Nodes never leave this state. In particular,
 		 * a thread with cancelled node never again blocks.
 		 *
 		 * CANCELLED：当前节点由于超时或者中断已经被取消。等待节点一旦到达这个状态就不会再改变状态。
-		 * 			  也就是说，被取消的节点是不会再进入阻塞状态的。
+		 * 也就是说，被取消的节点是不会再进入阻塞状态的。
 		 *
 		 * CONDITION:  This node is currently on a condition queue.
 		 * It will not be used as a sync queue node
@@ -547,7 +547,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		 * since intervened.
 		 *
 		 * PROPAGATE：无条件传播一个共享资源的释放通知。
-		 *			  该状态用于保证事件通知的传递性。
+		 * 该状态用于保证事件通知的传递性。
 		 *
 		 * 0:          None of the above
 		 * <p>
@@ -581,8 +581,6 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		 * cancels itself, not any other node.
 		 *
 		 * 指向前驱节点，用以循环检查状态。在进入等待队列时设置，在不再等待时设置为空，以方便GC回收。
-		 *
-		 *
 		 */
 		volatile Node prev;
 
@@ -603,13 +601,14 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		 * 在退出等待队列时设空。enq函数仅在末尾设置下个节点，所以当某个节点的下个节点为空时，并不能表明它是末尾节点。
 		 * 如果下一个节点是空，我们可以通过从尾部节点开始利用prev指针进行搜索。
 		 * 当前节点如果取消了，那么next指针则指向自己而不是指向null，这样方便isOnSyncQueue函数的实现。
-		 *
 		 */
 		volatile Node next;
 
 		/**
 		 * The thread that enqueued this node.  Initialized on
 		 * construction and nulled out after use.
+		 *
+		 * 等待在此节点上的线程，也是进入等待时设置，出等待队列时设置空
 		 */
 		volatile Thread thread;
 
@@ -622,11 +621,18 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		 * re-acquire. And because conditions can only be exclusive,
 		 * we save a field by using special value to indicate shared
 		 * mode.
+		 *
+		 * 该值用于链接条件等待队列的各个节点。
+		 * 由于条件队列只能在获得独占锁的情况下操作，所以这里仅需要一个简单的链表来存储等待线程即可。
+		 * 一旦资源足够，队列中的线程可以重新进入主队列并有机会重新请求资源。
+		 * 而且由于条件队列获取只能是独占的，所以我们设置一个特殊的值用于申明共享模式。
 		 */
 		Node nextWaiter;
 
 		/**
 		 * Returns true if node is waiting in shared mode.
+		 *
+		 * 返回当前节点是否处于共享模式
 		 */
 		final boolean isShared() {
 			return nextWaiter == SHARED;
@@ -636,6 +642,9 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		 * Returns previous node, or throws NullPointerException if null.
 		 * Use when predecessor cannot be null.  The null check could
 		 * be elided, but is present to help the VM.
+		 *
+		 * 返回前一个节点，为空时将跑出空指针异常。
+		 * 其实非空检查可以取消，但主要是用于帮助GC
 		 *
 		 * @return the predecessor of this node
 		 */
@@ -648,6 +657,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 			}
 		}
 
+		/** 初始化等待节点（共享节点） */
 		Node() {    // Used to establish initial head or SHARED marker
 		}
 
@@ -656,6 +666,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 			this.thread = thread;
 		}
 
+		/** 条件队列专用 */
 		Node(Thread thread, int waitStatus) { // Used by Condition
 			this.waitStatus = waitStatus;
 			this.thread = thread;
@@ -667,17 +678,24 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * initialization, it is modified only via method setHead.  Note:
 	 * If head exists, its waitStatus is guaranteed not to be
 	 * CANCELLED.
+	 *
+	 * 等待队列头，节点是懒加载。除了初始化，任何改变都是通过setHead来进行操作。
+	 * 当头节点存在时其状态不可能为CANCELLED。
 	 */
 	private transient volatile Node head;
 
 	/**
 	 * Tail of the wait queue, lazily initialized.  Modified only via
 	 * method enq to add new wait node.
+	 *
+	 * 等待队列尾，也是懒加载当。仅通过enq函数来添加等待节点。
 	 */
 	private transient volatile Node tail;
 
 	/**
 	 * The synchronization state.
+	 *
+	 * 原子状态变量
 	 */
 	private volatile int state;
 
@@ -971,7 +989,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		int ws = pred.waitStatus;
 		if (ws == Node.SIGNAL)
 			/*
-             * This node has already set status asking a release
+			 * This node has already set status asking a release
              * to signal it, so it can safely park.
              */ {
 			return true;
