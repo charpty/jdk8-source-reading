@@ -703,6 +703,10 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * Returns the current value of synchronization state.
 	 * This operation has memory semantics of a {@code volatile} read.
 	 *
+	 * 获取原子状态变量。
+	 * 获取状态值不是关键，关键是带来的内存可见性语义，从可见性角度讲读volatile相当于进入同步块。
+	 * （写state变量时对写入线程可见的值，在当前线程读取state变量后对当前线程也是可见的）
+	 *
 	 * @return current state value
 	 */
 	protected final int getState() {
@@ -712,6 +716,9 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	/**
 	 * Sets the value of synchronization state.
 	 * This operation has memory semantics of a {@code volatile} write.
+	 *
+	 * 设置原址状态变量。
+	 * 写该变量相当于退出同步块，后续有任何线程读取了该变量，则都至少可以看到本线程设置state变量时所能看到的值。
 	 *
 	 * @param newState
 	 * 		the new state value
@@ -726,13 +733,16 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * This operation has memory semantics of a {@code volatile} read
 	 * and write.
 	 *
+	 * 原子性设置state变量的值，实际上是利用CAS操作，仅当state变量为指定值A时才将其更新为B。
+	 * 这个操作相当于一次内存可见性上的同步操作。
+	 *
 	 * @param expect
-	 * 		the expected value
+	 * 		the expected value，期望的值
 	 * @param update
-	 * 		the new value
+	 * 		the new value，待设置的值
 	 *
 	 * @return {@code true} if successful. False return indicates that the actual
-	 * value was not equal to the expected value.
+	 * value was not equal to the expected value. 如果设置成功则返回true否则返回false。
 	 */
 	protected final boolean compareAndSetState(int expect, int update) {
 		// See below for intrinsics setup to support this
@@ -745,11 +755,17 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * The number of nanoseconds for which it is faster to spin
 	 * rather than to use timed park. A rough estimate suffices
 	 * to improve responsiveness with very short timeouts.
+	 *
+	 * 线程在进入阻塞之前先自旋的时长，这有利于减少上下文切换带来的消耗。
+	 * 从经验角度来说，这个时间有利于提高响应性。
+	 *
 	 */
 	static final long spinForTimeoutThreshold = 1000L;
 
 	/**
 	 * Inserts node into queue, initializing if necessary. See picture above.
+	 *
+	 * 在等待队列尾部添加节点的唯一方法，如果等待队列还没有初始化则会对其进行初始化
 	 *
 	 * @param node
 	 * 		the node to insert
@@ -757,16 +773,21 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * @return node's predecessor
 	 */
 	private Node enq(final Node node) {
+		// 由于存在竞争可能性，所以无限自旋直到成功为止
 		for (; ; ) {
 			Node t = tail;
+			// 当前等待队列还没有初始化，也就是还没有设置头节点
 			if (t == null) { // Must initialize
+				// 初始化设置一个头节点，此时头节点也就是尾部节点
 				if (compareAndSetHead(new Node())) {
 					tail = head;
 				}
 			} else {
+				// 将新加入的节点设置为尾部节点
 				node.prev = t;
 				if (compareAndSetTail(t, node)) {
 					t.next = node;
+					// 返回旧的尾部节点
 					return t;
 				}
 			}
@@ -776,22 +797,28 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	/**
 	 * Creates and enqueues node for current thread and given mode.
 	 *
+	 * 创建一个指定模式的等待节点并将其添加到等待队列尾部
+	 *
 	 * @param mode
 	 * 		Node.EXCLUSIVE for exclusive, Node.SHARED for shared
 	 *
 	 * @return the new node
 	 */
 	private Node addWaiter(Node mode) {
+		// 根据模式创建一个指定等待节点
 		Node node = new Node(Thread.currentThread(), mode);
 		// Try the fast path of enq; backup to full enq on failure
+		// 先假设等待队列已经初始化好了的情况，如果不行再尝试完整的
 		Node pred = tail;
 		if (pred != null) {
+			// 将新创建节点设置为新的尾部节点并返回之前的尾部节点
 			node.prev = pred;
 			if (compareAndSetTail(pred, node)) {
 				pred.next = node;
 				return node;
 			}
 		}
+		// 当前等待队列未初始化
 		enq(node);
 		return node;
 	}
@@ -800,6 +827,10 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * Sets head of queue to be node, thus dequeuing. Called only by
 	 * acquire methods.  Also nulls out unused fields for sake of GC
 	 * and to suppress unnecessary signals and traversals.
+	 *
+	 * 设置等待队列头节点，从而将节点释放。只有acquire等请求资源方法调用它。
+	 * 由于头节点是个虚拟节点是个虚假节点，所以将其线程和前一个节点设置为null，一方面是为了帮助GC
+	 * 另一方面也是为了规避不必要的通知信号。
 	 *
 	 * @param node
 	 * 		the node
@@ -813,6 +844,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	/**
 	 * Wakes up node's successor, if one exists.
 	 *
+	 * 唤醒节点的后继节点
+	 *
 	 * @param node
 	 * 		the node
 	 */
@@ -821,6 +854,9 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		 * If status is negative (i.e., possibly needing signal) try
          * to clear in anticipation of signalling.  It is OK if this
          * fails or if status is changed by waiting thread.
+         *
+         * // 当状态变量state小于0时，即代表需要唤醒信号，此时清楚该状态。
+         *
          */
 		int ws = node.waitStatus;
 		if (ws < 0) {
@@ -832,10 +868,16 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * just the next node.  But if cancelled or apparently null,
          * traverse backwards from tail to find the actual
          * non-cancelled successor.
+         *
+         * 就像前面说的，当前节点的下一个节点不一定是已经设置好了的，如果为空或者无效时，
+         * 则通过从尾部节点开始从后往前遍历找出真正有效的下一个节点来唤醒。
+         *
          */
 		Node s = node.next;
+		// 下个节点为空或者下个节点压根不需要唤醒
 		if (s == null || s.waitStatus > 0) {
 			s = null;
+			// 从后往前遍历找到一个真正有效的节点
 			for (Node t = tail; t != null && t != node; t = t.prev) {
 				if (t.waitStatus <= 0) {
 					s = t;
@@ -843,6 +885,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 			}
 		}
 		if (s != null) {
+			// 找到了就唤醒
 			LockSupport.unpark(s.thread);
 		}
 	}
