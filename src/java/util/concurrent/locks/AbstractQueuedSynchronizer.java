@@ -894,6 +894,10 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * Release action for shared mode -- signals successor and ensures
 	 * propagation. (Note: For exclusive mode, release just amounts
 	 * to calling unparkSuccessor of head if it needs signal.)
+	 *
+	 * 释放共享模式资源并且通知有效的后继节点。
+	 * 在独占模式下仅需要唤醒等待队列首个等待节点即可。
+	 *
 	 */
 	private void doReleaseShared() {
 		/*
@@ -906,6 +910,10 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * while we are doing this. Also, unlike other uses of
          * unparkSuccessor, we need to know if CAS to reset status
          * fails, if so rechecking.
+         *
+         * 确保一次资源释放是真的能够唤醒一个等待节点的，也就是释放信号是可传播的。
+         * // TODO 明天去福建讲方案
+         *
          */
 		for (; ; ) {
 			Node h = head;
