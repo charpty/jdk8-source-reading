@@ -758,7 +758,6 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 *
 	 * 线程在进入阻塞之前先自旋的时长，这有利于减少上下文切换带来的消耗。
 	 * 从经验角度来说，这个时间有利于提高响应性。
-	 *
 	 */
 	static final long spinForTimeoutThreshold = 1000L;
 
@@ -897,7 +896,6 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 *
 	 * 释放共享模式资源并且通知有效的后继节点。
 	 * 在独占模式下仅需要唤醒等待队列首个等待节点即可。
-	 *
 	 */
 	private void doReleaseShared() {
 		/*
@@ -912,22 +910,32 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * fails, if so rechecking.
          *
          * 确保一次资源释放是真的能够唤醒一个等待节点的，也就是释放信号是可传播的。
-         * // TODO 明天去福建讲方案
+         * 这个动作大多数情况下是需要唤醒等待队列首部节点。但是如果队首节点不需要唤醒那也应该将该信号传递下去。
+         * 另外也要避免在触发信号时有新的节点加入。特别点是，该函数需要多次尝试以防止设置状态失败。
          *
          */
 		for (; ; ) {
+			// 尝试唤醒等待队列首节点
 			Node h = head;
+			// 如果当前头节点不为空且不是尾部节点则尝试进行唤醒
+			// 为尾部节点时则说明当前没有等待节点，头节点是虚拟节点
 			if (h != null && h != tail) {
 				int ws = h.waitStatus;
+				// 如果节点是需要通知唤醒的则直接尝试唤醒
 				if (ws == Node.SIGNAL) {
+					// 利用CAS操作设置节点状态，设置不成功时要继续尝试，不能丢失唤醒信号
 					if (!compareAndSetWaitStatus(h, Node.SIGNAL, 0)) {
 						continue;            // loop to recheck cases
 					}
+					// 成功设置了节点状态之后，开始执行实际唤醒
 					unparkSuccessor(h);
+					// 如果当前节点无需唤醒则将信号继续传播
 				} else if (ws == 0 && !compareAndSetWaitStatus(h, 0, Node.PROPAGATE)) {
 					continue;                // loop on failed CAS
 				}
 			}
+			// 如果待唤醒队节点的为空，则再次检查是否真的为空
+			// 由于head为volatile变量，所以可以检查主内存的真实值
 			if (h == head)                   // loop if head changed
 			{
 				break;
@@ -1046,8 +1054,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 			return true;
 		}
 		if (ws > 0) {
-            /*
-             * Predecessor was cancelled. Skip over predecessors and
+			/*
+			 * Predecessor was cancelled. Skip over predecessors and
              * indicate retry.
              */
 			do {
