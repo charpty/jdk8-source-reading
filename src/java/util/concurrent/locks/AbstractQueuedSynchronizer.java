@@ -948,6 +948,9 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * in shared mode, if so propagating if either propagate > 0 or
 	 * PROPAGATE status was set.
 	 *
+	 *
+	 * 设置等待队列头
+	 *
 	 * @param node
 	 * 		the node
 	 * @param propagate
@@ -955,6 +958,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 */
 	private void setHeadAndPropagate(Node node, int propagate) {
 		Node h = head; // Record old head for check below
+		//
 		setHead(node);
 		/*
 		 * Try to signal next queued node if:
@@ -984,6 +988,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 
 	/**
 	 * Cancels an ongoing attempt to acquire.
+	 * 取消指定节点请求资源的动作
 	 *
 	 * @param node
 	 * 		the node
@@ -997,11 +1002,13 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		node.thread = null;
 
 		// Skip cancelled predecessors
+		// 遍历去除无效的前驱节点
 		Node pred = node.prev;
 		while (pred.waitStatus > 0) {
 			node.prev = pred = pred.prev;
 		}
 
+		// TODO 下车。休息
 		// predNext is the apparent node to unsplice. CASes below will
 		// fail if not, in which case, we lost race vs another cancel
 		// or signal, so no further action is necessary.
@@ -1037,6 +1044,10 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * Returns true if thread should block. This is the main signal
 	 * control in all acquire loops.  Requires that pred == node.prev.
 	 *
+	 * 检查获取资源失败的节点是否需要阻塞。返回true时当前线程则应该阻塞。
+	 * 所有资源请求循环都使用该逻辑来判断是否需要阻塞。
+	 * 调用该方法时两个参数需要满足条件：pred == node.prev
+	 *
 	 * @param pred
 	 * 		node's predecessor holding status
 	 * @param node
@@ -1046,27 +1057,37 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 */
 	private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {
 		int ws = pred.waitStatus;
+		// 前一个节点的节点已设置好（告诉前驱节点在必要的时候唤醒当前节点）
 		if (ws == Node.SIGNAL)
 			/*
 			 * This node has already set status asking a release
              * to signal it, so it can safely park.
+             *
              */ {
 			return true;
 		}
+		// 大于0则说明前一个节点已经被取消了，则向前查找到一个有效的节点为止
 		if (ws > 0) {
 			/*
 			 * Predecessor was cancelled. Skip over predecessors and
              * indicate retry.
+             *
+             * 循环遍历前驱节点，直到状态值小于等于0
+             *
              */
 			do {
 				node.prev = pred = pred.prev;
 			} while (pred.waitStatus > 0);
 			pred.next = node;
 		} else {
-            /*
-             * waitStatus must be 0 or PROPAGATE.  Indicate that we
+			/*
+			 * waitStatus must be 0 or PROPAGATE.  Indicate that we
              * need a signal, but don't park yet.  Caller will need to
              * retry to make sure it cannot acquire before parking.
+             *
+             * 此时状态值只能是0（刚初始化）或者PROPAGATE（无条件传播）。此时应该再次尝试。
+             * 这个时候将尝试将前驱节点的值设置为SIGNAL以便下一次循环检查。
+             *
              */
 			compareAndSetWaitStatus(pred, ws, Node.SIGNAL);
 		}
@@ -1091,7 +1112,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	}
 
     /*
-     * Various flavors of acquire, varying in exclusive/shared and
+	 * Various flavors of acquire, varying in exclusive/shared and
      * control modes.  Each is mostly the same, but annoyingly
      * different.  Only a little bit of factoring is possible due to
      * interactions of exception mechanics (including ensuring that we
@@ -1102,6 +1123,11 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	/**
 	 * Acquires in exclusive uninterruptible mode for thread already in
 	 * queue. Used by condition wait methods as well as acquire.
+	 *
+	 * 对已经处于待进入等待队列的节点尝试获取资源，是独占方式且不可中断。
+	 * 条件队列等待时也使用该方法。
+	 *
+	 * 一般来说该节点已经加入到了队列的尾部，如果队列是空的（仅有假的头），再次尝试获取资源。
 	 *
 	 * @param node
 	 * 		the node
@@ -1116,17 +1142,21 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 			boolean interrupted = false;
 			for (; ; ) {
 				final Node p = node.predecessor();
+				// 如果前驱节点是头节点则说明当前仅有一个线程在等待，尝试再次获取资源
 				if (p == head && tryAcquire(arg)) {
+					// 成功获取资源之后，将当前节点的线程信息，前驱节点后继节点置空
 					setHead(node);
 					p.next = null; // help GC
 					failed = false;
 					return interrupted;
 				}
+				// 判断是否需要阻塞，需要阻塞时则利用LockSupport实现阻塞
 				if (shouldParkAfterFailedAcquire(p, node) && parkAndCheckInterrupt()) {
 					interrupted = true;
 				}
 			}
 		} finally {
+			// 如果当前线程是被中断的，那么此时需要取消对于资源的请求
 			if (failed) {
 				cancelAcquire(node);
 			}
@@ -1489,12 +1519,21 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * #tryAcquire} until success.  This method can be used
 	 * to implement method {@link Lock#lock}.
 	 *
+	 * 以独占模式请求资源，无法响应中断。实现时至少调用一次实现类的tryAcquire来判断是否可获取资源。
+	 * 获取不到资源时则请求线程会进入等待队列，期间可能存在多次阻塞和解除阻塞操作，用以反复调用tryAcquire尝试获取资源。
+	 * 这个方法可以用来实现锁。
+	 *
 	 * @param arg
 	 * 		the acquire argument.  This value is conveyed to
 	 * 		{@link #tryAcquire} but is otherwise uninterpreted and
 	 * 		can represent anything you like.
 	 */
 	public final void acquire(int arg) {
+		/**
+		 * 1. 首先尝试调用用户实现函数tryAcquire判断是否还有资源可获取
+		 * 2. 无法获取资源的情况下也不是直接进入阻塞，
+		 *
+		 */
 		if (!tryAcquire(arg) && acquireQueued(addWaiter(Node.EXCLUSIVE), arg)) {
 			selfInterrupt();
 		}
