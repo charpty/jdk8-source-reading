@@ -91,8 +91,9 @@ import sun.misc.Unsafe;
  * 该类本身无法感知处于共享模式还是独占模式，这取决与实现资源获取函数的返回值，以及实现对于下一个等待节点是否可以获取资源的判定。
  * 不论是共享模式还是独占模式，都使用同一个先进先出队列，一般来说，一个子类只应该支持其中一种模式，但是两种模式也是可以在一个子类中并存的。
  * 独占模式和共享模式子类要实现的方法是不同的，选择了其中一种模式则无需实现另一种模式的方法。
- * <p>
- * <p>
+ *
+ * （共享锁也就是允许多个线程同时获得一把锁，独占锁仅允许一个线程获得锁）
+ *
  * <p>This class defines a nested {@link ConditionObject} class that
  * can be used as a {@link Condition} implementation by subclasses
  * supporting exclusive mode for which method {@link
@@ -817,7 +818,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 				return node;
 			}
 		}
-		// 当前等待队列未初始化
+		// 当前等待队列未初始化或者出现竞争添加尾部节点
 		enq(node);
 		return node;
 	}
@@ -844,6 +845,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * Wakes up node's successor, if one exists.
 	 *
 	 * 唤醒节点的后继节点
+	 * 该函数关心的是"对有效节点进行一次唤醒操作"，并尝试着设置当前节点的状态表示我已经通知过后继节点了
 	 *
 	 * @param node
 	 * 		the node
@@ -854,11 +856,12 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * to clear in anticipation of signalling.  It is OK if this
          * fails or if status is changed by waiting thread.
          *
-         * // 当状态变量state小于0时，即代表需要唤醒信号，此时清楚该状态。
+         * // 当状态变量state小于0时，即代表需要唤醒信号，此时清除该状态。
          *
          */
 		int ws = node.waitStatus;
 		if (ws < 0) {
+			// 其实就是表明下一个节点已经被唤醒了，就相当于是一个信号，只要这个信号被响应了即可
 			compareAndSetWaitStatus(node, ws, 0);
 		}
 
@@ -1008,33 +1011,43 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 			node.prev = pred = pred.prev;
 		}
 
-		// TODO 下车。休息
 		// predNext is the apparent node to unsplice. CASes below will
 		// fail if not, in which case, we lost race vs another cancel
 		// or signal, so no further action is necessary.
+		// 当前节点取消之后，那么下一个节点的可能会丢失通知，所以要保证下一个节点挂载到上一个有效的节点
+		// 前一个节点的上一个节点并不一定是当前节点，前一个节点通知的节点一定是next指向的节点
 		Node predNext = pred.next;
 
 		// Can use unconditional write instead of CAS here.
 		// After this atomic step, other Nodes can skip past us.
 		// Before, we are free of interference from other threads.
+		// 由于一旦到达取消状态就是最终状态，所以直接写volatile变量的最终状态不需要CAS操作。
 		node.waitStatus = Node.CANCELLED;
 
 		// If we are the tail, remove ourselves.
 		if (node == tail && compareAndSetTail(node, pred)) {
+			// 如果自己本身就是最后一个节点，后面没有节点需要自己唤醒，那么直接将自己置空即可
+			// 如果设置失败也没关系，因为当前节点状态已经变成取消了
 			compareAndSetNext(pred, predNext, null);
 		} else {
 			// If successor needs signal, try to set pred's next-link
 			// so it will get one. Otherwise wake it up to propagate.
+			// 此时要保证取消节点的后继节点也是能够收到通知的
 			int ws;
+			// 首先保证前一个节点的是可以通知后继节点的，也就是说前一个节点是有效的（非取消）
 			if (pred != head && ((ws = pred.waitStatus) == Node.SIGNAL || (ws <= 0 && compareAndSetWaitStatus(pred, ws, Node.SIGNAL))) && pred.thread != null) {
 				Node next = node.next;
+				// 如果存在下一个节点且是节点没有取消（下一个节点需要通知唤醒的）
 				if (next != null && next.waitStatus <= 0) {
+					// 此时让一个节点将自己上一个节点的next属性设置为下一个节点，这样上一个节点即可在适当时间唤醒下一个节点
 					compareAndSetNext(pred, predNext, next);
 				}
 			} else {
+				// 如果前一个节点没法唤醒该节点的下一个节点（为头节点或者前驱节点全部已取消）
+				// 无法设置唤醒条件的情况下，则直接唤醒后继节点，触发信号
 				unparkSuccessor(node);
 			}
-
+			// 设置节点的next指向自己，以此帮助GC Roots判断（next为空有其它含义表示需要从尾部寻找）
 			node.next = node; // help GC
 		}
 	}
@@ -1531,7 +1544,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	public final void acquire(int arg) {
 		/**
 		 * 1. 首先尝试调用用户实现函数tryAcquire判断是否还有资源可获取
-		 * 2. 无法获取资源的情况下也不是直接进入阻塞，
+		 * 2. 无法获取资源的情况下也不是直接进入阻塞，而是尝试以此或多次自旋操作
 		 *
 		 */
 		if (!tryAcquire(arg) && acquireQueued(addWaiter(Node.EXCLUSIVE), arg)) {
@@ -1599,6 +1612,9 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * more threads if {@link #tryRelease} returns true.
 	 * This method can be used to implement method {@link Lock#unlock}.
 	 *
+	 * 释放独占模式下的资源。有可能释放一个或多个线程来再次竞争资源。
+	 * 这个方法可以用来实现锁。
+	 *
 	 * @param arg
 	 * 		the release argument.  This value is conveyed to
 	 * 		{@link #tryRelease} but is otherwise uninterpreted and
@@ -1607,8 +1623,11 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * @return the value returned from {@link #tryRelease}
 	 */
 	public final boolean release(int arg) {
+		// 可能有多个线程在该方法上返回true
 		if (tryRelease(arg)) {
 			Node h = head;
+			// 头节点为空说明还没有等待的线程
+			// 头节点状态为0则说明虽然已经初始化过来，但是目前无等待线程
 			if (h != null && h.waitStatus != 0) {
 				unparkSuccessor(h);
 			}
@@ -1758,8 +1777,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * Version of getFirstQueuedThread called when fastpath fails
 	 */
 	private Thread fullGetFirstQueuedThread() {
-        /*
-         * The first node is normally head.next. Try to get its
+		/*
+		 * The first node is normally head.next. Try to get its
          * thread field, ensuring consistent reads: If thread
          * field is nulled out or s.prev is no longer head, then
          * some other thread(s) concurrently performed setHead in
@@ -1774,7 +1793,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		}
 
         /*
-         * Head's next field might not have been set yet, or may have
+		 * Head's next field might not have been set yet, or may have
          * been unset after setHead. So we must check to see if tail
          * is actually first node. If not, we continue on, safely
          * traversing from tail back to head to find first,
@@ -2007,8 +2026,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		{
 			return true;
 		}
-        /*
-         * node.prev can be non-null, but not yet on queue because
+		/*
+		 * node.prev can be non-null, but not yet on queue because
          * the CAS to place it on queue can fail. So we have to
          * traverse from tail to make sure it actually made it.  It
          * will always be near the tail in calls to this method, and
@@ -2048,8 +2067,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * cancelled before signal)
 	 */
 	final boolean transferForSignal(Node node) {
-        /*
-         * If cannot change waitStatus, the node has been cancelled.
+		/*
+		 * If cannot change waitStatus, the node has been cancelled.
          */
 		if (!compareAndSetWaitStatus(node, Node.CONDITION, 0)) {
 			return false;
