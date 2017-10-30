@@ -101,6 +101,11 @@ import java.util.Collection;
  * the same thread. Attempts to exceed this limit result in
  * {@link Error} throws from locking methods.
  *
+ * 这个锁可以被同一线程最多重入锁住2147483647（2^31-1）次。
+ * 一旦超过这个限制则会抛出异常。
+ * （state变量是个int32整型，重入锁用它来记录锁重入次数，当然也就不能超出int32整型的值域了）
+ *
+ *
  * @author Doug Lea
  * @since 1.5
  */
