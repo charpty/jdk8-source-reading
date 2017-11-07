@@ -1768,7 +1768,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	/**
 	 * Returns the first (longest-waiting) thread in the queue, or
 	 * {@code null} if no threads are currently queued.
-	 * 
+	 *
 	 * <p>In this implementation, this operation normally returns in
 	 * constant time, but may iterate upon contention if other threads are
 	 * concurrently modifying the queue.
@@ -1863,12 +1863,18 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	/**
 	 * Queries whether any threads have been waiting to acquire longer
 	 * than the current thread.
-	 * <p>
+	 *
+	 * 判断等待队列中是否存在线程比当前线程等待时间更长。
+	 * 这个函数也就是主要用于实现资源分配的公平性。
+	 *
 	 * <p>An invocation of this method is equivalent to (but may be
 	 * more efficient than):
 	 * <pre> {@code
 	 * getFirstQueuedThread() != Thread.currentThread() &&
 	 * hasQueuedThreads()}</pre>
+	 *
+	 * 这个函数实现大致等同于：判断当前线程不是等待队列首部线程并且还有其他线程在等待队列中时返回true
+	 *
 	 * <p>
 	 * <p>Note that because cancellations due to interrupts and
 	 * timeouts may occur at any time, a {@code true} return does not
@@ -1876,7 +1882,10 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * thread.  Likewise, it is possible for another thread to win a
 	 * race to enqueue after this method has returned {@code false},
 	 * due to the queue being empty.
-	 * <p>
+	 *
+	 * 由于等待线程的取消和中断是可能随时发生的，所以即使返回true也完全意味着其它线程真的比当前线程早发起资源请求。
+	 * 类似的道理，即使返回false，其它线程也可能在这之后插入到等待队列中。
+	 *
 	 * <p>This method is designed to be used by a fair synchronizer to
 	 * avoid <a href="AbstractQueuedSynchronizer#barging">barging</a>.
 	 * Such a synchronizer's {@link #tryAcquire} method should return
