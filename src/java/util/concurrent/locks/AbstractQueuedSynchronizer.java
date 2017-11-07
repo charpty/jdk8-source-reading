@@ -1883,7 +1883,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * race to enqueue after this method has returned {@code false},
 	 * due to the queue being empty.
 	 *
-	 * 由于等待线程的取消和中断是可能随时发生的，所以即使返回true也完全意味着其它线程真的比当前线程早发起资源请求。
+	 * 由于等待线程的取消和中断是可能随时发生的，所以即使返回true也不完全意味着其它线程真的比当前线程早发起资源请求。
 	 * 类似的道理，即使返回false，其它线程也可能在这之后插入到等待队列中。
 	 *
 	 * <p>This method is designed to be used by a fair synchronizer to
@@ -1894,7 +1894,13 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * (unless this is a reentrant acquire).  For example, the {@code
 	 * tryAcquire} method for a fair, reentrant, exclusive mode
 	 * synchronizer might look like this:
-	 * <p>
+	 *
+	 * 这个方法是用帮助公平的同步器改变父类（AQS）默认的线程调度协议。
+	 * 公平的同步器在该方法返回true时（即有线程等的时间比当前线程还长），应该在获取资源的方法中直接返回“缺少资源”信号。
+	 * 当然，除非该同步器允许线程重入，这个时候就需要子类同步器自己来判断是否需要返回“缺少资源”信号了。
+	 *
+	 * 所以，这种允许重入的同步器可以像下面的写法一样，先判断下是否独占。
+	 *
 	 * <pre> {@code
 	 * protected boolean tryAcquire(int arg) {
 	 *   if (isHeldExclusively()) {
@@ -1917,9 +1923,14 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		// The correctness of this depends on head being initialized
 		// before tail and on head.next being accurate if the current
 		// thread is first in queue.
+		// 因为等待队列初始化时是先初始化头head再初始化尾tail的，所以读尾部有值的话head一定是有值的
 		Node t = tail; // Read fields in reverse initialization order
+		// TODO 如果尾节点没值，head节点有值？？？
 		Node h = head;
 		Node s;
+		// h == t 意味着等待队列刚被初始化或者队列当前是空的
+		// h.next != null 意味着头结点后续还有后继节点
+		// s.thread == Thread.currentThread() 意味着等待的第一个节点也就是当前节点
 		return h != t && ((s = h.next) == null || s.thread != Thread.currentThread());
 	}
 
