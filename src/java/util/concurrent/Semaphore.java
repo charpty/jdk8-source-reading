@@ -191,21 +191,29 @@ public class Semaphore implements java.io.Serializable {
 		protected final boolean tryReleaseShared(int releases) {
 			for (; ; ) {
 				int current = getState();
+				// 计算当前线程认为的释放后还剩下多少资源
+				// Java的这个信号量比较奇怪的地方在于，你初始化了3个许可，但是你可以不停的release来增加许可数量
 				int next = current + releases;
+				// 释放后的资源数都超过int整形最大值了
 				if (next < current) // overflow
 				{
 					throw new Error("Maximum permit count exceeded");
 				}
+				// 释放总是会成功的
 				if (compareAndSetState(current, next)) {
 					return true;
 				}
 			}
 		}
 
+		// 由于可以任意增加许可的总数量，当然也要允许减少许可证的总数量
 		final void reducePermits(int reductions) {
 			for (; ; ) {
 				int current = getState();
+				// 单纯的把许可总数量减小
 				int next = current - reductions;
+				// 减法导致int整形溢出了
+				// 这里没有判断剩余许可的数量是否大于0是由于这个函数也只是给这个包下的函数自己调用的
 				if (next > current) // underflow
 				{
 					throw new Error("Permit count underflow");
@@ -216,6 +224,7 @@ public class Semaphore implements java.io.Serializable {
 			}
 		}
 
+		// 将许可数量重置为0
 		final int drainPermits() {
 			for (; ; ) {
 				int current = getState();
