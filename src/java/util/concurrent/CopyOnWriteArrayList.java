@@ -79,6 +79,8 @@ import java.util.function.UnaryOperator;
  *
  * <p>All elements are permitted, including {@code null}.
  *
+ * 和并发map不同，cow的list允许所有元素类型，包括null值
+ *
  * <p>Memory consistency effects: As with other concurrent
  * collections, actions in a thread prior to placing an object into a
  * {@code CopyOnWriteArrayList}
@@ -86,9 +88,17 @@ import java.util.function.UnaryOperator;
  * actions subsequent to the access or removal of that element from
  * the {@code CopyOnWriteArrayList} in another thread.
  *
+ * 在内存一致性方面来说，同样遵循以下happen-before原则。
+ * 将元素放置到CopyOnWriteArrayList的操作happen-before在这之后对于该元素的读取或其它操作。
+ *
  * <p>This class is a member of the
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
+ *
+ * 当然了，CopyOnWriteArrayList是Java集合框架的组成部分之一。
+ *
+ * CopyOnWriteArrayList实现了RandomAccess，也就是说它内部是和ArrayList一样的采用连续内存实现。
+ * 也就是数组的方式，支持随机下标访问。
  *
  * @param <E>
  * 		the type of elements held in this collection
@@ -100,9 +110,14 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 	private static final long serialVersionUID = 8673264195747942595L;
 
 	/** The lock protecting all mutators */
+	/** 所有对list的修改都由该锁保护 */
 	final transient ReentrantLock lock = new ReentrantLock();
 
 	/** The array, accessed only via getArray/setArray. */
+	/**
+	 * 存储元素的数组，该属性仅能通过get/set访问。
+	 * 这是因为便于提供给其它数据结构访问时保持封装性（CopyOnWriteArraySet）。
+	 */
 	private transient volatile Object[] array;
 
 	/**
