@@ -116,7 +116,7 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 	/** The array, accessed only via getArray/setArray. */
 	/**
 	 * 存储元素的数组，该属性仅能通过get/set访问。
-	 * 这是因为便于提供给其它数据结构访问时保持封装性（CopyOnWriteArraySet）。
+	 * 这是因为便于提供给其它数据结构访问时保持封装性（如CopyOnWriteArraySet）。
 	 */
 	private transient volatile Object[] array;
 
@@ -139,6 +139,7 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 	 * Creates an empty list.
 	 */
 	public CopyOnWriteArrayList() {
+		// 初始化一个空的数组，因为本身每次修改都是全新复制
 		setArray(new Object[0]);
 	}
 
@@ -155,12 +156,20 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 	 */
 	public CopyOnWriteArrayList(Collection<? extends E> c) {
 		Object[] elements;
+		// 如果初始化对集合也是CopyOnWriteArrayList则直接使用起数组
+		// 所以如果使用CopyOnWriteArrayList来初始化另一个，则就是将两个list绑在一起
 		if (c.getClass() == CopyOnWriteArrayList.class) {
 			elements = ((CopyOnWriteArrayList<?>) c).getArray();
 		} else {
+			// 如果是普通集合则调用toArray方法得到数组，此时如何返回数组有具体集合的实现类自行决定
+			// 大多数线性表的实现都是将内部数组拷贝一份返回以做到互不影响
 			elements = c.toArray();
+			// 这个判断是由于一个BUG导致的，目前这个BUG已经在JDK9中修复
+			// 其实个人觉得，与其说是一个BUG，不如说是实际触感，Array也只是存储真实类型（固定大小内存块别名）
+			// 如果总是将其Copy到Object数组上也未必是件好事
 			// c.toArray might (incorrectly) not return Object[] (see 6260652)
 			if (elements.getClass() != Object[].class) {
+				// 强行将元素再次拷贝到一个Object数组中以避免ArrayStoreException
 				elements = Arrays.copyOf(elements, elements.length, Object[].class);
 			}
 		}
@@ -210,6 +219,9 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 	 * static version of indexOf, to allow repeated calls without
 	 * needing to re-acquire array each time.
 	 *
+	 * 静态的indexOf方法，主要用于需要循环调用indexOf函数情况下不再需要每次去重新获取数组。
+	 * 这也是因为数组array被什么为volatile，每次需要从内存读取，有一定消耗
+	 *
 	 * @param o
 	 * 		element to search for
 	 * @param elements
@@ -222,6 +234,7 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 	 * @return index of element, or -1 if absent
 	 */
 	private static int indexOf(Object o, Object[] elements, int index, int fence) {
+		// 寻找空时则直接查找数组中第一个为空的元素
 		if (o == null) {
 			for (int i = index; i < fence; i++) {
 				if (elements[i] == null) {
@@ -229,6 +242,7 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 				}
 			}
 		} else {
+			// 这里有个小细节就是先判断搜索的值再进入循环，虽然代码多了几行却效率稍高。
 			for (int i = index; i < fence; i++) {
 				if (o.equals(elements[i])) {
 					return i;
@@ -287,6 +301,7 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 	 * {@inheritDoc}
 	 */
 	public int indexOf(Object o) {
+		// 仅需读取一次volatile变量array
 		Object[] elements = getArray();
 		return indexOf(o, elements, 0, elements.length);
 	}
@@ -298,6 +313,8 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 	 * More formally, returns the lowest index {@code i} such that
 	 * <tt>(i&nbsp;&gt;=&nbsp;index&nbsp;&amp;&amp;&nbsp;(e==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;e.equals(get(i))))</tt>,
 	 * or -1 if there is no such index.
+	 *
+	 * 从指定位置开始搜索值e
 	 *
 	 * @param e
 	 * 		element to search for
@@ -470,6 +487,7 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 	 */
 	public E set(int index, E element) {
 		final ReentrantLock lock = this.lock;
+		// 所有对list的修改都由该锁保护
 		lock.lock();
 		try {
 			Object[] elements = getArray();
@@ -482,6 +500,9 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 				setArray(newElements);
 			} else {
 				// Not quite a no-op; ensures volatile write semantics
+				// 这一部分本身没有改变任何值，仅仅是保留写volatile变量的语义
+				// 写volatile变量在内存可见性上等同于退出同步块，会将本地线程缓存值刷新到主内存
+				// 所以不能因为数组没有改变而丢失内存可见性语义
 				setArray(elements);
 			}
 			return oldValue;
@@ -535,6 +556,7 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 			if (numMoved == 0) {
 				newElements = Arrays.copyOf(elements, len + 1);
 			} else {
+				// 设置位置到左右两边都分别拷贝到新数组中
 				newElements = new Object[len + 1];
 				System.arraycopy(elements, 0, newElements, 0, index);
 				System.arraycopy(elements, index, newElements, index + 1, numMoved);
@@ -592,6 +614,8 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 	 * @return {@code true} if this list contained the specified element
 	 */
 	public boolean remove(Object o) {
+		// 先在无锁状态下获取一个快照版本数组和删除元素对应到下标
+		// 这样在无数据竞争到情况下效率会大大提高（避免类锁操作来获取数组和遍历）
 		Object[] snapshot = getArray();
 		int index = indexOf(o, snapshot, 0, snapshot.length);
 		return (index < 0) ? false : remove(o, snapshot, index);
@@ -607,9 +631,12 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 		try {
 			Object[] current = getArray();
 			int len = current.length;
+			// 如果不一致则说明有竞争发生，也就是有其它线程在remove期间对list进行了修改
+			// 此时不得不重新来找删除元素的正确下标位置，但找的方式不是简单遍历，而是更有效率的方式
 			if (snapshot != current) {
 				findIndex:
 				{
+					// TODO 睡觉了at23:30
 					int prefix = Math.min(index, len);
 					for (int i = 0; i < prefix; i++) {
 						if (current[i] != snapshot[i] && eq(o, current[i])) {
