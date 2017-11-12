@@ -156,8 +156,8 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 	 */
 	public CopyOnWriteArrayList(Collection<? extends E> c) {
 		Object[] elements;
-		// 如果初始化对集合也是CopyOnWriteArrayList则直接使用起数组
-		// 所以如果使用CopyOnWriteArrayList来初始化另一个，则就是将两个list绑在一起
+		// 如果初始化对集合也是CopyOnWriteArrayList则直接使用该列表的数组
+		// 由于CopyOnWriteArrayList任何的修改都不会再去操作旧的数组array，所以这个做法是安全的
 		if (c.getClass() == CopyOnWriteArrayList.class) {
 			elements = ((CopyOnWriteArrayList<?>) c).getArray();
 		} else {
@@ -585,6 +585,7 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 			E oldValue = get(elements, index);
 			int numMoved = len - index - 1;
 			if (numMoved == 0) {
+				// 正好要删除的是最后一个元素，需特殊处理因为下面的拷贝时有index + 1
 				setArray(Arrays.copyOf(elements, len - 1));
 			} else {
 				Object[] newElements = new Object[len - 1];
@@ -634,22 +635,38 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 			// 如果不一致则说明有竞争发生，也就是有其它线程在remove期间对list进行了修改
 			// 此时不得不重新来找删除元素的正确下标位置，但找的方式不是简单遍历，而是更有效率的方式
 			if (snapshot != current) {
+				// 这里这个语法值得注意下，如果执行break findIndex，那么findIndex括号里的后续代码都不会执行了
 				findIndex:
 				{
-					// TODO 睡觉了at23:30
+					/**
+					 * 此时数组array发生了改变，试想如果只是在尾部追加了元素或删除了index之后的元素，那么其实index还是有效的
+					 * 所以我们先通过==引用对比，先看看index前的元素是不是都没发生过变化，找出第一个发生变化的。
+					 * 我们仅仅对比到index位置即可了，如果前面都没发生变化，那么其实非常快就能找到要删除的元素下标index了。
+					 */
+					// 如果当前数组缩短了，小于之前的index下标了，那也只能遍历当前长度为止了。
 					int prefix = Math.min(index, len);
 					for (int i = 0; i < prefix; i++) {
+						// 首先通过引用对比（快速），找出发生了变化的元素再判断这些发生的元素是不是等于待删除元素
 						if (current[i] != snapshot[i] && eq(o, current[i])) {
 							index = i;
+							// 找到了自然就退出此代码块了，大多数情况下由于只是往列表尾部添加元素（在index之前current[i] == snapshot[i]始终成立）
+							// 所以也就是这里大多数情况下执行不到的，之所以将其写在current[index] == o判断之前是因为如果有改变index前的元素a
+							// 且恰巧又把这个元素a改成了满足a.equals(o)，此时要改为删除元素a而不是index上的元素了
 							break findIndex;
 						}
 					}
+					// 整个数组缩短了，且在上面的循环中找不到满足equals(o)的元素了
 					if (index >= len) {
 						return false;
 					}
+					// 这是绝大多数情况，只是往列表尾部添加了元素，不会引起index位置之前的元素有任何变化。
+					// 之所以不是第一行判断是为了防止index之前的元素发生了改变且恰好满足了equals(o)
 					if (current[index] == o) {
 						break findIndex;
 					}
+					// 在index之前找不到，且新的数组还有剩余，则进行遍历查找，这里有两层意义。
+					// 1. 在index之前插入了元素，待删除元素被推后了
+					// 2. index上的元素已经被删除或被修改，但是出于"尽量不丢失删除信号"的原则，只能再看看新增加的元素🀄️中是否有满足删除条件的
 					index = indexOf(o, current, index, len);
 					if (index < 0) {
 						return false;
@@ -658,6 +675,7 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 			}
 			Object[] newElements = new Object[len - 1];
 			System.arraycopy(current, 0, newElements, 0, index);
+			// arraycopy方法在length=0时允许且只允许容忍srcPos参数为数组len，也就是最大下标加1（下标越界但不拷贝）
 			System.arraycopy(current, index + 1, newElements, index, len - index - 1);
 			setArray(newElements);
 			return true;
