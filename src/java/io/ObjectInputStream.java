@@ -246,15 +246,16 @@ public class ObjectInputStream
 
     static {
         /* Setup access so sun.misc can invoke package private functions. */
-        sun.misc.SharedSecrets.setJavaOISAccess(new JavaOISAccess() {
-            public void setObjectInputFilter(ObjectInputStream stream, ObjectInputFilter filter) {
-                stream.setInternalObjectInputFilter(filter);
-            }
-
-            public ObjectInputFilter getObjectInputFilter(ObjectInputStream stream) {
-                return stream.getInternalObjectInputFilter();
-            }
-        });
+        // charpty: comment because compile error
+//        sun.misc.SharedSecrets.setJavaOISAccess(new JavaOISAccess() {
+//            public void setObjectInputFilter(ObjectInputStream stream, ObjectInputFilter filter) {
+//                stream.setInternalObjectInputFilter(filter);
+//            }
+//
+//            public ObjectInputFilter getObjectInputFilter(ObjectInputStream stream) {
+//                return stream.getInternalObjectInputFilter();
+//            }
+//        });
     }
 
     /*
