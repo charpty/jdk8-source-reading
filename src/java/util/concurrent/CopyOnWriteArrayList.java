@@ -475,6 +475,7 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 	 * 		{@inheritDoc}
 	 */
 	public E get(int index) {
+		// 获取的时候无需同步，利用volatile语义可以获取实时元素
 		return get(getArray(), index);
 	}
 
@@ -728,6 +729,8 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 	/**
 	 * Appends the element, if not present.
 	 *
+	 * 如果列表中不存在e则添加
+	 *
 	 * @param e
 	 * 		element to be added to this list, if absent
 	 *
@@ -735,6 +738,7 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 	 */
 	public boolean addIfAbsent(E e) {
 		Object[] snapshot = getArray();
+		// 和remove一样，也是先尝试在无锁状态下获取数组，乐观的认为大多数情况下都是无竞争的
 		return indexOf(e, snapshot, 0, snapshot.length) >= 0 ? false : addIfAbsent(e, snapshot);
 	}
 
@@ -748,6 +752,7 @@ public class CopyOnWriteArrayList<E> implements List<E>, RandomAccess, Cloneable
 		try {
 			Object[] current = getArray();
 			int len = current.length;
+			// 没竞争情况下就无需进入代码块了，类似于DCL双重检查
 			if (snapshot != current) {
 				// Optimize for lost race to another addXXX operation
 				int common = Math.min(snapshot.length, len);
