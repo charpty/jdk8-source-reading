@@ -101,10 +101,9 @@ import java.util.Collection;
  * the same thread. Attempts to exceed this limit result in
  * {@link Error} throws from locking methods.
  *
- * 这个锁可以被同一线程最多重入锁住2147483647（2^31-1）次。
+ * 由于重入锁使用AQS的state变量（int)来表示重入次数，所以锁最多可以被同一线程重入锁住2147483647（2^31-1）次。
  * 一旦超过这个限制则会抛出异常。
  * （state变量是个int32整型，重入锁用它来记录锁重入次数，当然也就不能超出int32整型的值域了）
- *
  *
  * @author Doug Lea
  * @since 1.5
@@ -186,6 +185,8 @@ public class ReentrantLock implements Lock, java.io.Serializable {
 		protected final boolean isHeldExclusively() {
 			// While we must in general read state before owner,
 			// we don't need to do so to check if current thread is owner
+			// 一般来说需要读取state变量以保证读取volatile变量但内存可见性，但在该检查中没必要这么做。
+			// 也就是告诉你下作者就是这么设计的。
 			return getExclusiveOwnerThread() == Thread.currentThread();
 		}
 
@@ -209,6 +210,8 @@ public class ReentrantLock implements Lock, java.io.Serializable {
 
 		/**
 		 * Reconstitutes the instance from a stream (that is, deserializes it).
+		 *
+		 * 锁在反序列化时设置锁状态为0否则就变成永久锁住。
 		 */
 		private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
 			s.defaultReadObject();
@@ -571,10 +574,14 @@ public class ReentrantLock implements Lock, java.io.Serializable {
 	/**
 	 * Queries if this lock is held by the current thread.
 	 *
+	 * 查询当前线程是否持有该锁
+	 *
 	 * <p>Analogous to the {@link Thread#holdsLock(Object)} method for
 	 * built-in monitor locks, this method is typically used for
 	 * debugging and testing. For example, a method that should only be
 	 * called while a lock is held can assert that this is the case:
+	 *
+	 * 一般来说这个方法是用来调试和测试使用的。但有时用于去除重入锁但重入特性。
 	 *
 	 * <pre> {@code
 	 * class X {

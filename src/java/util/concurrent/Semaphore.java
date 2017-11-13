@@ -163,6 +163,9 @@ public class Semaphore implements java.io.Serializable {
 	 * Synchronization implementation for semaphore.  Uses AQS state
 	 * to represent permits. Subclassed into fair and nonfair
 	 * versions.
+	 *
+	 * 使用AQS的state状态变量记录剩余的许可数量。
+	 * 信号量同步器由于可以任意的改变总许可数量，所以不需要在反序列化时重置state值。
 	 */
 	abstract static class Sync extends AbstractQueuedSynchronizer {
 		private static final long serialVersionUID = 1192457210091910933L;

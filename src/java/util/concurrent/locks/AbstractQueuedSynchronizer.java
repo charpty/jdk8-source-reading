@@ -1164,6 +1164,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 				}
 				// 判断是否需要阻塞，需要阻塞时则利用LockSupport实现阻塞
 				if (shouldParkAfterFailedAcquire(p, node) && parkAndCheckInterrupt()) {
+					// 非中断响应模式下只是将interrupted状态设置为true，仅仅当节点被唤醒时才能发现自己被中断了。
+					// 也就是到下一次自旋并发现有资源的情况下才能发现中断。
 					interrupted = true;
 				}
 			}
@@ -1177,6 +1179,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 
 	/**
 	 * Acquires in exclusive interruptible mode.
+	 *
+	 * 和doAcquire类似只是多了中断响应
 	 *
 	 * @param arg
 	 * 		the acquire argument
@@ -1194,6 +1198,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 					return;
 				}
 				if (shouldParkAfterFailedAcquire(p, node) && parkAndCheckInterrupt()) {
+					// 直接再次抛出中断异常而不是设置中断状态，这样线程可以立即从中断中恢复。
 					throw new InterruptedException();
 				}
 			}
@@ -1207,6 +1212,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	/**
 	 * Acquires in exclusive timed mode.
 	 *
+	 * 和doAcquireInterruptibly类似只是多了计时判断
+	 *
 	 * @param arg
 	 * 		the acquire argument
 	 * @param nanosTimeout
@@ -1218,6 +1225,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		if (nanosTimeout <= 0L) {
 			return false;
 		}
+		// 先算出截止时间
 		final long deadline = System.nanoTime() + nanosTimeout;
 		final Node node = addWaiter(Node.EXCLUSIVE);
 		boolean failed = true;
@@ -1230,14 +1238,18 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 					failed = false;
 					return true;
 				}
+				// 已经超出等待时长了则返回获取失败
 				nanosTimeout = deadline - System.nanoTime();
 				if (nanosTimeout <= 0L) {
 					return false;
 				}
+				// 当等待时间很短时则没必要让线程进入阻塞状态浪费上下文切换的时间
+				// 而且时间很短时也很难做到精确的阻塞指定时长
 				if (shouldParkAfterFailedAcquire(p, node) && nanosTimeout > spinForTimeoutThreshold) {
 					LockSupport.parkNanos(this, nanosTimeout);
 				}
 				if (Thread.interrupted()) {
+					// 也是快速中断以便线程从中断中快速恢复
 					throw new InterruptedException();
 				}
 			}
@@ -1250,7 +1262,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 
 	/**
 	 * Acquires in shared uninterruptible mode.
-	 * // 共享模式的资源获取操作, 进入此函数则说明第一次尝试获取资源已经失败过
+	 * 共享模式的资源获取操作, 进入此函数则说明第一次尝试获取资源已经失败过
 	 *
 	 * @param arg
 	 * 		the acquire argument
@@ -1279,6 +1291,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 					}
 				}
 				if (shouldParkAfterFailedAcquire(p, node) && parkAndCheckInterrupt()) {
+					// 非中断响应模式下只是将interrupted状态设置为true，仅仅当节点被唤醒时才能发现自己被中断了。
+					// 也就是到下一次自旋并发现有资源的情况下才能发现中断。
 					interrupted = true;
 				}
 			}
@@ -1292,6 +1306,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 
 	/**
 	 * Acquires in shared interruptible mode.
+	 * 也是共享模式的资源获取操作, 但可以响应中断。
 	 *
 	 * @param arg
 	 * 		the acquire argument
@@ -1312,6 +1327,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 					}
 				}
 				if (shouldParkAfterFailedAcquire(p, node) && parkAndCheckInterrupt()) {
+					// 直接再次抛出中断异常而不是设置中断状态，这样线程可以立即从中断中恢复。
 					throw new InterruptedException();
 				}
 			}
@@ -1593,6 +1609,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * or the timeout elapses.  This method can be used to implement
 	 * method {@link Lock#tryLock(long, TimeUnit)}.
 	 *
+	 * 尝试在指定时间内获取锁，如果失败则返回false，该方法可以响应中断。
+	 *
 	 * @param arg
 	 * 		the acquire argument.  This value is conveyed to
 	 * 		{@link #tryAcquire} but is otherwise uninterpreted and
@@ -1648,6 +1666,10 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * repeatedly blocking and unblocking, invoking {@link
 	 * #tryAcquireShared} until success.
 	 *
+	 * 共享模式下获取资源，对中断不敏感。
+	 * 实现时至少调用一次tryAcquireShared来判断是否能够获取资源。
+	 * 未能获取资源时会自旋或者阻塞直到tryAcquireShared返回一个大于等于0的值。
+	 *
 	 * @param arg
 	 * 		the acquire argument.  This value is conveyed to
 	 * 		{@link #tryAcquireShared} but is otherwise uninterpreted
@@ -1667,6 +1689,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * invoking {@link #tryAcquireShared} until success or the thread
 	 * is interrupted.
 	 *
+	 * 同样是共享模式下获取资源，但对中断是可以响应的。
+	 *
 	 * @param arg
 	 * 		the acquire argument.
 	 * 		This value is conveyed to {@link #tryAcquireShared} but is
@@ -1677,6 +1701,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * 		if the current thread is interrupted
 	 */
 	public final void acquireSharedInterruptibly(int arg) throws InterruptedException {
+		// 在调用子类tryAcquireShared判断是否还有资源之前就判断下是否有中断状态防止必须要的volatile变量读。
 		if (Thread.interrupted()) {
 			throw new InterruptedException();
 		}
@@ -1916,6 +1941,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * @return {@code true} if there is a queued thread preceding the
 	 * current thread, and {@code false} if the current thread
 	 * is at the head of the queue or the queue is empty
+	 *
+	 * // TODO 这个函数明天再仔细详细，先休息了@23:19
 	 *
 	 * @since 1.7
 	 */
