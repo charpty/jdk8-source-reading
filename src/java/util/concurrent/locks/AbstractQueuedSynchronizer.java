@@ -1653,7 +1653,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 			// 头节点状态为0则说明虽然已经初始化过，但是目前无等待线程
 			if (h != null && h.waitStatus != 0) {
 				unparkSuccessor(h);
-		}
+			}
 			return true;
 		}
 		return false;
@@ -1941,8 +1941,6 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * @return {@code true} if there is a queued thread preceding the
 	 * current thread, and {@code false} if the current thread
 	 * is at the head of the queue or the queue is empty
-	 *
-	 * // TODO 这个函数明天再仔细详细，先休息了@23:19
 	 *
 	 * @since 1.7
 	 */
