@@ -235,7 +235,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
 			if (compareAndSetState(0, 1)) {
 				setExclusiveOwnerThread(Thread.currentThread());
 			} else {
-				// 直接调用AQS的acquire方法，解下来acquire会再调用本类的tryAcquire
+				// 直接调用AQS的acquire方法，接下来acquire会再调用本类的tryAcquire
 				acquire(1);
 			}
 		}
@@ -258,16 +258,21 @@ public class ReentrantLock implements Lock, java.io.Serializable {
 		/**
 		 * Fair version of tryAcquire.  Don't grant access unless
 		 * recursive call or no waiters or is first.
+		 *
+		 * 公平版本的重入锁请求实现
+		 *
 		 */
 		protected final boolean tryAcquire(int acquires) {
 			final Thread current = Thread.currentThread();
 			int c = getState();
 			if (c == 0) {
+				// 即使当前锁未被持有，也要检查下队列里有没有等待更久的线程，没有的话再尝试CAS操作修改state
 				if (!hasQueuedPredecessors() && compareAndSetState(0, acquires)) {
 					setExclusiveOwnerThread(current);
 					return true;
 				}
 			} else if (current == getExclusiveOwnerThread()) {
+				// 和非公平相同，重入的情况
 				int nextc = c + acquires;
 				if (nextc < 0) {
 					throw new Error("Maximum lock count exceeded");

@@ -1653,7 +1653,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 			// 头节点状态为0则说明虽然已经初始化过，但是目前无等待线程
 			if (h != null && h.waitStatus != 0) {
 				unparkSuccessor(h);
-			}
+		}
 			return true;
 		}
 		return false;
@@ -1890,7 +1890,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * than the current thread.
 	 *
 	 * 判断等待队列中是否存在线程比当前线程等待时间更长。
-	 * 这个函数也就是主要用于实现资源分配的公平性。
+	 * 这个函数主要用于实现资源分配的公平性。
 	 *
 	 * <p>An invocation of this method is equivalent to (but may be
 	 * more efficient than):
@@ -1950,14 +1950,14 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		// The correctness of this depends on head being initialized
 		// before tail and on head.next being accurate if the current
 		// thread is first in queue.
-		// 因为等待队列初始化时是先初始化头head再初始化尾tail的，所以读尾部有值的话head一定是有值的
+		// 因为等待队列初始化时是先初始化头head再初始化尾tail的，所以读尾部tail有值的话head一定是有值的
 		Node t = tail; // Read fields in reverse initialization order
-		// TODO 如果尾节点没值，head节点有值？？？
 		Node h = head;
 		Node s;
-		// h == t 意味着等待队列刚被初始化或者队列当前是空的
-		// h.next != null 意味着头结点后续还有后继节点
-		// s.thread == Thread.currentThread() 意味着等待的第一个节点也就是当前节点
+		// h==t意味着等待队列刚被初始化或者队列当前是空的，h!=t则说明t和h中至少一个不为空，由于t比h后初始化，所以h必然不为空
+		// h.next==null的情况是恰好在释放资源（释放资源时会将自己的node设置为头节点并将原来的头节点的next置空），
+		// 此时说明至少还有一个节点（已经苏醒并正在获取资源的节点）比当前线程等待时间更长。
+		// s.thread==Thread.currentThread()意味着等待的第一个节点也就是当前节点，此时只是重入
 		return h != t && ((s = h.next) == null || s.thread != Thread.currentThread());
 	}
 
