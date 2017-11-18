@@ -36,8 +36,8 @@ package java.util;
  * ordering.  (This interface is the map analogue of {@link SortedSet}.)
  *
  * 该接口扩展了Map接口并提供了基于键排序的能力。
- * 排序是依据键实现的Comparable接口，使用compare函数进行比较。
- * 不论是获取entrySet还是keySet或者值set都是遵循这个基于键的排序的策略的。
+ * 排序是依据键实现的Comparable接口（自然顺序），或者使用构造Map时指定的Comparator比较器进行比较。
+ * 不论是获取entrySet还是keySet或者值set都是遵循这个基于键的排序的策略。
  * 该接口也提供了多个方法来适配这种排序能力。
  *
  * <p>All keys inserted into a sorted map must implement the {@code Comparable}
