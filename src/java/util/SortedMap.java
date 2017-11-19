@@ -66,11 +66,11 @@ package java.util;
  * ordering is inconsistent with equals; it just fails to obey the general
  * contract of the {@code Map} interface.
  *
- * 值得注意的是，一个排序的Map维护的顺序必须和Map接口的equals方法保持一致。具体的可以看Comparable接口中关于对equals的说明。
- * （也就是说compareTo==0的话，equals也返回true）
- * 这是因为Map接口依靠的是hashcode和equals方法来排列元素，而SortMap依靠的是键的compareTo函数来排列元素，
- * 所以要求compareTo和equals的结果相同。
- * TreeMap没有遵循这个规则但是也可以运行，只是在某些Map函数上无法表现正常。
+ * 值得注意的是，一个排序的Map不论是否指定了全局的比较器，维护的顺序必须和Map接口的equals方法保持一致，虽然比较器Comparator没有这样的要求。
+ * 具体的可以看Comparator接口中关于对equals的说明。（也就是说compareTo==0的话，equals也返回true）
+ * 这是因为Map接口依靠的是hashcode和equals方法来排列元素，而SortMap依靠的是键的compareTo函数来排列元素，所以要求compareTo和equals的结果相同。
+ * TreeMap没有遵循这个规则但是也可以运行，只是在某些Map接口函数上无法表现正常。
+ * （也就是强烈建议：compare(x,y)==0是x.equals(y)的充分必要条件）
  *
  * <p>All general-purpose sorted map implementation classes should provide four
  * "standard" constructors. It is not possible to enforce this recommendation
