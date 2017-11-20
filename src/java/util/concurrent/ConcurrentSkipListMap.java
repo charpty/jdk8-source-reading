@@ -174,6 +174,9 @@ public class ConcurrentSkipListMap<K, V> extends AbstractMap<K, V> implements Co
      * (predecessor, node, successor) in order to detect when and how
      * to unlink these deleted nodes.
      *
+     * 底层的数据采用的the HM linked ordered set算法的变种实现。
+     * 这个算法的大体思想就是通过在待删除元素后插入标记节点来标记这个节点已经逻辑上被删除，之后再在适当时候彻底删除，整个实现是无锁化的
+     *
      * Rather than using mark-bits to mark list deletions (which can
      * be slow and space-intensive using AtomicMarkedReference), nodes
      * use direct CAS'able next pointers.  On deletion, instead of
@@ -189,6 +192,12 @@ public class ConcurrentSkipListMap<K, V> extends AbstractMap<K, V> implements Co
      * otherwise required (to check for trailing marker) rather than
      * unmasking mark bits or whatever on each read.
      *
+     * 比起使用位标记记录已删除的节点来说，上述算法更快、空间复杂度更低，因为它直接使用来CAS操作。
+     * 当一个节点被删除时，使用在其后插入一个标记节点的方式（这个标记节点值指向自己），而不是记录删除节点的指针。
+     * 使用普通的节点并将V值指向其自身来表明是一个标记节点，仅当节点被删除时才会在其后插入一个新的标记节点，next指向原节点的next节点。
+     * 从需要更少的空间和更快的遍历的角度来讲。即使目前JVM能够很好的支持标记引用，但是使用本类的标记节点方法在速度上还是有优势，
+     * 这是因为任何的遍历查找仅仅需要多读几个节点（标记删除节点），而不是每次读都去根据位标记记录来判断当前节点是否不需要读。
+     *
      * This approach maintains the essential property needed in the HM
      * algorithm of changing the next-pointer of a deleted node so
      * that any other CAS of it will fail, but implements the idea by
@@ -199,6 +208,11 @@ public class ConcurrentSkipListMap<K, V> extends AbstractMap<K, V> implements Co
      * markers are rarely encountered during traversal and are
      * normally quickly garbage collected. (Note that this technique
      * would not work well in systems without garbage collection.)
+     *
+     * 这个方法维护了the HM算法的基本特征，也就是改变待删除节点的next元素指针，通过CAS操作保证原子性。
+     * 但并不是指向一个标记值，而是指向一个新的节点。
+     * 尽管可以通过定义一个不具有K、V的新类来表示标记节点以做到节省空间，但是没有太大的必要。
+     * 这种删除标记节点很少会碰到，且能够被快速GC。当然，这种改进后的算法只能在有垃圾回收器的编程环境中运行。
      *
      * In addition to using deletion markers, the lists also use
      * nullness of value fields to indicate deletion, in a style
@@ -215,8 +229,16 @@ public class ConcurrentSkipListMap<K, V> extends AbstractMap<K, V> implements Co
      * even when deleted. Using any other marker value here would be
      * messy at best.)
      *
+     * 除了使用删除标记之外，跳表还使用V为null来表示节点已经删除，折合传统的懒删除有点类似（这也是为什么不允许元素值为null）。
+     * 如果一个节点的V为null，那么就认为这个节点已经逻辑上删除来，应该忽略它。
+     * 该策略平衡了并发修改和删除操作之间的影响，一次修改操作必须快速势失败如果删除操作将节点值V置null，而一次删除操作必须返回删除节点中最后非null的元素值V。
+     * 之所以使用null代表节点删除而不是一个特殊的标记值是由于这和Map的设计是浑然天成的，Map规定当一个Key无法映射到值时就返回null，
+     * 节点已删除，返回null也是合情合理，同时又不删除节点，允许节点还可以被读到。
+     *
      * Here's the sequence of events for a deletion of node n with
      * predecessor b and successor f, initially:
+     *
+     * 接下来是删除节点n的一个过程演示，节点n有一个前驱节点b，后继节点为f
      *
      *        +------+       +------+      +------+
      *   ...  |   b  |------>|   n  |----->|   f  | ...
@@ -228,9 +250,15 @@ public class ConcurrentSkipListMap<K, V> extends AbstractMap<K, V> implements Co
      *    ongoing insertions and deletions might still modify
      *    n's next pointer.
      *
+     *    使用CAS操作尝试将节点n的V值设置为null，此后所有对该节点的返回肯定是返回null的（符合Map语义）
+     *    但是同时又能够让正在进行中的删除和插入操作不至于由于节点变动而报错
+     *
      * 2. CAS n's next pointer to point to a new marker node.
      *    From this point on, no other nodes can be appended to n.
      *    which avoids deletion errors in CAS-based linked lists.
+     *
+     *    使用CAS操作尝试将n的next指针指向一个标记节点。此后无法再有节点添加到n的后面。
+     *    // TODO 先休息了 @22:42
      *
      *        +------+       +------+      +------+       +------+
      *   ...  |   b  |------>|   n  |----->|marker|------>|   f  | ...
@@ -466,7 +494,7 @@ public class ConcurrentSkipListMap<K, V> extends AbstractMap<K, V> implements Co
 		 * but this doesn't distinguish markers from the base-level
 		 * header node (head.node), which also has a null key.
 		 *
-		 * 创建一个标记节点。当一个节点的值指向自己时则认为它是一个标记节点。
+		 * 创建一个标记节点。当一个节点的值指向自己时则认为它是一个标记节点（目前都代表删除标记）。
 		 * 虽然标记节点和基层头节点一样，Key也是null，但这不足以区分这两种节点，所以将值指向自己来区分标记节点。
 		 */
 		Node(Node<K, V> next) {
