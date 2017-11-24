@@ -929,12 +929,14 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 					// 成功设置了节点状态之后，开始执行实际唤醒
 					unparkSuccessor(h);
 					// 如果当前节点无需唤醒则将信号继续传播
+					// 这样做是保留唤醒信号，后续线程在判断是否需要阻塞时会因为此设置获得额外机会
 				} else if (ws == 0 && !compareAndSetWaitStatus(h, 0, Node.PROPAGATE)) {
 					continue;                // loop on failed CAS
 				}
 			}
 			// 如果待唤醒队节点的为空，则再次检查是否真的为空
 			// 由于head为volatile变量，所以可以检查主内存的真实值
+			// 如果不相等则说明下一个节点被唤醒之后还发现资源还够，那么此时应该继续尽可能唤醒足够多的节点来消费资源
 			if (h == head)                   // loop if head changed
 			{
 				break;
@@ -957,7 +959,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 */
 	private void setHeadAndPropagate(Node node, int propagate) {
 		Node h = head; // Record old head for check below
-		// 首先将当前节点设置为头节点，表示当前节点占有了
+		// 首先将当前节点设置为头节点，和独占模式不同，有可能可能
 		setHead(node);
 		/*
 		 * Try to signal next queued node if:
@@ -975,11 +977,14 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * racing acquires/releases, so most need signals now or soon
          * anyway.
          *
-         *
+         * 共享模式下当一个线程获得资源时，它还会根据还剩余资源的多少来决定是否需要唤醒后继节点。
+         * 1. 剩余资源大于0时唤醒后继节点
+         * 2.
          *
          */
 		if (propagate > 0 || h == null || h.waitStatus < 0 || (h = head) == null || h.waitStatus < 0) {
 			Node s = node.next;
+			// 后继节点为空时 //TODO ?
 			if (s == null || s.isShared()) {
 				doReleaseShared();
 			}

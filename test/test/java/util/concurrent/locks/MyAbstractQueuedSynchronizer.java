@@ -712,7 +712,7 @@ public abstract class MyAbstractQueuedSynchronizer extends AbstractOwnableSynchr
 		if (forPrint != null && forPrint.length > 0) {
 			sb.append("RS=[");
 			for (Object o : forPrint) {
-				sb.append(o.toString());
+				sb.append(String.valueOf(o));
 			}
 			sb.append(']');
 		}
@@ -912,6 +912,7 @@ public abstract class MyAbstractQueuedSynchronizer extends AbstractOwnableSynchr
 			}
 		}
 		if (s != null) {
+			printCallerInfo("LockSupport.unpark", s);
 			// 找到了就唤醒
 			LockSupport.unpark(s.thread);
 		}
@@ -957,9 +958,11 @@ public abstract class MyAbstractQueuedSynchronizer extends AbstractOwnableSynchr
 						continue;            // loop to recheck cases
 					}
 					// 成功设置了节点状态之后，开始执行实际唤醒
+					printCallerInfo("try unparkSuccessor", h);
 					unparkSuccessor(h);
 					// 如果当前节点无需唤醒则将信号继续传播
 				} else if (ws == 0 && !compareAndSetWaitStatus(h, 0, Node.PROPAGATE)) {
+					printCallerInfo("ws==0", h);
 					continue;                // loop on failed CAS
 				}
 			}
@@ -970,7 +973,7 @@ public abstract class MyAbstractQueuedSynchronizer extends AbstractOwnableSynchr
 				printCallerInfo("doReleaseShared after unpark head equals h", h);
 				break;
 			}
-			printCallerInfo("doReleaseShared after unpark head", head);
+			printCallerInfo("doReleaseShared after unpark head diff", head);
 		}
 	}
 
@@ -1302,6 +1305,7 @@ public abstract class MyAbstractQueuedSynchronizer extends AbstractOwnableSynchr
 	private void doAcquireShared(int arg) {
 		// 不管是共享模式还是独占模式都是先往尾部添加一个节点
 		final Node node = addWaiter(Node.SHARED);
+		printCallerInfo("append new node", node);
 		boolean failed = true;
 		try {
 			boolean interrupted = false;
@@ -1345,6 +1349,7 @@ public abstract class MyAbstractQueuedSynchronizer extends AbstractOwnableSynchr
 	 */
 	private void doAcquireSharedInterruptibly(int arg) throws InterruptedException {
 		final Node node = addWaiter(Node.SHARED);
+		printCallerInfo("append new node interruptibly", node);
 		boolean failed = true;
 		try {
 			for (; ; ) {
