@@ -950,7 +950,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * PROPAGATE status was set.
 	 *
 	 *
-	 * 设置等待队列头
+	 * 设置等待队列头并尽可能快的唤醒"恰好"数量的线程来分享并释放的资源
 	 *
 	 * @param node
 	 * 		the node
@@ -959,7 +959,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 */
 	private void setHeadAndPropagate(Node node, int propagate) {
 		Node h = head; // Record old head for check below
-		// 首先将当前节点设置为头节点，和独占模式不同，有可能可能
+		// 首先将当前节点设置为头节点，和独占模式不同，有可能多个线程交替设置自己等待节点为头节点
 		setHead(node);
 		/*
 		 * Try to signal next queued node if:
@@ -981,10 +981,13 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * 1. 剩余资源大于0时唤醒后继节点
          * 2.
          *
+         * // TODO h为空？将节点添加到同步队列时，不都先要初始化头节点吗？
+         * // TODO 为什么读来一次头节点不为空，第二次过去读有可能变成空了？每个节点都尝试将自己设置为头节点，哪里来都null
          */
 		if (propagate > 0 || h == null || h.waitStatus < 0 || (h = head) == null || h.waitStatus < 0) {
 			Node s = node.next;
-			// 后继节点为空时 //TODO ?
+			// 后继节点为空时应该从尾部节点重新向前遍历
+			// TODO 当前节点为尾部节点，但由于可能并发情况目前确实有节点加进来了，这样调用一次唤醒的目的就是为了快速响应吗？
 			if (s == null || s.isShared()) {
 				doReleaseShared();
 			}

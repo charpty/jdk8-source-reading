@@ -712,7 +712,7 @@ public abstract class MyAbstractQueuedSynchronizer extends AbstractOwnableSynchr
 		if (forPrint != null && forPrint.length > 0) {
 			sb.append("RS=[");
 			for (Object o : forPrint) {
-				sb.append(String.valueOf(o));
+				sb.append(o.toString());
 			}
 			sb.append(']');
 		}
