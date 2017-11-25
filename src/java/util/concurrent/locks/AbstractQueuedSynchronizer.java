@@ -936,6 +936,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 			}
 			// 如果待唤醒队节点的为空，则再次检查是否真的为空
 			// 由于head为volatile变量，所以可以检查主内存的真实值
+			// 和独占式的释放不同，一旦唤醒后继节点，它有可能由于自己使用后资源还有剩余在唤醒其它节点，此时head会被其它线程改变
 			// 如果不相等则说明下一个节点被唤醒之后还发现资源还够，那么此时应该继续尽可能唤醒足够多的节点来消费资源
 			if (h == head)                   // loop if head changed
 			{
@@ -1051,7 +1052,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 				}
 			} else {
 				// 如果前一个节点没法唤醒该节点的下一个节点（为头节点或者前驱节点全部已取消）
-				// 无法设置唤醒条件的情况下，则直接唤醒后继节点，触发信号
+				// 无法设置唤醒条件的情况下，则直接唤醒后继节点，传播信号
 				unparkSuccessor(node);
 			}
 			// 设置节点的next指向自己，以此帮助GC Roots判断（next为空有其它含义表示需要从尾部寻找）
@@ -1163,8 +1164,11 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 			for (; ; ) {
 				final Node p = node.predecessor();
 				// 如果前驱节点是头节点则说明当前仅有一个线程在等待，尝试再次获取资源
+				// 也仅当前驱节点是头节点时才尝试获取资源，这是为了防止过早唤醒
+				// 每个等待节点只关心前一个节点的状态，这也是CLH锁的设计思维
 				if (p == head && tryAcquire(arg)) {
 					// 成功获取资源之后，将当前节点的线程信息，前驱节点后继节点置空
+					// 同时仅有一个线程能够执行到代码处
 					setHead(node);
 					p.next = null; // help GC
 					failed = false;
@@ -1282,13 +1286,16 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		try {
 			boolean interrupted = false;
 			for (; ; ) {
+				// 不论是共享模式获取资源还是独占模式获取资源，在将等待线程封装为节点Node并添加到等待队列尾部之后都需要再尝试一次循环
+				// 这是为了防止信号丢失，如果正好有线程释放了资源，随后Node被添加到队列中，如果不再次判断则会导致信号丢失
 				final Node p = node.predecessor();
 				// 头节点是已经获取到资源的节点，由于头结点随时有可能释放资源所以再尝试几次
+				// 之所以仅仅在前驱节点为头节点时才尝试获取资源是为了防止过早唤醒，仅有头节点有可能释放资源
 				if (p == head) {
 					// 再次查询是否有资源
 					int r = tryAcquireShared(arg);
 					if (r >= 0) {
-						//
+						// 与独占模式不同，可以有多个线程同时执行到该方法，并且一次资源到释放有可能要唤醒多个线程
 						setHeadAndPropagate(node, r);
 						p.next = null; // help GC
 						if (interrupted) {
@@ -1779,6 +1786,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * <p>In this implementation, this operation returns in
 	 * constant time.
 	 *
+	 * 返回当前是否有线程在同步器上等待。方法的结果不是强一致性的。
+	 *
 	 * @return {@code true} if there may be other threads waiting to acquire
 	 */
 	public final boolean hasQueuedThreads() {
@@ -1982,6 +1991,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	public final int getQueueLength() {
 		int n = 0;
 		for (Node p = tail; p != null; p = p.prev) {
+			// 线程为空说明该节点已经被取消了
 			if (p.thread != null) {
 				++n;
 			}
@@ -2016,6 +2026,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * acquire in exclusive mode. This has the same properties
 	 * as {@link #getQueuedThreads} except that it only returns
 	 * those threads waiting due to an exclusive acquire.
+	 *
+	 * 返回等待队列中所有独占模式的节点对应的线程集合。
 	 *
 	 * @return the collection of threads
 	 */
