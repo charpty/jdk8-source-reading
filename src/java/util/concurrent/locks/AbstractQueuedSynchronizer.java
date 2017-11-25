@@ -2092,9 +2092,11 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * @return true if is reacquiring
 	 */
 	final boolean isOnSyncQueue(Node node) {
+		// 如果一个节点并移动到同步队列上（transferForSignal方法），它的状态至少会被设置为0，它的前驱节点指针也会在enq方法中被设置
 		if (node.waitStatus == Node.CONDITION || node.prev == null) {
 			return false;
 		}
+		// 条件队列是个单向列表并使用nextWaiter来连接，next属性仅在同步队列中有使用
 		if (node.next != null) // If has successor, it must be on queue
 		{
 			return true;
@@ -2106,6 +2108,11 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * will always be near the tail in calls to this method, and
          * unless the CAS failed (which is unlikely), it will be
          * there, so we hardly ever traverse much.
+         *
+         * 在enq方法中，先设置来node.prev再尝试用CAS操作将node设置为尾部，如果CAS失败则会出现node.prev有值但此时并为加入到同步队列
+         * 这种情况下就需要从后往前一个个找了。
+         *
+         * 大多数情况下这种情况不会发生，即使发生，那么node应该是在尾部或者离尾部很近的地方。
          */
 		return findNodeFromTail(node);
 	}
@@ -2113,6 +2120,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	/**
 	 * Returns true if node is on sync queue by searching backwards from tail.
 	 * Called only when needed by isOnSyncQueue.
+	 *
+	 * 在同步队列上从后往前找指定节点
 	 *
 	 * @return true if present
 	 */
@@ -2133,6 +2142,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * Transfers a node from a condition queue onto sync queue.
 	 * Returns true if successful.
 	 *
+	 * 将节点从条件队列移动到同步队列（等待队列）中，一旦进入同步队列，该节点就可以获取被唤醒的机会。
+	 *
 	 * @param node
 	 * 		the node
 	 *
@@ -2142,6 +2153,9 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	final boolean transferForSignal(Node node) {
 		/*
 		 * If cannot change waitStatus, the node has been cancelled.
+		 *
+		 * 如果节点状态已经被改动，那么说明该节点已经被取消。
+		 *
          */
 		if (!compareAndSetWaitStatus(node, Node.CONDITION, 0)) {
 			return false;
@@ -2153,8 +2167,15 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * attempt to set waitStatus fails, wake up to resync (in which
          * case the waitStatus can be transiently and harmlessly wrong).
          */
+		// 首先将该节点添加到同步队列到尾部
 		Node p = enq(node);
 		int ws = p.waitStatus;
+		/**
+		 * 两种情况下需要直接唤醒等待线程
+		 * 1. 前一个节点已经取消，此时提前唤醒线程来执行shouldParkAfterFailedAcquire方法以跳过取消节点
+		 * 2. 将前置节点设置为SIGNAL状态失败，仅当前驱节点当状态为SIGNAL时才能够进行阻塞，所以此时要唤醒来执行循环设置
+		 *
+		 */
 		if (ws > 0 || !compareAndSetWaitStatus(p, ws, Node.SIGNAL)) {
 			LockSupport.unpark(node.thread);
 		}
@@ -2190,6 +2211,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	/**
 	 * Invokes release with current state value; returns saved state.
 	 * Cancels node and throws exception on failure.
+	 *
+	 * 释放该独占模式节点持有的所有资源
 	 *
 	 * @param node
 	 * 		the condition node for this wait
@@ -2322,20 +2345,27 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * Condition implementation for a {@link
 	 * AbstractQueuedSynchronizer} serving as the basis of a {@link
 	 * Lock} implementation.
-	 * <p>
+	 *
+	 * 为同步作为一般锁来使用时提供一个基本的条件队列实现。
+	 *
 	 * <p>Method documentation for this class describes mechanics,
 	 * not behavioral specifications from the point of view of Lock
 	 * and Condition users. Exported versions of this class will in
 	 * general need to be accompanied by documentation describing
 	 * condition semantics that rely on those of the associated
 	 * {@code AbstractQueuedSynchronizer}.
-	 * <p>
+	 *
+	 * DOC注释只是描述了ConditonObject实现的结构而不是讲述如何使用。
+	 *
 	 * <p>This class is Serializable, but all fields are transient,
 	 * so deserialized conditions have no waiters.
+	 *
+	 * ConditonObject是申明可序列化的，但是所有属性都不参与序列化。
 	 */
 	public class ConditionObject implements Condition, java.io.Serializable {
 		private static final long serialVersionUID = 1173984872572414699L;
 		/** First node of condition queue. */
+		/** 条件队列也和同步队列类似，有一个指向头节点和尾节点的指针 */
 		private transient Node firstWaiter;
 		/** Last node of condition queue. */
 		private transient Node lastWaiter;
@@ -2350,6 +2380,9 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 
 		/**
 		 * Adds a new waiter to wait queue.
+		 *
+		 * 把当前线程封装成一个Node添加到条件队列中。
+		 * 只有获取到锁的线程才能对条件队列进行操作（而且是独占锁），所以这里不存在并发竞争问题。
 		 *
 		 * @return its new wait node
 		 */
@@ -2549,20 +2582,27 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		 * {@link #acquire} with saved state as argument.
 		 * <li> If interrupted while blocked in step 4, throw InterruptedException.
 		 * </ol>
+		 *
+		 * 等待在指定条件队列上的方法实现。
 		 */
 		public final void await() throws InterruptedException {
 			if (Thread.interrupted()) {
 				throw new InterruptedException();
 			}
+			// 持有独占锁的情况下，在条件队列中追加一个等待节点
 			Node node = addConditionWaiter();
+			// 释放持有锁时占用的资源，此方法执行之后也就是释放了锁，后续操作都是有竞争情况的了
 			int savedState = fullyRelease(node);
 			int interruptMode = 0;
+			// 自旋检查节点是否被移动到同步队列中（signal操作会将节点移动到同步队列中）
 			while (!isOnSyncQueue(node)) {
 				LockSupport.park(this);
+				// 从park中恢复有两种可能：被唤醒和中断，此处需要判断。
 				if ((interruptMode = checkInterruptWhileWaiting(node)) != 0) {
 					break;
 				}
 			}
+			// 尝试重新获得锁（恢复到之前到锁状态）
 			if (acquireQueued(node, savedState) && interruptMode != THROW_IE) {
 				interruptMode = REINTERRUPT;
 			}
