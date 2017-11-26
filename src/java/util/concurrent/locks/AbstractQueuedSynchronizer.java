@@ -2192,7 +2192,9 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 * @return true if cancelled before the node was signalled
 	 */
 	final boolean transferAfterCancelledWait(Node node) {
+		// 设置成功了则说明当前节点还处于条件队列中且还未执行signal函数
 		if (compareAndSetWaitStatus(node, Node.CONDITION, 0)) {
+			// 此时将节点添加到同步队列中，然后准备抛出异常来触发中断
 			enq(node);
 			return true;
 		}
@@ -2201,10 +2203,14 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
          * until it finishes its enq().  Cancelling during an
          * incomplete transfer is both rare and transient, so just
          * spin.
+         *
+         * 和signal时的场景相同，也可能node已经出于enq函数追加过程中，但CAS操作还未成功
          */
 		while (!isOnSyncQueue(node)) {
+			// yield直到CAS操作成功为止
 			Thread.yield();
 		}
+		// 返回false代表取消操作发生于signal函数之后
 		return false;
 	}
 
@@ -2553,6 +2559,11 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		 * Checks for interrupt, returning THROW_IE if interrupted
 		 * before signalled, REINTERRUPT if after signalled, or
 		 * 0 if not interrupted.
+		 *
+		 * 检查当前线程是否被中断（在条件队列自旋中也就是node对应的线程）
+		 * 如果未被中断则返回0，被中断了则分为两种情况
+		 * 1. 中断发生在signal函数前，也就是说线程被别人中断了（所以才从park中返回），此时直接抛出异常
+		 * 2. 中断发生在signal函数后，此时也就是说线程自行
 		 */
 		private int checkInterruptWhileWaiting(Node node) {
 			return Thread.interrupted() ? (transferAfterCancelledWait(node) ? THROW_IE : REINTERRUPT) : 0;
@@ -2561,11 +2572,15 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		/**
 		 * Throws InterruptedException, reinterrupts current thread, or
 		 * does nothing, depending on mode.
+		 *
+		 * 设置中断状态或抛出中断异常
 		 */
 		private void reportInterruptAfterWait(int interruptMode) throws InterruptedException {
 			if (interruptMode == THROW_IE) {
+				// 这种情况一般就是等待节点已经被提前唤醒（不是因为正常通知唤醒的），结果发现自己已经被中断了
 				throw new InterruptedException();
 			} else if (interruptMode == REINTERRUPT) {
+				// 这种情况则一般是节点被正常唤醒，此时设置中断状态，在同步队列中再进行中断处理
 				selfInterrupt();
 			}
 		}
@@ -2602,8 +2617,11 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 					break;
 				}
 			}
-			// 尝试重新获得锁（恢复到之前到锁状态）
+			// 尝试重新获得锁（恢复到之前到锁状态）,只有获取锁之后才可以真正的苏醒
+			// 获取到锁之后的操作又相当于是串行的了
 			if (acquireQueued(node, savedState) && interruptMode != THROW_IE) {
+				// 获取锁失败（失败的话当前节点已经被取消了），且如果当前线程不是被提前唤醒的（正常通知或通知后中断）
+				// 那么这两种情况都属于正常唤醒后失败，此时仅设置失败标记
 				interruptMode = REINTERRUPT;
 			}
 			if (node.nextWaiter != null) // clean up if cancelled
