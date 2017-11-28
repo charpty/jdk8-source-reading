@@ -1129,6 +1129,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 	 */
 	private final boolean parkAndCheckInterrupt() {
 		LockSupport.park(this);
+		// 注意静态interrupted方法会清除中断状态
 		return Thread.interrupted();
 	}
 
@@ -1298,9 +1299,11 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 						// 与独占模式不同，可以有多个线程同时执行到该方法，并且一次资源到释放有可能要唤醒多个线程
 						setHeadAndPropagate(node, r);
 						p.next = null; // help GC
+						// 中断唤醒则重新设置中断状态
 						if (interrupted) {
 							selfInterrupt();
 						}
+						// TODO ？？？
 						failed = false;
 						return;
 					}
@@ -1584,6 +1587,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		 *
 		 */
 		if (!tryAcquire(arg) && acquireQueued(addWaiter(Node.EXCLUSIVE), arg)) {
+			// 如果线程是被中断的（acquireQueued返回true）则需要重新设置中断状态
 			selfInterrupt();
 		}
 	}
@@ -1612,6 +1616,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		if (!tryAcquire(arg)) {
 			doAcquireInterruptibly(arg);
 		}
+		// 此处即使被中断也无需设置中断状态，因为中断后会直接抛出异常
 	}
 
 	/**
@@ -2458,6 +2463,10 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		 * storms.
 		 *
 		 * 遍历整个条件队列并移除其中已取消的节点。
+		 * 这个方法仅在线程持有锁的时候才执行。
+		 * 这个方法仅在节点由于取消被唤醒或者添加节点时发现尾部节点已取消的情况下才执行。
+		 * 在这两种情况下进行调用，这样的话就可以在没有正常唤醒的情况下提前清理掉作废节点，即使要遍历整个队列也是值得的。
+		 * 这个方法遍历所有的节点，这样有助于推进快速去除已取消的节点。
 		 */
 		private void unlinkCancelledWaiters() {
 			Node t = firstWaiter;
@@ -2633,6 +2642,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 				unlinkCancelledWaiters();
 			}
 			if (interruptMode != 0) {
+				// 如果是信号来之前就抛出异常，信号来之后则重新设置中断状态
 				reportInterruptAfterWait(interruptMode);
 			}
 		}
@@ -2730,6 +2740,9 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 
 		/**
 		 * Implements timed condition wait.
+		 *
+		 * 在指定时长内等待
+		 *
 		 * <ol>
 		 * <li> If current thread is interrupted, throw InterruptedException.
 		 * <li> Save lock state returned by {@link #getState}.
