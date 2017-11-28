@@ -2395,6 +2395,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		private Node addConditionWaiter() {
 			Node t = lastWaiter;
 			// If lastWaiter is cancelled, clean out.
+			// 最后一个节点被取消了，此时要对条件队列进行一个清理并重新获取lastWaiter
 			if (t != null && t.waitStatus != Node.CONDITION) {
 				unlinkCancelledWaiters();
 				t = lastWaiter;
@@ -2455,6 +2456,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 		 * particular target to unlink all pointers to garbage nodes
 		 * without requiring many re-traversals during cancellation
 		 * storms.
+		 *
+		 * 遍历整个条件队列并移除其中已取消的节点。
 		 */
 		private void unlinkCancelledWaiters() {
 			Node t = firstWaiter;
@@ -2624,6 +2627,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
 				// 那么这两种情况都属于正常唤醒后失败，此时仅设置失败标记
 				interruptMode = REINTERRUPT;
 			}
+			// 如果条件队列中还有节点的话，就尝试遍历并剔除已取消的节点
 			if (node.nextWaiter != null) // clean up if cancelled
 			{
 				unlinkCancelledWaiters();
