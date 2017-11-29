@@ -32,10 +32,15 @@ package java.util;
  * quicksorts to degrade to quadratic performance, and is typically
  * faster than traditional (one-pivot) Quicksort implementations.
  *
+ * 该类实现了双主快排。这种算法能够提供O(n long(n))的时间复杂度，双主快排一般比传统快排性能更好。
+ * (快排会选定一个基数将数组一分为二，双主快排则是选择两个基数将数组一分为三）
+ *
  * All exposed methods are package-private, designed to be invoked
  * from public methods (in class Arrays) after performing any
  * necessary array bounds checks and expanding parameters into the
  * required forms.
+ *
+ * 所有的方法都仅供同包下类调用，调用者应负责对传入数据进行必要检查。
  *
  * @author Vladimir Yaroslavskiy
  * @author Jon Bentley
@@ -459,12 +464,12 @@ final class DualPivotQuicksort {
 			sort(a, great + 2, right, false);
 
             /*
-             * If center part is too large (comprises > 4/7 of the array),
+			 * If center part is too large (comprises > 4/7 of the array),
              * swap internal pivot values to ends.
              */
 			if (less < e1 && e5 < great) {
-                /*
-                 * Skip elements, which are equal to pivot values.
+				/*
+				 * Skip elements, which are equal to pivot values.
                  */
 				while (a[less] == pivot1) {
 					++less;
@@ -475,7 +480,7 @@ final class DualPivotQuicksort {
 				}
 
                 /*
-                 * Partitioning:
+				 * Partitioning:
                  *
                  *   left part         center part                  right part
                  * +----------------------------------------------------------+
@@ -508,8 +513,8 @@ final class DualPivotQuicksort {
 						}
 						if (a[great] == pivot1) { // a[great] < pivot2
 							a[k] = a[less];
-                            /*
-                             * Even though a[great] equals to pivot1, the
+							/*
+							 * Even though a[great] equals to pivot1, the
                              * assignment a[less] = pivot1 may be incorrect,
                              * if a[great] and pivot1 are floating-point zeros
                              * of different signs. Therefore in float and
@@ -531,14 +536,14 @@ final class DualPivotQuicksort {
 			sort(a, less, great, false);
 
 		} else { // Partitioning with one pivot
-            /*
-             * Use the third of the five sorted elements as pivot.
+			/*
+			 * Use the third of the five sorted elements as pivot.
              * This value is inexpensive approximation of the median.
              */
 			int pivot = a[e3];
 
             /*
-             * Partitioning degenerates to the traditional 3-way
+			 * Partitioning degenerates to the traditional 3-way
              * (or "Dutch National Flag") schema:
              *
              *   left part    center part              right part
@@ -575,8 +580,8 @@ final class DualPivotQuicksort {
 						a[less] = a[great];
 						++less;
 					} else { // a[great] == pivot
-                        /*
-                         * Even though a[great] equals to pivot, the
+						/*
+						 * Even though a[great] equals to pivot, the
                          * assignment a[k] = pivot may be incorrect,
                          * if a[great] and pivot are floating-point
                          * zeros of different signs. Therefore in float
@@ -591,7 +596,7 @@ final class DualPivotQuicksort {
 			}
 
             /*
-             * Sort left and right parts recursively.
+			 * Sort left and right parts recursively.
              * All elements from center part are equal
              * and, therefore, already sorted.
              */
@@ -625,7 +630,7 @@ final class DualPivotQuicksort {
 		}
 
         /*
-         * Index run[i] is the start of i-th run
+		 * Index run[i] is the start of i-th run
          * (ascending or descending sequence).
          */
 		int[] run = new int[MAX_RUN_COUNT + 1];
@@ -657,7 +662,7 @@ final class DualPivotQuicksort {
 			}
 
             /*
-             * The array is not highly structured,
+			 * The array is not highly structured,
              * use Quicksort instead of merge sort.
              */
 			if (++count == MAX_RUN_COUNT) {
@@ -746,7 +751,7 @@ final class DualPivotQuicksort {
 		// Use insertion sort on tiny arrays
 		if (length < INSERTION_SORT_THRESHOLD) {
 			if (leftmost) {
-                /*
+				/*
                  * Traditional (without sentinel) insertion sort,
                  * optimized for server VM, is used in case of
                  * the leftmost part.

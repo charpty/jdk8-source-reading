@@ -123,7 +123,7 @@ public class Arrays {
 	}
 
     /*
-     * Sorting methods. Note that all public "sort" methods take the
+	 * Sorting methods. Note that all public "sort" methods take the
      * same form: Performing argument checks if necessary, and then
      * expanding arguments into those required for the internal
      * implementation methods residing in other package-private
@@ -1031,7 +1031,7 @@ public class Arrays {
 	}
 
     /*
-     * Sorting of complex type arrays.
+	 * Sorting of complex type arrays.
      */
 
 	/**
@@ -1294,11 +1294,14 @@ public class Arrays {
 	 */
 	public static <T> void sort(T[] a, Comparator<? super T> c) {
 		if (c == null) {
+			// 按元素自然顺序排序
 			sort(a);
 		} else {
 			if (LegacyMergeSort.userRequested) {
+				// 归并排序
 				legacyMergeSort(a, c);
 			} else {
+				// 优化后的归并排序
 				TimSort.sort(a, 0, a.length, c, null, 0, 0);
 			}
 		}
