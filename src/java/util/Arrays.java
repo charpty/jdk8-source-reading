@@ -1414,6 +1414,7 @@ public class Arrays {
 		int length = high - low;
 
 		// Insertion sort on smallest arrays
+		// 在小数组上都是统一使用插入排序
 		if (length < INSERTIONSORT_THRESHOLD) {
 			for (int i = low; i < high; i++) {
 				for (int j = i; j > low && c.compare(dest[j - 1], dest[j]) > 0; j--) {

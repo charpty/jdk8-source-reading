@@ -43,6 +43,8 @@ package java.util;
  * This implementation was adapted from Tim Peters's list sort for
  * Python, which is described in detail here:
  *
+ * 该实现改编自Tim Peters的list sort算法，所以也将类命名为TimSort。
+ *
  * http://svn.python.org/projects/python/trunk/Objects/listsort.txt
  *
  * Tim's C code may be found here:
@@ -61,6 +63,9 @@ package java.util;
  * (privately) instantiable; a TimSort instance holds the state of an ongoing
  * sort, assuming the input array is large enough to warrant the full-blown
  * TimSort. Small arrays are sorted in place, using a binary insertion sort.
+ *
+ * 尽管暴露的API是静态方法，但在实现时内部是new TimSort来调用的。
+ * TimSort仅在数组有一定规模的情况下才能展现威力。小的数组则使用插入排序。
  *
  * @author Josh Bloch
  */
@@ -224,6 +229,7 @@ class TimSort<T> {
 		assert c != null && a != null && lo >= 0 && lo <= hi && hi <= a.length;
 
 		int nRemaining = hi - lo;
+		// 总共也就0或1个元素自然不需要排序来
 		if (nRemaining < 2) {
 			return;  // Arrays of size 0 and 1 are always sorted
 		}
@@ -320,7 +326,7 @@ class TimSort<T> {
 			assert left == right;
 
             /*
-             * The invariants still hold: pivot >= all in [lo, left) and
+			 * The invariants still hold: pivot >= all in [lo, left) and
              * pivot < all in [left, start), so pivot belongs at left.  Note
              * that if there are elements equal to pivot, left points to the
              * first slot after them -- that's why this sort is stable.
@@ -357,6 +363,9 @@ class TimSort<T> {
 	 * For its intended use in a stable mergesort, the strictness of the
 	 * definition of "descending" is needed so that the call can safely
 	 * reverse a descending sequence without violating stability.
+	 *
+	 * 乐观的认为数组的前半部分是已经按照一定顺序排序的。
+	 * 找出数组前面有多少个已排序的元素，并将他们按照升序排序好。这样有利于后续的插入排序。
 	 *
 	 * @param a
 	 * 		the array in which a run is to be counted and possibly reversed
@@ -517,7 +526,7 @@ class TimSort<T> {
 		assert base1 + len1 == base2;
 
         /*
-         * Record the length of the combined runs; if i is the 3rd-last
+		 * Record the length of the combined runs; if i is the 3rd-last
          * run now, also slide over the last run (which isn't involved
          * in this merge).  The current run (i+1) goes away in any case.
          */
@@ -529,7 +538,7 @@ class TimSort<T> {
 		stackSize--;
 
         /*
-         * Find where the first element of run2 goes in run1. Prior elements
+		 * Find where the first element of run2 goes in run1. Prior elements
          * in run1 can be ignored (because they're already in place).
          */
 		int k = gallopRight(a[base2], a, base1, len1, 0, c);
@@ -541,7 +550,7 @@ class TimSort<T> {
 		}
 
         /*
-         * Find where the last element of run1 goes in run2. Subsequent elements
+		 * Find where the last element of run1 goes in run2. Subsequent elements
          * in run2 can be ignored (because they're already in place).
          */
 		len2 = gallopLeft(a[base1 + len1 - 1], a, base2, len2, len2 - 1, c);
@@ -628,7 +637,7 @@ class TimSort<T> {
 		assert -1 <= lastOfs && lastOfs < ofs && ofs <= len;
 
         /*
-         * Now a[base+lastOfs] < key <= a[base+ofs], so key belongs somewhere
+		 * Now a[base+lastOfs] < key <= a[base+ofs], so key belongs somewhere
          * to the right of lastOfs but no farther right than ofs.  Do a binary
          * search, with invariant a[base + lastOfs - 1] < key <= a[base + ofs].
          */
@@ -712,7 +721,7 @@ class TimSort<T> {
 		assert -1 <= lastOfs && lastOfs < ofs && ofs <= len;
 
         /*
-         * Now a[b + lastOfs] <= key < a[b + ofs], so key belongs somewhere to
+		 * Now a[b + lastOfs] <= key < a[b + ofs], so key belongs somewhere to
          * the right of lastOfs but no farther right than ofs.  Do a binary
          * search, with invariant a[b + lastOfs - 1] <= key < a[b + ofs].
          */
@@ -781,7 +790,7 @@ class TimSort<T> {
 			int count2 = 0; // Number of times in a row that second run won
 
             /*
-             * Do the straightforward thing until (if ever) one run starts
+			 * Do the straightforward thing until (if ever) one run starts
              * winning consistently.
              */
 			do {
@@ -804,7 +813,7 @@ class TimSort<T> {
 			} while ((count1 | count2) < minGallop);
 
             /*
-             * One run is winning so consistently that galloping may be a
+			 * One run is winning so consistently that galloping may be a
              * huge win. So try that, and continue galloping until (if ever)
              * neither run appears to be winning consistently anymore.
              */
@@ -912,7 +921,7 @@ class TimSort<T> {
 			int count2 = 0; // Number of times in a row that second run won
 
             /*
-             * Do the straightforward thing until (if ever) one run
+			 * Do the straightforward thing until (if ever) one run
              * appears to win consistently.
              */
 			do {
