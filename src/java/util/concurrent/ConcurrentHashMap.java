@@ -113,6 +113,12 @@ import java.util.stream.Stream;
  * 访问型操作总是能够获取到在请求发生前最近的"完整"修改的值。
  * 用happens-before原则来阐述的话，也就是说：对指定Key的修改操作happens-before随后对这个Key的访问。
  * 在批量型操作（如putAll）和访问型操作并发执行情况下，访问也只会影响部分entry的值更新。
+ * 类似的，迭代器、枚举操作的也只是返回迭代器创建那一瞬间的元素集合。
+ * 并发的操作并不会抛出ConcurrentModificationException异常。
+ * 但实际上，迭代器的设计是为了单线程访问的。
+ * 值得注意的是，统计型操作（聚合函数）只在非并发情况下是有效的。
+ * 在并发情况下，聚合函数的返回结果只能作为参考值或大约的统计值，但不能作为精确值进行逻辑判断。
+ *
  *
  * <p>The table is dynamically expanded when there are too many
  * collisions (i.e., keys that have distinct hash codes but fall into
@@ -135,6 +141,12 @@ import java.util.stream.Stream;
  * {@code hashCode()} is a sure way to slow down performance of any
  * hash table. To ameliorate impact, when keys are {@link Comparable},
  * this class may use comparison order among keys to help break ties.
+ *
+ * 但元素过多时，导致槽中集合过大（相同hash的元素会落入到相同到槽中），哈希表会动态扩展，
+ * 这是为了尽量分散元素，避免哈希冲突，从而获得更好的性能。
+ * 这种均匀分布肯定会在元素增加或减少的时候被打破，但是总体来说，该类还是实现元素操作在时间、空间上的平衡。
+ * 不得不说，重哈希的操作是相对比较缓慢的。所以最好是预设Map的初始大小来防止重哈希的发生。
+ * // TODO 洗衣服 @22：29
  *
  * <p>A {@link Set} projection of a ConcurrentHashMap may be created
  * (using {@link #newKeySet()} or {@link #newKeySet(int)}), or viewed
