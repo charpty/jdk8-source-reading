@@ -146,13 +146,19 @@ import java.util.stream.Stream;
  * 这是为了尽量分散元素，避免哈希冲突，从而获得更好的性能。
  * 这种均匀分布肯定会在元素增加或减少的时候被打破，但是总体来说，该类还是实现元素操作在时间、空间上的平衡。
  * 不得不说，重哈希的操作是相对比较缓慢的。所以最好是预设Map的初始大小来防止重哈希的发生。
- * // TODO 洗衣服 @22：29
+ * 初始Map时也可以设置loadFactor来调整进行重哈希时的数据密度预值。
+ * 另外，为了兼容该类之前的实现，构造器也提供了concurrencyLevel参数作为一个可选参数。
+ * 值得注意的是，Key中存在大量哈希冲突的情况下，哈希表的效率是肯定会降低的，这是哈希表的通性。
+ * 为了改善这个情况，当Key实现了Comparable接口时，将利用元素顺序来降低冲突带来的效率降低。
+ * // TODO 怎么改善的？
  *
  * <p>A {@link Set} projection of a ConcurrentHashMap may be created
  * (using {@link #newKeySet()} or {@link #newKeySet(int)}), or viewed
  * (using {@link #keySet(Object)} when only keys are of interest, and the
  * mapped values are (perhaps transiently) not used or all take the
  * same mapping value.
+ *
+ * KeySet可以通过newKeySet方法获得，也可以仅处理指定值。
  *
  * <p>A ConcurrentHashMap can be used as scalable frequency map (a
  * form of histogram or multiset) by using {@link
