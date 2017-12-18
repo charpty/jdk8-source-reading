@@ -716,6 +716,9 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements Concur
 	 * cheapest possible way to reduce systematic lossage, as well as
 	 * to incorporate impact of the highest bits that would otherwise
 	 * never be used in index calculations because of table bounds.
+	 *
+	 * 将高16位和低16位进行异或操作，并将最高位置0
+	 * 主要目的是解决哈希冲突
 	 */
 	static final int spread(int h) {
 		return (h ^ (h >>> 16)) & HASH_BITS;
@@ -977,6 +980,8 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements Concur
 	 * then this method returns {@code v}; otherwise it returns
 	 * {@code null}.  (There can be at most one such mapping.)
 	 *
+	 * 并发Map的Key和Value都是不允许为空
+	 *
 	 * @throws NullPointerException
 	 * 		if the specified key is null
 	 */
@@ -985,15 +990,23 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements Concur
 		Node<K, V> e, p;
 		int n, eh;
 		K ek;
+		// 先获得一个哈希+异或处理后的哈希值
 		int h = spread(key.hashCode());
+		// 首先找到哈希所在段
+		// JDK1.8的放弃了Segment分段锁机制，而是采用类似跳表的无锁化实现
+		// 在使用分段锁时时比较好理解，就是在哈希桶的基础再次将桶分类为段，每个段各自使用锁从而提供效率
+		// 1.8利用内存可见性规则和CAS操作来实现无锁结构，相对复杂得多
 		if ((tab = table) != null && (n = tab.length) > 0 && (e = tabAt(tab, (n - 1) & h)) != null) {
+			// 既然反正都要获取第一个节点的hash值，何不比较下是否等于h。万一撞上了呢？
 			if ((eh = e.hash) == h) {
 				if ((ek = e.key) == key || (ek != null && key.equals(ek))) {
 					return e.val;
 				}
 			} else if (eh < 0) {
+				// 如果小于0则说明目前节点采用树结构存储
 				return (p = e.find(h, key)) != null ? p.val : null;
 			}
+			// 目前节点采用的是链表方式衔接
 			while ((e = e.next) != null) {
 				if (e.hash == h && ((ek = e.key) == key || (ek != null && key.equals(ek)))) {
 					return e.val;
