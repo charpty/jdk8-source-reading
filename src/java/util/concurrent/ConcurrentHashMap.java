@@ -573,6 +573,8 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements Concur
 	 * than 2, and should be at least 8 to mesh with assumptions in
 	 * tree removal about conversion back to plain bins upon
 	 * shrinkage.
+	 *
+	 * 当一个桶上挂的节点数少于8个采用链表存储，大于8个使用树结构存储
 	 */
 	static final int TREEIFY_THRESHOLD = 8;
 
@@ -832,6 +834,11 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements Concur
 	 * when table is null, holds the initial table size to use upon
 	 * creation, or 0 for default. After initialization, holds the
 	 * next element count value upon which to resize the table.
+	 *
+	 * 哈希表初始化和重哈希的控制变量。当小于0则代表哈希表正在被resize。
+	 * 仅当成功修改sizeCtl才代表拥有改变哈希表结构的权力。
+	 *
+	 * 初始化为0，正常resize之后，记录的是触发下一次resize的元素个数
 	 */
 	private transient volatile int sizeCtl;
 
@@ -1091,24 +1098,32 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements Concur
 		if (key == null || value == null) {
 			throw new NullPointerException();
 		}
+		// 同样的哈希处理
 		int hash = spread(key.hashCode());
 		int binCount = 0;
 		for (Node<K, V>[] tab = table; ; ) {
 			Node<K, V> f;
 			int n, i, fh;
 			if (tab == null || (n = tab.length) == 0) {
+				// 哈希表未被初始化的情况
 				tab = initTable();
 			} else if ((f = tabAt(tab, i = (n - 1) & hash)) == null) {
+				// 如果哈希对应的桶还没有节点，则CAS设置即可
 				if (casTabAt(tab, i, null, new Node<K, V>(hash, key, value, null))) {
 					break;                   // no lock when adding to empty bin
 				}
 			} else if ((fh = f.hash) == MOVED) {
+				// 当前哈希表正处于resize阶段
 				tab = helpTransfer(tab, f);
 			} else {
 				V oldVal = null;
+				// 相对于之前将多个桶合为一个段来加锁，这里对每一个桶都独自锁，粒度更细
+				// 且使用的是JDK内置的监视器，更符合Java的倡导理念
 				synchronized (f) {
 					if (tabAt(tab, i) == f) {
+						// 小于0说明是使用树结构存储的
 						if (fh >= 0) {
+							// 遍历链表寻找相同Key的过程
 							binCount = 1;
 							for (Node<K, V> e = f; ; ++binCount) {
 								K ek;
@@ -1120,6 +1135,7 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements Concur
 									break;
 								}
 								Node<K, V> pred = e;
+								// 没找到则追加到尾部
 								if ((e = e.next) == null) {
 									pred.next = new Node<K, V>(hash, key, value, null);
 									break;
@@ -1128,6 +1144,7 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements Concur
 						} else if (f instanceof TreeBin) {
 							Node<K, V> p;
 							binCount = 2;
+							// 在树结构上替换或插入
 							if ((p = ((TreeBin<K, V>) f).putTreeVal(hash, key, value)) != null) {
 								oldVal = p.val;
 								if (!onlyIfAbsent) {
@@ -1139,6 +1156,7 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements Concur
 				}
 				if (binCount != 0) {
 					if (binCount >= TREEIFY_THRESHOLD) {
+						// 元素多于一定数量的情况下转化为树结构存储
 						treeifyBin(tab, i);
 					}
 					if (oldVal != null) {
@@ -2391,15 +2409,20 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements Concur
 		Node<K, V>[] tab;
 		int sc;
 		while ((tab = table) == null || tab.length == 0) {
+			// 如果sc本身就小于0则代表其它线程取得了哈希表resize的权力
 			if ((sc = sizeCtl) < 0) {
+				// 等待变更完成
 				Thread.yield(); // lost initialization race; just spin
 			} else if (U.compareAndSwapInt(this, SIZECTL, sc, -1)) {
+				// 如果CAS操作成功，则代表当前线程获得了resize权力
 				try {
 					if ((tab = table) == null || tab.length == 0) {
+						// 默认容量不能为0
 						int n = (sc > 0) ? sc : DEFAULT_CAPACITY;
 						@SuppressWarnings("unchecked")
 						Node<K, V>[] nt = (Node<K, V>[]) new Node<?, ?>[n];
 						table = tab = nt;
+						// 3/4 n作为下一次resize的域值
 						sc = n - (n >>> 2);
 					}
 				} finally {
