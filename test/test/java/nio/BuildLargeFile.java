@@ -19,7 +19,7 @@ public class BuildLargeFile {
 	public static void main(String[] args) throws IOException {
 		RandomAccessFile raf = new RandomAccessFile(new File("/tmp/large.file"), "rw");
 		FileChannel channel = raf.getChannel();
-		ByteBuffer buffer = ByteBuffer.allocate(64);
+		ByteBuffer buffer = ByteBuffer.allocate(256);
 		int n = 0;
 		Random random = new Random();
 		random.setSeed(100);
@@ -27,6 +27,10 @@ public class BuildLargeFile {
 			String str = UUID.randomUUID().toString();
 			buffer.put(str.getBytes());
 			buffer.put(str.substring(0, random.nextInt(31)).getBytes());
+			int loop = random.nextInt(3);
+			for (int i = 0; i < loop; i++) {
+				buffer.put(UUID.randomUUID().toString().getBytes());
+			}
 			buffer.put(LINE);
 			buffer.flip();
 			channel.write(buffer);
