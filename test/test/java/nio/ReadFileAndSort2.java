@@ -17,6 +17,9 @@ import java.util.concurrent.TimeUnit;
  * 读一个有几千万行的字符串文本，每一行都是字母和数字组成，每一行不超过256个字节
  * 读出来之后将其排序输出，按照字符串的自然排序升序
  *
+ * 多次测试下来，新生代代大小对性能存在明显影响。
+ * 对于1000万文本（800多M），新生代1G比较好:-Xms3100M -Xmx3100M -Xmn1G -XX:+PrintGCDetails
+ *
  * @author charpty
  * @since 2018/1/1
  */
@@ -43,7 +46,8 @@ public class ReadFileAndSort2 {
 		long readNanos = 0;
 		long divideNanos = 0;
 		long tmpNanos = 0;
-		long copyNanos = 0;
+		// 40960个字符中至多有4096个字符串？在我们的场景中是这样的
+		byte[][] chars = new byte[4096][];
 		while (true) {
 			long beforeRead = System.nanoTime();
 			if ((n = channel.read(buffer)) < 0) {
@@ -55,7 +59,7 @@ public class ReadFileAndSort2 {
 			byte[] array = buffer.array();
 			// 自解析，一般来说都是满的
 			// 由于都是字母和数字所以对应就是一个byte就是一个char
-			List<byte[]> chars = new LinkedList<>();
+			int cf = 0;
 			int position = buffer.position();
 			// 拷贝是必然的
 			int p = 0;
@@ -63,22 +67,21 @@ public class ReadFileAndSort2 {
 				if (array[i] == LF) {
 					int len = i - p;
 					byte[] tmp = new byte[len];
-					long beforeCopy = System.nanoTime();
 					System.arraycopy(array, p, tmp, 0, len);
-					copyNanos = copyNanos + (System.nanoTime() - beforeCopy);
-					chars.add(tmp);
+					chars[cf++] = tmp;
 					p = i + 1;
 				}
 			}
 			tmpNanos = tmpNanos + (System.nanoTime() - afterRead);
-			count = count + chars.size();
+			count = count + cf;
 			buffer.rewind();
 			if (p < array.length - 1) {
 				buffer.put(array, p, array.length - p);
 			}
 			long beforeDivide = System.nanoTime();
 			// 按照字母分桶
-			for (byte[] s : chars) {
+			for (int i = 0; i < cf; i++) {
+				byte[] s = chars[i];
 				// 先按长度分桶
 				int index = s.length * (int) Math.pow(62, level);
 				// 根据level将元素多级划分到不同桶
@@ -158,7 +161,6 @@ public class ReadFileAndSort2 {
 		long end = System.nanoTime();
 		System.out.println("tmp" + TimeUnit.NANOSECONDS.toMillis(tmpNanos));
 		System.out.println("共有" + count + "行");
-		System.out.println("读取拷贝耗时：" + TimeUnit.NANOSECONDS.toMillis(copyNanos));
 		System.out.println("读操作IO耗时：" + TimeUnit.NANOSECONDS.toMillis(readNanos));
 		System.out.println("单独分桶操作耗时：" + TimeUnit.NANOSECONDS.toMillis(divideNanos));
 		System.out.println("读取并分桶共耗时：" + TimeUnit.NANOSECONDS.toMillis((afterDivide - start)));
