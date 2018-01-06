@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -20,9 +20,10 @@ import java.util.concurrent.TimeUnit;
  * @author charpty
  * @since 2018/1/1
  */
-public class ReadFileAndSort {
+public class ReadFileAndSort2 {
 
 	private static final byte[] LINE = "\n".getBytes();
+	private static final byte LF = 10;
 
 	public static void main(String[] args) throws IOException {
 		long start = System.nanoTime();
@@ -42,6 +43,7 @@ public class ReadFileAndSort {
 		long readNanos = 0;
 		long divideNanos = 0;
 		long tmpNanos = 0;
+		long copyNanos = 0;
 		while (true) {
 			long beforeRead = System.nanoTime();
 			if ((n = channel.read(buffer)) < 0) {
@@ -52,25 +54,37 @@ public class ReadFileAndSort {
 
 			byte[] array = buffer.array();
 			// 自解析，一般来说都是满的
-			String str = new String(array, 0, buffer.position());
-			int i = str.lastIndexOf('\n');
-			String used = str.substring(0, i);
-			String[] arr = used.split("\n");
+			// 由于都是字母和数字所以对应就是一个byte就是一个char
+			List<byte[]> chars = new LinkedList<>();
+			int position = buffer.position();
+			// 拷贝是必然的
+			int p = 0;
+			for (int i = 0; i < position; i++) {
+				if (array[i] == LF) {
+					int len = i - p;
+					byte[] tmp = new byte[len];
+					long beforeCopy = System.nanoTime();
+					System.arraycopy(array, p, tmp, 0, len);
+					copyNanos = copyNanos + (System.nanoTime() - beforeCopy);
+					chars.add(tmp);
+					p = i + 1;
+				}
+			}
 			tmpNanos = tmpNanos + (System.nanoTime() - afterRead);
-			count = count + arr.length;
+			count = count + chars.size();
 			buffer.rewind();
-			if (i < str.length() - 1) {
-				buffer.put(str.substring(i + 1, str.length()).getBytes());
+			if (p < array.length - 1) {
+				buffer.put(array, p, array.length - p);
 			}
 			long beforeDivide = System.nanoTime();
 			// 按照字母分桶
-			for (String s : arr) {
+			for (byte[] s : chars) {
 				// 先按长度分桶
-				int index = s.length() * (int) Math.pow(62, level);
+				int index = s.length * (int) Math.pow(62, level);
 				// 根据level将元素多级划分到不同桶
 				for (int j = 0; j < level; j++) {
 					int offset = 0;
-					char f = s.charAt(j);
+					byte f = s[j];
 					if (f <= '9') {
 						// 只有字符和数字
 						offset = f - '0';
@@ -82,9 +96,9 @@ public class ReadFileAndSort {
 					int pow = (int) Math.pow(62, level - j - 1);
 					index = index + offset * pow;
 				}
-				LinkedList list = buckets[index];
+				LinkedList<byte[]> list = buckets[index];
 				if (list == null) {
-					list = new LinkedList<String>();
+					list = new LinkedList();
 					buckets[index] = list;
 				}
 				list.add(s);
@@ -95,14 +109,14 @@ public class ReadFileAndSort {
 
 		// 开始排序
 		RandomAccessFile result = new RandomAccessFile(new File("/tmp/result.file"), "rw");
-		FixLenStrComparator comparator = new FixLenStrComparator(level);
+		FixCharsComparator comparator = new FixCharsComparator(level);
 		FileChannel outputChannel = result.getChannel();
 
 		ExecutorService executor = Executors.newCachedThreadPool();
 		final Boolean[] flags = new Boolean[buckets.length];
 		// 要尽量保证排在前面的任务先执行
 		for (int i = 0; i < buckets.length; i++) {
-			LinkedList<String> list = buckets[i];
+			LinkedList<byte[]> list = buckets[i];
 			if (list == null || list.isEmpty()) {
 				continue;
 			}
@@ -123,14 +137,14 @@ public class ReadFileAndSort {
 				while (!flag.booleanValue()) {
 
 				}
-				LinkedList<String> list = buckets[i];
+				LinkedList<byte[]> list = buckets[i];
 				// 最长256
 				int capacity = list.size() * 256;
 				if (capacity > tmp.capacity()) {
 					tmp = ByteBuffer.allocate(capacity);
 				}
-				for (String s : list) {
-					tmp.put(s.getBytes()).put(LINE);
+				for (byte[] s : list) {
+					tmp.put(s).put(LINE);
 				}
 				tmp.flip();
 				long t1 = System.nanoTime();
@@ -144,6 +158,7 @@ public class ReadFileAndSort {
 		long end = System.nanoTime();
 		System.out.println("tmp" + TimeUnit.NANOSECONDS.toMillis(tmpNanos));
 		System.out.println("共有" + count + "行");
+		System.out.println("读取拷贝耗时：" + TimeUnit.NANOSECONDS.toMillis(copyNanos));
 		System.out.println("读操作IO耗时：" + TimeUnit.NANOSECONDS.toMillis(readNanos));
 		System.out.println("单独分桶操作耗时：" + TimeUnit.NANOSECONDS.toMillis(divideNanos));
 		System.out.println("读取并分桶共耗时：" + TimeUnit.NANOSECONDS.toMillis((afterDivide - start)));
@@ -153,21 +168,19 @@ public class ReadFileAndSort {
 		System.out.println("共耗时" + TimeUnit.NANOSECONDS.toMillis((end - start)));
 	}
 
-	static class FixLenStrComparator implements Comparator<String> {
+	static class FixCharsComparator implements Comparator<byte[]> {
 
 		private final int level;
 
-		public FixLenStrComparator(int level) {
+		public FixCharsComparator(int level) {
 			this.level = level;
 		}
 
 		@Override
-		public int compare(String o1, String o2) {
+		public int compare(byte[] chars1, byte[] chars2) {
 			// 不可能为null
 			// 一定是长度相等的
 			// 长level个字符一定是相等的
-			char[] chars1 = o1.toCharArray();
-			char[] chars2 = o2.toCharArray();
 			for (int i = level; i < chars1.length; i++) {
 				if (chars1[i] > chars2[i]) {
 					return 1;
