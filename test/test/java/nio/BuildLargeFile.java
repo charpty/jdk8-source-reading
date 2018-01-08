@@ -15,6 +15,7 @@ import java.util.UUID;
 public class BuildLargeFile {
 
 	private static final byte[] LINE = "\n".getBytes();
+	private static final long LC = 10_000_000;
 
 	public static void main(String[] args) throws IOException {
 		RandomAccessFile raf = new RandomAccessFile(new File("/tmp/large.file"), "rw");
@@ -23,6 +24,7 @@ public class BuildLargeFile {
 		int n = 0;
 		Random random = new Random();
 		random.setSeed(100);
+		int count = 0;
 		while (true) {
 			String str = UUID.randomUUID().toString();
 			buffer.put(str.getBytes());
@@ -35,8 +37,12 @@ public class BuildLargeFile {
 			buffer.flip();
 			channel.write(buffer);
 			buffer.clear();
-			System.out.println("第" + ++n + "次写入...");
+			if (count++ > LC) {
+				break;
+			}
+			// System.out.println("第" + ++n + "次写入...");
 		}
+		System.out.println(LC + "行写入完毕");
 	}
 
 }
