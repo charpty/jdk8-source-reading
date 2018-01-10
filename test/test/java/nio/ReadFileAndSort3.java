@@ -8,6 +8,9 @@ import java.nio.channels.FileChannel;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -62,6 +65,7 @@ public class ReadFileAndSort3 {
 		int mi = 0;
 		// 1000万个字符串
 		long[] indexArr = new long[20_000_000];
+		ConcurrentHashMap<Integer, Long> chm = new ConcurrentHashMap<>(1024);
 		while (true) {
 			long beforeRead = System.nanoTime();
 			if ((channel.read(buffer)) < 0) {
@@ -74,9 +78,9 @@ public class ReadFileAndSort3 {
 			//readNanos = readNanos + (afterRead - beforeRead);
 			byte[] array = buffer.array();
 			int position = buffer.position();
-			byte[] tmpArr = new byte[position];
+			byte[] tmpArr = new byte[position + 256];
 			// 一次性拷贝好内存，避免大量重复分配与拷贝
-			System.arraycopy(array, 0, tmpArr, 0, position);
+			System.arraycopy(array, 256, tmpArr, 0, position);
 			// 自解析，一般来说都是满的
 			// 由于都是字母和数字所以对应就是一个byte就是一个char
 			// TODO 是否可以引入多线程并发分割
@@ -84,26 +88,39 @@ public class ReadFileAndSort3 {
 			total = total + BUFFER_SIZE;
 			long afterRead = System.nanoTime();
 			final int cst = total;
-			final int cmi = mi;
+			final long cmi = mi;
 			mem[mi++] = tmpArr;
 			es.submit(() -> {
+				// TODO 额～这里是要固定增长个数而不是长度，个数是没法固定的。。。
 				int cs = cst;
-				int p = 0;
+				long p = 256;
 				for (int i = 0; i < BUFFER_SIZE; i++) {
 					if (tmpArr[i] == LF) {
-						indexArr[cs++] = i | (((long) p) << 24) | (((long) cmi) << 48);
+						// 前256个用于存放上一个
+						indexArr[cs++] = (i + 256) | (p << 24) | (cmi << 48);
 						p = i + 1;
 					}
 				}
-				// 并发下处理粘包
+				// 并发下收集粘包
 				if (p < BUFFER_SIZE) {
-					// buffer.put(array, p, array.length - p);
-
+					long c = BUFFER_SIZE | (p << 24) | (cmi << 48);
+					chm.put((int) cmi, c);
 				}
 			});
 			buffer.rewind();
 		}
-		long beforeDivide = System.nanoTime();
+		es.shutdown();
+		// 处理粘包
+		for (Map.Entry<Integer, Long> entry : chm.entrySet()) {
+			int kmi = entry.getKey();
+			long vmi = entry.getValue();
+
+			int s = (int) ((vmi & START_SHIFT) >>> 24);
+			int e = (int) (vmi & END_SHIFT);
+			int len = e - s;
+			System.arraycopy(mem[kmi], s, mem[kmi + 1], 256 - len, len);
+			indexArr[]
+		} long beforeDivide = System.nanoTime();
 		// 按照字母分桶
 		for (int i = 0; i < count; i++) {
 			long idx = indexArr[i];
