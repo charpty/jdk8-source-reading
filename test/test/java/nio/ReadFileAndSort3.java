@@ -33,6 +33,8 @@ public class ReadFileAndSort3 {
 	// 后51-64位代表结束地址
 	private static final long END_SHIFT = 0x0000000000FFFFFFL;
 
+	private static final int BUFFER_SIZE = 1024 * 1024 * 4;
+
 	public static void main(String[] args) throws IOException {
 		long start = System.nanoTime();
 		// 因为题目规定只有字符和数字，所以一共26+26+10=62个桶即可
@@ -42,13 +44,15 @@ public class ReadFileAndSort3 {
 		LinkedList[] buckets = new LinkedList[62 * strLen];
 		RandomAccessFile raf = new RandomAccessFile(new File("/tmp/large.file"), "r");
 
-		ExecutorService executor = Executors.newCachedThreadPool();
+		ExecutorService es = Executors.newCachedThreadPool();
 
 		FileChannel channel = raf.getChannel();
 		// 一次读4M,2^22
 		// 24 + 24 + 16
-		ByteBuffer buffer = ByteBuffer.allocate(1024 * 1024 * 1);
+		ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
+		int total = 0;
 		int count = 0;
+
 		long readNanos = 0;
 		long divideNanos = 0;
 		long tmpNanos = 0;
@@ -58,14 +62,16 @@ public class ReadFileAndSort3 {
 		int mi = 0;
 		// 1000万个字符串
 		long[] indexArr = new long[20_000_000];
-
 		while (true) {
 			long beforeRead = System.nanoTime();
 			if ((channel.read(buffer)) < 0) {
 				break;
 			}
-			long afterRead = System.nanoTime();
-			readNanos = readNanos + (afterRead - beforeRead);
+			// 保证一次性buffer读满
+			if (buffer.remaining() != 0) {
+				continue;
+			}
+			//readNanos = readNanos + (afterRead - beforeRead);
 			byte[] array = buffer.array();
 			int position = buffer.position();
 			byte[] tmpArr = new byte[position];
@@ -74,19 +80,28 @@ public class ReadFileAndSort3 {
 			// 自解析，一般来说都是满的
 			// 由于都是字母和数字所以对应就是一个byte就是一个char
 			// TODO 是否可以引入多线程并发分割
-			int p = 0;
-			for (int i = 0; i < position; i++) {
-				if (array[i] == LF) {
-					indexArr[count++] = i | (((long) p) << 24) | (((long) mi) << 48);
-					p = i + 1;
-				}
-			}
-			tmpNanos = tmpNanos + (System.nanoTime() - afterRead);
+			// int p = 0;
+			total = total + BUFFER_SIZE;
+			long afterRead = System.nanoTime();
+			final int cst = total;
+			final int cmi = mi;
 			mem[mi++] = tmpArr;
+			es.submit(() -> {
+				int cs = cst;
+				int p = 0;
+				for (int i = 0; i < BUFFER_SIZE; i++) {
+					if (tmpArr[i] == LF) {
+						indexArr[cs++] = i | (((long) p) << 24) | (((long) cmi) << 48);
+						p = i + 1;
+					}
+				}
+				// 并发下处理粘包
+				if (p < BUFFER_SIZE) {
+					// buffer.put(array, p, array.length - p);
+
+				}
+			});
 			buffer.rewind();
-			if (p < array.length - 1) {
-				buffer.put(array, p, array.length - p);
-			}
 		}
 		long beforeDivide = System.nanoTime();
 		// 按照字母分桶
@@ -119,12 +134,14 @@ public class ReadFileAndSort3 {
 		}
 		divideNanos = divideNanos + (System.nanoTime() - beforeDivide);
 		long afterDivide = System.nanoTime();
+		es.shutdown();
 
-		//		System.out.println(count);
-		//		System.out.println("tmpNanos" + TimeUnit.NANOSECONDS.toMillis(tmpNanos));
-		//		System.out.println("divideNanos" + TimeUnit.NANOSECONDS.toMillis(divideNanos));
-		//		System.out.println(TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start));
-		//		System.exit(0);
+		System.out.println(count);
+		System.out.println(readNanos);
+		System.out.println("tmpNanos" + TimeUnit.NANOSECONDS.toMillis(tmpNanos));
+		System.out.println("divideNanos" + TimeUnit.NANOSECONDS.toMillis(divideNanos));
+		System.out.println(TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start));
+		System.exit(0);
 		// 开始排序
 		RandomAccessFile result = new RandomAccessFile(new File("/tmp/result.file"), "rw");
 		FixCharsComparator comparator = new FixCharsComparator(mem);
@@ -139,7 +156,7 @@ public class ReadFileAndSort3 {
 			}
 			flags[i] = false;
 			final int x = i;
-			executor.submit(() -> {
+			es.submit(() -> {
 				Collections.sort(list, comparator);
 				flags[x] = true;
 			});
@@ -174,7 +191,7 @@ public class ReadFileAndSort3 {
 				tmp.clear();
 			}
 		}
-		executor.shutdown();
+		es.shutdown();
 		long end = System.nanoTime();
 		System.out.println("tmp" + TimeUnit.NANOSECONDS.toMillis(tmpNanos));
 		System.out.println("共有" + count + "行");
