@@ -92,6 +92,8 @@ public class ReadFileAndSort3 {
 			mem[mi++] = tmpArr;
 			es.submit(() -> {
 				// TODO 额～这里是要固定增长个数而不是长度，个数是没法固定的。。。
+				// 每次读4M，使用线程池处理每次读到的数据，每个线程单独操作一个桶，在独立中的桶中计数
+				// 使用一个并发MAP处理各次读取的拆包、粘包问题
 				int cs = cst;
 				long p = 256;
 				for (int i = 0; i < BUFFER_SIZE; i++) {
@@ -119,8 +121,8 @@ public class ReadFileAndSort3 {
 			int e = (int) (vmi & END_SHIFT);
 			int len = e - s;
 			System.arraycopy(mem[kmi], s, mem[kmi + 1], 256 - len, len);
-			indexArr[]
-		} long beforeDivide = System.nanoTime();
+		}
+		long beforeDivide = System.nanoTime();
 		// 按照字母分桶
 		for (int i = 0; i < count; i++) {
 			long idx = indexArr[i];
