@@ -33,6 +33,7 @@ public class ReadFileAndSort3 {
 	private static final long ARRAY_INDEX_SHIFT = 0x7FFF000000000000L;
 	// 第17-50位代表开始地址
 	private static final long START_SHIFT = 0x0000FFFFFF000000L;
+	private static final long START_MASK = 0xFFFF000000FFFFFFL;
 	// 后51-64位代表结束地址
 	private static final long END_SHIFT = 0x0000000000FFFFFFL;
 
@@ -64,7 +65,7 @@ public class ReadFileAndSort3 {
 		byte[][] mem = new byte[1 << 16][];
 		int mi = 0;
 		// 1000万个字符串
-		long[] indexArr = new long[20_000_000];
+		long[][] indexArr = new long[1 << 10][1 << 16];
 		ConcurrentHashMap<Integer, Long> chm = new ConcurrentHashMap<>(1024);
 		while (true) {
 			long beforeRead = System.nanoTime();
@@ -80,7 +81,7 @@ public class ReadFileAndSort3 {
 			int position = buffer.position();
 			byte[] tmpArr = new byte[position + 256];
 			// 一次性拷贝好内存，避免大量重复分配与拷贝
-			System.arraycopy(array, 256, tmpArr, 0, position);
+			System.arraycopy(array, 0, tmpArr, 256, position);
 			// 自解析，一般来说都是满的
 			// 由于都是字母和数字所以对应就是一个byte就是一个char
 			// TODO 是否可以引入多线程并发分割
@@ -94,18 +95,23 @@ public class ReadFileAndSort3 {
 				// TODO 额～这里是要固定增长个数而不是长度，个数是没法固定的。。。
 				// 每次读4M，使用线程池处理每次读到的数据，每个线程单独操作一个桶，在独立中的桶中计数
 				// 使用一个并发MAP处理各次读取的拆包、粘包问题
-				int cs = cst;
+				int cs = 0;
+				final int icmi = (int) cmi;
 				long p = 256;
-				for (int i = 0; i < BUFFER_SIZE; i++) {
+				int ci = 256;
+				if (tmpArr[ci] == LF) {
+					ci = 257;
+				}
+				for (int i = ci; i < tmpArr.length; i++) {
 					if (tmpArr[i] == LF) {
 						// 前256个用于存放上一个
-						indexArr[cs++] = (i + 256) | (p << 24) | (cmi << 48);
+						indexArr[icmi][cs++] = i | (p << 24) | (cmi << 48);
 						p = i + 1;
 					}
 				}
 				// 并发下收集粘包
-				if (p < BUFFER_SIZE) {
-					long c = BUFFER_SIZE | (p << 24) | (cmi << 48);
+				if (p < tmpArr.length) {
+					long c = tmpArr.length | (p << 24) | (cmi << 48);
 					chm.put((int) cmi, c);
 				}
 			});
@@ -121,50 +127,64 @@ public class ReadFileAndSort3 {
 			int e = (int) (vmi & END_SHIFT);
 			int len = e - s;
 			System.arraycopy(mem[kmi], s, mem[kmi + 1], 256 - len, len);
+			long l = indexArr[kmi + 1][0];
+			int s1 = (int) ((l & START_SHIFT) >>> 24);
+			s1 = s1 - len;
+			l = (l & START_MASK) | ((long) (s1) << 24);
+			indexArr[kmi + 1][0] = l;
 		}
 		long beforeDivide = System.nanoTime();
+
 		// 按照字母分桶
-		for (int i = 0; i < count; i++) {
-			long idx = indexArr[i];
-			int m = (int) ((idx & ARRAY_INDEX_SHIFT) >>> 48);
-			int s = (int) ((idx & START_SHIFT) >>> 24);
-			int e = (int) (idx & END_SHIFT);
-			int len = e - s;
-			// 先按长度分桶
-			int index = len * 62;
-			// 根据level将元素多级划分到不同桶
-			int offset = 0;
-			byte f = mem[m][s];
-			if (f <= '9') {
-				// 只有字符和数字
-				offset = f - '0';
-			} else if (f <= 'Z') {
-				offset = f - 'A' + 10;
-			} else {
-				offset = f - 'a' + 36;
+		for (int i = 0; i < mi; i++) {
+			long[] indexs = indexArr[i];
+			for (int j = 0; j < indexs.length; j++) {
+				long idx = indexs[j];
+				if (idx == 0) {
+					break;
+				}
+				int m = (int) ((idx & ARRAY_INDEX_SHIFT) >>> 48);
+				int s = (int) ((idx & START_SHIFT) >>> 24);
+				int e = (int) (idx & END_SHIFT);
+
+				int len = e - s;
+				// 先按长度分桶
+				int index = len * 62;
+				// 根据level将元素多级划分到不同桶
+				int offset = 0;
+				byte f = mem[m][s];
+				if (f <= '9') {
+					// 只有字符和数字
+					offset = f - '0';
+				} else if (f <= 'Z') {
+					offset = f - 'A' + 10;
+				} else {
+					offset = f - 'a' + 36;
+				}
+				index = index + offset;
+				LinkedList<Long> list = buckets[index];
+				if (list == null) {
+					list = new LinkedList();
+					buckets[index] = list;
+				}
+				list.add(idx);
 			}
-			index = index + offset;
-			LinkedList<Long> list = buckets[index];
-			if (list == null) {
-				list = new LinkedList();
-				buckets[index] = list;
-			}
-			list.add(idx);
 		}
 		divideNanos = divideNanos + (System.nanoTime() - beforeDivide);
 		long afterDivide = System.nanoTime();
 		es.shutdown();
 
-		System.out.println(count);
-		System.out.println(readNanos);
-		System.out.println("tmpNanos" + TimeUnit.NANOSECONDS.toMillis(tmpNanos));
-		System.out.println("divideNanos" + TimeUnit.NANOSECONDS.toMillis(divideNanos));
-		System.out.println(TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start));
-		System.exit(0);
+		//		System.out.println(count);
+		//		System.out.println(readNanos);
+		//		System.out.println("tmpNanos" + TimeUnit.NANOSECONDS.toMillis(tmpNanos));
+		//		System.out.println("divideNanos" + TimeUnit.NANOSECONDS.toMillis(divideNanos));
+		//		System.out.println(TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start));
+		//		System.exit(0);
 		// 开始排序
 		RandomAccessFile result = new RandomAccessFile(new File("/tmp/result.file"), "rw");
 		FixCharsComparator comparator = new FixCharsComparator(mem);
 		FileChannel outputChannel = result.getChannel();
+		es = Executors.newCachedThreadPool();
 
 		final Boolean[] flags = new Boolean[buckets.length];
 		// 要尽量保证排在前面的任务先执行
