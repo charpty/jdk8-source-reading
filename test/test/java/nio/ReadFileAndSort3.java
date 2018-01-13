@@ -37,9 +37,11 @@ public class ReadFileAndSort3 {
 	// 后51-64位代表结束地址
 	private static final long END_SHIFT = 0x0000000000FFFFFFL;
 
-	private static final int BUFFER_SIZE = 1024 * 1024 * 4;
+	private static final int BUFFER_SIZE = 1024 * 1024 * 2;
 
-	public static void main(String[] args) throws IOException {
+	static byte[] BB = "d2bf0555-9458-43bd-8386-7b3d83b01481d2bf0555-9458-43".getBytes();
+
+	public static void main(String[] args) throws Exception {
 		long start = System.nanoTime();
 		// 因为题目规定只有字符和数字，所以一共26+26+10=62个桶即可
 		// 最长的一行字符串长度,因为256并不大，所以直接使用每一种长度作为一个桶即可
@@ -65,23 +67,30 @@ public class ReadFileAndSort3 {
 		byte[][] mem = new byte[1 << 16][];
 		int mi = 0;
 		// 1000万个字符串
-		long[][] indexArr = new long[1 << 10][1 << 16];
+		long[][] indexArr = new long[1 << 11][1 << 17];
+		final int[] countArr = new int[1 << 10];
 		ConcurrentHashMap<Integer, Long> chm = new ConcurrentHashMap<>(1024);
+		boolean last = false;
 		while (true) {
 			long beforeRead = System.nanoTime();
 			if ((channel.read(buffer)) < 0) {
-				break;
+				if (last) {
+					break;
+				}
+				last = true;
 			}
 			// 保证一次性buffer读满
-			if (buffer.remaining() != 0) {
+			if (buffer.remaining() != 0 && !last) {
 				continue;
 			}
 			//readNanos = readNanos + (afterRead - beforeRead);
 			byte[] array = buffer.array();
 			int position = buffer.position();
+
 			byte[] tmpArr = new byte[position + 256];
 			// 一次性拷贝好内存，避免大量重复分配与拷贝
 			System.arraycopy(array, 0, tmpArr, 256, position);
+			total = total + position;
 			// 自解析，一般来说都是满的
 			// 由于都是字母和数字所以对应就是一个byte就是一个char
 			// TODO 是否可以引入多线程并发分割
@@ -90,6 +99,7 @@ public class ReadFileAndSort3 {
 			long afterRead = System.nanoTime();
 			final int cst = total;
 			final long cmi = mi;
+			final boolean clast = last;
 			mem[mi++] = tmpArr;
 			es.submit(() -> {
 				// TODO 额～这里是要固定增长个数而不是长度，个数是没法固定的。。。
@@ -101,23 +111,31 @@ public class ReadFileAndSort3 {
 				int ci = 256;
 				if (tmpArr[ci] == LF) {
 					ci = 257;
+					p = 257;
 				}
 				for (int i = ci; i < tmpArr.length; i++) {
 					if (tmpArr[i] == LF) {
 						// 前256个用于存放上一个
 						indexArr[icmi][cs++] = i | (p << 24) | (cmi << 48);
+						countArr[icmi]++;
 						p = i + 1;
 					}
 				}
 				// 并发下收集粘包
 				if (p < tmpArr.length) {
 					long c = tmpArr.length | (p << 24) | (cmi << 48);
-					chm.put((int) cmi, c);
+					if (clast) {
+						indexArr[icmi][cs] = c;
+						countArr[icmi]++;
+					} else {
+						chm.put((int) cmi, c);
+					}
 				}
 			});
 			buffer.rewind();
 		}
 		es.shutdown();
+		es.awaitTermination(2000, TimeUnit.MILLISECONDS);
 		// 处理粘包
 		for (Map.Entry<Integer, Long> entry : chm.entrySet()) {
 			int kmi = entry.getKey();
@@ -126,15 +144,20 @@ public class ReadFileAndSort3 {
 			int s = (int) ((vmi & START_SHIFT) >>> 24);
 			int e = (int) (vmi & END_SHIFT);
 			int len = e - s;
-			System.arraycopy(mem[kmi], s, mem[kmi + 1], 256 - len, len);
+			byte[] src = mem[kmi];
+			byte[] dest = mem[kmi + 1];
+			int news = 256 - len;
+			System.arraycopy(src, s, dest, news, len);
 			long l = indexArr[kmi + 1][0];
-			int s1 = (int) ((l & START_SHIFT) >>> 24);
-			s1 = s1 - len;
-			l = (l & START_MASK) | ((long) (s1) << 24);
+			l = (l & START_MASK) | ((long) (news) << 24);
 			indexArr[kmi + 1][0] = l;
 		}
 		long beforeDivide = System.nanoTime();
-
+		int sum = 0;
+		for (int i = 0; i < mi; i++) {
+			sum = sum + countArr[i];
+		}
+		System.out.println("行总数" + sum);
 		// 按照字母分桶
 		for (int i = 0; i < mi; i++) {
 			long[] indexs = indexArr[i];
@@ -174,12 +197,16 @@ public class ReadFileAndSort3 {
 		long afterDivide = System.nanoTime();
 		es.shutdown();
 
+		LinkedList[] uuu = new LinkedList[1024];
+		System.arraycopy(buckets, 3284, uuu, 0, 1024);
+		System.out.println("total:" + total);
+
 		//		System.out.println(count);
 		//		System.out.println(readNanos);
 		//		System.out.println("tmpNanos" + TimeUnit.NANOSECONDS.toMillis(tmpNanos));
 		//		System.out.println("divideNanos" + TimeUnit.NANOSECONDS.toMillis(divideNanos));
 		//		System.out.println(TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start));
-		//		System.exit(0);
+		//System.exit(0);
 		// 开始排序
 		RandomAccessFile result = new RandomAccessFile(new File("/tmp/result.file"), "rw");
 		FixCharsComparator comparator = new FixCharsComparator(mem);
