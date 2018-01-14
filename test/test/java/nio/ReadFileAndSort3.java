@@ -4,16 +4,10 @@ import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.PriorityBlockingQueue;
@@ -41,7 +35,7 @@ public class ReadFileAndSort3 {
 	// 后51-64位代表结束地址
 	private static final long END_SHIFT = 0x0000000000FFFFFFL;
 
-	private static final int BUFFER_SIZE = 1024 * 1024 * 2;
+	private static final int BUFFER_SIZE = 1024 * 1024 * 4;
 
 	static byte[] BB = "d2bf0555-9458-43bd-8386-7b3d83b01481d2bf0555-9458-43".getBytes();
 
