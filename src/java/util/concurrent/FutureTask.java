@@ -48,24 +48,24 @@ import java.util.concurrent.locks.LockSupport;
  * or cancelled (unless the computation is invoked using
  * {@link #runAndReset}).
  *
- * 一种可取消的计算单元。该类是Future的一个简单实现，包含了启动任务、查看任务状态、接收结果等功能。
+ * 一种可取消的计算单元。该类是Future的一个简单实现，包含了启动任务、查看任务状态、接收结果等功能
  * 结果仅在计算完成时才能获取到，获取结果的get方法会一直阻塞直到计算工作完成
- * 一旦计算工作完成，计算任务不可以被重新开始或者取消。
+ * 一旦计算工作完成，计算任务不可以被重新开始或者取消
  *
  * <p>A {@code FutureTask} can be used to wrap a {@link Callable} or
  * {@link Runnable} object.  Because {@code FutureTask} implements
  * {@code Runnable}, a {@code FutureTask} can be submitted to an
  * {@link Executor} for execution.
  *
- * FutureTask可以用来包装一个Runnable或者Callable。
- * FutureTask也实现了Runnable接口，可以被放到线程池中执行。
+ * FutureTask可以用来包装一个Runnable或者Callable
+ * FutureTask也实现了Runnable接口，可以被放到线程池中执行
  *
  * <p>In addition to serving as a standalone class, this class provides
  * {@code protected} functionality that may be useful when creating
  * customized task classes.
  *
- * 为了提高扩展性，该类提供了许多protected方法。
- * 其中最常用的就是done()方法用来在任务完成时触发指定操作。
+ * 为了提高扩展性，该类提供了许多protected方法
+ * 其中最常用的就是done()方法用来在任务完成时触发指定操作
  *
  * @param <V>
  * 		The result type returned by this FutureTask's {@code get} methods
@@ -84,6 +84,13 @@ public class FutureTask<V> implements RunnableFuture<V> {
 	 *
 	 * Style note: As usual, we bypass overhead of using
 	 * AtomicXFieldUpdaters and instead directly use Unsafe intrinsics.
+	 *
+	 * 之前版本就和锁一样依赖与并发核心AQS，现在取消了
+	 * 主要是AQS在取消操作发生竞争时会诡异的保留中断状态
+	 * 参考：https://bugs.java.com/bugdatabase/view_bug.do?bug_id=8016247
+	 * 本类通过CAS操作state属性来实现并发控制，使用Treiber栈来存储等待线程
+	 * Treiber栈是一个lock-free的并发栈
+	 *
 	 */
 
 	/**
@@ -102,6 +109,14 @@ public class FutureTask<V> implements RunnableFuture<V> {
 	 * NEW -> CANCELLED
 	 * NEW -> INTERRUPTING -> INTERRUPTED
 	 */
+	/**
+	 * 并发控制最核心的属性，表示的是任务的状态
+	 * 当且仅当使用set、setException、cancel方法时任务会变成终止状态
+	 * 计算过程中，state可能有几种状态，包括：COMPLETING计算完成，此时结果已被设置
+	 * INTERRUPTING中断，仅当提交任务线程执行了cancel()方法
+	 * state到最终状态到变量的写直接使用Unsafe.putOrderedInt()
+	 * 这个方法会直接将值写入主存，因为state一旦到达最终状态就不会再改变
+	 */
 	private volatile int state;
 	private static final int NEW = 0;
 	private static final int COMPLETING = 1;
@@ -112,12 +127,16 @@ public class FutureTask<V> implements RunnableFuture<V> {
 	private static final int INTERRUPTED = 6;
 
 	/** The underlying callable; nulled out after running */
+	// 实际运行的计算任务
 	private Callable<V> callable;
 	/** The result to return or exception to throw from get() */
+	// 运行结果或者运行异常
 	private Object outcome; // non-volatile, protected by state reads/writes
 	/** The thread running the callable; CASed during run() */
+	// 完成该计算任务的线程，竞争时谁先设置到该值就可以运行该任务
 	private volatile Thread runner;
 	/** Treiber stack of waiting threads */
+	// Treiber通过多次CAS尝试来实现无锁结构
 	private volatile WaitNode waiters;
 
 	/**
@@ -174,6 +193,7 @@ public class FutureTask<V> implements RunnableFuture<V> {
 	 */
 	public FutureTask(Runnable runnable, V result) {
 		this.callable = Executors.callable(runnable, result);
+		// 这里利用了volatile对内存的可见性影响
 		this.state = NEW;       // ensure visibility of callable
 	}
 
@@ -213,8 +233,10 @@ public class FutureTask<V> implements RunnableFuture<V> {
 	public V get() throws InterruptedException, ExecutionException {
 		int s = state;
 		if (s <= COMPLETING) {
+			// 阻塞线程直到计算任务完成
 			s = awaitDone(false, 0L);
 		}
+		// 根据当前任务状态响应相应值
 		return report(s);
 	}
 
@@ -434,6 +456,7 @@ public class FutureTask<V> implements RunnableFuture<V> {
 	 * @return state upon completion
 	 */
 	private int awaitDone(boolean timed, long nanos) throws InterruptedException {
+		// 根据用户是否使用了是否带timeout的获取方法计算deadline
 		final long deadline = timed ? System.nanoTime() + nanos : 0L;
 		WaitNode q = null;
 		boolean queued = false;
