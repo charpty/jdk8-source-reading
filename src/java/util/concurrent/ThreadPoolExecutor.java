@@ -74,6 +74,11 @@ import java.util.*;
  * scenarios. Otherwise, use the following guide when manually
  * configuring and tuning this class:
  *
+ * 为了适应各种各样的执行场景，ThreadPoolExecutor提供了许多微调参数和阶段钩子
+ * JDK官方还是建议程序员直接使用Executors的工厂方法，其中有JDK默认配置好的各类ThreadPoolExecutor
+ * 这些工厂方法产生的ThreadPoolExecutor适用于大多数场景
+ * 如果真的需要自行配置的，那么需要了解清楚各个配置项的含义
+ *
  * <dl>
  *
  * <dt>Core and maximum pool sizes</dt>
@@ -83,6 +88,8 @@ import java.util.*;
  * according to the bounds set by
  * corePoolSize (see {@link #getCorePoolSize}) and
  * maximumPoolSize (see {@link #getMaximumPoolSize}).
+ *
+ * ThreadPoolExecutor会自动调整核心线程数量，其值在[corePoolSize,maximumPoolSize]之间
  *
  * When a new task is submitted in method {@link #execute(Runnable)},
  * and fewer than corePoolSize threads are running, a new thread is
@@ -98,6 +105,12 @@ import java.util.*;
  * dynamically using {@link #setCorePoolSize} and {@link
  * #setMaximumPoolSize}. </dd>
  *
+ * 当一个新的任务进入线程池，如果当前运行线程数量小于corePoolSize，不管是否有空闲线程都一定会创建新的线程
+ * 如果运行线程在corePoolSize~maximumPoolSize则仅当任务队列满的情况才创建新的线程
+ * 如果你设置核心线程数量和最大线程数量相同，就相当于创建一个固定数量线程的线程池
+ * 你也可以设置最大线程数量为一个很大数，此时线程池中线程数量根据操作系统或JVM限制会尽可能多
+ * 一般来说，在构造ThreadPoolExecutor时就设置好核心线程数量和最大线程数量，但随后也可以通过set方法修改
+ *
  * <dt>On-demand construction</dt>
  *
  * <dd>By default, even core threads are initially created and
@@ -105,6 +118,9 @@ import java.util.*;
  * dynamically using method {@link #prestartCoreThread} or {@link
  * #prestartAllCoreThreads}.  You probably want to prestart threads if
  * you construct the pool with a non-empty queue. </dd>
+ *
+ * 默认情况下，仅当有任务到达时才创建线程，但是可以通过prestartCoreThread()等函数改变这一行为
+ * 这个特性在已拥有一个非空任务队列时非常有用
  *
  * <dt>Creating new threads</dt>
  *
@@ -122,6 +138,14 @@ import java.util.*;
  * permission, service may be degraded: configuration changes may not
  * take effect in a timely manner, and a shutdown pool may remain in a
  * state in which termination is possible but not completed.</dd>
+ *
+ * 创建线程过程使用了工厂模式，开发者可以设置ThreadFactory来自己实现创建线程的逻辑
+ * 默认的情况下则使用Executors#defaultThreadFactory来实现线程的创建，此时创建的所有线程都属于一个线程组，都是非daemon线程
+ * 通过自定义线程工厂，你可以设置线程名称，线程组等信息。
+ * 如果工厂无法创建新的线程，线程池还是会继续运行，但是可能没法执行任务
+ * 调用者应在必要场景下传递自己的线程上下文给执行线程
+ * 如果执行线程不具备和调用者同样的权限，服务可能会被降级，配置的改变不会及时生效 TODO ？
+ * 此时关闭线程池依然可以执行，但是任务并未完成
  *
  * <dt>Keep-alive times</dt>
  *
