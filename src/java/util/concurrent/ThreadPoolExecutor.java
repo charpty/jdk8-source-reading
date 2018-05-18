@@ -163,6 +163,12 @@ import java.util.*;
  * apply this time-out policy to core threads as well, so long as the
  * keepAliveTime value is non-zero. </dd>
  *
+ * 如果当前线程池线程数量大于corePoolSize，空闲时间超过keepAliveTime的线程将被终止
+ * 这在线程池不再活跃的场景下可以有效的减少资源消耗，等待后续繁忙时再重新创建线程
+ * 使用者可以设置keepAliveTime，非0时超时策略才会生效
+ * 如果核心线程也有超时终止策略，可以通过设置allowCoreThreadTimeOut实现
+ *
+ *
  * <dt>Queuing</dt>
  *
  * <dd>Any {@link BlockingQueue} may be used to transfer and hold
@@ -182,9 +188,15 @@ import java.util.*;
  * this would exceed maximumPoolSize, in which case, the task will be
  * rejected.</li>
  *
+ * 线程数小于核心线程数量则有任务来总是创建新线程
+ * 如果线程数大于corePoolSize则尝试将任务追加到任务队列
+ * 任务无法追加到任务队列时则尝试创建新的线程，大于最大线程池则调用拒绝钩子
+ *
  * </ul>
  *
  * There are three general strategies for queuing:
+ *
+ * 有几种任务队列
  * <ol>
  *
  * <li> <em> Direct handoffs.</em> A good default choice for a work
@@ -197,6 +209,11 @@ import java.util.*;
  * avoid rejection of new submitted tasks. This in turn admits the
  * possibility of unbounded thread growth when commands continue to
  * arrive on average faster than they can be processed.  </li>
+ *
+ * 直传类队列，推荐使用SynchronousQueue，该队列直接将任务实时传递给工作线程
+ * SynchronousQueue不存储任何元素，所以每次尝试将任务添加到队列都会失败，此时就会创建一个新的工作线程
+ * // TODO 先休息了
+ *
  *
  * <li><em> Unbounded queues.</em> Using an unbounded queue (for
  * example a {@link LinkedBlockingQueue} without a predefined
