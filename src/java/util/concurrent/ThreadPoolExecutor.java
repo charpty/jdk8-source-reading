@@ -212,8 +212,9 @@ import java.util.*;
  *
  * 直传类队列，推荐使用SynchronousQueue，该队列直接将任务实时传递给工作线程
  * SynchronousQueue不存储任何元素，所以每次尝试将任务添加到队列都会失败，此时就会创建一个新的工作线程
- * // TODO 先休息了
- *
+ * 直传策略避免了处理有内在联系任务集的查找？？ TODO
+ * 直传类队列一般来说需要一个没有上限的maximumPoolSizes线程数来防止无法创建线程处理任务
+ * 同时这种策略在任务提交速度大于处理速度时会导致大量创建线程
  *
  * <li><em> Unbounded queues.</em> Using an unbounded queue (for
  * example a {@link LinkedBlockingQueue} without a predefined
@@ -228,6 +229,11 @@ import java.util.*;
  * unbounded work queue growth when commands continue to arrive on
  * average faster than they can be processed.  </li>
  *
+ * 无界队列，使用无界队列(如LinkedBlockingQueue)在核心线程繁忙会导致任务一直在任务队列中等待被执行
+ * 使用无界队列则线程池中只会有核心线程，不会创建非核心线程
+ * 这在处理不相关的任务集时非常适合，比如网页服务器请求处理
+ * 在任务处理速度较慢时队列会无限增长
+ *
  * <li><em>Bounded queues.</em> A bounded queue (for example, an
  * {@link ArrayBlockingQueue}) helps prevent resource exhaustion when
  * used with finite maximumPoolSizes, but can be more difficult to
@@ -240,6 +246,12 @@ import java.util.*;
  * generally requires larger pool sizes, which keeps CPUs busier but
  * may encounter unacceptable scheduling overhead, which also
  * decreases throughput.  </li>
+ *
+ * 有界队列，使用有界队列有助于防止资源枯竭，但也更难于控制和编程
+ * 通过协调任务队列深度和最大线程数大小可以满足各种场景
+ * 使用大队列小线程数可以节约系统资源，减少线程上下文切换，当然吞吐量也更低
+ * 如果任务会经常导致工作线程阻塞，这种情况下其实操作系统可以承载更多线程的调度（阻塞的线程并不会消耗时间片）
+ * 使用小队列大线程则会导致CPU较繁忙，吞吐量相对也较高，但是小队列可能导致任务被拒绝
  *
  * </ol>
  *
@@ -256,24 +268,38 @@ import java.util.*;
  * method of its {@link RejectedExecutionHandler}.  Four predefined handler
  * policies are provided:
  *
+ * 如果线程池处于关闭过程中或者线程数量和任务队列已饱和，则会拒绝提交新的任务
+ * 拒绝任务时会调用线程池的RejectedExecutionHandler钩子，使用者可以在此抛出自己的异常或其他处理
+ * JDK已默认预设好4中拒绝策略
+ *
  * <ol>
  *
  * <li> In the default {@link ThreadPoolExecutor.AbortPolicy}, the
  * handler throws a runtime {@link RejectedExecutionException} upon
  * rejection. </li>
  *
+ * 默认的使用AbortPolicy，也就是直接拒绝任务，会抛出RejectedExecutionException异常
+ *
  * <li> In {@link ThreadPoolExecutor.CallerRunsPolicy}, the thread
  * that invokes {@code execute} itself runs the task. This provides a
  * simple feedback control mechanism that will slow down the rate that
  * new tasks are submitted. </li>
  *
+ * CallerRunsPolicy策略，直接让调用者自己完成任务
+ * 阻塞调用者也有利于减缓任务提交速度
+ *
  * <li> In {@link ThreadPoolExecutor.DiscardPolicy}, a task that
  * cannot be executed is simply dropped.  </li>
+ *
+ * DiscardPolicy策略，在不能接受新任务时直接丢弃任务
  *
  * <li>In {@link ThreadPoolExecutor.DiscardOldestPolicy}, if the
  * executor is not shut down, the task at the head of the work queue
  * is dropped, and then execution is retried (which can fail again,
  * causing this to be repeated.) </li>
+ *
+ * DiscardOldestPolicy策略，新任务到来时，队列头上的任务将被丢弃
+ * 之后重试将该任务添加到任务队列中，如果存在竞争有可能再次失败，则再次重复移除步骤
  *
  * </ol>
  *
