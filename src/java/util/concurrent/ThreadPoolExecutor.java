@@ -308,6 +308,9 @@ import java.util.*;
  * especially when policies are designed to work only under particular
  * capacity or queuing policies. </dd>
  *
+ * 也可以自行实现RejectedExecutionHandler接口
+ * 这样开发者可以自行实现逻辑来针对指定线程池以及具体业务场景
+ *
  * <dt>Hook methods</dt>
  *
  * <dd>This class provides {@code protected} overridable
@@ -320,8 +323,14 @@ import java.util.*;
  * any special processing that needs to be done once the Executor has
  * fully terminated.
  *
+ * 该类还提供了beforeExecute和afterExecute两个切面，用于修改或获取执行前后的环境信息
+ * 另外，terminated函数可重写并在线程池关闭时会触发，让开发者完成线程池关闭情况下的必要操作
+ *
+ *
  * <p>If hook or callback methods throw exceptions, internal worker
  * threads may in turn fail and abruptly terminate.</dd>
+ *
+ * 值得注意的是如果钩子函数失败则当前工作线程会被终止
  *
  * <dt>Queue maintenance</dt>
  *
@@ -332,6 +341,10 @@ import java.util.*;
  * assist in storage reclamation when large numbers of queued tasks
  * become cancelled.</dd>
  *
+ * getQueue()方法可以查看任务队列，这个方法只是为了让开发者有监控和调试任务队列的能力
+ * 不允许开发者利用该实现调试和监控以外目的功能
+ * 另外还有两个辅助函数用于清除已取消的任务
+ *
  * <dt>Finalization</dt>
  *
  * <dd>A pool that is no longer referenced in a program <em>AND</em>
@@ -341,6 +354,10 @@ import java.util.*;
  * that unused threads eventually die, by setting appropriate
  * keep-alive times, using a lower bound of zero core threads and/or
  * setting {@link #allowCoreThreadTimeOut(boolean)}.  </dd>
+ *
+ * 当线程池没有被开发者引用并且池中没有工作线程时将被自动关闭
+ * 为了让用户忘记关闭的线程池也能被回收，必须让所有未被使用的线程能够终止
+ * 可以通过设置keepAliveTime以及允许核心线程超时来达到目的
  *
  * </dl>
  *
@@ -546,6 +563,10 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 	 * queues such as DelayQueues for which poll() is allowed to
 	 * return null even if it may later return non-null when delays
 	 * expire.
+	 *
+	 * 线程池任务队列，工作线程都从这个队列中取任务
+	 * 线程池不要求workQueue在队列为空时才返回null，但是isEmpty必须返回真实情况
+	 * 该特性用于支撑部分带延时特性的队列
 	 */
 	private final BlockingQueue<Runnable> workQueue;
 
@@ -561,6 +582,9 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 	 * also hold mainLock on shutdown and shutdownNow, for the sake of
 	 * ensuring workers set is stable while separately checking
 	 * permission to interrupt and actually interrupting.
+	 *
+	 * 用于保护工作线程的锁。
+	 * 根据经验，使用锁处理比使用并发集合更具优势，锁能够更好的避免中断风暴
 	 */
 	private final ReentrantLock mainLock = new ReentrantLock();
 
@@ -572,6 +596,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 
 	/**
 	 * Wait condition to support awaitTermination
+	 * 用于通知在awaitTermination()等待的线程
 	 */
 	private final Condition termination = mainLock.newCondition();
 
@@ -592,6 +617,9 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 	 * ongoing actions are based on freshest values, but without need
 	 * for locking, since no internal invariants depend on them
 	 * changing synchronously with respect to other actions.
+	 *
+	 * 所有可以由开发者设置的属性都申明为volatile，保证了任何对这些属性的访问都带来了内存可见性影响
+	 * 但这些属性不需要锁的保护，因为没有并发竞争场景
 	 */
 
 	/**
@@ -610,6 +638,13 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 	 * will want to perform clean pool shutdown to clean up.  There
 	 * will likely be enough memory available for the cleanup code to
 	 * complete without encountering yet another OutOfMemoryError.
+	 *
+	 * 产生线程的工厂类，所有线程都通过factory#addWorker来产生
+	 * 所有调用者必须能够应对factory#addWorker失败的情况，这会影响池中线程池的数量
+	 * 创建线程失败总是会导致任务被拒绝或滞留在任务队列中
+	 *
+	 * ThreadPoolExecutor尽力保持即使在创建线程出错时依然线程池的稳定
+	 * 当创建线程失败会触发terminated()钩子交给用户做一定工作保证能再次创建线程
 	 */
 	private volatile ThreadFactory threadFactory;
 
@@ -623,6 +658,9 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 	 * Threads use this timeout when there are more than corePoolSize
 	 * present or if allowCoreThreadTimeOut. Otherwise they wait
 	 * forever for new work.
+	 *
+	 * 空闲线程可以存留的时间，默认只有非核心线程才受到存留时间的影响而销毁
+	 * 可以通过设置allowCoreThreadTimeOut来让核心线程也受此约束
 	 */
 	private volatile long keepAliveTime;
 
@@ -648,6 +686,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 
 	/**
 	 * The default rejected execution handler
+	 * 默认采用abort策略拒绝过载任务
 	 */
 	private static final RejectedExecutionHandler defaultHandler = new AbortPolicy();
 
@@ -670,6 +709,9 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 	 * termination. Other uses of interruptIdleWorkers are advisory,
 	 * and failure to actually interrupt will merely delay response to
 	 * configuration changes so is not handled exceptionally.
+	 *
+	 * // TODO 有点难懂
+	 * // 大概就是用于检查调用shutdown()的线程是否有权限关闭该线程池
 	 */
 	private static final RuntimePermission shutdownPerm = new RuntimePermission("modifyThread");
 
