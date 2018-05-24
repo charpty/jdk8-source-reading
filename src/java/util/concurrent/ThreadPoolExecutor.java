@@ -583,7 +583,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 	 * ensuring workers set is stable while separately checking
 	 * permission to interrupt and actually interrupting.
 	 *
-	 * 用于保护工作线程的锁。
+	 * 用于保护工作线程集合的锁。
 	 * 根据经验，使用锁处理比使用并发集合更具优势，锁能够更好的避免中断风暴
 	 */
 	private final ReentrantLock mainLock = new ReentrantLock();
@@ -1039,6 +1039,11 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 	 * null, or due to an exception (typically OutOfMemoryError in
 	 * Thread.start()), we roll back cleanly.
 	 *
+	 * 根据当前线程池状态以及线程数量限制阈值来确定是否能添加一个新的工作线程
+	 * 如果可以则工作线程计数加1，并且（可能）添加一个新的工作线程，然后将firstTask作为其第一个运行任务
+	 * 该方法在线程处于将要停止状态时以及创建线程失败时直接返回false
+	 * 如果创建线程失败（线程工作返回null或异常），则需要回滚操作（工作线程计数是提前加1了的）
+	 *
 	 * @param firstTask
 	 * 		the task the new thread should run first (or
 	 * 		null if none). Workers are created with an initial first task
@@ -1052,6 +1057,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 	 * 		maximumPoolSize. (A boolean indicator is used here rather than a
 	 * 		value to ensure reads of fresh values after checking other pool
 	 * 		state).
+	 * 		true代表要创建的是核心线程
 	 *
 	 * @return true if successful
 	 */
@@ -1062,22 +1068,30 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 			int rs = runStateOf(c);
 
 			// Check if queue empty only if necessary.
+			// >SHUTDOWN当然是直接false了
+			// ==SHUTDOWN时如果线程池本身还在跑任务的（说明还有工作线程活着），不能添加新任务了，但加个新工作线程无妨
 			if (rs >= SHUTDOWN && !(rs == SHUTDOWN && firstTask == null && !workQueue.isEmpty())) {
 				return false;
 			}
 
 			for (; ; ) {
 				int wc = workerCountOf(c);
+				// 如果此时工作线程数已超过阈值（核心阈值或最大阈值）则直接返回false
 				if (wc >= CAPACITY || wc >= (core ? corePoolSize : maximumPoolSize)) {
 					return false;
 				}
+				// 如果成功将当前工作线程计数加1则代表当前线程能开始开展创建线程工作了
+				// 此刻瞬时工作线程计数和实际的工作线程数呈现不一致
 				if (compareAndIncrementWorkerCount(c)) {
 					break retry;
 				}
 				c = ctl.get();  // Re-read ctl
+				// 如果线程池状态改变则要在外层循环检查是否要拒绝创建新线程
 				if (runStateOf(c) != rs) {
 					continue retry;
 				}
+				// 走到这里则说明线程池状态未改变，只是想将工作线程计数加1失败了而已
+				// 因为已经重读过ctl了，此时只要再获取一次新的线程计数然后再次尝试设置即可
 				// else CAS failed due to workerCount change; retry inner loop
 			}
 		}
@@ -1086,24 +1100,29 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 		boolean workerAdded = false;
 		Worker w = null;
 		try {
+			// 构造worker时会调用线程工厂ThreadFactory来创建线程
 			w = new Worker(firstTask);
 			final Thread t = w.thread;
 			if (t != null) {
 				final ReentrantLock mainLock = this.mainLock;
+				// 由于工作线程集合是个非线程安全的HashSet，为了防止并发竞争必须持有锁
 				mainLock.lock();
 				try {
 					// Recheck while holding lock.
 					// Back out on ThreadFactory failure or if
 					// shut down before lock acquired.
+					// 防止在获取锁的过程中线程池状态的改变
 					int rs = runStateOf(ctl.get());
-
+					// 正处于SHUTDOWN状态时不能添加新任务，但可以添加新的工作线程
 					if (rs < SHUTDOWN || (rs == SHUTDOWN && firstTask == null)) {
+						// 线程已经跑起来了？不可思议（线程工厂有问题）直接抛错
 						if (t.isAlive()) // precheck that t is startable
 						{
 							throw new IllegalThreadStateException();
 						}
 						workers.add(w);
 						int s = workers.size();
+						// 记录工作线程数量峰值
 						if (s > largestPoolSize) {
 							largestPoolSize = s;
 						}
@@ -1113,12 +1132,14 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 					mainLock.unlock();
 				}
 				if (workerAdded) {
+					// 让线程处于就绪状态
 					t.start();
 					workerStarted = true;
 				}
 			}
 		} finally {
 			if (!workerStarted) {
+				// 只要是线程没起来就都要进行回滚清理操作
 				addWorkerFailed(w);
 			}
 		}
@@ -1133,13 +1154,18 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 	 * worker was holding up termination
 	 */
 	private void addWorkerFailed(Worker w) {
+		// 清理时由于要操作非线程安全的工作线程集合，则必须要持有锁
 		final ReentrantLock mainLock = this.mainLock;
 		mainLock.lock();
 		try {
+			// 线程本身是未处于runnable状态的，所以只要移除就好
+			// TODO 但是检查下worker然后把thread、firstTask设置为空会不会对gc更友好？
 			if (w != null) {
 				workers.remove(w);
 			}
 			decrementWorkerCount();
+			// 任何一次的工作线程的减少都可能将实际工作线程数清0
+			// 一旦工程线程数为0则应该变更线程池状态（如从SHUTDOWN -> TERMINATED)
 			tryTerminate();
 		} finally {
 			mainLock.unlock();
