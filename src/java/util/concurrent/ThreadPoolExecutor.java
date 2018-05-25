@@ -155,7 +155,7 @@ import java.util.*;
  * This provides a means of reducing resource consumption when the
  * pool is not being actively used. If the pool becomes more active
  * later, new threads will be constructed. This parameter can also be
- * changed dynamically using method {@link #setKeepAliveTime(long, * TimeUnit)}.  Using a value of {@code Long.MAX_VALUE} {@link
+ * changed dynamically using method {@link #setKeepAliveTime(long, TimeUnit)}.  Using a value of {@code Long.MAX_VALUE} {@link
  * TimeUnit#NANOSECONDS} effectively disables idle threads from ever
  * terminating prior to shut down. By default, the keep-alive policy
  * applies only when there are more than corePoolSize threads. But
@@ -730,6 +730,12 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 	 * the thread actually starts running tasks, we initialize lock
 	 * state to a negative value, and clear it upon start (in
 	 * runWorker).
+	 *
+	 * 内部类Worker负责维护中断信号的传播与处理
+	 * Worker继承了并发核心AQS，用于在每个任务执行前后持有锁
+	 * 持锁用于避免中断信号打断正在执行的任务（该中断信号本意只是想唤醒休眠的工作线程）
+	 * Worker实现了一个不可重入的独占锁，避免任务并多次执行以及与线程池状态本身竞争
+	 * 为了防止丢失中断信号（启动前就被中断），默认设置AQS的state为-1
 	 */
 	private final class Worker extends AbstractQueuedSynchronizer implements Runnable {
 		/**
@@ -1277,6 +1283,10 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 	 * Main worker run loop.  Repeatedly gets tasks from queue and
 	 * executes them, while coping with a number of issues:
 	 *
+	 * 工作线程的主循环，不断的从任务队列中获取任务并执行
+	 *
+	 * 代码写的比较复杂，有几个值得注意的点
+	 *
 	 * 1. We may start out with an initial task, in which case we
 	 * don't need to get the first one. Otherwise, as long as pool is
 	 * running, we get tasks from getTask. If it returns null then the
@@ -1285,15 +1295,25 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 	 * external code, in which case completedAbruptly holds, which
 	 * usually leads processWorkerExit to replace this thread.
 	 *
+	 * 是否可以直接初始化一个任务，而不是让开发者传入一个真的firstTask。
+	 * 不然的话，如果开发者传递的是null，然后从队列里获取的也是null，那么线程就退出了
+	 * 其他执行异常情况则由completedAbruptly变量标记并在后续环节判断
+	 *
 	 * 2. Before running any task, the lock is acquired to prevent
 	 * other pool interrupts while the task is executing, and then we
 	 * ensure that unless pool is stopping, this thread does not have
 	 * its interrupt set.
 	 *
+	 * 在执行前就持有锁，用于避免任务执行过程中被中断
+	 * 除非线程池被关闭，否则工作线程的中断状态不会被设置
+	 *
 	 * 3. Each task run is preceded by a call to beforeExecute, which
 	 * might throw an exception, in which case we cause thread to die
 	 * (breaking loop with completedAbruptly true) without processing
 	 * the task.
+	 *
+	 * 每个任务都会执行切面beforeExecute，一旦这个函数抛出异常
+	 * 那么工作线程会直接退出，这个任务会被直接丢弃
 	 *
 	 * 4. Assuming beforeExecute completes normally, we run the task,
 	 * gathering any of its thrown exceptions to send to afterExecute.
@@ -1304,15 +1324,25 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 	 * UncaughtExceptionHandler).  Any thrown exception also
 	 * conservatively causes thread to die.
 	 *
+	 * afterExecute切面会收到执行过程中的异常信息
+	 * 但是任务抛出异常依然会使工作线程退出
+	 *
 	 * 5. After task.run completes, we call afterExecute, which may
 	 * also throw an exception, which will also cause thread to
 	 * die. According to JLS Sec 14.20, this exception is the one that
 	 * will be in effect even if task.run throws.
 	 *
+	 * afterExecute切面抛出任务异常也是会让工作线程中断
+	 * 更可恶的是这里抛出异常还会让任务执行过程中抛出的异常被忽略
+	 *
 	 * The net effect of the exception mechanics is that afterExecute
 	 * and the thread's UncaughtExceptionHandler have as accurate
 	 * information as we can provide about any problems encountered by
 	 * user code.
+	 *
+	 * 不论如何，我们总是能在工作线程退出时知晓并做一些善后处理的
+	 *
+	 * // TODO 为何要在用户代码抛出异常时让线程退出呢
 	 *
 	 * @param w
 	 * 		the worker
@@ -1321,7 +1351,9 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 		Thread wt = Thread.currentThread();
 		Runnable task = w.firstTask;
 		w.firstTask = null;
+		// 执行前中断信号
 		w.unlock(); // allow interrupts
+		// 一个任务都没处理就退出了
 		boolean completedAbruptly = true;
 		try {
 			while (task != null || (task = getTask()) != null) {
