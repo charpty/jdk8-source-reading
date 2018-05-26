@@ -1188,12 +1188,20 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 	 * corePoolSize workers are running or queue is non-empty but
 	 * there are no workers.
 	 *
+	 * 记录并处理将终止的工作线程，只有worker线程退出主循环时才会执行
+	 * 如果异常退出标记未被设置，则说明工作线程计数已被合理更新过了
+	 * 该方法从worker set从移除指定线程，并会检查线程池状态判断是否需要关闭线程池
+	 * 同时也会在线程是异常退出时补充新的工作线程
+	 * 另外当核心线程数不够或者无工作线程来执行剩余任务时也会添加新的线程
+	 * 由于线程退出时可能导致线程池处于不可知状态且无法自我修复，该方法在线程退出时做了诸多检查来保证线程池的正常运行
+	 *
 	 * @param w
 	 * 		the worker
 	 * @param completedAbruptly
 	 * 		if the worker died due to user exception
 	 */
 	private void processWorkerExit(Worker w, boolean completedAbruptly) {
+		// 如果工作线程是异常退出的，那么它还未能处理好workerCount计数
 		if (completedAbruptly) // If abrupt, then workerCount wasn't adjusted
 		{
 			decrementWorkerCount();
@@ -1202,21 +1210,28 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 		final ReentrantLock mainLock = this.mainLock;
 		mainLock.lock();
 		try {
+			// 记录完成任务总数并移除线程
 			completedTaskCount += w.completedTasks;
 			workers.remove(w);
 		} finally {
 			mainLock.unlock();
 		}
-
+		// 该线程退出之后，检查是否需要改变线程池状态，比如从STOP -> TERMINATED
 		tryTerminate();
 
 		int c = ctl.get();
+		// 如果线程池还在运行的，那么工作线程退出了总得补上
 		if (runStateLessThan(c, STOP)) {
 			if (!completedAbruptly) {
+				// 如果是正常退出的，比如空闲了一定时间的线程并清理了
 				int min = allowCoreThreadTimeOut ? 0 : corePoolSize;
+				// 如果任务队列里还有任务未完成，则必须存在工作线程来执行任务
 				if (min == 0 && !workQueue.isEmpty()) {
 					min = 1;
 				}
+				// 线程数量还足够的话就不需要补充工作线程了
+				// TODO 如果此时正好有线程在创建（计数先加1），且创建失败了，那线程数量为0了？
+				// 在上一句代码执行完正好有工作任务进来岂不是就跑不了？
 				if (workerCountOf(c) >= min) {
 					return; // replacement not needed
 				}
@@ -1353,15 +1368,18 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 		w.firstTask = null;
 		// 执行前中断信号
 		w.unlock(); // allow interrupts
-		// 一个任务都没处理就退出了
+		// 是由于异常情况才退出的
 		boolean completedAbruptly = true;
 		try {
 			while (task != null || (task = getTask()) != null) {
+				// 在对线程执行中断操作时也总是持有锁，所以保证了worker不会被线程池其他操作所中断
 				w.lock();
 				// If pool is stopping, ensure thread is interrupted;
 				// if not, ensure thread is not interrupted.  This
 				// requires a recheck in second case to deal with
 				// shutdownNow race while clearing interrupt
+				// 在worker线程未被中断时，有两种情况下要设置线程的中断信号，一是线程池已经处于关闭状态了
+				// 二是当前线程被中断了，此时要重新检查线程池状态（因为Thread.interrupted()会清空中断状态）
 				if ((runStateAtLeast(ctl.get(), STOP) || (Thread.interrupted() && runStateAtLeast(ctl.get(), STOP))) && !wt.isInterrupted()) {
 					wt.interrupt();
 				}
@@ -1369,6 +1387,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 					beforeExecute(wt, task);
 					Throwable thrown = null;
 					try {
+						// 任何的执行异常都会导致工作线程抛出异常并终止运行
 						task.run();
 					} catch (RuntimeException x) {
 						thrown = x;
@@ -1380,6 +1399,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 						thrown = x;
 						throw new Error(x);
 					} finally {
+						// 不论如何总是把执行结果（异常）交给切面afterExecute处理
 						afterExecute(task, thrown);
 					}
 				} finally {
@@ -1629,15 +1649,17 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 			}
 			c = ctl.get();
 		}
-		// 能够通过任务队列消化的情况
+		// 核心线程都忙碌中则先试试能否追加到任务队列中
 		if (isRunning(c) && workQueue.offer(command)) {
+			// 能够通过任务队列消化的情况
 			int recheck = ctl.get();
 			if (!isRunning(recheck) && remove(command)) {
 				reject(command);
 			} else if (workerCountOf(recheck) == 0) {
+				// 当前没有工作线程来执行任务了，该情况属于空闲线程都由于超时而被清理
 				addWorker(null, false);
 			}
-			// 通过非核心线程解决
+			// 无法追加到任务队列则通过创建非核心线程来执行任务
 		} else if (!addWorker(command, false)) {
 			reject(command);
 		}
