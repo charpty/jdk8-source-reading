@@ -942,6 +942,12 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 	 * 		interrupt only one idle worker, but shutdown() interrupts all
 	 * 		idle workers so that redundant workers exit promptly, not
 	 * 		waiting for a straggler task to finish.
+	 *
+	 * 		只中断一个线程。
+	 * 		其实也就是tryTerminate()时调用，用于处理终止线程池过程中还有线程在运行的情况（任务队列已判空）
+	 * 		唤醒一个工作线程之后，等同于会将中断信号传递给其它线程，因为线程退出时会再次调用tryTerminate()
+	 * 		每次随意中断一个等待任务的线程，从而让线程池逐渐清空任务队列并达到关闭状态
+	 * 		而部分函数shutdown()如则是立马中断所有空闲线程来快速清除任务和工作线程
 	 */
 	private void interruptIdleWorkers(boolean onlyOne) {
 		final ReentrantLock mainLock = this.mainLock;
@@ -949,6 +955,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 		try {
 			for (Worker w : workers) {
 				Thread t = w.thread;
+				// 尝试中断线程时总是尝试获取worker锁（本身继承自AQS），避免线程在执行任务时被中断
 				if (!t.isInterrupted() && w.tryLock()) {
 					try {
 						t.interrupt();
@@ -1014,6 +1021,8 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 	 * drainTo. But if the queue is a DelayQueue or any other kind of
 	 * queue for which poll or drainTo may fail to remove some
 	 * elements, it deletes them one by one.
+	 *
+	 * 调用该方法时必然持有主锁
 	 */
 	private List<Runnable> drainQueue() {
 		BlockingQueue<Runnable> q = workQueue;
@@ -1254,6 +1263,13 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 	 * both before and after the timed wait, and if the queue is
 	 * non-empty, this worker is not the last thread in the pool.
 	 *
+	 * 从任务队列获取一个任务，无任务时是阻塞还是直接返回null取决与线程池设置以及当前线程池状态
+	 * 一旦返回null，那么线程就会退出，退出有几种情况：
+	 * 1. 工作线程总数已大于maximumPoolSize
+	 * 2. 线程池已停止，状态大于>SHUTDOWN
+	 * 3. 线程池处于SHUTDOWN状态且任务队列是空的
+	 * 4. 工作线程等待任务超时（任务队列非空时要求线程池中必须还有至少一个工作线程）
+	 *
 	 * @return task, or null if the worker must exit, in which case
 	 * workerCount is decremented
 	 */
@@ -1265,7 +1281,9 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 			int rs = runStateOf(c);
 
 			// Check if queue empty only if necessary.
+			// 检查线程池已处于>=STOP状态了（=SHUTDOWN && workQueue.isEmpty()则已经会切换到STOP了）
 			if (rs >= SHUTDOWN && (rs >= STOP || workQueue.isEmpty())) {
+				// 返回空让线程正常退出，此时已提前把线程计数减1了，只有异常情况才到processWorkerExit处理
 				decrementWorkerCount();
 				return null;
 			}
@@ -1273,22 +1291,28 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 			int wc = workerCountOf(c);
 
 			// Are workers subject to culling?
+			// 当前是否满足让工作线程由于空闲超时而退出的条件？
 			boolean timed = allowCoreThreadTimeOut || wc > corePoolSize;
 
+			// 工作线程超出上限了或者获取任务超时了（此时必须满足还剩余至少一个工作线程来完成队列中剩余任务）
 			if ((wc > maximumPoolSize || (timed && timedOut)) && (wc > 1 || workQueue.isEmpty())) {
 				if (compareAndDecrementWorkerCount(c)) {
 					return null;
 				}
+				// 工作线程数计数值存在竞争，重试
 				continue;
 			}
 
 			try {
+				// keepAliveTime表示的一个线程最长空闲时间，这里也就是等待队列返回的时间，当然前提是当前确实可以清理空闲线程的情况下
 				Runnable r = timed ? workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS) : workQueue.take();
 				if (r != null) {
 					return r;
 				}
+				// 有过超时了
 				timedOut = true;
 			} catch (InterruptedException retry) {
+				// TODO 在任务队列的条件队列上等待失败则清空超时状态？什么情况下会被中断呢？
 				timedOut = false;
 			}
 		}
@@ -1681,13 +1705,18 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 		final ReentrantLock mainLock = this.mainLock;
 		mainLock.lock();
 		try {
+			// 检查当前线程是否有权限关闭线程池
 			checkShutdownAccess();
+			// 将线程池状态设置为SHUTDOWN
 			advanceRunState(SHUTDOWN);
+			// 中断所有空闲线程让其快速终止
 			interruptIdleWorkers();
+			// 调用钩子通知已shutdown
 			onShutdown(); // hook for ScheduledThreadPoolExecutor
 		} finally {
 			mainLock.unlock();
 		}
+		// 线程池从SHUTDOWN到最终的死亡由退出的线程逐一判断，仅当任务队列为空，工作线程为0才彻底终止
 		tryTerminate();
 	}
 
@@ -1717,6 +1746,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 			checkShutdownAccess();
 			advanceRunState(STOP);
 			interruptWorkers();
+			// 唯一的区别是不等待任务全部完成，而是将未完成的任务返回
 			tasks = drainQueue();
 		} finally {
 			mainLock.unlock();
@@ -1885,6 +1915,10 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 	 * new tasks are executed. This method will return {@code false}
 	 * if all core threads have already been started.
 	 *
+	 * 这个函数很有用，用于提前先启动好一个核心线程
+	 * 这样当有任务来时就可以直接用上了（实际上根据execute规则核心线程数不够时还是会创建新线程）
+	 * 但是提前预热好线程总是节约了任务来临时再创建新线程的时间，这个对于创建线程池时已有一个任务队列的场景非常有用
+	 *
 	 * @return {@code true} if a thread was started
 	 */
 	public boolean prestartCoreThread() {
@@ -1908,6 +1942,8 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 	 * Starts all core threads, causing them to idly wait for work. This
 	 * overrides the default policy of starting core threads only when
 	 * new tasks are executed.
+	 *
+	 * 提前就创建好所有核心线程
 	 *
 	 * @return the number of threads started
 	 */
