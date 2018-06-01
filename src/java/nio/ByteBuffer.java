@@ -146,10 +146,17 @@ package java.nio;
  * ByteOrder} class.  The initial order of a byte buffer is always {@link
  * ByteOrder#BIG_ENDIAN BIG_ENDIAN}.
  *
+ * ByteBuffer提供了除布尔类型以外的所有基本类型的读写函数。
+ * ByteBuffer内部完成了byte字节和基本类型的转换，用户可以通过order()设置字节序
+ * 字节序通过ByteOrder来表示，默认总是采用大端字节序（也就是默认的网络字节序）
+ *
  * <p> For access to heterogeneous binary data, that is, sequences of values of
  * different types, this class defines a family of absolute and relative
  * <i>get</i> and <i>put</i> methods for each type.  For 32-bit floating-point
  * values, for example, this class defines:
+ *
+ * ByteBuffer提供了多种方法用于在指定位置获取指定类型数据的方法，可以是相对位置或决定位置。
+ * 这主要是针对字节流中是类型不同的数据
  *
  * <blockquote><pre>
  * float  {@link #getFloat()}
@@ -176,6 +183,9 @@ package java.nio;
  * the types <tt>char</tt>, <tt>short</tt>, <tt>int</tt>, <tt>long</tt>, and
  * <tt>double</tt>.
  *
+ * 针对规整数据，也就是类型一致的字节buffer，可以很容易的转换一个视图类型Buffer如FloatBuffer
+ * 转换之后，两个buffer拥有独立的各项标记，包括position、limit、mark
+ *
  * <p> View buffers have three important advantages over the families of
  * type-specific <i>get</i> and <i>put</i> methods described above:
  *
@@ -200,26 +210,6 @@ package java.nio;
  *
  *
  *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
  * <h2> Invocation chaining </h2>
  *
  *
@@ -227,7 +217,7 @@ package java.nio;
  * specified to return the buffer upon which they are invoked.  This allows
  * method invocations to be chained.
  *
- *
+ * ByteBuffer很多方法返回的是buffer本身，这是为了能够让用户链式操作，更加方便且语法优美
  *
  * The sequence of statements
  *
@@ -251,7 +241,8 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
 	// These fields are declared here rather than in Heap-X-Buffer in order to
 	// reduce the number of virtual method invocations needed to access these
 	// values, which is especially costly when coding small buffers.
-	//
+	// 将其定义在子类中而不是父Buffer中是为了减少虚函数的访问造成的损耗
+	// 堆内buffer模式下，存储的byte字节
 	final byte[] hb;                  // Non-null only for heap buffers
 	final int offset;
 	boolean isReadOnly;                 // Valid only for heap buffers
@@ -289,6 +280,7 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
 	 * 		If the <tt>capacity</tt> is a negative integer
 	 */
 	public static ByteBuffer allocateDirect(int capacity) {
+		// 堆外模式
 		return new DirectByteBuffer(capacity);
 	}
 
@@ -312,6 +304,7 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
 		if (capacity < 0) {
 			throw new IllegalArgumentException();
 		}
+		// 堆内模式
 		return new HeapByteBuffer(capacity, capacity);
 	}
 
