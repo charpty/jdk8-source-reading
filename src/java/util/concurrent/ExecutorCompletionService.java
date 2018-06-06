@@ -108,122 +108,122 @@ package java.util.concurrent;
  * ECS会自动将已运行完毕的任务Future结果推送到队列头
  */
 public class ExecutorCompletionService<V> implements CompletionService<V> {
-	// ECS只是一层封装，本质上还是通过Executor执行任务
-	private final Executor executor;
-	private final AbstractExecutorService aes;
-	private final BlockingQueue<Future<V>> completionQueue;
+    // ECS只是一层封装，本质上还是通过Executor执行任务
+    private final Executor executor;
+    private final AbstractExecutorService aes;
+    private final BlockingQueue<Future<V>> completionQueue;
 
-	/**
-	 * FutureTask extension to enqueue upon completion
-	 *
-	 * ECS实现的关键，ECS会将提交的Callable/Runnable再次封装为QueueingFuture
-	 * QueueingFuture做的最重要的事情就是在任务完成时，将该任务add到completionQueue中
-	 */
-	private class QueueingFuture extends FutureTask<Void> {
-		QueueingFuture(RunnableFuture<V> task) {
-			super(task, null);
-			this.task = task;
-		}
+    /**
+     * FutureTask extension to enqueue upon completion
+     *
+     * ECS实现的关键，ECS会将提交的Callable/Runnable再次封装为QueueingFuture
+     * QueueingFuture做的最重要的事情就是在任务完成时，将该任务add到completionQueue中
+     */
+    private class QueueingFuture extends FutureTask<Void> {
+        QueueingFuture(RunnableFuture<V> task) {
+            super(task, null);
+            this.task = task;
+        }
 
-		protected void done() {
-			completionQueue.add(task);
-		}
+        protected void done() {
+            completionQueue.add(task);
+        }
 
-		private final Future<V> task;
-	}
+        private final Future<V> task;
+    }
 
-	private RunnableFuture<V> newTaskFor(Callable<V> task) {
-		if (aes == null) {
-			return new FutureTask<V>(task);
-		} else {
-			return aes.newTaskFor(task);
-		}
-	}
+    private RunnableFuture<V> newTaskFor(Callable<V> task) {
+        if (aes == null) {
+            return new FutureTask<V>(task);
+        } else {
+            return aes.newTaskFor(task);
+        }
+    }
 
-	private RunnableFuture<V> newTaskFor(Runnable task, V result) {
-		if (aes == null) {
-			return new FutureTask<V>(task, result);
-		} else {
-			return aes.newTaskFor(task, result);
-		}
-	}
+    private RunnableFuture<V> newTaskFor(Runnable task, V result) {
+        if (aes == null) {
+            return new FutureTask<V>(task, result);
+        } else {
+            return aes.newTaskFor(task, result);
+        }
+    }
 
-	/**
-	 * Creates an ExecutorCompletionService using the supplied
-	 * executor for base task execution and a
-	 * {@link LinkedBlockingQueue} as a completion queue.
-	 *
-	 * @param executor
-	 * 		the executor to use
-	 *
-	 * @throws NullPointerException
-	 * 		if executor is {@code null}
-	 */
-	public ExecutorCompletionService(Executor executor) {
-		if (executor == null) {
-			throw new NullPointerException();
-		}
-		this.executor = executor;
-		// 如果executor继承自AES，那么可以直接使用AES的newTaskFor方法来创建RunnableFuture
-		this.aes = (executor instanceof AbstractExecutorService) ? (AbstractExecutorService) executor : null;
-		this.completionQueue = new LinkedBlockingQueue<Future<V>>();
-	}
+    /**
+     * Creates an ExecutorCompletionService using the supplied
+     * executor for base task execution and a
+     * {@link LinkedBlockingQueue} as a completion queue.
+     *
+     * @param executor
+     *         the executor to use
+     *
+     * @throws NullPointerException
+     *         if executor is {@code null}
+     */
+    public ExecutorCompletionService(Executor executor) {
+        if (executor == null) {
+            throw new NullPointerException();
+        }
+        this.executor = executor;
+        // 如果executor继承自AES，那么可以直接使用AES的newTaskFor方法来创建RunnableFuture
+        this.aes = (executor instanceof AbstractExecutorService) ? (AbstractExecutorService) executor : null;
+        this.completionQueue = new LinkedBlockingQueue<Future<V>>();
+    }
 
-	/**
-	 * Creates an ExecutorCompletionService using the supplied
-	 * executor for base task execution and the supplied queue as its
-	 * completion queue.
-	 *
-	 * @param executor
-	 * 		the executor to use
-	 * @param completionQueue
-	 * 		the queue to use as the completion queue
-	 * 		normally one dedicated for use by this service. This
-	 * 		queue is treated as unbounded -- failed attempted
-	 * 		{@code Queue.add} operations for completed tasks cause
-	 * 		them not to be retrievable.
-	 *
-	 * @throws NullPointerException
-	 * 		if executor or completionQueue are {@code null}
-	 */
-	public ExecutorCompletionService(Executor executor, BlockingQueue<Future<V>> completionQueue) {
-		if (executor == null || completionQueue == null) {
-			throw new NullPointerException();
-		}
-		this.executor = executor;
-		this.aes = (executor instanceof AbstractExecutorService) ? (AbstractExecutorService) executor : null;
-		this.completionQueue = completionQueue;
-	}
+    /**
+     * Creates an ExecutorCompletionService using the supplied
+     * executor for base task execution and the supplied queue as its
+     * completion queue.
+     *
+     * @param executor
+     *         the executor to use
+     * @param completionQueue
+     *         the queue to use as the completion queue
+     *         normally one dedicated for use by this service. This
+     *         queue is treated as unbounded -- failed attempted
+     *         {@code Queue.add} operations for completed tasks cause
+     *         them not to be retrievable.
+     *
+     * @throws NullPointerException
+     *         if executor or completionQueue are {@code null}
+     */
+    public ExecutorCompletionService(Executor executor, BlockingQueue<Future<V>> completionQueue) {
+        if (executor == null || completionQueue == null) {
+            throw new NullPointerException();
+        }
+        this.executor = executor;
+        this.aes = (executor instanceof AbstractExecutorService) ? (AbstractExecutorService) executor : null;
+        this.completionQueue = completionQueue;
+    }
 
-	public Future<V> submit(Callable<V> task) {
-		if (task == null) {
-			throw new NullPointerException();
-		}
-		// 实际上就是再次将task封装为QueueingFuture，实现在任务完成时能将该任务追加到完成队列中
-		RunnableFuture<V> f = newTaskFor(task);
-		executor.execute(new QueueingFuture(f));
-		return f;
-	}
+    public Future<V> submit(Callable<V> task) {
+        if (task == null) {
+            throw new NullPointerException();
+        }
+        // 实际上就是再次将task封装为QueueingFuture，实现在任务完成时能将该任务追加到完成队列中
+        RunnableFuture<V> f = newTaskFor(task);
+        executor.execute(new QueueingFuture(f));
+        return f;
+    }
 
-	public Future<V> submit(Runnable task, V result) {
-		if (task == null) {
-			throw new NullPointerException();
-		}
-		RunnableFuture<V> f = newTaskFor(task, result);
-		executor.execute(new QueueingFuture(f));
-		return f;
-	}
+    public Future<V> submit(Runnable task, V result) {
+        if (task == null) {
+            throw new NullPointerException();
+        }
+        RunnableFuture<V> f = newTaskFor(task, result);
+        executor.execute(new QueueingFuture(f));
+        return f;
+    }
 
-	public Future<V> take() throws InterruptedException {
-		return completionQueue.take();
-	}
+    public Future<V> take() throws InterruptedException {
+        return completionQueue.take();
+    }
 
-	public Future<V> poll() {
-		return completionQueue.poll();
-	}
+    public Future<V> poll() {
+        return completionQueue.poll();
+    }
 
-	public Future<V> poll(long timeout, TimeUnit unit) throws InterruptedException {
-		return completionQueue.poll(timeout, unit);
-	}
+    public Future<V> poll(long timeout, TimeUnit unit) throws InterruptedException {
+        return completionQueue.poll(timeout, unit);
+    }
 
 }

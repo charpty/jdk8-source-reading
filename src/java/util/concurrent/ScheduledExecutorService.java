@@ -70,7 +70,7 @@ package java.util.concurrent;
  * Here is a class with a method that sets up a ScheduledExecutorService
  * to beep every ten seconds for an hour:
  *
- *  <pre> {@code
+ * <pre> {@code
  * import static java.util.concurrent.TimeUnit.*;
  * class BeeperControl {
  *   private final ScheduledExecutorService scheduler =
@@ -88,8 +88,8 @@ package java.util.concurrent;
  *   }
  * }}</pre>
  *
- * @since 1.5
  * @author Doug Lea
+ * @since 1.5
  */
 public interface ScheduledExecutorService extends ExecutorService {
 
@@ -97,34 +97,47 @@ public interface ScheduledExecutorService extends ExecutorService {
      * Creates and executes a one-shot action that becomes enabled
      * after the given delay.
      *
-     * @param command the task to execute
-     * @param delay the time from now to delay execution
-     * @param unit the time unit of the delay parameter
+     * @param command
+     *         the task to execute
+     * @param delay
+     *         the time from now to delay execution
+     * @param unit
+     *         the time unit of the delay parameter
+     *
      * @return a ScheduledFuture representing pending completion of
-     *         the task and whose {@code get()} method will return
-     *         {@code null} upon completion
-     * @throws RejectedExecutionException if the task cannot be
+     * the task and whose {@code get()} method will return
+     * {@code null} upon completion
+     *
+     * @throws RejectedExecutionException
+     *         if the task cannot be
      *         scheduled for execution
-     * @throws NullPointerException if command is null
+     * @throws NullPointerException
+     *         if command is null
      */
-    public ScheduledFuture<?> schedule(Runnable command,
-                                       long delay, TimeUnit unit);
+    public ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit);
 
     /**
      * Creates and executes a ScheduledFuture that becomes enabled after the
      * given delay.
      *
-     * @param callable the function to execute
-     * @param delay the time from now to delay execution
-     * @param unit the time unit of the delay parameter
-     * @param <V> the type of the callable's result
+     * @param callable
+     *         the function to execute
+     * @param delay
+     *         the time from now to delay execution
+     * @param unit
+     *         the time unit of the delay parameter
+     * @param <V>
+     *         the type of the callable's result
+     *
      * @return a ScheduledFuture that can be used to extract result or cancel
-     * @throws RejectedExecutionException if the task cannot be
+     *
+     * @throws RejectedExecutionException
+     *         if the task cannot be
      *         scheduled for execution
-     * @throws NullPointerException if callable is null
+     * @throws NullPointerException
+     *         if callable is null
      */
-    public <V> ScheduledFuture<V> schedule(Callable<V> callable,
-                                           long delay, TimeUnit unit);
+    public <V> ScheduledFuture<V> schedule(Callable<V> callable, long delay, TimeUnit unit);
 
     /**
      * Creates and executes a periodic action that becomes enabled first
@@ -139,22 +152,28 @@ public interface ScheduledExecutorService extends ExecutorService {
      * takes longer than its period, then subsequent executions
      * may start late, but will not concurrently execute.
      *
-     * @param command the task to execute
-     * @param initialDelay the time to delay first execution
-     * @param period the period between successive executions
-     * @param unit the time unit of the initialDelay and period parameters
+     * @param command
+     *         the task to execute
+     * @param initialDelay
+     *         the time to delay first execution
+     * @param period
+     *         the period between successive executions
+     * @param unit
+     *         the time unit of the initialDelay and period parameters
+     *
      * @return a ScheduledFuture representing pending completion of
-     *         the task, and whose {@code get()} method will throw an
-     *         exception upon cancellation
-     * @throws RejectedExecutionException if the task cannot be
+     * the task, and whose {@code get()} method will throw an
+     * exception upon cancellation
+     *
+     * @throws RejectedExecutionException
+     *         if the task cannot be
      *         scheduled for execution
-     * @throws NullPointerException if command is null
-     * @throws IllegalArgumentException if period less than or equal to zero
+     * @throws NullPointerException
+     *         if command is null
+     * @throws IllegalArgumentException
+     *         if period less than or equal to zero
      */
-    public ScheduledFuture<?> scheduleAtFixedRate(Runnable command,
-                                                  long initialDelay,
-                                                  long period,
-                                                  TimeUnit unit);
+    public ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit);
 
     /**
      * Creates and executes a periodic action that becomes enabled first
@@ -165,22 +184,28 @@ public interface ScheduledExecutorService extends ExecutorService {
      * Otherwise, the task will only terminate via cancellation or
      * termination of the executor.
      *
-     * @param command the task to execute
-     * @param initialDelay the time to delay first execution
-     * @param delay the delay between the termination of one
-     * execution and the commencement of the next
-     * @param unit the time unit of the initialDelay and delay parameters
+     * @param command
+     *         the task to execute
+     * @param initialDelay
+     *         the time to delay first execution
+     * @param delay
+     *         the delay between the termination of one
+     *         execution and the commencement of the next
+     * @param unit
+     *         the time unit of the initialDelay and delay parameters
+     *
      * @return a ScheduledFuture representing pending completion of
-     *         the task, and whose {@code get()} method will throw an
-     *         exception upon cancellation
-     * @throws RejectedExecutionException if the task cannot be
+     * the task, and whose {@code get()} method will throw an
+     * exception upon cancellation
+     *
+     * @throws RejectedExecutionException
+     *         if the task cannot be
      *         scheduled for execution
-     * @throws NullPointerException if command is null
-     * @throws IllegalArgumentException if delay less than or equal to zero
+     * @throws NullPointerException
+     *         if command is null
+     * @throws IllegalArgumentException
+     *         if delay less than or equal to zero
      */
-    public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command,
-                                                     long initialDelay,
-                                                     long delay,
-                                                     TimeUnit unit);
+    public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit);
 
 }
