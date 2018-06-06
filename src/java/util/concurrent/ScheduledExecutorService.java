@@ -39,6 +39,8 @@ package java.util.concurrent;
  * An {@link ExecutorService} that can schedule commands to run after a given
  * delay, or to execute periodically.
  *
+ * 在普通ExecutorService的基础上再增加了延时执行任务以及固定周期执行任务的能力
+ *
  * <p>The {@code schedule} methods create tasks with various delays
  * and return a task object that can be used to cancel or check
  * execution. The {@code scheduleAtFixedRate} and
