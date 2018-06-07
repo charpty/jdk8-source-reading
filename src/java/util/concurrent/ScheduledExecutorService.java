@@ -47,11 +47,16 @@ package java.util.concurrent;
  * {@code scheduleWithFixedDelay} methods create and execute tasks
  * that run periodically until cancelled.
  *
+ * 新增了schedule()方法，可以延时执行任务，同样返回Future用于跟踪任务执行情况
+ * 也提供了scheduleAtFixedRate()用于以指定速率执行任务
+ *
  * <p>Commands submitted using the {@link Executor#execute(Runnable)}
  * and {@link ExecutorService} {@code submit} methods are scheduled
  * with a requested delay of zero. Zero and negative delays (but not
  * periods) are also allowed in {@code schedule} methods, and are
  * treated as requests for immediate execution.
+ *
+ * ScheduledExecutorService也支持立刻执行，只要将延迟设置为0或负数即可
  *
  * <p>All {@code schedule} methods accept <em>relative</em> delays and
  * periods as arguments, not absolute times or dates. It is a simple
@@ -63,6 +68,10 @@ package java.util.concurrent;
  * relative delay need not coincide with the current {@code Date} at
  * which the task is enabled due to network time synchronization
  * protocols, clock drift, or other factors.
+ *
+ * schedule()只能指定相对多少时间后执行，而不能指定一个实际的时间执行
+ * 如果想要在指定某个时间进行执行，则需要用户自行进行换算延迟多少时间
+ * 传入相对时间的好处在于不用考虑时钟延时，网络同步开销或其他因素
  *
  * <p>The {@link Executors} class provides convenient factory methods for
  * the ScheduledExecutorService implementations provided in this package.
@@ -98,6 +107,8 @@ public interface ScheduledExecutorService extends ExecutorService {
     /**
      * Creates and executes a one-shot action that becomes enabled
      * after the given delay.
+     *
+     * 在指定时延后执行任务
      *
      * @param command
      *         the task to execute
@@ -154,6 +165,9 @@ public interface ScheduledExecutorService extends ExecutorService {
      * takes longer than its period, then subsequent executions
      * may start late, but will not concurrently execute.
      *
+     * 在指定时延后，开始循环定期调用执行某个任务（不计任务执行时长），任务执行过程中发生异常或者任务被取消则会终止
+     * 如果任务执行时长较长，超过了调用周期，则下一次任务调用会被顺延，不会存在同一个任务在并行执行的情况
+     *
      * @param command
      *         the task to execute
      * @param initialDelay
@@ -185,6 +199,8 @@ public interface ScheduledExecutorService extends ExecutorService {
      * encounters an exception, subsequent executions are suppressed.
      * Otherwise, the task will only terminate via cancellation or
      * termination of the executor.
+     *
+     * 在指定时延之后，开始循环执行任务，保证一个任务的结束与下一个任务的开始中间的时间是固定的
      *
      * @param command
      *         the task to execute

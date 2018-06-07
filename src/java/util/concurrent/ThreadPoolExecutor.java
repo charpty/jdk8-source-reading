@@ -1928,6 +1928,9 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
     /**
      * Same as prestartCoreThread except arranges that at least one
      * thread is started even if corePoolSize is 0.
+     *
+     * 保证当前线程池中至少有一个工作线程
+     * 对定时调度类线程池很重要，不在用户增加任务时主动触发线程工作，只能让工作线程被动消费任务，此时消费者数量必然不能为0
      */
     void ensurePrestart() {
         int wc = workerCountOf(ctl.get());
