@@ -499,6 +499,8 @@ public class DelayQueue<E extends Delayed> extends AbstractQueue<E> implements B
      * <p>This method acts as bridge between array-based and collection-based
      * APIs.
      *
+     * 返回元素顺序不可确定是因为PriorityQueue并不是按照顺序存储元素
+     *
      * @return an array containing all of the elements in this queue
      */
     public Object[] toArray() {
