@@ -12,4 +12,5 @@ log
 .DS_Store
 test.py
 *.pyc
-T.java
+Test*.java
+*/Test*.java
