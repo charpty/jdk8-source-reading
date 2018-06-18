@@ -51,11 +51,17 @@ import java.util.*;
  * flexibility or capabilities of {@link ThreadPoolExecutor} (which
  * this class extends) are required.
  *
+ * ScheduledThreadPoolExecutor是ThreadPoolExecutor的变种版本，可以延时或周期性执行任务
+ * STPE比java.util.Timer更具多线程操控能力以及更多的功能特性
+ *
  * <p>Delayed tasks execute no sooner than they are enabled, but
  * without any real-time guarantees about when, after they are
  * enabled, they will commence. Tasks scheduled for exactly the same
  * execution time are enabled in first-in-first-out (FIFO) order of
  * submission.
+ *
+ * 任务是延时执行的，但是实际上何时执行是不确定的（要看工作线程繁忙程度了以及同个时间下的任务密集程度）
+ * 任务一旦到达可执行状态，就有可能开始被执行，剩余相同延时的任务则按照任务队列FIFO方式弹出执行
  *
  * <p>When a submitted task is cancelled before it is run, execution
  * is suppressed. By default, such a cancelled task is not
@@ -66,6 +72,11 @@ import java.util.*;
  * causes tasks to be immediately removed from the work queue at
  * time of cancellation.
  *
+ * 在执行前就被取消的任务是不会被执行的
+ * 默认情况下被取消的任务还是会留在任务队列中，只有当工作线程取到他的时候才会发现它已经被取消从而丢弃它
+ * 由于是只有延时时间到才能将取消的任务从任务队列中移除，这有可能导致该任务长时间存留在队列中
+ * 可以通过设置setRemoveOnCancelPolicy()来让任务在被取消时即从任务队列中移除
+ *
  * <p>Successive executions of a task scheduled via
  * {@code scheduleAtFixedRate} or
  * {@code scheduleWithFixedDelay} do not overlap. While different
@@ -73,6 +84,10 @@ import java.util.*;
  * prior executions <a
  * href="package-summary.html#MemoryVisibility"><i>happen-before</i></a>
  * those of subsequent ones.
+ *
+ * 周期性任务不会存在同一个时刻有两个工作线程在执行同一个任务的情况，但是一个任务却可能被不同工作线程调度
+ * 前一个工作线程执行任务时可看到的共享内存，对后续执行执行该任务的工作线程也是可见的
+ * 这是工作线程执行任务时读取volatile变量带来的内存可见性影响
  *
  * <p>While this class inherits from {@link ThreadPoolExecutor}, a few
  * of the inherited tuning methods are not useful for it. In
@@ -82,6 +97,11 @@ import java.util.*;
  * is almost never a good idea to set {@code corePoolSize} to zero or
  * use {@code allowCoreThreadTimeOut} because this may leave the pool
  * without threads to handle tasks once they become eligible to run.
+ *
+ * STPE继承自ThreadPoolExecutor，但由于设计目的不同，父类很多特性和方法在该类中都是不合适的
+ * 由于STPE相是一个固定核心线程数配合无界任务队列的设计，那么最大线程maximumPoolSize这个参数其实是没用的
+ * 另外，由于是通过核心工作线程扫描任务队列的方式来执行任务，所以将核心线程数数量设置为0或者允许核心线程数全部超时退出是不明智的
+ * 这会导致任务队列里的任务即时延时到期了也没有工作线程执行，这也是每次添加任务都要保证工作线程数的原因--ensurePrestart()
  *
  * <p><b>Extension notes:</b> This class overrides the
  * {@link ThreadPoolExecutor#execute(Runnable) execute} and
@@ -100,6 +120,9 @@ import java.util.*;
  * {@code ScheduledThreadPoolExecutor} uses a task type extending
  * {@link FutureTask}. However, this may be modified or replaced using
  * subclasses of the form:
+ *
+ * STPE重写了父类的execute和submit方法，用于将任务都封装为ScheduledFuture来控制任务的调度
+ * // TODO 跑步去
  *
  * <pre> {@code
  * public class CustomScheduledExecutor extends ScheduledThreadPoolExecutor {
