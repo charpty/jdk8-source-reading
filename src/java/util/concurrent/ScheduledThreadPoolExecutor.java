@@ -122,7 +122,8 @@ import java.util.*;
  * subclasses of the form:
  *
  * STPE重写了父类的execute和submit方法，用于将任务都封装为ScheduledFuture来控制任务的调度
- * // TODO 跑步去
+ * 为了保持统一使用ScheduledFuture调度的特性，子类重写的时候也要调用STPE的方法也实现统一的任务管理方式
+ * STPE提供了一个切面decorateTask用于帮助子类在构建完ScheduledFuture之后做一些适度的调整
  *
  * <pre> {@code
  * public class CustomScheduledExecutor extends ScheduledThreadPoolExecutor {
@@ -171,6 +172,14 @@ public class ScheduledThreadPoolExecutor extends ThreadPoolExecutor implements S
      *    instrumentation, which are needed because subclasses cannot
      *    otherwise override submit methods to get this effect. These
      *    don't have any impact on pool control logic though.
+     *
+     * STPE通过定制ThreadPoolExecutor的4个行为来实现
+     *
+     * 1. 使用ScheduledFutureTask再次封装Runnable（不论任务是否需要延时执行）
+     * 2. 使用一个自定义的延时队列（JDK DelayQueue的变体），简化了延时执行机制，后续的任务只要将任务追加到该队列中
+     * 3. 由于延时特性，所以增加了参数来处理在shutdown后是否还需要执行一次性延时任务
+     * 4. 提供切面让子类可以适当改变ScheduledFuture的任务特性
+     *
      */
 
     /**
@@ -392,8 +401,11 @@ public class ScheduledThreadPoolExecutor extends ThreadPoolExecutor implements S
      */
     @Override
     void onShutdown() {
+        // 线程被全部设置了中断信号后才会调用该方法，此时需要保证线程一直满负荷工作，靠延时队列
         BlockingQueue<Runnable> q = super.getQueue();
+        // 如果为true则还未执行的一次性延时任务得执行完才能关闭线程池
         boolean keepDelayed = getExecuteExistingDelayedTasksAfterShutdownPolicy();
+        // 如果为true则及时调用了shutdown，周期性任务依旧继续周期执行，线程池无法关闭
         boolean keepPeriodic = getContinueExistingPeriodicTasksAfterShutdownPolicy();
         if (!keepDelayed && !keepPeriodic) {
             for (Object e : q.toArray()) {
@@ -415,6 +427,7 @@ public class ScheduledThreadPoolExecutor extends ThreadPoolExecutor implements S
                 }
             }
         }
+        // 很关键的一点是利用了任务队列不为空（这也是全部工作线程退出的必要条件），加之ensurePrestart()保证工作线程不为0
         tryTerminate();
     }
 
