@@ -51,7 +51,8 @@ public class AccessControlException extends SecurityException {
      * Constructs an {@code AccessControlException} with the
      * specified, detailed message.
      *
-     * @param   s   the detail message.
+     * @param s
+     *         the detail message.
      */
     public AccessControlException(String s) {
         super(s);
@@ -62,8 +63,10 @@ public class AccessControlException extends SecurityException {
      * specified, detailed message, and the requested permission that caused
      * the exception.
      *
-     * @param   s   the detail message.
-     * @param   p   the permission that caused the exception.
+     * @param s
+     *         the detail message.
+     * @param p
+     *         the permission that caused the exception.
      */
     public AccessControlException(String s, Permission p) {
         super(s);

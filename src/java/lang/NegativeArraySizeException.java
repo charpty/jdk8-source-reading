@@ -28,11 +28,10 @@ package java.lang;
 /**
  * Thrown if an application tries to create an array with negative size.
  *
- * @author  unascribed
- * @since   JDK1.0
+ * @author unascribed
+ * @since JDK1.0
  */
-public
-class NegativeArraySizeException extends RuntimeException {
+public class NegativeArraySizeException extends RuntimeException {
     private static final long serialVersionUID = -8960118058596991861L;
 
     /**
@@ -47,7 +46,8 @@ class NegativeArraySizeException extends RuntimeException {
      * Constructs a <code>NegativeArraySizeException</code> with the
      * specified detail message.
      *
-     * @param   s   the detail message.
+     * @param s
+     *         the detail message.
      */
     public NegativeArraySizeException(String s) {
         super(s);

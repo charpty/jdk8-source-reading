@@ -41,13 +41,13 @@ package java.text;
 /**
  * Signals that an error has been reached unexpectedly
  * while parsing.
+ *
+ * @author Mark Davis
  * @see java.lang.Exception
  * @see java.text.Format
  * @see java.text.FieldPosition
- * @author      Mark Davis
  */
-public
-class ParseException extends Exception {
+public class ParseException extends Exception {
 
     private static final long serialVersionUID = 2703218443322787634L;
 
@@ -56,8 +56,10 @@ class ParseException extends Exception {
      * offset.
      * A detail message is a String that describes this particular exception.
      *
-     * @param s the detail message
-     * @param errorOffset the position where the error is found while parsing.
+     * @param s
+     *         the detail message
+     * @param errorOffset
+     *         the position where the error is found while parsing.
      */
     public ParseException(String s, int errorOffset) {
         super(s);
@@ -69,7 +71,7 @@ class ParseException extends Exception {
      *
      * @return the position where the error was found
      */
-    public int getErrorOffset () {
+    public int getErrorOffset() {
         return errorOffset;
     }
 
@@ -77,7 +79,6 @@ class ParseException extends Exception {
     /**
      * The zero-based character offset into the string being parsed at which
      * the error was found during parsing.
-     * @serial
      */
     private int errorOffset;
 }

@@ -42,11 +42,11 @@
  * <h2>Package Specification</h2>
  *
  * <ul>
- *   <li>PKCS #1: RSA Encryption Standard, Version 1.5, November 1993</li>
- *   <li>PKCS #8: Private-Key Information Syntax Standard,
- *     Version 1.2, November 1993</li>
- *   <li>Federal Information Processing Standards Publication (FIPS PUB) 186:
- *     Digital Signature Standard (DSS)</li>
+ * <li>PKCS #1: RSA Encryption Standard, Version 1.5, November 1993</li>
+ * <li>PKCS #8: Private-Key Information Syntax Standard,
+ * Version 1.2, November 1993</li>
+ * <li>Federal Information Processing Standards Publication (FIPS PUB) 186:
+ * Digital Signature Standard (DSS)</li>
  * </ul>
  *
  * <h2>Related Documentation</h2>
@@ -54,18 +54,18 @@
  * For documentation that includes information about algorithm parameter
  * and key specifications, please see:
  * <ul>
- *   <li>
- *     <a href=
- *       "{@docRoot}/../technotes/guides/security/crypto/CryptoSpec.html">
- *       <b>Java&trade;
- *       Cryptography Architecture API Specification and Reference
- *       </b></a></li>
- *   <li>
- *     <a href=
- *       "{@docRoot}/../technotes/guides/security/crypto/HowToImplAProvider.html">
- *       <b>How to Implement a Provider for the
- *       Java&trade; Cryptography Architecture
- *       </b></a></li>
+ * <li>
+ * <a href=
+ * "{@docRoot}/../technotes/guides/security/crypto/CryptoSpec.html">
+ * <b>Java&trade;
+ * Cryptography Architecture API Specification and Reference
+ * </b></a></li>
+ * <li>
+ * <a href=
+ * "{@docRoot}/../technotes/guides/security/crypto/HowToImplAProvider.html">
+ * <b>How to Implement a Provider for the
+ * Java&trade; Cryptography Architecture
+ * </b></a></li>
  * </ul>
  *
  * @since 1.2

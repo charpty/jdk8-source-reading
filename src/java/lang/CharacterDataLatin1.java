@@ -26,8 +26,10 @@
 
 package java.lang;
 
-/** The CharacterData class encapsulates the large tables found in
-    Java.lang.Character. */
+/**
+ * The CharacterData class encapsulates the large tables found in
+ * Java.lang.Character.
+ */
 
 class CharacterDataLatin1 extends CharacterData {
 
@@ -68,13 +70,13 @@ class CharacterDataLatin1 extends CharacterData {
      */
 
     int getProperties(int ch) {
-        char offset = (char)ch;
+        char offset = (char) ch;
         int props = A[offset];
         return props;
     }
 
     int getPropertiesEx(int ch) {
-        char offset = (char)ch;
+        char offset = (char) ch;
         int props = B[offset];
         return props;
     }
@@ -133,9 +135,8 @@ class CharacterDataLatin1 extends CharacterData {
         int mapChar = ch;
         int val = getProperties(ch);
 
-        if (((val & 0x00020000) != 0) && 
-                ((val & 0x07FC0000) != 0x07FC0000)) { 
-            int offset = val << 5 >> (5+18);
+        if (((val & 0x00020000) != 0) && ((val & 0x07FC0000) != 0x07FC0000)) {
+            int offset = val << 5 >> (5 + 18);
             mapChar = ch + offset;
         }
         return mapChar;
@@ -147,8 +148,8 @@ class CharacterDataLatin1 extends CharacterData {
 
         if ((val & 0x00010000) != 0) {
             if ((val & 0x07FC0000) != 0x07FC0000) {
-                int offset = val  << 5 >> (5+18);
-                mapChar =  ch - offset;
+                int offset = val << 5 >> (5 + 18);
+                mapChar = ch - offset;
             } else if (ch == 0x00B5) {
                 mapChar = 0x039C;
             }
@@ -167,8 +168,7 @@ class CharacterDataLatin1 extends CharacterData {
             int kind = val & 0x1F;
             if (kind == Character.DECIMAL_DIGIT_NUMBER) {
                 value = ch + ((val & 0x3E0) >> 5) & 0x1F;
-            }
-            else if ((val & 0xC00) == 0x00000C00) {
+            } else if ((val & 0xC00) == 0x00000C00) {
                 // Java supradecimal digit
                 value = (ch + ((val & 0x3E0) >> 5) & 0x1F) + 10;
             }
@@ -181,19 +181,19 @@ class CharacterDataLatin1 extends CharacterData {
         int retval = -1;
 
         switch (val & 0xC00) {
-            default: // cannot occur
-            case (0x00000000):         // not numeric
-                retval = -1;
-                break;
-            case (0x00000400):              // simple numeric
-                retval = ch + ((val & 0x3E0) >> 5) & 0x1F;
-                break;
-            case (0x00000800)      :       // "strange" numeric
-                 retval = -2; 
-                 break;
-            case (0x00000C00):           // Java supradecimal
-                retval = (ch + ((val & 0x3E0) >> 5) & 0x1F) + 10;
-                break;
+        default: // cannot occur
+        case (0x00000000):         // not numeric
+            retval = -1;
+            break;
+        case (0x00000400):              // simple numeric
+            retval = ch + ((val & 0x3E0) >> 5) & 0x1F;
+            break;
+        case (0x00000800):       // "strange" numeric
+            retval = -2;
+            break;
+        case (0x00000C00):           // Java supradecimal
+            retval = (ch + ((val & 0x3E0) >> 5) & 0x1F) + 10;
+            break;
         }
         return retval;
     }
@@ -205,9 +205,9 @@ class CharacterDataLatin1 extends CharacterData {
 
     byte getDirectionality(int ch) {
         int val = getProperties(ch);
-        byte directionality = (byte)((val & 0x78000000) >> 27);
+        byte directionality = (byte) ((val & 0x78000000) >> 27);
 
-        if (directionality == 0xF ) {
+        if (directionality == 0xF) {
             directionality = -1;
         }
         return directionality;
@@ -224,24 +224,27 @@ class CharacterDataLatin1 extends CharacterData {
 
         if ((val & 0x00010000) != 0) {
             if ((val & 0x07FC0000) != 0x07FC0000) {
-                int offset = val  << 5 >> (5+18);
-                mapChar =  ch - offset;
-            }
-            else {
-                switch(ch) {
-                    // map overflow characters
-                    case 0x00B5 : mapChar = 0x039C; break;
-                    default       : mapChar = Character.ERROR; break;
+                int offset = val << 5 >> (5 + 18);
+                mapChar = ch - offset;
+            } else {
+                switch (ch) {
+                // map overflow characters
+                case 0x00B5:
+                    mapChar = 0x039C;
+                    break;
+                default:
+                    mapChar = Character.ERROR;
+                    break;
                 }
             }
         }
         return mapChar;
     }
 
-    static char[] sharpsMap = new char[] {'S', 'S'};
+    static char[] sharpsMap = new char[] { 'S', 'S' };
 
     char[] toUpperCaseCharArray(int ch) {
-        char[] upperMap = {(char)ch};
+        char[] upperMap = { (char) ch };
         if (ch == 0x00DF) {
             upperMap = sharpsMap;
         }
@@ -249,74 +252,74 @@ class CharacterDataLatin1 extends CharacterData {
     }
 
     static final CharacterDataLatin1 instance = new CharacterDataLatin1();
-    private CharacterDataLatin1() {};
+
+    private CharacterDataLatin1() {
+    }
+
+    ;
 
     // The following tables and code generated using:
-  // java GenerateCharacter -template /Users/java_re/workspace/8-2-build-macosx-x86_64/jdk8u121/8372/jdk/make/data/characterdata/CharacterDataLatin1.java.template -spec /Users/java_re/workspace/8-2-build-macosx-x86_64/jdk8u121/8372/jdk/make/data/unicodedata/UnicodeData.txt -specialcasing /Users/java_re/workspace/8-2-build-macosx-x86_64/jdk8u121/8372/jdk/make/data/unicodedata/SpecialCasing.txt -proplist /Users/java_re/workspace/8-2-build-macosx-x86_64/jdk8u121/8372/jdk/make/data/unicodedata/PropList.txt -o /Users/java_re/workspace/8-2-build-macosx-x86_64/jdk8u121/8372/build/macosx-x86_64/jdk/gensrc/java/lang/CharacterDataLatin1.java -string -usecharforbyte -latin1 8
-  // The A table has 256 entries for a total of 1024 bytes.
+    // java GenerateCharacter -template /Users/java_re/workspace/8-2-build-macosx-x86_64/jdk8u121/8372/jdk/make/data/characterdata/CharacterDataLatin1.java.template -spec /Users/java_re/workspace/8-2-build-macosx-x86_64/jdk8u121/8372/jdk/make/data/unicodedata/UnicodeData.txt -specialcasing /Users/java_re/workspace/8-2-build-macosx-x86_64/jdk8u121/8372/jdk/make/data/unicodedata/SpecialCasing.txt -proplist /Users/java_re/workspace/8-2-build-macosx-x86_64/jdk8u121/8372/jdk/make/data/unicodedata/PropList.txt -o /Users/java_re/workspace/8-2-build-macosx-x86_64/jdk8u121/8372/build/macosx-x86_64/jdk/gensrc/java/lang/CharacterDataLatin1.java -string -usecharforbyte -latin1 8
+    // The A table has 256 entries for a total of 1024 bytes.
 
-  static final int A[] = new int[256];
-  static final String A_DATA =
-    "\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800"+
-    "\u100F\u4800\u100F\u4800\u100F\u5800\u400F\u5000\u400F\u5800\u400F\u6000\u400F"+
-    "\u5000\u400F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800"+
-    "\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F"+
-    "\u4800\u100F\u4800\u100F\u5000\u400F\u5000\u400F\u5000\u400F\u5800\u400F\u6000"+
-    "\u400C\u6800\030\u6800\030\u2800\030\u2800\u601A\u2800\030\u6800\030\u6800"+
-    "\030\uE800\025\uE800\026\u6800\030\u2000\031\u3800\030\u2000\024\u3800\030"+
-    "\u3800\030\u1800\u3609\u1800\u3609\u1800\u3609\u1800\u3609\u1800\u3609\u1800"+
-    "\u3609\u1800\u3609\u1800\u3609\u1800\u3609\u1800\u3609\u3800\030\u6800\030"+
-    "\uE800\031\u6800\031\uE800\031\u6800\030\u6800\030\202\u7FE1\202\u7FE1\202"+
-    "\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1"+
-    "\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202"+
-    "\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1"+
-    "\202\u7FE1\uE800\025\u6800\030\uE800\026\u6800\033\u6800\u5017\u6800\033\201"+
-    "\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2"+
-    "\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201"+
-    "\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2"+
-    "\201\u7FE2\201\u7FE2\201\u7FE2\uE800\025\u6800\031\uE800\026\u6800\031\u4800"+
-    "\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u5000\u100F"+
-    "\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800"+
-    "\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F"+
-    "\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800"+
-    "\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F"+
-    "\u3800\014\u6800\030\u2800\u601A\u2800\u601A\u2800\u601A\u2800\u601A\u6800"+
-    "\034\u6800\030\u6800\033\u6800\034\000\u7005\uE800\035\u6800\031\u4800\u1010"+
-    "\u6800\034\u6800\033\u2800\034\u2800\031\u1800\u060B\u1800\u060B\u6800\033"+
-    "\u07FD\u7002\u6800\030\u6800\030\u6800\033\u1800\u050B\000\u7005\uE800\036"+
-    "\u6800\u080B\u6800\u080B\u6800\u080B\u6800\030\202\u7001\202\u7001\202\u7001"+
-    "\202\u7001\202\u7001\202\u7001\202\u7001\202\u7001\202\u7001\202\u7001\202"+
-    "\u7001\202\u7001\202\u7001\202\u7001\202\u7001\202\u7001\202\u7001\202\u7001"+
-    "\202\u7001\202\u7001\202\u7001\202\u7001\202\u7001\u6800\031\202\u7001\202"+
-    "\u7001\202\u7001\202\u7001\202\u7001\202\u7001\202\u7001\u07FD\u7002\201\u7002"+
-    "\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002\201"+
-    "\u7002\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002"+
-    "\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002\u6800"+
-    "\031\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002"+
-    "\u061D\u7002";
+    static final int A[] = new int[256];
+    static final String A_DATA = "\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800"
+            + "\u100F\u4800\u100F\u4800\u100F\u5800\u400F\u5000\u400F\u5800\u400F\u6000\u400F"
+            + "\u5000\u400F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800"
+            + "\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F"
+            + "\u4800\u100F\u4800\u100F\u5000\u400F\u5000\u400F\u5000\u400F\u5800\u400F\u6000"
+            + "\u400C\u6800\030\u6800\030\u2800\030\u2800\u601A\u2800\030\u6800\030\u6800"
+            + "\030\uE800\025\uE800\026\u6800\030\u2000\031\u3800\030\u2000\024\u3800\030"
+            + "\u3800\030\u1800\u3609\u1800\u3609\u1800\u3609\u1800\u3609\u1800\u3609\u1800"
+            + "\u3609\u1800\u3609\u1800\u3609\u1800\u3609\u1800\u3609\u3800\030\u6800\030"
+            + "\uE800\031\u6800\031\uE800\031\u6800\030\u6800\030\202\u7FE1\202\u7FE1\202"
+            + "\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1"
+            + "\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202"
+            + "\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1\202\u7FE1"
+            + "\202\u7FE1\uE800\025\u6800\030\uE800\026\u6800\033\u6800\u5017\u6800\033\201"
+            + "\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2"
+            + "\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201"
+            + "\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2\201\u7FE2"
+            + "\201\u7FE2\201\u7FE2\201\u7FE2\uE800\025\u6800\031\uE800\026\u6800\031\u4800"
+            + "\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u5000\u100F"
+            + "\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800"
+            + "\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F"
+            + "\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800"
+            + "\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F\u4800\u100F"
+            + "\u3800\014\u6800\030\u2800\u601A\u2800\u601A\u2800\u601A\u2800\u601A\u6800"
+            + "\034\u6800\030\u6800\033\u6800\034\000\u7005\uE800\035\u6800\031\u4800\u1010"
+            + "\u6800\034\u6800\033\u2800\034\u2800\031\u1800\u060B\u1800\u060B\u6800\033"
+            + "\u07FD\u7002\u6800\030\u6800\030\u6800\033\u1800\u050B\000\u7005\uE800\036"
+            + "\u6800\u080B\u6800\u080B\u6800\u080B\u6800\030\202\u7001\202\u7001\202\u7001"
+            + "\202\u7001\202\u7001\202\u7001\202\u7001\202\u7001\202\u7001\202\u7001\202"
+            + "\u7001\202\u7001\202\u7001\202\u7001\202\u7001\202\u7001\202\u7001\202\u7001"
+            + "\202\u7001\202\u7001\202\u7001\202\u7001\202\u7001\u6800\031\202\u7001\202"
+            + "\u7001\202\u7001\202\u7001\202\u7001\202\u7001\202\u7001\u07FD\u7002\201\u7002"
+            + "\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002\201"
+            + "\u7002\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002"
+            + "\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002\u6800"
+            + "\031\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002\201\u7002" + "\u061D\u7002";
 
-  // The B table has 256 entries for a total of 512 bytes.
+    // The B table has 256 entries for a total of 512 bytes.
 
-  static final char B[] = (
-    "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"+
-    "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"+
-    "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"+
-    "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"+
-    "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"+
-    "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"+
-    "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"+
-    "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"+
-    "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\001"+
-    "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\001\000\000\000"+
-    "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"+
-    "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"+
-    "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"+
-    "\000\000\000\000\000\000\000\000\000").toCharArray();
+    static final char B[] = ("\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
+            + "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
+            + "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
+            + "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
+            + "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
+            + "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
+            + "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
+            + "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
+            + "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\001"
+            + "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\001\000\000\000"
+            + "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
+            + "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
+            + "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000" + "\000\000\000\000\000\000\000\000\000").toCharArray();
 
-  // In all, the character property tables require 1024 bytes.
+    // In all, the character property tables require 1024 bytes.
 
     static {
-                { // THIS CODE WAS AUTOMATICALLY CREATED BY GenerateCharacter:
+        { // THIS CODE WAS AUTOMATICALLY CREATED BY GenerateCharacter:
             char[] data = A_DATA.toCharArray();
             assert (data.length == (256 * 2));
             int i = 0, j = 0;
@@ -326,6 +329,6 @@ class CharacterDataLatin1 extends CharacterData {
             }
         }
 
-    }        
+    }
 }
 

@@ -33,8 +33,8 @@ package java.lang;
  * only occur at run time if the definition of a class has
  * incompatibly changed.
  *
- * @author  unascribed
- * @since   JDK1.0
+ * @author unascribed
+ * @since JDK1.0
  */
 public class IllegalAccessError extends IncompatibleClassChangeError {
     private static final long serialVersionUID = -8988904074992417891L;
@@ -50,7 +50,8 @@ public class IllegalAccessError extends IncompatibleClassChangeError {
      * Constructs an <code>IllegalAccessError</code> with the specified
      * detail message.
      *
-     * @param   s   the detail message.
+     * @param s
+     *         the detail message.
      */
     public IllegalAccessError(String s) {
         super(s);

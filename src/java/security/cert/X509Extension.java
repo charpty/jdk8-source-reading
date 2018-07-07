@@ -99,6 +99,7 @@ public interface X509Extension {
      *     }
      * }
      * }</pre>
+     *
      * @return a Set (or an empty Set if none are marked critical) of
      * the extension OID strings for extensions that are marked critical.
      * If there are no extensions present at all, then this method returns
@@ -178,7 +179,9 @@ public interface X509Extension {
      * <td>PolicyConstraints</td></tr>
      * </table>
      *
-     * @param oid the Object Identifier value for the extension.
+     * @param oid
+     *         the Object Identifier value for the extension.
+     *
      * @return the DER-encoded octet string of the extension value or
      * null if it is not present.
      */

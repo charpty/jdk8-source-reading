@@ -27,23 +27,15 @@
 
 package java.nio;
 
-
 class ByteBufferAsFloatBufferB                  // package-private
-    extends FloatBuffer
-{
-
-
+        extends FloatBuffer {
 
     protected final ByteBuffer bb;
     protected final int offset;
 
-
-
     ByteBufferAsFloatBufferB(ByteBuffer bb) {   // package-private
 
-        super(-1, 0,
-              bb.remaining() >> 2,
-              bb.remaining() >> 2);
+        super(-1, 0, bb.remaining() >> 2, bb.remaining() >> 2);
         this.bb = bb;
         // enforce limit == capacity
         int cap = this.capacity();
@@ -52,20 +44,13 @@ class ByteBufferAsFloatBufferB                  // package-private
         assert (pos <= cap);
         offset = pos;
 
-
-
     }
 
-    ByteBufferAsFloatBufferB(ByteBuffer bb,
-                                     int mark, int pos, int lim, int cap,
-                                     int off)
-    {
+    ByteBufferAsFloatBufferB(ByteBuffer bb, int mark, int pos, int lim, int cap, int off) {
 
         super(mark, pos, lim, cap);
         this.bb = bb;
         offset = off;
-
-
 
     }
 
@@ -80,28 +65,14 @@ class ByteBufferAsFloatBufferB                  // package-private
     }
 
     public FloatBuffer duplicate() {
-        return new ByteBufferAsFloatBufferB(bb,
-                                                    this.markValue(),
-                                                    this.position(),
-                                                    this.limit(),
-                                                    this.capacity(),
-                                                    offset);
+        return new ByteBufferAsFloatBufferB(bb, this.markValue(), this.position(), this.limit(), this.capacity(), offset);
     }
 
     public FloatBuffer asReadOnlyBuffer() {
 
-        return new ByteBufferAsFloatBufferRB(bb,
-                                                 this.markValue(),
-                                                 this.position(),
-                                                 this.limit(),
-                                                 this.capacity(),
-                                                 offset);
-
-
+        return new ByteBufferAsFloatBufferRB(bb, this.markValue(), this.position(), this.limit(), this.capacity(), offset);
 
     }
-
-
 
     protected int ix(int i) {
         return (i << 2) + offset;
@@ -115,20 +86,10 @@ class ByteBufferAsFloatBufferB                  // package-private
         return Bits.getFloatB(bb, ix(checkIndex(i)));
     }
 
-
-
-
-
-
-
-
-
     public FloatBuffer put(float x) {
 
         Bits.putFloatB(bb, ix(nextPutIndex()), x);
         return this;
-
-
 
     }
 
@@ -136,8 +97,6 @@ class ByteBufferAsFloatBufferB                  // package-private
 
         Bits.putFloatB(bb, ix(checkIndex(i)), x);
         return this;
-
-
 
     }
 
@@ -159,8 +118,6 @@ class ByteBufferAsFloatBufferB                  // package-private
         discardMark();
         return this;
 
-
-
     }
 
     public boolean isDirect() {
@@ -171,54 +128,9 @@ class ByteBufferAsFloatBufferB                  // package-private
         return false;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public ByteOrder order() {
 
         return ByteOrder.BIG_ENDIAN;
-
-
-
 
     }
 

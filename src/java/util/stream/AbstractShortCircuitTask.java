@@ -32,17 +32,20 @@ import java.util.concurrent.atomic.AtomicReference;
  * stream ops, which can produce a result without processing all elements of the
  * stream.
  *
- * @param <P_IN> type of input elements to the pipeline
- * @param <P_OUT> type of output elements from the pipeline
- * @param <R> type of intermediate result, may be different from operation
- *        result type
- * @param <K> type of child and sibling tasks
+ * @param <P_IN>
+ *         type of input elements to the pipeline
+ * @param <P_OUT>
+ *         type of output elements from the pipeline
+ * @param <R>
+ *         type of intermediate result, may be different from operation
+ *         result type
+ * @param <K>
+ *         type of child and sibling tasks
+ *
  * @since 1.8
  */
 @SuppressWarnings("serial")
-abstract class AbstractShortCircuitTask<P_IN, P_OUT, R,
-                                        K extends AbstractShortCircuitTask<P_IN, P_OUT, R, K>>
-        extends AbstractTask<P_IN, P_OUT, R, K> {
+abstract class AbstractShortCircuitTask<P_IN, P_OUT, R, K extends AbstractShortCircuitTask<P_IN, P_OUT, R, K>> extends AbstractTask<P_IN, P_OUT, R, K> {
     /**
      * The result for this computation; this is shared among all tasks and set
      * exactly once
@@ -60,13 +63,14 @@ abstract class AbstractShortCircuitTask<P_IN, P_OUT, R,
     /**
      * Constructor for root tasks.
      *
-     * @param helper the {@code PipelineHelper} describing the stream pipeline
-     *               up to this operation
-     * @param spliterator the {@code Spliterator} describing the source for this
-     *                    pipeline
+     * @param helper
+     *         the {@code PipelineHelper} describing the stream pipeline
+     *         up to this operation
+     * @param spliterator
+     *         the {@code Spliterator} describing the source for this
+     *         pipeline
      */
-    protected AbstractShortCircuitTask(PipelineHelper<P_OUT> helper,
-                                       Spliterator<P_IN> spliterator) {
+    protected AbstractShortCircuitTask(PipelineHelper<P_OUT> helper, Spliterator<P_IN> spliterator) {
         super(helper, spliterator);
         sharedResult = new AtomicReference<>(null);
     }
@@ -74,12 +78,13 @@ abstract class AbstractShortCircuitTask<P_IN, P_OUT, R,
     /**
      * Constructor for non-root nodes.
      *
-     * @param parent parent task in the computation tree
-     * @param spliterator the {@code Spliterator} for the portion of the
-     *                    computation tree described by this task
+     * @param parent
+     *         parent task in the computation tree
+     * @param spliterator
+     *         the {@code Spliterator} for the portion of the
+     *         computation tree described by this task
      */
-    protected AbstractShortCircuitTask(K parent,
-                                       Spliterator<P_IN> spliterator) {
+    protected AbstractShortCircuitTask(K parent, Spliterator<P_IN> spliterator) {
         super(parent, spliterator);
         sharedResult = parent.sharedResult;
     }
@@ -103,7 +108,8 @@ abstract class AbstractShortCircuitTask<P_IN, P_OUT, R,
         long sizeEstimate = rs.estimateSize();
         long sizeThreshold = getTargetSize(sizeEstimate);
         boolean forkRight = false;
-        @SuppressWarnings("unchecked") K task = (K) this;
+        @SuppressWarnings("unchecked")
+        K task = (K) this;
         AtomicReference<R> sr = sharedResult;
         R result;
         while ((result = sr.get()) == null) {
@@ -116,7 +122,7 @@ abstract class AbstractShortCircuitTask<P_IN, P_OUT, R,
                 break;
             }
             K leftChild, rightChild, taskToFork;
-            task.leftChild  = leftChild = task.makeChild(ls);
+            task.leftChild = leftChild = task.makeChild(ls);
             task.rightChild = rightChild = task.makeChild(rs);
             task.setPendingCount(1);
             if (forkRight) {
@@ -124,8 +130,7 @@ abstract class AbstractShortCircuitTask<P_IN, P_OUT, R,
                 rs = ls;
                 task = leftChild;
                 taskToFork = rightChild;
-            }
-            else {
+            } else {
                 forkRight = true;
                 task = rightChild;
                 taskToFork = leftChild;
@@ -137,7 +142,6 @@ abstract class AbstractShortCircuitTask<P_IN, P_OUT, R,
         task.tryComplete();
     }
 
-
     /**
      * Declares that a globally valid result has been found.  If another task has
      * not already found the answer, the result is installed in
@@ -145,27 +149,31 @@ abstract class AbstractShortCircuitTask<P_IN, P_OUT, R,
      * {@code sharedResult} before proceeding with computation, so this causes
      * the computation to terminate early.
      *
-     * @param result the result found
+     * @param result
+     *         the result found
      */
     protected void shortCircuit(R result) {
-        if (result != null)
+        if (result != null) {
             sharedResult.compareAndSet(null, result);
+        }
     }
 
     /**
      * Sets a local result for this task.  If this task is the root, set the
      * shared result instead (if not already set).
      *
-     * @param localResult The result to set for this task
+     * @param localResult
+     *         The result to set for this task
      */
     @Override
     protected void setLocalResult(R localResult) {
         if (isRoot()) {
-            if (localResult != null)
+            if (localResult != null) {
                 sharedResult.compareAndSet(null, localResult);
-        }
-        else
+            }
+        } else {
             super.setLocalResult(localResult);
+        }
     }
 
     /**
@@ -185,9 +193,9 @@ abstract class AbstractShortCircuitTask<P_IN, P_OUT, R,
         if (isRoot()) {
             R answer = sharedResult.get();
             return (answer == null) ? getEmptyResult() : answer;
-        }
-        else
+        } else {
             return super.getLocalResult();
+        }
     }
 
     /**
@@ -206,8 +214,9 @@ abstract class AbstractShortCircuitTask<P_IN, P_OUT, R,
     protected boolean taskCanceled() {
         boolean cancel = canceled;
         if (!cancel) {
-            for (K parent = getParent(); !cancel && parent != null; parent = parent.getParent())
+            for (K parent = getParent(); !cancel && parent != null; parent = parent.getParent()) {
                 cancel = parent.canceled;
+            }
         }
 
         return cancel;
@@ -220,14 +229,15 @@ abstract class AbstractShortCircuitTask<P_IN, P_OUT, R,
      */
     protected void cancelLaterNodes() {
         // Go up the tree, cancel right siblings of this node and all parents
-        for (@SuppressWarnings("unchecked") K parent = getParent(), node = (K) this;
-             parent != null;
-             node = parent, parent = parent.getParent()) {
+        for (
+                @SuppressWarnings("unchecked")
+                K parent = getParent(), node = (K) this; parent != null; node = parent, parent = parent.getParent()) {
             // If node is a left child of parent, then has a right sibling
             if (parent.leftChild == node) {
                 K rightSibling = parent.rightChild;
-                if (!rightSibling.canceled)
+                if (!rightSibling.canceled) {
                     rightSibling.cancel();
+                }
             }
         }
     }

@@ -61,19 +61,17 @@
  */
 package java.time.zone;
 
-import java.io.ByteArrayInputStream;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.StreamCorruptedException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -102,14 +100,13 @@ final class TzdbZoneRulesProvider extends ZoneRulesProvider {
      * Creates an instance.
      * Created by the {@code ServiceLoader}.
      *
-     * @throws ZoneRulesException if unable to load
+     * @throws ZoneRulesException
+     *         if unable to load
      */
     public TzdbZoneRulesProvider() {
         try {
             String libDir = System.getProperty("java.home") + File.separator + "lib";
-            try (DataInputStream dis = new DataInputStream(
-                     new BufferedInputStream(new FileInputStream(
-                         new File(libDir, "tzdb.dat"))))) {
+            try (DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(new File(libDir, "tzdb.dat"))))) {
                 load(dis);
             }
         } catch (Exception ex) {
@@ -155,8 +152,11 @@ final class TzdbZoneRulesProvider extends ZoneRulesProvider {
     /**
      * Loads the rules from a DateInputStream, often in a jar file.
      *
-     * @param dis  the DateInputStream to load, not null
-     * @throws Exception if an error occurs
+     * @param dis
+     *         the DateInputStream to load, not null
+     *
+     * @throws Exception
+     *         if an error occurs
      */
     private void load(DataInputStream dis) throws Exception {
         if (dis.readByte() != 1) {

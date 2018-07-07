@@ -30,10 +30,10 @@ package java.util.prefs;
  * to be installed as the Preferences implementations via the
  * java.util.prefs.PreferencesFactory system property.
  *
- * @author  Josh Bloch
- * @see     FileSystemPreferences
- * @see     Preferences
- * @since   1.4
+ * @author Josh Bloch
+ * @see FileSystemPreferences
+ * @see Preferences
+ * @since 1.4
  */
 
 class FileSystemPreferencesFactory implements PreferencesFactory {

@@ -53,13 +53,18 @@ public interface Wrapper {
      * or a proxy for that result. If the receiver is not a
      * wrapper and does not implement the interface, then an <code>SQLException</code> is thrown.
      *
-     * @param <T> the type of the class modeled by this Class object
-     * @param iface A Class defining an interface that the result must implement.
+     * @param <T>
+     *         the type of the class modeled by this Class object
+     * @param iface
+     *         A Class defining an interface that the result must implement.
+     *
      * @return an object that implements the interface. May be a proxy for the actual implementing object.
-     * @throws java.sql.SQLException If no object found that implements the interface
+     *
+     * @throws java.sql.SQLException
+     *         If no object found that implements the interface
      * @since 1.6
      */
-        <T> T unwrap(java.lang.Class<T> iface) throws java.sql.SQLException;
+    <T> T unwrap(java.lang.Class<T> iface) throws java.sql.SQLException;
 
     /**
      * Returns true if this either implements the interface argument or is directly or indirectly a wrapper
@@ -70,10 +75,14 @@ public interface Wrapper {
      * callers can use this method to avoid expensive <code>unwrap</code> calls that may fail. If this method
      * returns true then calling <code>unwrap</code> with the same argument should succeed.
      *
-     * @param iface a Class defining an interface.
+     * @param iface
+     *         a Class defining an interface.
+     *
      * @return true if this implements the interface or directly or indirectly wraps an object that does.
-     * @throws java.sql.SQLException  if an error occurs while determining whether this is a wrapper
-     * for an object with the given interface.
+     *
+     * @throws java.sql.SQLException
+     *         if an error occurs while determining whether this is a wrapper
+     *         for an object with the given interface.
      * @since 1.6
      */
     boolean isWrapperFor(java.lang.Class<?> iface) throws java.sql.SQLException;

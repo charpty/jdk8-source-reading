@@ -25,12 +25,14 @@
 
 package java.lang;
 
-import java.io.*;
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.concurrent.TimeUnit;
 
 /**
  * The {@link ProcessBuilder#start()} and
- * {@link Runtime#exec(String[],String[],File) Runtime.exec}
+ * {@link Runtime#exec(String[], String[], File) Runtime.exec}
  * methods create a native process and return an instance of a
  * subclass of {@code Process} that can be used to control the process
  * and obtain information about it.  The class {@code Process}
@@ -72,7 +74,7 @@ import java.util.concurrent.TimeUnit;
  * <p>As of 1.5, {@link ProcessBuilder#start()} is the preferred way
  * to create a {@code Process}.
  *
- * @since   JDK1.0
+ * @since JDK1.0
  */
 public abstract class Process {
     /**
@@ -90,7 +92,7 @@ public abstract class Process {
      * output stream to be buffered.
      *
      * @return the output stream connected to the normal input of the
-     *         subprocess
+     * subprocess
      */
     public abstract OutputStream getOutputStream();
 
@@ -116,7 +118,7 @@ public abstract class Process {
      * input stream to be buffered.
      *
      * @return the input stream connected to the normal output of the
-     *         subprocess
+     * subprocess
      */
     public abstract InputStream getInputStream();
 
@@ -137,7 +139,7 @@ public abstract class Process {
      * input stream to be buffered.
      *
      * @return the input stream connected to the error output of
-     *         the subprocess
+     * the subprocess
      */
     public abstract InputStream getErrorStream();
 
@@ -150,9 +152,11 @@ public abstract class Process {
      * subprocess exits.
      *
      * @return the exit value of the subprocess represented by this
-     *         {@code Process} object.  By convention, the value
-     *         {@code 0} indicates normal termination.
-     * @throws InterruptedException if the current thread is
+     * {@code Process} object.  By convention, the value
+     * {@code 0} indicates normal termination.
+     *
+     * @throws InterruptedException
+     *         if the current thread is
      *         {@linkplain Thread#interrupt() interrupted} by another
      *         thread while it is waiting, then the wait is ended and
      *         an {@link InterruptedException} is thrown.
@@ -174,18 +178,22 @@ public abstract class Process {
      * class are strongly encouraged to override this method with a more
      * efficient implementation.
      *
-     * @param timeout the maximum time to wait
-     * @param unit the time unit of the {@code timeout} argument
+     * @param timeout
+     *         the maximum time to wait
+     * @param unit
+     *         the time unit of the {@code timeout} argument
+     *
      * @return {@code true} if the subprocess has exited and {@code false} if
-     *         the waiting time elapsed before the subprocess has exited.
-     * @throws InterruptedException if the current thread is interrupted
+     * the waiting time elapsed before the subprocess has exited.
+     *
+     * @throws InterruptedException
+     *         if the current thread is interrupted
      *         while waiting.
-     * @throws NullPointerException if unit is null
+     * @throws NullPointerException
+     *         if unit is null
      * @since 1.8
      */
-    public boolean waitFor(long timeout, TimeUnit unit)
-        throws InterruptedException
-    {
+    public boolean waitFor(long timeout, TimeUnit unit) throws InterruptedException {
         long startTime = System.nanoTime();
         long rem = unit.toNanos(timeout);
 
@@ -193,10 +201,10 @@ public abstract class Process {
             try {
                 exitValue();
                 return true;
-            } catch(IllegalThreadStateException ex) {
-                if (rem > 0)
-                    Thread.sleep(
-                        Math.min(TimeUnit.NANOSECONDS.toMillis(rem) + 1, 100));
+            } catch (IllegalThreadStateException ex) {
+                if (rem > 0) {
+                    Thread.sleep(Math.min(TimeUnit.NANOSECONDS.toMillis(rem) + 1, 100));
+                }
             }
             rem = unit.toNanos(timeout) - (System.nanoTime() - startTime);
         } while (rem > 0);
@@ -207,9 +215,11 @@ public abstract class Process {
      * Returns the exit value for the subprocess.
      *
      * @return the exit value of the subprocess represented by this
-     *         {@code Process} object.  By convention, the value
-     *         {@code 0} indicates normal termination.
-     * @throws IllegalThreadStateException if the subprocess represented
+     * {@code Process} object.  By convention, the value
+     * {@code 0} indicates normal termination.
+     *
+     * @throws IllegalThreadStateException
+     *         if the subprocess represented
      *         by this {@code Process} object has not yet terminated
      */
     public abstract int exitValue();
@@ -238,7 +248,8 @@ public abstract class Process {
      * may be chained to {@code waitFor()} if needed.
      *
      * @return the {@code Process} object representing the
-     *         subprocess to be forcibly destroyed.
+     * subprocess to be forcibly destroyed.
+     *
      * @since 1.8
      */
     public Process destroyForcibly() {
@@ -251,14 +262,15 @@ public abstract class Process {
      * alive.
      *
      * @return {@code true} if the subprocess represented by this
-     *         {@code Process} object has not yet terminated.
+     * {@code Process} object has not yet terminated.
+     *
      * @since 1.8
      */
     public boolean isAlive() {
         try {
             exitValue();
             return false;
-        } catch(IllegalThreadStateException e) {
+        } catch (IllegalThreadStateException e) {
             return true;
         }
     }

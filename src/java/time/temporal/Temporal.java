@@ -99,30 +99,25 @@ import java.time.DateTimeException;
  * <li>it provides access to date/time/offset information, as per {@code TemporalAccessor}
  * <li>the set of fields are contiguous from the largest to the smallest
  * <li>the set of fields are complete, such that no other field is needed to define the
- *  valid range of values for the fields that are represented
+ * valid range of values for the fields that are represented
  * </ul>
  * <p>
  * Four examples make this clear:
  * <ul>
  * <li>{@code LocalDate} implements this interface as it represents a set of fields
- *  that are contiguous from days to forever and require no external information to determine
- *  the validity of each date. It is therefore able to implement plus/minus correctly.
+ * that are contiguous from days to forever and require no external information to determine
+ * the validity of each date. It is therefore able to implement plus/minus correctly.
  * <li>{@code LocalTime} implements this interface as it represents a set of fields
- *  that are contiguous from nanos to within days and require no external information to determine
- *  validity. It is able to implement plus/minus correctly, by wrapping around the day.
+ * that are contiguous from nanos to within days and require no external information to determine
+ * validity. It is able to implement plus/minus correctly, by wrapping around the day.
  * <li>{@code MonthDay}, the combination of month-of-year and day-of-month, does not implement
- *  this interface.  While the combination is contiguous, from days to months within years,
- *  the combination does not have sufficient information to define the valid range of values
- *  for day-of-month.  As such, it is unable to implement plus/minus correctly.
+ * this interface.  While the combination is contiguous, from days to months within years,
+ * the combination does not have sufficient information to define the valid range of values
+ * for day-of-month.  As such, it is unable to implement plus/minus correctly.
  * <li>The combination day-of-week and day-of-month ("Friday the 13th") should not implement
- *  this interface. It does not represent a contiguous set of fields, as days to weeks overlaps
- *  days to months.
+ * this interface. It does not represent a contiguous set of fields, as days to weeks overlaps
+ * days to months.
  * </ul>
- *
- * @implSpec
- * This interface places no restrictions on the mutability of implementations,
- * however immutability is strongly recommended.
- * All implementations must be {@link Comparable}.
  *
  * @since 1.8
  */
@@ -135,18 +130,9 @@ public interface Temporal extends TemporalAccessor {
      * If false, then calling the {@link #plus(long, TemporalUnit)} and
      * {@link #minus(long, TemporalUnit) minus} methods will throw an exception.
      *
-     * @implSpec
-     * Implementations must check and handle all units defined in {@link ChronoUnit}.
-     * If the unit is supported, then true must be returned, otherwise false must be returned.
-     * <p>
-     * If the field is not a {@code ChronoUnit}, then the result of this method
-     * is obtained by invoking {@code TemporalUnit.isSupportedBy(Temporal)}
-     * passing {@code this} as the argument.
-     * <p>
-     * Implementations must ensure that no observable state is altered when this
-     * read-only method is invoked.
+     * @param unit
+     *         the unit to check, null returns false
      *
-     * @param unit  the unit to check, null returns false
      * @return true if the unit can be added/subtracted, false if not
      */
     boolean isSupported(TemporalUnit unit);
@@ -170,21 +156,15 @@ public interface Temporal extends TemporalAccessor {
      *  date = date.with(next(WEDNESDAY));   // static import from Adjusters and DayOfWeek
      * </pre>
      *
-     * @implSpec
-     * <p>
-     * Implementations must not alter either this object or the specified temporal object.
-     * Instead, an adjusted copy of the original must be returned.
-     * This provides equivalent, safe behavior for immutable and mutable implementations.
-     * <p>
-     * The default implementation must behave equivalent to this code:
-     * <pre>
-     *  return adjuster.adjustInto(this);
-     * </pre>
+     * @param adjuster
+     *         the adjuster to use, not null
      *
-     * @param adjuster  the adjuster to use, not null
      * @return an object of the same type with the specified adjustment made, not null
-     * @throws DateTimeException if unable to make the adjustment
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if unable to make the adjustment
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     default Temporal with(TemporalAdjuster adjuster) {
         return adjuster.adjustInto(this);
@@ -202,29 +182,24 @@ public interface Temporal extends TemporalAccessor {
      * In cases like this, the field is responsible for resolving the result. Typically it will choose
      * the previous valid date, which would be the last valid day of February in this example.
      *
-     * @implSpec
-     * Implementations must check and handle all fields defined in {@link ChronoField}.
-     * If the field is supported, then the adjustment must be performed.
-     * If unsupported, then an {@code UnsupportedTemporalTypeException} must be thrown.
-     * <p>
-     * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.adjustInto(Temporal, long)}
-     * passing {@code this} as the first argument.
-     * <p>
-     * Implementations must not alter this object.
-     * Instead, an adjusted copy of the original must be returned.
-     * This provides equivalent, safe behavior for immutable and mutable implementations.
+     * @param field
+     *         the field to set in the result, not null
+     * @param newValue
+     *         the new value of the field in the result
      *
-     * @param field  the field to set in the result, not null
-     * @param newValue  the new value of the field in the result
      * @return an object of the same type with the specified field set, not null
-     * @throws DateTimeException if the field cannot be set
-     * @throws UnsupportedTemporalTypeException if the field is not supported
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if the field cannot be set
+     * @throws UnsupportedTemporalTypeException
+     *         if the field is not supported
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     Temporal with(TemporalField field, long newValue);
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns an object of the same type as this object with an amount added.
      * <p>
@@ -242,21 +217,15 @@ public interface Temporal extends TemporalAccessor {
      * Note that calling {@code plus} followed by {@code minus} is not guaranteed to
      * return the same date-time.
      *
-     * @implSpec
-     * <p>
-     * Implementations must not alter either this object or the specified temporal object.
-     * Instead, an adjusted copy of the original must be returned.
-     * This provides equivalent, safe behavior for immutable and mutable implementations.
-     * <p>
-     * The default implementation must behave equivalent to this code:
-     * <pre>
-     *  return amount.addTo(this);
-     * </pre>
+     * @param amount
+     *         the amount to add, not null
      *
-     * @param amount  the amount to add, not null
      * @return an object of the same type with the specified adjustment made, not null
-     * @throws DateTimeException if the addition cannot be made
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if the addition cannot be made
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     default Temporal plus(TemporalAmount amount) {
         return amount.addTo(this);
@@ -274,29 +243,24 @@ public interface Temporal extends TemporalAccessor {
      * In cases like this, the field is responsible for resolving the result. Typically it will choose
      * the previous valid date, which would be the last valid day of February in this example.
      *
-     * @implSpec
-     * Implementations must check and handle all units defined in {@link ChronoUnit}.
-     * If the unit is supported, then the addition must be performed.
-     * If unsupported, then an {@code UnsupportedTemporalTypeException} must be thrown.
-     * <p>
-     * If the unit is not a {@code ChronoUnit}, then the result of this method
-     * is obtained by invoking {@code TemporalUnit.addTo(Temporal, long)}
-     * passing {@code this} as the first argument.
-     * <p>
-     * Implementations must not alter this object.
-     * Instead, an adjusted copy of the original must be returned.
-     * This provides equivalent, safe behavior for immutable and mutable implementations.
+     * @param amountToAdd
+     *         the amount of the specified unit to add, may be negative
+     * @param unit
+     *         the unit of the amount to add, not null
      *
-     * @param amountToAdd  the amount of the specified unit to add, may be negative
-     * @param unit  the unit of the amount to add, not null
      * @return an object of the same type with the specified period added, not null
-     * @throws DateTimeException if the unit cannot be added
-     * @throws UnsupportedTemporalTypeException if the unit is not supported
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if the unit cannot be added
+     * @throws UnsupportedTemporalTypeException
+     *         if the unit is not supported
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     Temporal plus(long amountToAdd, TemporalUnit unit);
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns an object of the same type as this object with an amount subtracted.
      * <p>
@@ -314,21 +278,15 @@ public interface Temporal extends TemporalAccessor {
      * Note that calling {@code plus} followed by {@code minus} is not guaranteed to
      * return the same date-time.
      *
-     * @implSpec
-     * <p>
-     * Implementations must not alter either this object or the specified temporal object.
-     * Instead, an adjusted copy of the original must be returned.
-     * This provides equivalent, safe behavior for immutable and mutable implementations.
-     * <p>
-     * The default implementation must behave equivalent to this code:
-     * <pre>
-     *  return amount.subtractFrom(this);
-     * </pre>
+     * @param amount
+     *         the amount to subtract, not null
      *
-     * @param amount  the amount to subtract, not null
      * @return an object of the same type with the specified adjustment made, not null
-     * @throws DateTimeException if the subtraction cannot be made
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if the subtraction cannot be made
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     default Temporal minus(TemporalAmount amount) {
         return amount.subtractFrom(this);
@@ -346,31 +304,26 @@ public interface Temporal extends TemporalAccessor {
      * In cases like this, the field is responsible for resolving the result. Typically it will choose
      * the previous valid date, which would be the last valid day of February in this example.
      *
-     * @implSpec
-     * Implementations must behave in a manor equivalent to the default method behavior.
-     * <p>
-     * Implementations must not alter this object.
-     * Instead, an adjusted copy of the original must be returned.
-     * This provides equivalent, safe behavior for immutable and mutable implementations.
-     * <p>
-     * The default implementation must behave equivalent to this code:
-     * <pre>
-     *  return (amountToSubtract == Long.MIN_VALUE ?
-     *      plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
-     * </pre>
+     * @param amountToSubtract
+     *         the amount of the specified unit to subtract, may be negative
+     * @param unit
+     *         the unit of the amount to subtract, not null
      *
-     * @param amountToSubtract  the amount of the specified unit to subtract, may be negative
-     * @param unit  the unit of the amount to subtract, not null
      * @return an object of the same type with the specified period subtracted, not null
-     * @throws DateTimeException if the unit cannot be subtracted
-     * @throws UnsupportedTemporalTypeException if the unit is not supported
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if the unit cannot be subtracted
+     * @throws UnsupportedTemporalTypeException
+     *         if the unit is not supported
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     default Temporal minus(long amountToSubtract, TemporalUnit unit) {
         return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Calculates the amount of time until another temporal in terms of the specified unit.
      * <p>
@@ -405,44 +358,23 @@ public interface Temporal extends TemporalAccessor {
      *  long daysBetween = DAYS.between(start, end);
      * </pre>
      *
-     * @implSpec
-     * Implementations must begin by checking to ensure that the input temporal
-     * object is of the same observable type as the implementation.
-     * They must then perform the calculation for all instances of {@link ChronoUnit}.
-     * An {@code UnsupportedTemporalTypeException} must be thrown for {@code ChronoUnit}
-     * instances that are unsupported.
-     * <p>
-     * If the unit is not a {@code ChronoUnit}, then the result of this method
-     * is obtained by invoking {@code TemporalUnit.between(Temporal, Temporal)}
-     * passing {@code this} as the first argument and the converted input temporal as
-     * the second argument.
-     * <p>
-     * In summary, implementations must behave in a manner equivalent to this pseudo-code:
-     * <pre>
-     *  // convert the end temporal to the same type as this class
-     *  if (unit instanceof ChronoUnit) {
-     *    // if unit is supported, then calculate and return result
-     *    // else throw UnsupportedTemporalTypeException for unsupported units
-     *  }
-     *  return unit.between(this, convertedEndTemporal);
-     * </pre>
-     * <p>
-     * Note that the unit's {@code between} method must only be invoked if the
-     * two temporal objects have exactly the same type evaluated by {@code getClass()}.
-     * <p>
-     * Implementations must ensure that no observable state is altered when this
-     * read-only method is invoked.
+     * @param endExclusive
+     *         the end temporal, exclusive, converted to be of the
+     *         same type as this object, not null
+     * @param unit
+     *         the unit to measure the amount in, not null
      *
-     * @param endExclusive  the end temporal, exclusive, converted to be of the
-     *  same type as this object, not null
-     * @param unit  the unit to measure the amount in, not null
      * @return the amount of time between this temporal object and the specified one
-     *  in terms of the unit; positive if the specified object is later than this one,
-     *  negative if it is earlier than this one
-     * @throws DateTimeException if the amount cannot be calculated, or the end
-     *  temporal cannot be converted to the same type as this temporal
-     * @throws UnsupportedTemporalTypeException if the unit is not supported
-     * @throws ArithmeticException if numeric overflow occurs
+     * in terms of the unit; positive if the specified object is later than this one,
+     * negative if it is earlier than this one
+     *
+     * @throws DateTimeException
+     *         if the amount cannot be calculated, or the end
+     *         temporal cannot be converted to the same type as this temporal
+     * @throws UnsupportedTemporalTypeException
+     *         if the unit is not supported
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     long until(Temporal endExclusive, TemporalUnit unit);
 

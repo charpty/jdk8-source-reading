@@ -44,19 +44,20 @@ public class DuplicateFormatFlagsException extends IllegalFormatException {
     /**
      * Constructs an instance of this class with the specified flags.
      *
-     * @param  f
+     * @param f
      *         The set of format flags which contain a duplicate flag.
      */
     public DuplicateFormatFlagsException(String f) {
-        if (f == null)
+        if (f == null) {
             throw new NullPointerException();
+        }
         this.flags = f;
     }
 
     /**
      * Returns the set of flags which contains a duplicate flag.
      *
-     * @return  The flags
+     * @return The flags
      */
     public String getFlags() {
         return flags;

@@ -38,8 +38,8 @@ package java.rmi;
  * retransmitted after a <code>MarshalException</code> and reliably preserve
  * "at most once" call semantics.
  *
- * @author  Ann Wollrath
- * @since   JDK1.1
+ * @author Ann Wollrath
+ * @since JDK1.1
  */
 public class MarshalException extends RemoteException {
 
@@ -50,7 +50,9 @@ public class MarshalException extends RemoteException {
      * Constructs a <code>MarshalException</code> with the specified
      * detail message.
      *
-     * @param s the detail message
+     * @param s
+     *         the detail message
+     *
      * @since JDK1.1
      */
     public MarshalException(String s) {
@@ -61,8 +63,11 @@ public class MarshalException extends RemoteException {
      * Constructs a <code>MarshalException</code> with the specified
      * detail message and nested exception.
      *
-     * @param s the detail message
-     * @param ex the nested exception
+     * @param s
+     *         the detail message
+     * @param ex
+     *         the nested exception
+     *
      * @since JDK1.1
      */
     public MarshalException(String s, Exception ex) {

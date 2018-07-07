@@ -25,24 +25,26 @@
 
 package java.lang.invoke;
 
-import java.security.*;
-import java.lang.reflect.*;
-import java.lang.invoke.MethodHandleNatives.Constants;
 import java.lang.invoke.MethodHandles.Lookup;
-import static java.lang.invoke.MethodHandleStatics.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 /*
  * Auxiliary to MethodHandleInfo, wants to nest in MethodHandleInfo but must be non-public.
  */
 /*non-public*/
-final
-class InfoFromMemberName implements MethodHandleInfo {
+final class InfoFromMemberName implements MethodHandleInfo {
     private final MemberName member;
     private final int referenceKind;
 
     InfoFromMemberName(Lookup lookup, MemberName member, byte referenceKind) {
-        assert(member.isResolved() || member.isMethodHandleInvoke());
-        assert(member.referenceKindIsConsistentWith(referenceKind));
+        assert (member.isResolved() || member.isMethodHandleInvoke());
+        assert (member.referenceKindIsConsistentWith(referenceKind));
         this.member = member;
         this.referenceKind = referenceKind;
     }
@@ -88,14 +90,14 @@ class InfoFromMemberName implements MethodHandleInfo {
             throw new IllegalArgumentException("cannot reflect signature polymorphic method");
         }
         Member mem = AccessController.doPrivileged(new PrivilegedAction<Member>() {
-                public Member run() {
-                    try {
-                        return reflectUnchecked();
-                    } catch (ReflectiveOperationException ex) {
-                        throw new IllegalArgumentException(ex);
-                    }
+            public Member run() {
+                try {
+                    return reflectUnchecked();
+                } catch (ReflectiveOperationException ex) {
+                    throw new IllegalArgumentException(ex);
                 }
-            });
+            }
+        });
         try {
             Class<?> defc = getDeclaringClass();
             byte refKind = (byte) getReferenceKind();
@@ -111,22 +113,25 @@ class InfoFromMemberName implements MethodHandleInfo {
         Class<?> defc = getDeclaringClass();
         boolean isPublic = Modifier.isPublic(getModifiers());
         if (MethodHandleNatives.refKindIsMethod(refKind)) {
-            if (isPublic)
+            if (isPublic) {
                 return defc.getMethod(getName(), getMethodType().parameterArray());
-            else
+            } else {
                 return defc.getDeclaredMethod(getName(), getMethodType().parameterArray());
+            }
         } else if (MethodHandleNatives.refKindIsConstructor(refKind)) {
-            if (isPublic)
+            if (isPublic) {
                 return defc.getConstructor(getMethodType().parameterArray());
-            else
+            } else {
                 return defc.getDeclaredConstructor(getMethodType().parameterArray());
+            }
         } else if (MethodHandleNatives.refKindIsField(refKind)) {
-            if (isPublic)
+            if (isPublic) {
                 return defc.getField(getName());
-            else
+            } else {
                 return defc.getDeclaredField(getName());
+            }
         } else {
-            throw new IllegalArgumentException("referenceKind="+refKind);
+            throw new IllegalArgumentException("referenceKind=" + refKind);
         }
     }
 

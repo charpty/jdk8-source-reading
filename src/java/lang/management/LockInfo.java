@@ -25,8 +25,11 @@
 
 package java.lang.management;
 
+import java.util.concurrent.locks.AbstractOwnableSynchronizer;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.management.openmbean.CompositeData;
-import java.util.concurrent.locks.*;
 import sun.management.LockInfoCompositeData;
 
 /**
@@ -46,24 +49,25 @@ import sun.management.LockInfoCompositeData;
  * <tt>LockInfo</tt> is mapped to a {@link CompositeData CompositeData}
  * as specified in the {@link #from from} method.
  *
+ * @author Mandy Chung
  * @see java.util.concurrent.locks.AbstractOwnableSynchronizer
  * @see java.util.concurrent.locks.Condition
- *
- * @author  Mandy Chung
- * @since   1.6
+ * @since 1.6
  */
 
 public class LockInfo {
 
     private String className;
-    private int    identityHashCode;
+    private int identityHashCode;
 
     /**
      * Constructs a <tt>LockInfo</tt> object.
      *
-     * @param className the fully qualified name of the class of the lock object.
-     * @param identityHashCode the {@link System#identityHashCode
-     *                         identity hash code} of the lock object.
+     * @param className
+     *         the fully qualified name of the class of the lock object.
+     * @param identityHashCode
+     *         the {@link System#identityHashCode
+     *         identity hash code} of the lock object.
      */
     public LockInfo(String className, int identityHashCode) {
         if (className == null) {
@@ -107,29 +111,31 @@ public class LockInfo {
      * <blockquote>
      * <table border summary="The attributes and the types the given CompositeData contains">
      * <tr>
-     *   <th align=left>Attribute Name</th>
-     *   <th align=left>Type</th>
+     * <th align=left>Attribute Name</th>
+     * <th align=left>Type</th>
      * </tr>
      * <tr>
-     *   <td>className</td>
-     *   <td><tt>java.lang.String</tt></td>
+     * <td>className</td>
+     * <td><tt>java.lang.String</tt></td>
      * </tr>
      * <tr>
-     *   <td>identityHashCode</td>
-     *   <td><tt>java.lang.Integer</tt></td>
+     * <td>identityHashCode</td>
+     * <td><tt>java.lang.Integer</tt></td>
      * </tr>
      * </table>
      * </blockquote>
      *
-     * @param cd {@code CompositeData} representing a {@code LockInfo}
+     * @param cd
+     *         {@code CompositeData} representing a {@code LockInfo}
      *
-     * @throws IllegalArgumentException if {@code cd} does not
-     *   represent a {@code LockInfo} with the attributes described
-     *   above.
      * @return a {@code LockInfo} object represented
-     *         by {@code cd} if {@code cd} is not {@code null};
-     *         {@code null} otherwise.
+     * by {@code cd} if {@code cd} is not {@code null};
+     * {@code null} otherwise.
      *
+     * @throws IllegalArgumentException
+     *         if {@code cd} does not
+     *         represent a {@code LockInfo} with the attributes described
+     *         above.
      * @since 1.8
      */
     public static LockInfo from(CompositeData cd) {

@@ -28,7 +28,6 @@ package java.nio.channels;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-
 /**
  * A channel that can write bytes from a sequence of buffers.
  *
@@ -40,15 +39,12 @@ import java.nio.ByteBuffer;
  * <i>scattering</i> read operations are defined in the {@link
  * ScatteringByteChannel} interface.  </p>
  *
- *
  * @author Mark Reinhold
  * @author JSR-51 Expert Group
  * @since 1.4
  */
 
-public interface GatheringByteChannel
-    extends WritableByteChannel
-{
+public interface GatheringByteChannel extends WritableByteChannel {
 
     /**
      * Writes a sequence of bytes to this channel from a subsequence of the
@@ -86,47 +82,38 @@ public interface GatheringByteChannel
      * invocation of this method will block until the first operation is
      * complete. </p>
      *
-     * @param  srcs
+     * @param srcs
      *         The buffers from which bytes are to be retrieved
-     *
-     * @param  offset
+     * @param offset
      *         The offset within the buffer array of the first buffer from
      *         which bytes are to be retrieved; must be non-negative and no
      *         larger than <tt>srcs.length</tt>
-     *
-     * @param  length
+     * @param length
      *         The maximum number of buffers to be accessed; must be
      *         non-negative and no larger than
      *         <tt>srcs.length</tt>&nbsp;-&nbsp;<tt>offset</tt>
      *
-     * @return  The number of bytes written, possibly zero
+     * @return The number of bytes written, possibly zero
      *
-     * @throws  IndexOutOfBoundsException
-     *          If the preconditions on the <tt>offset</tt> and <tt>length</tt>
-     *          parameters do not hold
-     *
-     * @throws  NonWritableChannelException
-     *          If this channel was not opened for writing
-     *
-     * @throws  ClosedChannelException
-     *          If this channel is closed
-     *
-     * @throws  AsynchronousCloseException
-     *          If another thread closes this channel
-     *          while the write operation is in progress
-     *
-     * @throws  ClosedByInterruptException
-     *          If another thread interrupts the current thread
-     *          while the write operation is in progress, thereby
-     *          closing the channel and setting the current thread's
-     *          interrupt status
-     *
-     * @throws  IOException
-     *          If some other I/O error occurs
+     * @throws IndexOutOfBoundsException
+     *         If the preconditions on the <tt>offset</tt> and <tt>length</tt>
+     *         parameters do not hold
+     * @throws NonWritableChannelException
+     *         If this channel was not opened for writing
+     * @throws ClosedChannelException
+     *         If this channel is closed
+     * @throws AsynchronousCloseException
+     *         If another thread closes this channel
+     *         while the write operation is in progress
+     * @throws ClosedByInterruptException
+     *         If another thread interrupts the current thread
+     *         while the write operation is in progress, thereby
+     *         closing the channel and setting the current thread's
+     *         interrupt status
+     * @throws IOException
+     *         If some other I/O error occurs
      */
-    public long write(ByteBuffer[] srcs, int offset, int length)
-        throws IOException;
-
+    public long write(ByteBuffer[] srcs, int offset, int length) throws IOException;
 
     /**
      * Writes a sequence of bytes to this channel from the given buffers.
@@ -137,29 +124,25 @@ public interface GatheringByteChannel
      * <blockquote><pre>
      * c.write(srcs, 0, srcs.length);</pre></blockquote>
      *
-     * @param  srcs
+     * @param srcs
      *         The buffers from which bytes are to be retrieved
      *
-     * @return  The number of bytes written, possibly zero
+     * @return The number of bytes written, possibly zero
      *
-     * @throws  NonWritableChannelException
-     *          If this channel was not opened for writing
-     *
-     * @throws  ClosedChannelException
-     *          If this channel is closed
-     *
-     * @throws  AsynchronousCloseException
-     *          If another thread closes this channel
-     *          while the write operation is in progress
-     *
-     * @throws  ClosedByInterruptException
-     *          If another thread interrupts the current thread
-     *          while the write operation is in progress, thereby
-     *          closing the channel and setting the current thread's
-     *          interrupt status
-     *
-     * @throws  IOException
-     *          If some other I/O error occurs
+     * @throws NonWritableChannelException
+     *         If this channel was not opened for writing
+     * @throws ClosedChannelException
+     *         If this channel is closed
+     * @throws AsynchronousCloseException
+     *         If another thread closes this channel
+     *         while the write operation is in progress
+     * @throws ClosedByInterruptException
+     *         If another thread interrupts the current thread
+     *         while the write operation is in progress, thereby
+     *         closing the channel and setting the current thread's
+     *         interrupt status
+     * @throws IOException
+     *         If some other I/O error occurs
      */
     public long write(ByteBuffer[] srcs) throws IOException;
 

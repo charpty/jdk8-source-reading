@@ -25,8 +25,6 @@
 
 package java.io;
 
-import java.io.*;
-
 /**
  * A piped output stream can be connected to a piped input stream
  * to create a communications pipe. The piped output stream is the
@@ -39,17 +37,16 @@ import java.io.*;
  * thread that was reading data bytes from the connected piped input
  * stream is no longer alive.
  *
- * @author  James Gosling
- * @see     java.io.PipedInputStream
- * @since   JDK1.0
+ * @author James Gosling
+ * @see java.io.PipedInputStream
+ * @since JDK1.0
  */
-public
-class PipedOutputStream extends OutputStream {
+public class PipedOutputStream extends OutputStream {
 
-        /* REMIND: identification of the read and write sides needs to be
-           more sophisticated.  Either using thread groups (but what about
-           pipes within a thread?) or using finalization (but it may be a
-           long time until the next GC). */
+    /* REMIND: identification of the read and write sides needs to be
+       more sophisticated.  Either using thread groups (but what about
+       pipes within a thread?) or using finalization (but it may be a
+       long time until the next GC). */
     private PipedInputStream sink;
 
     /**
@@ -57,10 +54,13 @@ class PipedOutputStream extends OutputStream {
      * input stream. Data bytes written to this stream will then be
      * available as input from <code>snk</code>.
      *
-     * @param      snk   The piped input stream to connect to.
-     * @exception  IOException  if an I/O error occurs.
+     * @param snk
+     *         The piped input stream to connect to.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
      */
-    public PipedOutputStream(PipedInputStream snk)  throws IOException {
+    public PipedOutputStream(PipedInputStream snk) throws IOException {
         connect(snk);
     }
 
@@ -69,8 +69,8 @@ class PipedOutputStream extends OutputStream {
      * piped input stream. It must be connected to a piped input stream,
      * either by the receiver or the sender, before being used.
      *
-     * @see     java.io.PipedInputStream#connect(java.io.PipedOutputStream)
-     * @see     java.io.PipedOutputStream#connect(java.io.PipedInputStream)
+     * @see java.io.PipedInputStream#connect(java.io.PipedOutputStream)
+     * @see java.io.PipedOutputStream#connect(java.io.PipedInputStream)
      */
     public PipedOutputStream() {
     }
@@ -90,8 +90,11 @@ class PipedOutputStream extends OutputStream {
      * snk.connect(src)</pre></blockquote>
      * The two calls have the same effect.
      *
-     * @param      snk   the piped input stream to connect to.
-     * @exception  IOException  if an I/O error occurs.
+     * @param snk
+     *         the piped input stream to connect to.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     public synchronized void connect(PipedInputStream snk) throws IOException {
         if (snk == null) {
@@ -110,12 +113,15 @@ class PipedOutputStream extends OutputStream {
      * <p>
      * Implements the <code>write</code> method of <code>OutputStream</code>.
      *
-     * @param      b   the <code>byte</code> to be written.
-     * @exception IOException if the pipe is <a href=#BROKEN> broken</a>,
-     *          {@link #connect(java.io.PipedInputStream) unconnected},
-     *          closed, or if an I/O error occurs.
+     * @param b
+     *         the <code>byte</code> to be written.
+     *
+     * @throws IOException
+     *         if the pipe is <a href=#BROKEN> broken</a>,
+     *         {@link #connect(java.io.PipedInputStream) unconnected},
+     *         closed, or if an I/O error occurs.
      */
-    public void write(int b)  throws IOException {
+    public void write(int b) throws IOException {
         if (sink == null) {
             throw new IOException("Pipe not connected");
         }
@@ -128,20 +134,24 @@ class PipedOutputStream extends OutputStream {
      * This method blocks until all the bytes are written to the output
      * stream.
      *
-     * @param      b     the data.
-     * @param      off   the start offset in the data.
-     * @param      len   the number of bytes to write.
-     * @exception IOException if the pipe is <a href=#BROKEN> broken</a>,
-     *          {@link #connect(java.io.PipedInputStream) unconnected},
-     *          closed, or if an I/O error occurs.
+     * @param b
+     *         the data.
+     * @param off
+     *         the start offset in the data.
+     * @param len
+     *         the number of bytes to write.
+     *
+     * @throws IOException
+     *         if the pipe is <a href=#BROKEN> broken</a>,
+     *         {@link #connect(java.io.PipedInputStream) unconnected},
+     *         closed, or if an I/O error occurs.
      */
     public void write(byte b[], int off, int len) throws IOException {
         if (sink == null) {
             throw new IOException("Pipe not connected");
         } else if (b == null) {
             throw new NullPointerException();
-        } else if ((off < 0) || (off > b.length) || (len < 0) ||
-                   ((off + len) > b.length) || ((off + len) < 0)) {
+        } else if ((off < 0) || (off > b.length) || (len < 0) || ((off + len) > b.length) || ((off + len) < 0)) {
             throw new IndexOutOfBoundsException();
         } else if (len == 0) {
             return;
@@ -154,7 +164,8 @@ class PipedOutputStream extends OutputStream {
      * to be written out.
      * This will notify any readers that bytes are waiting in the pipe.
      *
-     * @exception IOException if an I/O error occurs.
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     public synchronized void flush() throws IOException {
         if (sink != null) {
@@ -169,9 +180,10 @@ class PipedOutputStream extends OutputStream {
      * associated with this stream. This stream may no longer be used for
      * writing bytes.
      *
-     * @exception  IOException  if an I/O error occurs.
+     * @throws IOException
+     *         if an I/O error occurs.
      */
-    public void close()  throws IOException {
+    public void close() throws IOException {
         if (sink != null) {
             sink.receivedLast();
         }

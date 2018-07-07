@@ -30,7 +30,7 @@ package java.net;
  * socket to a local address and port.  Typically, the port is
  * in use, or the requested local address could not be assigned.
  *
- * @since   JDK1.1
+ * @since JDK1.1
  */
 
 public class BindException extends SocketException {
@@ -41,7 +41,9 @@ public class BindException extends SocketException {
      * message as to why the bind error occurred.
      * A detail message is a String that gives a specific
      * description of this error.
-     * @param msg the detail message
+     *
+     * @param msg
+     *         the detail message
      */
     public BindException(String msg) {
         super(msg);
@@ -50,5 +52,6 @@ public class BindException extends SocketException {
     /**
      * Construct a new BindException with no detailed message.
      */
-    public BindException() {}
+    public BindException() {
+    }
 }

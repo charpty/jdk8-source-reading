@@ -25,7 +25,7 @@
 
 package java.lang.instrument;
 
-import  java.security.ProtectionDomain;
+import java.security.ProtectionDomain;
 
 /*
  * Copyright 2003 Wily Technology, Inc.
@@ -41,10 +41,10 @@ import  java.security.ProtectionDomain;
  * to mean a sequence
  * of bytes in class file format, whether or not they reside in a file.
  *
- * @see     java.lang.instrument.Instrumentation
- * @see     java.lang.instrument.Instrumentation#addTransformer
- * @see     java.lang.instrument.Instrumentation#removeTransformer
- * @since   1.5
+ * @see java.lang.instrument.Instrumentation
+ * @see java.lang.instrument.Instrumentation#addTransformer
+ * @see java.lang.instrument.Instrumentation#removeTransformer
+ * @since 1.5
  */
 
 public interface ClassFileTransformer {
@@ -55,20 +55,20 @@ public interface ClassFileTransformer {
      * <P>
      * There are two kinds of transformers, determined by the <code>canRetransform</code>
      * parameter of
-     * {@link java.lang.instrument.Instrumentation#addTransformer(ClassFileTransformer,boolean)}:
-     *  <ul>
-     *    <li><i>retransformation capable</i> transformers that were added with
-     *        <code>canRetransform</code> as true
-     *    </li>
-     *    <li><i>retransformation incapable</i> transformers that were added with
-     *        <code>canRetransform</code> as false or where added with
-     *        {@link java.lang.instrument.Instrumentation#addTransformer(ClassFileTransformer)}
-     *    </li>
-     *  </ul>
+     * {@link java.lang.instrument.Instrumentation#addTransformer(ClassFileTransformer, boolean)}:
+     * <ul>
+     * <li><i>retransformation capable</i> transformers that were added with
+     * <code>canRetransform</code> as true
+     * </li>
+     * <li><i>retransformation incapable</i> transformers that were added with
+     * <code>canRetransform</code> as false or where added with
+     * {@link java.lang.instrument.Instrumentation#addTransformer(ClassFileTransformer)}
+     * </li>
+     * </ul>
      *
      * <P>
      * Once a transformer has been registered with
-     * {@link java.lang.instrument.Instrumentation#addTransformer(ClassFileTransformer,boolean)
+     * {@link java.lang.instrument.Instrumentation#addTransformer(ClassFileTransformer, boolean)
      * addTransformer},
      * the transformer will be called for every new class definition and every class redefinition.
      * Retransformation capable transformers will also be called on every class retransformation.
@@ -90,16 +90,16 @@ public interface ClassFileTransformer {
      *
      * <P>
      * Transformations are applied in the following order:
-     *  <ul>
-     *    <li>Retransformation incapable transformers
-     *    </li>
-     *    <li>Retransformation incapable native transformers
-     *    </li>
-     *    <li>Retransformation capable transformers
-     *    </li>
-     *    <li>Retransformation capable native transformers
-     *    </li>
-     *  </ul>
+     * <ul>
+     * <li>Retransformation incapable transformers
+     * </li>
+     * <li>Retransformation incapable native transformers
+     * </li>
+     * <li>Retransformation capable transformers
+     * </li>
+     * <li>Retransformation capable native transformers
+     * </li>
+     * </ul>
      *
      * <P>
      * For retransformations, the retransformation incapable transformers are not
@@ -112,25 +112,25 @@ public interface ClassFileTransformer {
      * <P>
      * The input (via the <code>classfileBuffer</code> parameter) to the first
      * transformer is:
-     *  <ul>
-     *    <li>for new class definition,
-     *        the bytes passed to <code>ClassLoader.defineClass</code>
-     *    </li>
-     *    <li>for class redefinition,
-     *        <code>definitions.getDefinitionClassFile()</code> where
-     *        <code>definitions</code> is the parameter to
-     *        {@link java.lang.instrument.Instrumentation#redefineClasses
-     *         Instrumentation.redefineClasses}
-     *    </li>
-     *    <li>for class retransformation,
-     *         the bytes passed to the new class definition or, if redefined,
-     *         the last redefinition, with all transformations made by retransformation
-     *         incapable transformers reapplied automatically and unaltered;
-     *         for details see
-     *         {@link java.lang.instrument.Instrumentation#retransformClasses
-     *          Instrumentation.retransformClasses}
-     *    </li>
-     *  </ul>
+     * <ul>
+     * <li>for new class definition,
+     * the bytes passed to <code>ClassLoader.defineClass</code>
+     * </li>
+     * <li>for class redefinition,
+     * <code>definitions.getDefinitionClassFile()</code> where
+     * <code>definitions</code> is the parameter to
+     * {@link java.lang.instrument.Instrumentation#redefineClasses
+     * Instrumentation.redefineClasses}
+     * </li>
+     * <li>for class retransformation,
+     * the bytes passed to the new class definition or, if redefined,
+     * the last redefinition, with all transformations made by retransformation
+     * incapable transformers reapplied automatically and unaltered;
+     * for details see
+     * {@link java.lang.instrument.Instrumentation#retransformClasses
+     * Instrumentation.retransformClasses}
+     * </li>
+     * </ul>
      *
      * <P>
      * If the implementing method determines that no transformations are needed,
@@ -161,28 +161,30 @@ public interface ClassFileTransformer {
      * while this has the same effect as returning null. it facilitates the
      * logging or debugging of format corruptions.
      *
-     * @param loader                the defining loader of the class to be transformed,
-     *                              may be <code>null</code> if the bootstrap loader
-     * @param className             the name of the class in the internal form of fully
-     *                              qualified class and interface names as defined in
-     *                              <i>The Java Virtual Machine Specification</i>.
-     *                              For example, <code>"java/util/List"</code>.
-     * @param classBeingRedefined   if this is triggered by a redefine or retransform,
-     *                              the class being redefined or retransformed;
-     *                              if this is a class load, <code>null</code>
-     * @param protectionDomain      the protection domain of the class being defined or redefined
-     * @param classfileBuffer       the input byte buffer in class file format - must not be modified
+     * @param loader
+     *         the defining loader of the class to be transformed,
+     *         may be <code>null</code> if the bootstrap loader
+     * @param className
+     *         the name of the class in the internal form of fully
+     *         qualified class and interface names as defined in
+     *         <i>The Java Virtual Machine Specification</i>.
+     *         For example, <code>"java/util/List"</code>.
+     * @param classBeingRedefined
+     *         if this is triggered by a redefine or retransform,
+     *         the class being redefined or retransformed;
+     *         if this is a class load, <code>null</code>
+     * @param protectionDomain
+     *         the protection domain of the class being defined or redefined
+     * @param classfileBuffer
+     *         the input byte buffer in class file format - must not be modified
      *
-     * @throws IllegalClassFormatException if the input does not represent a well-formed class file
-     * @return  a well-formed class file buffer (the result of the transform),
-                or <code>null</code> if no transform is performed.
+     * @return a well-formed class file buffer (the result of the transform),
+     * or <code>null</code> if no transform is performed.
+     *
+     * @throws IllegalClassFormatException
+     *         if the input does not represent a well-formed class file
      * @see Instrumentation#redefineClasses
      */
-    byte[]
-    transform(  ClassLoader         loader,
-                String              className,
-                Class<?>            classBeingRedefined,
-                ProtectionDomain    protectionDomain,
-                byte[]              classfileBuffer)
-        throws IllegalClassFormatException;
+    byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer)
+            throws IllegalClassFormatException;
 }

@@ -25,9 +25,6 @@
 
 package java.io;
 
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
-
 /**
  * Only the identity of the class of an Externalizable instance is
  * written in the serialization stream and it is the responsibility
@@ -55,13 +52,13 @@ import java.io.ObjectInput;
  * the writeReplace and readResolve methods documented in the Serializable
  * interface.<br>
  *
- * @author  unascribed
+ * @author unascribed
  * @see java.io.ObjectOutputStream
  * @see java.io.ObjectInputStream
  * @see java.io.ObjectOutput
  * @see java.io.ObjectInput
  * @see java.io.Serializable
- * @since   JDK1.1
+ * @since JDK1.1
  */
 public interface Externalizable extends java.io.Serializable {
     /**
@@ -70,14 +67,11 @@ public interface Externalizable extends java.io.Serializable {
      * calling the writeObject method of ObjectOutput for objects, strings,
      * and arrays.
      *
-     * @serialData Overriding methods should use this tag to describe
-     *             the data layout of this Externalizable object.
-     *             List the sequence of element types and, if possible,
-     *             relate the element to a public/protected field and/or
-     *             method of this Externalizable class.
+     * @param out
+     *         the stream to write the object to
      *
-     * @param out the stream to write the object to
-     * @exception IOException Includes any I/O exceptions that may occur
+     * @throws IOException
+     *         Includes any I/O exceptions that may occur
      */
     void writeExternal(ObjectOutput out) throws IOException;
 
@@ -88,10 +82,14 @@ public interface Externalizable extends java.io.Serializable {
      * readExternal method must read the values in the same sequence
      * and with the same types as were written by writeExternal.
      *
-     * @param in the stream to read data from in order to restore the object
-     * @exception IOException if I/O errors occur
-     * @exception ClassNotFoundException If the class for an object being
-     *              restored cannot be found.
+     * @param in
+     *         the stream to read data from in order to restore the object
+     *
+     * @throws IOException
+     *         if I/O errors occur
+     * @throws ClassNotFoundException
+     *         If the class for an object being
+     *         restored cannot be found.
      */
     void readExternal(ObjectInput in) throws IOException, ClassNotFoundException;
 }

@@ -25,7 +25,6 @@
 
 package java.io;
 
-
 /**
  * Signals that an attempt to open the file denoted by a specified pathname
  * has failed.
@@ -36,8 +35,8 @@ package java.io;
  * constructors if the file does exist but for some reason is inaccessible, for
  * example when an attempt is made to open a read-only file for writing.
  *
- * @author  unascribed
- * @since   JDK1.0
+ * @author unascribed
+ * @since JDK1.0
  */
 
 public class FileNotFoundException extends IOException {
@@ -58,7 +57,8 @@ public class FileNotFoundException extends IOException {
      * <code>{@link java.lang.Throwable#getMessage}</code>
      * method of class <code>java.lang.Throwable</code>.
      *
-     * @param   s   the detail message.
+     * @param s
+     *         the detail message.
      */
     public FileNotFoundException(String s) {
         super(s);
@@ -74,9 +74,7 @@ public class FileNotFoundException extends IOException {
      * @since 1.2
      */
     private FileNotFoundException(String path, String reason) {
-        super(path + ((reason == null)
-                      ? ""
-                      : " (" + reason + ")"));
+        super(path + ((reason == null) ? "" : " (" + reason + ")"));
     }
 
 }

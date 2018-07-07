@@ -33,8 +33,8 @@ import java.io.IOException;
  * not make sense, or the application is attempting to write to a
  * read-only URL connection.
  *
- * @author  unascribed
- * @since   JDK1.0
+ * @author unascribed
+ * @since JDK1.0
  */
 public class UnknownServiceException extends IOException {
     private static final long serialVersionUID = -4169033248853639508L;
@@ -50,7 +50,8 @@ public class UnknownServiceException extends IOException {
      * Constructs a new {@code UnknownServiceException} with the
      * specified detail message.
      *
-     * @param   msg   the detail message.
+     * @param msg
+     *         the detail message.
      */
     public UnknownServiceException(String msg) {
         super(msg);

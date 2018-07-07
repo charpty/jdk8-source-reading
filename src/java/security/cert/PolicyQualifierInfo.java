@@ -26,7 +26,6 @@
 package java.security.cert;
 
 import java.io.IOException;
-
 import sun.misc.HexDumpEncoder;
 import sun.security.util.DerValue;
 
@@ -78,34 +77,38 @@ import sun.security.util.DerValue;
  * allows them to be passed around to various pieces of code without
  * worrying about coordinating access.
  *
- * @author      seth proctor
- * @author      Sean Mullan
- * @since       1.4
+ * @author seth proctor
+ * @author Sean Mullan
+ * @since 1.4
  */
 public class PolicyQualifierInfo {
 
-    private byte [] mEncoded;
+    private byte[] mEncoded;
     private String mId;
-    private byte [] mData;
+    private byte[] mData;
     private String pqiString;
 
     /**
      * Creates an instance of {@code PolicyQualifierInfo} from the
      * encoded bytes. The encoded byte array is copied on construction.
      *
-     * @param encoded a byte array containing the qualifier in DER encoding
-     * @exception IOException thrown if the byte array does not represent a
-     * valid and parsable policy qualifier
+     * @param encoded
+     *         a byte array containing the qualifier in DER encoding
+     *
+     * @throws IOException
+     *         thrown if the byte array does not represent a
+     *         valid and parsable policy qualifier
      */
     public PolicyQualifierInfo(byte[] encoded) throws IOException {
         mEncoded = encoded.clone();
 
         DerValue val = new DerValue(mEncoded);
-        if (val.tag != DerValue.tag_Sequence)
+        if (val.tag != DerValue.tag_Sequence) {
             throw new IOException("Invalid encoding for PolicyQualifierInfo");
+        }
 
         mId = (val.data.getDerValue()).getOID().toString();
-        byte [] tmp = val.data.toByteArray();
+        byte[] tmp = val.data.toByteArray();
         if (tmp == null) {
             mData = null;
         } else {
@@ -155,17 +158,17 @@ public class PolicyQualifierInfo {
      * {@code PolicyQualifierInfo}.
      *
      * @return a {@code String} describing the contents of this
-     *         {@code PolicyQualifierInfo}
+     * {@code PolicyQualifierInfo}
      */
     public String toString() {
-        if (pqiString != null)
+        if (pqiString != null) {
             return pqiString;
+        }
         HexDumpEncoder enc = new HexDumpEncoder();
         StringBuffer sb = new StringBuffer();
         sb.append("PolicyQualifierInfo: [\n");
         sb.append("  qualifierID: " + mId + "\n");
-        sb.append("  qualifier: " +
-            (mData == null ? "null" : enc.encodeBuffer(mData)) + "\n");
+        sb.append("  qualifier: " + (mData == null ? "null" : enc.encodeBuffer(mData)) + "\n");
         sb.append("]");
         pqiString = sb.toString();
         return pqiString;

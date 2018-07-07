@@ -61,11 +61,6 @@
  */
 package java.time.format;
 
-import static java.time.temporal.ChronoField.AMPM_OF_DAY;
-import static java.time.temporal.ChronoField.DAY_OF_WEEK;
-import static java.time.temporal.ChronoField.ERA;
-import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
-
 import java.time.chrono.Chronology;
 import java.time.chrono.IsoChronology;
 import java.time.chrono.JapaneseChronology;
@@ -86,17 +81,15 @@ import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import sun.util.locale.provider.CalendarDataUtility;
 import sun.util.locale.provider.LocaleProviderAdapter;
 import sun.util.locale.provider.LocaleResources;
 
+
+import static java.time.temporal.ChronoField.*;
+
 /**
  * A provider to obtain the textual form of a date-time field.
- *
- * @implSpec
- * Implementations must be thread-safe.
- * Implementations should cache the textual information.
  *
  * @since 1.8
  */
@@ -112,7 +105,8 @@ class DateTimeTextProvider {
         }
     };
 
-    DateTimeTextProvider() {}
+    DateTimeTextProvider() {
+    }
 
     /**
      * Gets the provider of text.
@@ -131,10 +125,15 @@ class DateTimeTextProvider {
      * The null return value should be used if there is no applicable text, or
      * if the text would be a numeric representation of the value.
      *
-     * @param field  the field to get text for, not null
-     * @param value  the field value to get text for, not null
-     * @param style  the style to get text for, not null
-     * @param locale  the locale to get text for, not null
+     * @param field
+     *         the field to get text for, not null
+     * @param value
+     *         the field value to get text for, not null
+     * @param style
+     *         the style to get text for, not null
+     * @param locale
+     *         the locale to get text for, not null
+     *
      * @return the text for the field value, null if no text found
      */
     public String getText(TemporalField field, long value, TextStyle style, Locale locale) {
@@ -153,17 +152,21 @@ class DateTimeTextProvider {
      * The null return value should be used if there is no applicable text, or
      * if the text would be a numeric representation of the value.
      *
-     * @param chrono  the Chronology to get text for, not null
-     * @param field  the field to get text for, not null
-     * @param value  the field value to get text for, not null
-     * @param style  the style to get text for, not null
-     * @param locale  the locale to get text for, not null
+     * @param chrono
+     *         the Chronology to get text for, not null
+     * @param field
+     *         the field to get text for, not null
+     * @param value
+     *         the field value to get text for, not null
+     * @param style
+     *         the style to get text for, not null
+     * @param locale
+     *         the locale to get text for, not null
+     *
      * @return the text for the field value, null if no text found
      */
-    public String getText(Chronology chrono, TemporalField field, long value,
-                                    TextStyle style, Locale locale) {
-        if (chrono == IsoChronology.INSTANCE
-                || !(field instanceof ChronoField)) {
+    public String getText(Chronology chrono, TemporalField field, long value, TextStyle style, Locale locale) {
+        if (chrono == IsoChronology.INSTANCE || !(field instanceof ChronoField)) {
             return getText(field, value, style, locale);
         }
 
@@ -195,8 +198,7 @@ class DateTimeTextProvider {
         } else {
             return null;
         }
-        return CalendarDataUtility.retrieveJavaTimeFieldValueName(
-                chrono.getCalendarType(), fieldIndex, fieldValue, style.toCalendarStyle(), locale);
+        return CalendarDataUtility.retrieveJavaTimeFieldValueName(chrono.getCalendarType(), fieldIndex, fieldValue, style.toCalendarStyle(), locale);
     }
 
     /**
@@ -209,11 +211,15 @@ class DateTimeTextProvider {
      * if the text would be a numeric representation of the value.
      * Text can only be parsed if all the values for that field-style-locale combination are unique.
      *
-     * @param field  the field to get text for, not null
-     * @param style  the style to get text for, null for all parsable text
-     * @param locale  the locale to get text for, not null
+     * @param field
+     *         the field to get text for, not null
+     * @param style
+     *         the style to get text for, null for all parsable text
+     * @param locale
+     *         the locale to get text for, not null
+     *
      * @return the iterator of text to field pairs, in order from longest text to shortest text,
-     *  null if the field or style is not parsable
+     * null if the field or style is not parsable
      */
     public Iterator<Entry<String, Long>> getTextIterator(TemporalField field, TextStyle style, Locale locale) {
         Object store = findStore(field, locale);
@@ -233,22 +239,25 @@ class DateTimeTextProvider {
      * if the text would be a numeric representation of the value.
      * Text can only be parsed if all the values for that field-style-locale combination are unique.
      *
-     * @param chrono  the Chronology to get text for, not null
-     * @param field  the field to get text for, not null
-     * @param style  the style to get text for, null for all parsable text
-     * @param locale  the locale to get text for, not null
+     * @param chrono
+     *         the Chronology to get text for, not null
+     * @param field
+     *         the field to get text for, not null
+     * @param style
+     *         the style to get text for, null for all parsable text
+     * @param locale
+     *         the locale to get text for, not null
+     *
      * @return the iterator of text to field pairs, in order from longest text to shortest text,
-     *  null if the field or style is not parsable
+     * null if the field or style is not parsable
      */
-    public Iterator<Entry<String, Long>> getTextIterator(Chronology chrono, TemporalField field,
-                                                         TextStyle style, Locale locale) {
-        if (chrono == IsoChronology.INSTANCE
-                || !(field instanceof ChronoField)) {
+    public Iterator<Entry<String, Long>> getTextIterator(Chronology chrono, TemporalField field, TextStyle style, Locale locale) {
+        if (chrono == IsoChronology.INSTANCE || !(field instanceof ChronoField)) {
             return getTextIterator(field, style, locale);
         }
 
         int fieldIndex;
-        switch ((ChronoField)field) {
+        switch ((ChronoField) field) {
         case ERA:
             fieldIndex = Calendar.ERA;
             break;
@@ -266,8 +275,7 @@ class DateTimeTextProvider {
         }
 
         int calendarStyle = (style == null) ? Calendar.ALL_STYLES : style.toCalendarStyle();
-        Map<String, Integer> map = CalendarDataUtility.retrieveJavaTimeFieldValueNames(
-                chrono.getCalendarType(), fieldIndex, calendarStyle, locale);
+        Map<String, Integer> map = CalendarDataUtility.retrieveJavaTimeFieldValueNames(chrono.getCalendarType(), fieldIndex, calendarStyle, locale);
         if (map == null) {
             return null;
         }
@@ -283,22 +291,22 @@ class DateTimeTextProvider {
                         era -= 2;
                     }
                 }
-                list.add(createEntry(entry.getKey(), (long)era));
+                list.add(createEntry(entry.getKey(), (long) era));
             }
             break;
         case Calendar.MONTH:
             for (Map.Entry<String, Integer> entry : map.entrySet()) {
-                list.add(createEntry(entry.getKey(), (long)(entry.getValue() + 1)));
+                list.add(createEntry(entry.getKey(), (long) (entry.getValue() + 1)));
             }
             break;
         case Calendar.DAY_OF_WEEK:
             for (Map.Entry<String, Integer> entry : map.entrySet()) {
-                list.add(createEntry(entry.getKey(), (long)toWeekDay(entry.getValue())));
+                list.add(createEntry(entry.getKey(), (long) toWeekDay(entry.getValue())));
             }
             break;
         default:
             for (Map.Entry<String, Integer> entry : map.entrySet()) {
-                list.add(createEntry(entry.getKey(), (long)entry.getValue()));
+                list.add(createEntry(entry.getKey(), (long) entry.getValue()));
             }
             break;
         }
@@ -332,8 +340,8 @@ class DateTimeTextProvider {
                     // Stand-alone isn't applicable to era names.
                     continue;
                 }
-                Map<String, Integer> displayNames = CalendarDataUtility.retrieveJavaTimeFieldValueNames(
-                        "gregory", Calendar.ERA, textStyle.toCalendarStyle(), locale);
+                Map<String, Integer> displayNames = CalendarDataUtility
+                        .retrieveJavaTimeFieldValueNames("gregory", Calendar.ERA, textStyle.toCalendarStyle(), locale);
                 if (displayNames != null) {
                     Map<Long, String> map = new HashMap<>();
                     for (Entry<String, Integer> entry : displayNames.entrySet()) {
@@ -349,8 +357,8 @@ class DateTimeTextProvider {
 
         if (field == MONTH_OF_YEAR) {
             for (TextStyle textStyle : TextStyle.values()) {
-                Map<String, Integer> displayNames = CalendarDataUtility.retrieveJavaTimeFieldValueNames(
-                        "gregory", Calendar.MONTH, textStyle.toCalendarStyle(), locale);
+                Map<String, Integer> displayNames = CalendarDataUtility
+                        .retrieveJavaTimeFieldValueNames("gregory", Calendar.MONTH, textStyle.toCalendarStyle(), locale);
                 Map<Long, String> map = new HashMap<>();
                 if (displayNames != null) {
                     for (Entry<String, Integer> entry : displayNames.entrySet()) {
@@ -362,8 +370,7 @@ class DateTimeTextProvider {
                     // Get names one by one in that case.
                     for (int month = Calendar.JANUARY; month <= Calendar.DECEMBER; month++) {
                         String name;
-                        name = CalendarDataUtility.retrieveJavaTimeFieldValueName(
-                                "gregory", Calendar.MONTH, month, textStyle.toCalendarStyle(), locale);
+                        name = CalendarDataUtility.retrieveJavaTimeFieldValueName("gregory", Calendar.MONTH, month, textStyle.toCalendarStyle(), locale);
                         if (name == null) {
                             break;
                         }
@@ -379,12 +386,12 @@ class DateTimeTextProvider {
 
         if (field == DAY_OF_WEEK) {
             for (TextStyle textStyle : TextStyle.values()) {
-                Map<String, Integer> displayNames = CalendarDataUtility.retrieveJavaTimeFieldValueNames(
-                        "gregory", Calendar.DAY_OF_WEEK, textStyle.toCalendarStyle(), locale);
+                Map<String, Integer> displayNames = CalendarDataUtility
+                        .retrieveJavaTimeFieldValueNames("gregory", Calendar.DAY_OF_WEEK, textStyle.toCalendarStyle(), locale);
                 Map<Long, String> map = new HashMap<>();
                 if (displayNames != null) {
                     for (Entry<String, Integer> entry : displayNames.entrySet()) {
-                        map.put((long)toWeekDay(entry.getValue()), entry.getKey());
+                        map.put((long) toWeekDay(entry.getValue()), entry.getKey());
                     }
 
                 } else {
@@ -392,12 +399,11 @@ class DateTimeTextProvider {
                     // Get names one by one in that case.
                     for (int wday = Calendar.SUNDAY; wday <= Calendar.SATURDAY; wday++) {
                         String name;
-                        name = CalendarDataUtility.retrieveJavaTimeFieldValueName(
-                            "gregory", Calendar.DAY_OF_WEEK, wday, textStyle.toCalendarStyle(), locale);
+                        name = CalendarDataUtility.retrieveJavaTimeFieldValueName("gregory", Calendar.DAY_OF_WEEK, wday, textStyle.toCalendarStyle(), locale);
                         if (name == null) {
                             break;
                         }
-                        map.put((long)toWeekDay(wday), name);
+                        map.put((long) toWeekDay(wday), name);
                     }
                 }
                 if (!map.isEmpty()) {
@@ -413,8 +419,8 @@ class DateTimeTextProvider {
                     // Stand-alone isn't applicable to AM/PM.
                     continue;
                 }
-                Map<String, Integer> displayNames = CalendarDataUtility.retrieveJavaTimeFieldValueNames(
-                        "gregory", Calendar.AM_PM, textStyle.toCalendarStyle(), locale);
+                Map<String, Integer> displayNames = CalendarDataUtility
+                        .retrieveJavaTimeFieldValueNames("gregory", Calendar.AM_PM, textStyle.toCalendarStyle(), locale);
                 if (displayNames != null) {
                     Map<Long, String> map = new HashMap<>();
                     for (Entry<String, Integer> entry : displayNames.entrySet()) {
@@ -430,14 +436,8 @@ class DateTimeTextProvider {
 
         if (field == IsoFields.QUARTER_OF_YEAR) {
             // The order of keys must correspond to the TextStyle.values() order.
-            final String[] keys = {
-                "QuarterNames",
-                "standalone.QuarterNames",
-                "QuarterAbbreviations",
-                "standalone.QuarterAbbreviations",
-                "QuarterNarrows",
-                "standalone.QuarterNarrows",
-            };
+            final String[] keys = { "QuarterNames", "standalone.QuarterNames", "QuarterAbbreviations", "standalone.QuarterAbbreviations", "QuarterNarrows",
+                    "standalone.QuarterNarrows", };
             for (int i = 0; i < keys.length; i++) {
                 String[] names = getLocalizedResource(keys[i], locale);
                 if (names != null) {
@@ -457,8 +457,11 @@ class DateTimeTextProvider {
     /**
      * Helper method to create an immutable entry.
      *
-     * @param text  the text, not null
-     * @param field  the field, not null
+     * @param text
+     *         the text, not null
+     * @param field
+     *         the field, not null
+     *
      * @return the entry, not null
      */
     private static <A, B> Entry<A, B> createEntry(A text, B field) {
@@ -469,15 +472,19 @@ class DateTimeTextProvider {
      * Returns the localized resource of the given key and locale, or null
      * if no localized resource is available.
      *
-     * @param key  the key of the localized resource, not null
-     * @param locale  the locale, not null
+     * @param key
+     *         the key of the localized resource, not null
+     * @param locale
+     *         the locale, not null
+     *
      * @return the localized resource, or null if not available
-     * @throws NullPointerException if key or locale is null
+     *
+     * @throws NullPointerException
+     *         if key or locale is null
      */
     @SuppressWarnings("unchecked")
     static <T> T getLocalizedResource(String key, Locale locale) {
-        LocaleResources lr = LocaleProviderAdapter.getResourceBundleBased()
-                                    .getLocaleResources(locale);
+        LocaleResources lr = LocaleProviderAdapter.getResourceBundleBased().getLocaleResources(locale);
         ResourceBundle rb = lr.getJavaTimeFormatData();
         return rb.containsKey(key) ? (T) rb.getObject(key) : null;
     }
@@ -504,7 +511,8 @@ class DateTimeTextProvider {
         /**
          * Constructor.
          *
-         * @param valueTextMap  the map of values to text to store, assigned and not altered, not null
+         * @param valueTextMap
+         *         the map of values to text to store, assigned and not altered, not null
          */
         LocaleStore(Map<TextStyle, Map<Long, String>> valueTextMap) {
             this.valueTextMap = valueTextMap;
@@ -532,8 +540,11 @@ class DateTimeTextProvider {
          * Gets the text for the specified field value, locale and style
          * for the purpose of printing.
          *
-         * @param value  the value to get text for, not null
-         * @param style  the style to get text for, not null
+         * @param value
+         *         the value to get text for, not null
+         * @param style
+         *         the style to get text for, not null
+         *
          * @return the text for the field value, null if no text found
          */
         String getText(long value, TextStyle style) {
@@ -546,9 +557,11 @@ class DateTimeTextProvider {
          * <p>
          * The iterator must be returned in order from the longest text to the shortest.
          *
-         * @param style  the style to get text for, null for all parsable text
+         * @param style
+         *         the style to get text for, null for all parsable text
+         *
          * @return the iterator of text to field pairs, in order from longest text to shortest text,
-         *  null if the style is not parsable
+         * null if the style is not parsable
          */
         Iterator<Entry<String, Long>> getTextIterator(TextStyle style) {
             List<Entry<String, Long>> list = parsable.get(style);

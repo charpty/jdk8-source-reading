@@ -61,15 +61,6 @@
  */
 package java.time;
 
-import static java.time.temporal.ChronoField.ERA;
-import static java.time.temporal.ChronoField.YEAR;
-import static java.time.temporal.ChronoField.YEAR_OF_ERA;
-import static java.time.temporal.ChronoUnit.CENTURIES;
-import static java.time.temporal.ChronoUnit.DECADES;
-import static java.time.temporal.ChronoUnit.ERAS;
-import static java.time.temporal.ChronoUnit.MILLENNIA;
-import static java.time.temporal.ChronoUnit.YEARS;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -95,6 +86,10 @@ import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Objects;
+
+
+import static java.time.temporal.ChronoField.*;
+import static java.time.temporal.ChronoUnit.*;
 
 /**
  * A year in the ISO-8601 calendar system, such as {@code 2007}.
@@ -127,13 +122,9 @@ import java.util.Objects;
  * {@code Year} may have unpredictable results and should be avoided.
  * The {@code equals} method should be used for comparisons.
  *
- * @implSpec
- * This class is immutable and thread-safe.
- *
  * @since 1.8
  */
-public final class Year
-        implements Temporal, TemporalAdjuster, Comparable<Year>, Serializable {
+public final class Year implements Temporal, TemporalAdjuster, Comparable<Year>, Serializable {
 
     /**
      * The minimum supported year, '-999,999,999'.
@@ -151,9 +142,7 @@ public final class Year
     /**
      * Parser.
      */
-    private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
-        .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
-        .toFormatter();
+    private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder().appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD).toFormatter();
 
     /**
      * The year being represented.
@@ -161,6 +150,7 @@ public final class Year
     private final int year;
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains the current year from the system clock in the default time-zone.
      * <p>
@@ -185,7 +175,9 @@ public final class Year
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
-     * @param zone  the zone ID to use, not null
+     * @param zone
+     *         the zone ID to use, not null
+     *
      * @return the current year using the system clock, not null
      */
     public static Year now(ZoneId zone) {
@@ -199,7 +191,9 @@ public final class Year
      * Using this method allows the use of an alternate clock for testing.
      * The alternate clock may be introduced using {@link Clock dependency injection}.
      *
-     * @param clock  the clock to use, not null
+     * @param clock
+     *         the clock to use, not null
+     *
      * @return the current year, not null
      */
     public static Year now(Clock clock) {
@@ -208,6 +202,7 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code Year}.
      * <p>
@@ -218,9 +213,13 @@ public final class Year
      * The year 1BC/BCE is represented by 0.<br>
      * The year 2BC/BCE is represented by -1.<br>
      *
-     * @param isoYear  the ISO proleptic year to represent, from {@code MIN_VALUE} to {@code MAX_VALUE}
+     * @param isoYear
+     *         the ISO proleptic year to represent, from {@code MIN_VALUE} to {@code MAX_VALUE}
+     *
      * @return the year, not null
-     * @throws DateTimeException if the field is invalid
+     *
+     * @throws DateTimeException
+     *         if the field is invalid
      */
     public static Year of(int isoYear) {
         YEAR.checkValidValue(isoYear);
@@ -228,6 +227,7 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code Year} from a temporal object.
      * <p>
@@ -242,9 +242,13 @@ public final class Year
      * This method matches the signature of the functional interface {@link TemporalQuery}
      * allowing it to be used as a query via method reference, {@code Year::from}.
      *
-     * @param temporal  the temporal object to convert, not null
+     * @param temporal
+     *         the temporal object to convert, not null
+     *
      * @return the year, not null
-     * @throws DateTimeException if unable to convert to a {@code Year}
+     *
+     * @throws DateTimeException
+     *         if unable to convert to a {@code Year}
      */
     public static Year from(TemporalAccessor temporal) {
         if (temporal instanceof Year) {
@@ -257,21 +261,25 @@ public final class Year
             }
             return of(temporal.get(YEAR));
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to obtain Year from TemporalAccessor: " +
-                    temporal + " of type " + temporal.getClass().getName(), ex);
+            throw new DateTimeException("Unable to obtain Year from TemporalAccessor: " + temporal + " of type " + temporal.getClass().getName(), ex);
         }
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code Year} from a text string such as {@code 2007}.
      * <p>
      * The string must represent a valid year.
      * Years outside the range 0000 to 9999 must be prefixed by the plus or minus symbol.
      *
-     * @param text  the text to parse such as "2007", not null
+     * @param text
+     *         the text to parse such as "2007", not null
+     *
      * @return the parsed year, not null
-     * @throws DateTimeParseException if the text cannot be parsed
+     *
+     * @throws DateTimeParseException
+     *         if the text cannot be parsed
      */
     public static Year parse(CharSequence text) {
         return parse(text, PARSER);
@@ -282,10 +290,15 @@ public final class Year
      * <p>
      * The text is parsed using the formatter, returning a year.
      *
-     * @param text  the text to parse, not null
-     * @param formatter  the formatter to use, not null
+     * @param text
+     *         the text to parse, not null
+     * @param formatter
+     *         the formatter to use, not null
+     *
      * @return the parsed year, not null
-     * @throws DateTimeParseException if the text cannot be parsed
+     *
+     * @throws DateTimeParseException
+     *         if the text cannot be parsed
      */
     public static Year parse(CharSequence text, DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
@@ -293,6 +306,7 @@ public final class Year
     }
 
     //-------------------------------------------------------------------------
+
     /**
      * Checks if the year is a leap year, according to the ISO proleptic
      * calendar system rules.
@@ -309,7 +323,9 @@ public final class Year
      * The calculation is proleptic - applying the same rules into the far future and far past.
      * This is historically inaccurate, but is correct for the ISO-8601 standard.
      *
-     * @param year  the year to check
+     * @param year
+     *         the year to check
+     *
      * @return true if the year is leap, false otherwise
      */
     public static boolean isLeap(long year) {
@@ -317,16 +333,19 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Constructor.
      *
-     * @param year  the year to represent
+     * @param year
+     *         the year to represent
      */
     private Year(int year) {
         this.year = year;
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the year value.
      * <p>
@@ -339,6 +358,7 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks if the specified field is supported.
      * <p>
@@ -361,7 +381,9 @@ public final class Year
      * passing {@code this} as the argument.
      * Whether the field is supported is determined by the field.
      *
-     * @param field  the field to check, null returns false
+     * @param field
+     *         the field to check, null returns false
+     *
      * @return true if the field is supported on this year, false if not
      */
     @Override
@@ -395,7 +417,9 @@ public final class Year
      * passing {@code this} as the argument.
      * Whether the unit is supported is determined by the unit.
      *
-     * @param unit  the unit to check, null returns false
+     * @param unit
+     *         the unit to check, null returns false
+     *
      * @return true if the unit can be added/subtracted, false if not
      */
     @Override
@@ -407,6 +431,7 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the range of valid values for the specified field.
      * <p>
@@ -425,10 +450,15 @@ public final class Year
      * passing {@code this} as the argument.
      * Whether the range can be obtained is determined by the field.
      *
-     * @param field  the field to query the range for, not null
+     * @param field
+     *         the field to query the range for, not null
+     *
      * @return the range of valid values for the field, not null
-     * @throws DateTimeException if the range for the field cannot be obtained
-     * @throws UnsupportedTemporalTypeException if the field is not supported
+     *
+     * @throws DateTimeException
+     *         if the range for the field cannot be obtained
+     * @throws UnsupportedTemporalTypeException
+     *         if the field is not supported
      */
     @Override
     public ValueRange range(TemporalField field) {
@@ -456,13 +486,19 @@ public final class Year
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
-     * @param field  the field to get, not null
+     * @param field
+     *         the field to get, not null
+     *
      * @return the value for the field
-     * @throws DateTimeException if a value for the field cannot be obtained or
+     *
+     * @throws DateTimeException
+     *         if a value for the field cannot be obtained or
      *         the value is outside the range of valid values for the field
-     * @throws UnsupportedTemporalTypeException if the field is not supported or
+     * @throws UnsupportedTemporalTypeException
+     *         if the field is not supported or
      *         the range of values exceeds an {@code int}
-     * @throws ArithmeticException if numeric overflow occurs
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override  // override for Javadoc
     public int get(TemporalField field) {
@@ -486,19 +522,28 @@ public final class Year
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
-     * @param field  the field to get, not null
+     * @param field
+     *         the field to get, not null
+     *
      * @return the value for the field
-     * @throws DateTimeException if a value for the field cannot be obtained
-     * @throws UnsupportedTemporalTypeException if the field is not supported
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if a value for the field cannot be obtained
+     * @throws UnsupportedTemporalTypeException
+     *         if the field is not supported
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override
     public long getLong(TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
-                case YEAR_OF_ERA: return (year < 1 ? 1 - year : year);
-                case YEAR: return year;
-                case ERA: return (year < 1 ? 0 : 1);
+            case YEAR_OF_ERA:
+                return (year < 1 ? 1 - year : year);
+            case YEAR:
+                return year;
+            case ERA:
+                return (year < 1 ? 0 : 1);
             }
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
@@ -506,6 +551,7 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks if the year is a leap year, according to the ISO proleptic
      * calendar system rules.
@@ -534,7 +580,9 @@ public final class Year
      * This method checks whether this year and the input month and day form
      * a valid date.
      *
-     * @param monthDay  the month-day to validate, null returns false
+     * @param monthDay
+     *         the month-day to validate, null returns false
+     *
      * @return true if the month and day are valid for this year
      */
     public boolean isValidMonthDay(MonthDay monthDay) {
@@ -551,6 +599,7 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns an adjusted copy of this year.
      * <p>
@@ -564,10 +613,15 @@ public final class Year
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjuster the adjuster to use, not null
+     * @param adjuster
+     *         the adjuster to use, not null
+     *
      * @return a {@code Year} based on {@code this} with the adjustment made, not null
-     * @throws DateTimeException if the adjustment cannot be made
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if the adjustment cannot be made
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override
     public Year with(TemporalAdjuster adjuster) {
@@ -586,14 +640,14 @@ public final class Year
      * The supported fields behave as follows:
      * <ul>
      * <li>{@code YEAR_OF_ERA} -
-     *  Returns a {@code Year} with the specified year-of-era
-     *  The era will be unchanged.
+     * Returns a {@code Year} with the specified year-of-era
+     * The era will be unchanged.
      * <li>{@code YEAR} -
-     *  Returns a {@code Year} with the specified year.
-     *  This completely replaces the date and is equivalent to {@link #of(int)}.
+     * Returns a {@code Year} with the specified year.
+     * This completely replaces the date and is equivalent to {@link #of(int)}.
      * <li>{@code ERA} -
-     *  Returns a {@code Year} with the specified era.
-     *  The year-of-era will be unchanged.
+     * Returns a {@code Year} with the specified era.
+     * The year-of-era will be unchanged.
      * </ul>
      * <p>
      * In all cases, if the new value is outside the valid range of values for the field
@@ -608,12 +662,19 @@ public final class Year
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param field  the field to set in the result, not null
-     * @param newValue  the new value of the field in the result
+     * @param field
+     *         the field to set in the result, not null
+     * @param newValue
+     *         the new value of the field in the result
+     *
      * @return a {@code Year} based on {@code this} with the specified field set, not null
-     * @throws DateTimeException if the field cannot be set
-     * @throws UnsupportedTemporalTypeException if the field is not supported
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if the field cannot be set
+     * @throws UnsupportedTemporalTypeException
+     *         if the field is not supported
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override
     public Year with(TemporalField field, long newValue) {
@@ -621,9 +682,12 @@ public final class Year
             ChronoField f = (ChronoField) field;
             f.checkValidValue(newValue);
             switch (f) {
-                case YEAR_OF_ERA: return Year.of((int) (year < 1 ? 1 - newValue : newValue));
-                case YEAR: return Year.of((int) newValue);
-                case ERA: return (getLong(ERA) == newValue ? this : Year.of(1 - year));
+            case YEAR_OF_ERA:
+                return Year.of((int) (year < 1 ? 1 - newValue : newValue));
+            case YEAR:
+                return Year.of((int) newValue);
+            case ERA:
+                return (getLong(ERA) == newValue ? this : Year.of(1 - year));
             }
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
@@ -631,6 +695,7 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns a copy of this year with the specified amount added.
      * <p>
@@ -646,10 +711,15 @@ public final class Year
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToAdd  the amount to add, not null
+     * @param amountToAdd
+     *         the amount to add, not null
+     *
      * @return a {@code Year} based on this year with the addition made, not null
-     * @throws DateTimeException if the addition cannot be made
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if the addition cannot be made
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override
     public Year plus(TemporalAmount amountToAdd) {
@@ -667,25 +737,25 @@ public final class Year
      * The supported fields behave as follows:
      * <ul>
      * <li>{@code YEARS} -
-     *  Returns a {@code Year} with the specified number of years added.
-     *  This is equivalent to {@link #plusYears(long)}.
+     * Returns a {@code Year} with the specified number of years added.
+     * This is equivalent to {@link #plusYears(long)}.
      * <li>{@code DECADES} -
-     *  Returns a {@code Year} with the specified number of decades added.
-     *  This is equivalent to calling {@link #plusYears(long)} with the amount
-     *  multiplied by 10.
+     * Returns a {@code Year} with the specified number of decades added.
+     * This is equivalent to calling {@link #plusYears(long)} with the amount
+     * multiplied by 10.
      * <li>{@code CENTURIES} -
-     *  Returns a {@code Year} with the specified number of centuries added.
-     *  This is equivalent to calling {@link #plusYears(long)} with the amount
-     *  multiplied by 100.
+     * Returns a {@code Year} with the specified number of centuries added.
+     * This is equivalent to calling {@link #plusYears(long)} with the amount
+     * multiplied by 100.
      * <li>{@code MILLENNIA} -
-     *  Returns a {@code Year} with the specified number of millennia added.
-     *  This is equivalent to calling {@link #plusYears(long)} with the amount
-     *  multiplied by 1,000.
+     * Returns a {@code Year} with the specified number of millennia added.
+     * This is equivalent to calling {@link #plusYears(long)} with the amount
+     * multiplied by 1,000.
      * <li>{@code ERAS} -
-     *  Returns a {@code Year} with the specified number of eras added.
-     *  Only two eras are supported so the amount must be one, zero or minus one.
-     *  If the amount is non-zero then the year is changed such that the year-of-era
-     *  is unchanged.
+     * Returns a {@code Year} with the specified number of eras added.
+     * Only two eras are supported so the amount must be one, zero or minus one.
+     * If the amount is non-zero then the year is changed such that the year-of-era
+     * is unchanged.
      * </ul>
      * <p>
      * All other {@code ChronoUnit} instances will throw an {@code UnsupportedTemporalTypeException}.
@@ -697,22 +767,34 @@ public final class Year
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToAdd  the amount of the unit to add to the result, may be negative
-     * @param unit  the unit of the amount to add, not null
+     * @param amountToAdd
+     *         the amount of the unit to add to the result, may be negative
+     * @param unit
+     *         the unit of the amount to add, not null
+     *
      * @return a {@code Year} based on this year with the specified amount added, not null
-     * @throws DateTimeException if the addition cannot be made
-     * @throws UnsupportedTemporalTypeException if the unit is not supported
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if the addition cannot be made
+     * @throws UnsupportedTemporalTypeException
+     *         if the unit is not supported
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override
     public Year plus(long amountToAdd, TemporalUnit unit) {
         if (unit instanceof ChronoUnit) {
             switch ((ChronoUnit) unit) {
-                case YEARS: return plusYears(amountToAdd);
-                case DECADES: return plusYears(Math.multiplyExact(amountToAdd, 10));
-                case CENTURIES: return plusYears(Math.multiplyExact(amountToAdd, 100));
-                case MILLENNIA: return plusYears(Math.multiplyExact(amountToAdd, 1000));
-                case ERAS: return with(ERA, Math.addExact(getLong(ERA), amountToAdd));
+            case YEARS:
+                return plusYears(amountToAdd);
+            case DECADES:
+                return plusYears(Math.multiplyExact(amountToAdd, 10));
+            case CENTURIES:
+                return plusYears(Math.multiplyExact(amountToAdd, 100));
+            case MILLENNIA:
+                return plusYears(Math.multiplyExact(amountToAdd, 1000));
+            case ERAS:
+                return with(ERA, Math.addExact(getLong(ERA), amountToAdd));
             }
             throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
         }
@@ -724,9 +806,13 @@ public final class Year
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param yearsToAdd  the years to add, may be negative
+     * @param yearsToAdd
+     *         the years to add, may be negative
+     *
      * @return a {@code Year} based on this year with the years added, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported range
      */
     public Year plusYears(long yearsToAdd) {
         if (yearsToAdd == 0) {
@@ -736,6 +822,7 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns a copy of this year with the specified amount subtracted.
      * <p>
@@ -751,10 +838,15 @@ public final class Year
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToSubtract  the amount to subtract, not null
+     * @param amountToSubtract
+     *         the amount to subtract, not null
+     *
      * @return a {@code Year} based on this year with the subtraction made, not null
-     * @throws DateTimeException if the subtraction cannot be made
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if the subtraction cannot be made
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override
     public Year minus(TemporalAmount amountToSubtract) {
@@ -773,12 +865,19 @@ public final class Year
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToSubtract  the amount of the unit to subtract from the result, may be negative
-     * @param unit  the unit of the amount to subtract, not null
+     * @param amountToSubtract
+     *         the amount of the unit to subtract from the result, may be negative
+     * @param unit
+     *         the unit of the amount to subtract, not null
+     *
      * @return a {@code Year} based on this year with the specified amount subtracted, not null
-     * @throws DateTimeException if the subtraction cannot be made
-     * @throws UnsupportedTemporalTypeException if the unit is not supported
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if the subtraction cannot be made
+     * @throws UnsupportedTemporalTypeException
+     *         if the unit is not supported
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override
     public Year minus(long amountToSubtract, TemporalUnit unit) {
@@ -790,15 +889,20 @@ public final class Year
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param yearsToSubtract  the years to subtract, may be negative
+     * @param yearsToSubtract
+     *         the years to subtract, may be negative
+     *
      * @return a {@code Year} based on this year with the year subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported range
      */
     public Year minusYears(long yearsToSubtract) {
         return (yearsToSubtract == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-yearsToSubtract));
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Queries this year using the specified query.
      * <p>
@@ -811,11 +915,17 @@ public final class Year
      * {@link TemporalQuery#queryFrom(TemporalAccessor)} method on the
      * specified query passing {@code this} as the argument.
      *
-     * @param <R> the type of the result
-     * @param query  the query to invoke, not null
+     * @param <R>
+     *         the type of the result
+     * @param query
+     *         the query to invoke, not null
+     *
      * @return the query result, null may be returned (defined by the query)
-     * @throws DateTimeException if unable to query (defined by the query)
-     * @throws ArithmeticException if numeric overflow occurs (defined by the query)
+     *
+     * @throws DateTimeException
+     *         if unable to query (defined by the query)
+     * @throws ArithmeticException
+     *         if numeric overflow occurs (defined by the query)
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -849,10 +959,15 @@ public final class Year
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param temporal  the target object to be adjusted, not null
+     * @param temporal
+     *         the target object to be adjusted, not null
+     *
      * @return the adjusted object, not null
-     * @throws DateTimeException if unable to make the adjustment
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if unable to make the adjustment
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override
     public Temporal adjustInto(Temporal temporal) {
@@ -901,13 +1016,20 @@ public final class Year
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param endExclusive  the end date, exclusive, which is converted to a {@code Year}, not null
-     * @param unit  the unit to measure the amount in, not null
+     * @param endExclusive
+     *         the end date, exclusive, which is converted to a {@code Year}, not null
+     * @param unit
+     *         the unit to measure the amount in, not null
+     *
      * @return the amount of time between this year and the end year
-     * @throws DateTimeException if the amount cannot be calculated, or the end
-     *  temporal cannot be converted to a {@code Year}
-     * @throws UnsupportedTemporalTypeException if the unit is not supported
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if the amount cannot be calculated, or the end
+     *         temporal cannot be converted to a {@code Year}
+     * @throws UnsupportedTemporalTypeException
+     *         if the unit is not supported
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override
     public long until(Temporal endExclusive, TemporalUnit unit) {
@@ -915,11 +1037,16 @@ public final class Year
         if (unit instanceof ChronoUnit) {
             long yearsUntil = ((long) end.year) - year;  // no overflow
             switch ((ChronoUnit) unit) {
-                case YEARS: return yearsUntil;
-                case DECADES: return yearsUntil / 10;
-                case CENTURIES: return yearsUntil / 100;
-                case MILLENNIA: return yearsUntil / 1000;
-                case ERAS: return end.getLong(ERA) - getLong(ERA);
+            case YEARS:
+                return yearsUntil;
+            case DECADES:
+                return yearsUntil / 10;
+            case CENTURIES:
+                return yearsUntil / 100;
+            case MILLENNIA:
+                return yearsUntil / 1000;
+            case ERAS:
+                return end.getLong(ERA) - getLong(ERA);
             }
             throw new UnsupportedTemporalTypeException("Unsupported unit: " + unit);
         }
@@ -931,9 +1058,13 @@ public final class Year
      * <p>
      * This year will be passed to the formatter to produce a string.
      *
-     * @param formatter  the formatter to use, not null
+     * @param formatter
+     *         the formatter to use, not null
+     *
      * @return the formatted year string, not null
-     * @throws DateTimeException if an error occurs during printing
+     *
+     * @throws DateTimeException
+     *         if an error occurs during printing
      */
     public String format(DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
@@ -941,6 +1072,7 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Combines this year with a day-of-year to create a {@code LocalDate}.
      * <p>
@@ -948,10 +1080,14 @@ public final class Year
      * <p>
      * The day-of-year value 366 is only valid in a leap year.
      *
-     * @param dayOfYear  the day-of-year to use, from 1 to 365-366
+     * @param dayOfYear
+     *         the day-of-year to use, from 1 to 365-366
+     *
      * @return the local date formed from this year and the specified date of year, not null
-     * @throws DateTimeException if the day of year is zero or less, 366 or greater or equal
-     *  to 366 and this is not a leap year
+     *
+     * @throws DateTimeException
+     *         if the day of year is zero or less, 366 or greater or equal
+     *         to 366 and this is not a leap year
      */
     public LocalDate atDay(int dayOfYear) {
         return LocalDate.ofYearDay(year, dayOfYear);
@@ -968,7 +1104,9 @@ public final class Year
      *  LocalDate date = year.atMonth(month).atDay(day);
      * </pre>
      *
-     * @param month  the month-of-year to use, not null
+     * @param month
+     *         the month-of-year to use, not null
+     *
      * @return the year-month formed from this year and the specified month, not null
      */
     public YearMonth atMonth(Month month) {
@@ -986,9 +1124,13 @@ public final class Year
      *  LocalDate date = year.atMonth(month).atDay(day);
      * </pre>
      *
-     * @param month  the month-of-year to use, from 1 (January) to 12 (December)
+     * @param month
+     *         the month-of-year to use, from 1 (January) to 12 (December)
+     *
      * @return the year-month formed from this year and the specified month, not null
-     * @throws DateTimeException if the month is invalid
+     *
+     * @throws DateTimeException
+     *         if the month is invalid
      */
     public YearMonth atMonth(int month) {
         return YearMonth.of(year, month);
@@ -1002,7 +1144,9 @@ public final class Year
      * A month-day of February 29th will be adjusted to February 28th in the resulting
      * date if the year is not a leap year.
      *
-     * @param monthDay  the month-day to use, not null
+     * @param monthDay
+     *         the month-day to use, not null
+     *
      * @return the local date formed from this year and the specified month-day, not null
      */
     public LocalDate atMonthDay(MonthDay monthDay) {
@@ -1010,13 +1154,16 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Compares this year to another year.
      * <p>
      * The comparison is based on the value of the year.
      * It is "consistent with equals", as defined by {@link Comparable}.
      *
-     * @param other  the other year to compare to, not null
+     * @param other
+     *         the other year to compare to, not null
+     *
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
@@ -1027,7 +1174,9 @@ public final class Year
     /**
      * Checks if this year is after the specified year.
      *
-     * @param other  the other year to compare to, not null
+     * @param other
+     *         the other year to compare to, not null
+     *
      * @return true if this is after the specified year
      */
     public boolean isAfter(Year other) {
@@ -1037,7 +1186,9 @@ public final class Year
     /**
      * Checks if this year is before the specified year.
      *
-     * @param other  the other year to compare to, not null
+     * @param other
+     *         the other year to compare to, not null
+     *
      * @return true if this point is before the specified year
      */
     public boolean isBefore(Year other) {
@@ -1045,12 +1196,15 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks if this year is equal to another year.
      * <p>
      * The comparison is based on the time-line position of the years.
      *
-     * @param obj  the object to check, null returns false
+     * @param obj
+     *         the object to check, null returns false
+     *
      * @return true if this is equal to the other year
      */
     @Override
@@ -1075,6 +1229,7 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Outputs this year as a {@code String}.
      *
@@ -1086,14 +1241,10 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Writes the object using a
      * <a href="../../serialized-form.html#java.time.Ser">dedicated serialized form</a>.
-     * @serialData
-     * <pre>
-     *  out.writeByte(11);  // identifies a Year
-     *  out.writeInt(year);
-     * </pre>
      *
      * @return the instance of {@code Ser}, not null
      */
@@ -1104,8 +1255,11 @@ public final class Year
     /**
      * Defend against malicious streams.
      *
-     * @param s the stream to read
-     * @throws InvalidObjectException always
+     * @param s
+     *         the stream to read
+     *
+     * @throws InvalidObjectException
+     *         always
      */
     private void readObject(ObjectInputStream s) throws InvalidObjectException {
         throw new InvalidObjectException("Deserialization via serialization delegate");

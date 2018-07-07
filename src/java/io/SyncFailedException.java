@@ -28,10 +28,10 @@ package java.io;
 /**
  * Signals that a sync operation has failed.
  *
- * @author  Ken Arnold
- * @see     java.io.FileDescriptor#sync
- * @see     java.io.IOException
- * @since   JDK1.1
+ * @author Ken Arnold
+ * @see java.io.FileDescriptor#sync
+ * @see java.io.IOException
+ * @since JDK1.1
  */
 public class SyncFailedException extends IOException {
     private static final long serialVersionUID = -2353342684412443330L;
@@ -40,7 +40,8 @@ public class SyncFailedException extends IOException {
      * Constructs an SyncFailedException with a detail message.
      * A detail message is a String that describes this particular exception.
      *
-     * @param desc  a String describing the exception.
+     * @param desc
+     *         a String describing the exception.
      */
     public SyncFailedException(String desc) {
         super(desc);

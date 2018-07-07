@@ -30,7 +30,7 @@ package java.security.acl;
  * (such as an Access Control List) is only allowed to be done by an owner of
  * the object, but the Principal attempting the modification is not an owner.
  *
- * @author      Satish Dharmaraj
+ * @author Satish Dharmaraj
  */
 public class NotOwnerException extends Exception {
 

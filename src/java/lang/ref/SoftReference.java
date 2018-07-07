@@ -25,7 +25,6 @@
 
 package java.lang.ref;
 
-
 /**
  * Soft reference objects, which are cleared at the discretion of the garbage
  * collector in response to memory demand.  Soft references are most often used
@@ -57,8 +56,8 @@ package java.lang.ref;
  * strong referents to those entries, leaving the remaining entries to be
  * discarded at the discretion of the garbage collector.
  *
- * @author   Mark Reinhold
- * @since    1.2
+ * @author Mark Reinhold
+ * @since 1.2
  */
 
 public class SoftReference<T> extends Reference<T> {
@@ -79,7 +78,8 @@ public class SoftReference<T> extends Reference<T> {
      * Creates a new soft reference that refers to the given object.  The new
      * reference is not registered with any queue.
      *
-     * @param referent object the new soft reference will refer to
+     * @param referent
+     *         object the new soft reference will refer to
      */
     public SoftReference(T referent) {
         super(referent);
@@ -90,10 +90,11 @@ public class SoftReference<T> extends Reference<T> {
      * Creates a new soft reference that refers to the given object and is
      * registered with the given queue.
      *
-     * @param referent object the new soft reference will refer to
-     * @param q the queue with which the reference is to be registered,
-     *          or <tt>null</tt> if registration is not required
-     *
+     * @param referent
+     *         object the new soft reference will refer to
+     * @param q
+     *         the queue with which the reference is to be registered,
+     *         or <tt>null</tt> if registration is not required
      */
     public SoftReference(T referent, ReferenceQueue<? super T> q) {
         super(referent, q);
@@ -105,13 +106,14 @@ public class SoftReference<T> extends Reference<T> {
      * been cleared, either by the program or by the garbage collector, then
      * this method returns <code>null</code>.
      *
-     * @return   The object to which this reference refers, or
-     *           <code>null</code> if this reference object has been cleared
+     * @return The object to which this reference refers, or
+     * <code>null</code> if this reference object has been cleared
      */
     public T get() {
         T o = super.get();
-        if (o != null && this.timestamp != clock)
+        if (o != null && this.timestamp != clock) {
             this.timestamp = clock;
+        }
         return o;
     }
 

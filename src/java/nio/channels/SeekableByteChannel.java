@@ -25,8 +25,8 @@
 
 package java.nio.channels;
 
-import java.nio.ByteBuffer;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  * A byte channel that maintains a current <i>position</i> and allows the
@@ -46,13 +46,11 @@ import java.io.IOException;
  * chained. Implementations of this interface should specialize the return type
  * so that method invocations on the implementation class can be chained.
  *
- * @since 1.7
  * @see java.nio.file.Files#newByteChannel
+ * @since 1.7
  */
 
-public interface SeekableByteChannel
-    extends ByteChannel
-{
+public interface SeekableByteChannel extends ByteChannel {
     /**
      * Reads a sequence of bytes from this channel into the given buffer.
      *
@@ -82,14 +80,14 @@ public interface SeekableByteChannel
     /**
      * Returns this channel's position.
      *
-     * @return  This channel's position,
-     *          a non-negative integer counting the number of bytes
-     *          from the beginning of the entity to the current position
+     * @return This channel's position,
+     * a non-negative integer counting the number of bytes
+     * from the beginning of the entity to the current position
      *
-     * @throws  ClosedChannelException
-     *          If this channel is closed
-     * @throws  IOException
-     *          If some other I/O error occurs
+     * @throws ClosedChannelException
+     *         If this channel is closed
+     * @throws IOException
+     *         If some other I/O error occurs
      */
     long position() throws IOException;
 
@@ -109,30 +107,30 @@ public interface SeekableByteChannel
      * java.nio.file.StandardOpenOption#APPEND APPEND} option. When opened for
      * append, the position is first advanced to the end before writing.
      *
-     * @param  newPosition
+     * @param newPosition
      *         The new position, a non-negative integer counting
      *         the number of bytes from the beginning of the entity
      *
-     * @return  This channel
+     * @return This channel
      *
-     * @throws  ClosedChannelException
-     *          If this channel is closed
-     * @throws  IllegalArgumentException
-     *          If the new position is negative
-     * @throws  IOException
-     *          If some other I/O error occurs
+     * @throws ClosedChannelException
+     *         If this channel is closed
+     * @throws IllegalArgumentException
+     *         If the new position is negative
+     * @throws IOException
+     *         If some other I/O error occurs
      */
     SeekableByteChannel position(long newPosition) throws IOException;
 
     /**
      * Returns the current size of entity to which this channel is connected.
      *
-     * @return  The current size, measured in bytes
+     * @return The current size, measured in bytes
      *
-     * @throws  ClosedChannelException
-     *          If this channel is closed
-     * @throws  IOException
-     *          If some other I/O error occurs
+     * @throws ClosedChannelException
+     *         If this channel is closed
+     * @throws IOException
+     *         If some other I/O error occurs
      */
     long size() throws IOException;
 
@@ -150,19 +148,19 @@ public interface SeekableByteChannel
      * connected to an entity, typically a file, opened with the {@link
      * java.nio.file.StandardOpenOption#APPEND APPEND} option.
      *
-     * @param  size
+     * @param size
      *         The new size, a non-negative byte count
      *
-     * @return  This channel
+     * @return This channel
      *
-     * @throws  NonWritableChannelException
-     *          If this channel was not opened for writing
-     * @throws  ClosedChannelException
-     *          If this channel is closed
-     * @throws  IllegalArgumentException
-     *          If the new size is negative
-     * @throws  IOException
-     *          If some other I/O error occurs
+     * @throws NonWritableChannelException
+     *         If this channel was not opened for writing
+     * @throws ClosedChannelException
+     *         If this channel is closed
+     * @throws IllegalArgumentException
+     *         If the new size is negative
+     * @throws IOException
+     *         If some other I/O error occurs
      */
     SeekableByteChannel truncate(long size) throws IOException;
 }

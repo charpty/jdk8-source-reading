@@ -38,11 +38,10 @@ package java.io;
  * <code>FilterOutputStream</code> may further override some of these
  * methods as well as provide additional methods and fields.
  *
- * @author  Jonathan Payne
- * @since   JDK1.0
+ * @author Jonathan Payne
+ * @since JDK1.0
  */
-public
-class FilterOutputStream extends OutputStream {
+public class FilterOutputStream extends OutputStream {
     /**
      * The underlying output stream to be filtered.
      */
@@ -52,10 +51,11 @@ class FilterOutputStream extends OutputStream {
      * Creates an output stream filter built on top of the specified
      * underlying output stream.
      *
-     * @param   out   the underlying output stream to be assigned to
-     *                the field <tt>this.out</tt> for later use, or
-     *                <code>null</code> if this instance is to be
-     *                created without an underlying stream.
+     * @param out
+     *         the underlying output stream to be assigned to
+     *         the field <tt>this.out</tt> for later use, or
+     *         <code>null</code> if this instance is to be
+     *         created without an underlying stream.
      */
     public FilterOutputStream(OutputStream out) {
         this.out = out;
@@ -70,8 +70,11 @@ class FilterOutputStream extends OutputStream {
      * <p>
      * Implements the abstract <tt>write</tt> method of <tt>OutputStream</tt>.
      *
-     * @param      b   the <code>byte</code>.
-     * @exception  IOException  if an I/O error occurs.
+     * @param b
+     *         the <code>byte</code>.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     public void write(int b) throws IOException {
         out.write(b);
@@ -89,9 +92,12 @@ class FilterOutputStream extends OutputStream {
      * <code>write</code> method of its underlying stream with the single
      * argument <code>b</code>.
      *
-     * @param      b   the data to be written.
-     * @exception  IOException  if an I/O error occurs.
-     * @see        java.io.FilterOutputStream#write(byte[], int, int)
+     * @param b
+     *         the data to be written.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
+     * @see java.io.FilterOutputStream#write(byte[], int, int)
      */
     public void write(byte b[]) throws IOException {
         write(b, 0, b.length);
@@ -111,17 +117,23 @@ class FilterOutputStream extends OutputStream {
      * of <code>FilterOutputStream</code> should provide a more efficient
      * implementation of this method.
      *
-     * @param      b     the data.
-     * @param      off   the start offset in the data.
-     * @param      len   the number of bytes to write.
-     * @exception  IOException  if an I/O error occurs.
-     * @see        java.io.FilterOutputStream#write(int)
+     * @param b
+     *         the data.
+     * @param off
+     *         the start offset in the data.
+     * @param len
+     *         the number of bytes to write.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
+     * @see java.io.FilterOutputStream#write(int)
      */
     public void write(byte b[], int off, int len) throws IOException {
-        if ((off | len | (b.length - (len + off)) | (off + len)) < 0)
+        if ((off | len | (b.length - (len + off)) | (off + len)) < 0) {
             throw new IndexOutOfBoundsException();
+        }
 
-        for (int i = 0 ; i < len ; i++) {
+        for (int i = 0; i < len; i++) {
             write(b[off + i]);
         }
     }
@@ -133,8 +145,9 @@ class FilterOutputStream extends OutputStream {
      * The <code>flush</code> method of <code>FilterOutputStream</code>
      * calls the <code>flush</code> method of its underlying output stream.
      *
-     * @exception  IOException  if an I/O error occurs.
-     * @see        java.io.FilterOutputStream#out
+     * @throws IOException
+     *         if an I/O error occurs.
+     * @see java.io.FilterOutputStream#out
      */
     public void flush() throws IOException {
         out.flush();
@@ -148,9 +161,10 @@ class FilterOutputStream extends OutputStream {
      * calls its <code>flush</code> method, and then calls the
      * <code>close</code> method of its underlying output stream.
      *
-     * @exception  IOException  if an I/O error occurs.
-     * @see        java.io.FilterOutputStream#flush()
-     * @see        java.io.FilterOutputStream#out
+     * @throws IOException
+     *         if an I/O error occurs.
+     * @see java.io.FilterOutputStream#flush()
+     * @see java.io.FilterOutputStream#out
      */
     @SuppressWarnings("try")
     public void close() throws IOException {

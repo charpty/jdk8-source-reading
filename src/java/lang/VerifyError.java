@@ -30,11 +30,10 @@ package java.lang;
  * though well formed, contains some sort of internal inconsistency
  * or security problem.
  *
- * @author  unascribed
- * @since   JDK1.0
+ * @author unascribed
+ * @since JDK1.0
  */
-public
-class VerifyError extends LinkageError {
+public class VerifyError extends LinkageError {
     private static final long serialVersionUID = 7001962396098498785L;
 
     /**
@@ -47,7 +46,8 @@ class VerifyError extends LinkageError {
     /**
      * Constructs an <code>VerifyError</code> with the specified detail message.
      *
-     * @param   s   the detail message.
+     * @param s
+     *         the detail message.
      */
     public VerifyError(String s) {
         super(s);

@@ -30,16 +30,17 @@ package java.io;
  * Allows an object to be called when a complete graph of objects has
  * been deserialized.
  *
- * @author  unascribed
- * @see     ObjectInputStream
- * @see     ObjectInputStream#registerValidation(java.io.ObjectInputValidation, int)
- * @since   JDK1.1
+ * @author unascribed
+ * @see ObjectInputStream
+ * @see ObjectInputStream#registerValidation(java.io.ObjectInputValidation, int)
+ * @since JDK1.1
  */
 public interface ObjectInputValidation {
     /**
      * Validates the object.
      *
-     * @exception InvalidObjectException If the object cannot validate itself.
+     * @throws InvalidObjectException
+     *         If the object cannot validate itself.
      */
     public void validateObject() throws InvalidObjectException;
 }

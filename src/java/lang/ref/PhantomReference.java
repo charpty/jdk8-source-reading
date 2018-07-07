@@ -25,7 +25,6 @@
 
 package java.lang.ref;
 
-
 /**
  * Phantom reference objects, which are enqueued after the collector
  * determines that their referents may otherwise be reclaimed.  Phantom
@@ -46,8 +45,8 @@ package java.lang.ref;
  * object that is reachable via phantom references will remain so until all
  * such references are cleared or themselves become unreachable.
  *
- * @author   Mark Reinhold
- * @since    1.2
+ * @author Mark Reinhold
+ * @since 1.2
  */
 
 public class PhantomReference<T> extends Reference<T> {
@@ -57,7 +56,7 @@ public class PhantomReference<T> extends Reference<T> {
      * phantom reference is always inaccessible, this method always returns
      * <code>null</code>.
      *
-     * @return  <code>null</code>
+     * @return <code>null</code>
      */
     public T get() {
         return null;
@@ -72,9 +71,11 @@ public class PhantomReference<T> extends Reference<T> {
      * method will always return null and, since it does not have a queue, it
      * will never be enqueued.
      *
-     * @param referent the object the new phantom reference will refer to
-     * @param q the queue with which the reference is to be registered,
-     *          or <tt>null</tt> if registration is not required
+     * @param referent
+     *         the object the new phantom reference will refer to
+     * @param q
+     *         the queue with which the reference is to be registered,
+     *         or <tt>null</tt> if registration is not required
      */
     public PhantomReference(T referent, ReferenceQueue<? super T> q) {
         super(referent, q);

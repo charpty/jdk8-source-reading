@@ -57,7 +57,8 @@ public class IllformedLocaleException extends RuntimeException {
      * Constructs a new <code>IllformedLocaleException</code> with the
      * given message and -1 as the error index.
      *
-     * @param message the message
+     * @param message
+     *         the message
      */
     public IllformedLocaleException(String message) {
         super(message);
@@ -70,8 +71,10 @@ public class IllformedLocaleException extends RuntimeException {
      * parse first detected an error.  A negative error index value indicates
      * either the error index is not applicable or unknown.
      *
-     * @param message the message
-     * @param errorIndex the index
+     * @param message
+     *         the message
+     * @param errorIndex
+     *         the index
      */
     public IllformedLocaleException(String message, int errorIndex) {
         super(message + ((errorIndex < 0) ? "" : " [at index " + errorIndex + "]"));

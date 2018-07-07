@@ -40,9 +40,9 @@ package java.util.concurrent;
  * that aborted by throwing an exception. This exception can be
  * inspected using the {@link #getCause()} method.
  *
+ * @author Doug Lea
  * @see Future
  * @since 1.5
- * @author Doug Lea
  */
 public class ExecutionException extends Exception {
     private static final long serialVersionUID = 7830266012832686185L;
@@ -52,14 +52,16 @@ public class ExecutionException extends Exception {
      * The cause is not initialized, and may subsequently be
      * initialized by a call to {@link #initCause(Throwable) initCause}.
      */
-    protected ExecutionException() { }
+    protected ExecutionException() {
+    }
 
     /**
      * Constructs an {@code ExecutionException} with the specified detail
      * message. The cause is not initialized, and may subsequently be
      * initialized by a call to {@link #initCause(Throwable) initCause}.
      *
-     * @param message the detail message
+     * @param message
+     *         the detail message
      */
     protected ExecutionException(String message) {
         super(message);
@@ -69,8 +71,10 @@ public class ExecutionException extends Exception {
      * Constructs an {@code ExecutionException} with the specified detail
      * message and cause.
      *
-     * @param  message the detail message
-     * @param  cause the cause (which is saved for later retrieval by the
+     * @param message
+     *         the detail message
+     * @param cause
+     *         the cause (which is saved for later retrieval by the
      *         {@link #getCause()} method)
      */
     public ExecutionException(String message, Throwable cause) {
@@ -83,7 +87,8 @@ public class ExecutionException extends Exception {
      * cause.toString())} (which typically contains the class and
      * detail message of {@code cause}).
      *
-     * @param  cause the cause (which is saved for later retrieval by the
+     * @param cause
+     *         the cause (which is saved for later retrieval by the
      *         {@link #getCause()} method)
      */
     public ExecutionException(Throwable cause) {

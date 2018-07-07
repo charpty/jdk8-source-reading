@@ -25,10 +25,10 @@
 package java.net;
 
 import java.io.IOException;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Collections;
-import jdk.net.*;
+import jdk.net.ExtendedSocketOptions;
+import jdk.net.SocketFlow;
+
+
 import static sun.net.ExtendedOptionsImpl.*;
 
 /*
@@ -37,8 +37,7 @@ import static sun.net.ExtendedOptionsImpl.*;
  * @author Chris Hegarty
  */
 
-class PlainDatagramSocketImpl extends AbstractPlainDatagramSocketImpl
-{
+class PlainDatagramSocketImpl extends AbstractPlainDatagramSocketImpl {
     static {
         init();
     }
@@ -52,7 +51,7 @@ class PlainDatagramSocketImpl extends AbstractPlainDatagramSocketImpl
             }
             checkSetOptionPermission(name);
             checkValueType(value, SocketFlow.class);
-            setFlowOption(getFileDescriptor(), (SocketFlow)value);
+            setFlowOption(getFileDescriptor(), (SocketFlow) value);
         }
     }
 
@@ -66,20 +65,20 @@ class PlainDatagramSocketImpl extends AbstractPlainDatagramSocketImpl
         checkGetOptionPermission(name);
         SocketFlow flow = SocketFlow.create();
         getFlowOption(getFileDescriptor(), flow);
-        return (T)flow;
+        return (T) flow;
     }
 
     protected void socketSetOption(int opt, Object val) throws SocketException {
         try {
             socketSetOption0(opt, val);
         } catch (SocketException se) {
-            if (!connected)
+            if (!connected) {
                 throw se;
+            }
         }
     }
 
-    protected synchronized native void bind0(int lport, InetAddress laddr)
-        throws SocketException;
+    protected synchronized native void bind0(int lport, InetAddress laddr) throws SocketException;
 
     protected native void send(DatagramPacket p) throws IOException;
 
@@ -87,8 +86,7 @@ class PlainDatagramSocketImpl extends AbstractPlainDatagramSocketImpl
 
     protected synchronized native int peekData(DatagramPacket p) throws IOException;
 
-    protected synchronized native void receive0(DatagramPacket p)
-        throws IOException;
+    protected synchronized native void receive0(DatagramPacket p) throws IOException;
 
     protected native void setTimeToLive(int ttl) throws IOException;
 
@@ -100,18 +98,15 @@ class PlainDatagramSocketImpl extends AbstractPlainDatagramSocketImpl
     @Deprecated
     protected native byte getTTL() throws IOException;
 
-    protected native void join(InetAddress inetaddr, NetworkInterface netIf)
-        throws IOException;
+    protected native void join(InetAddress inetaddr, NetworkInterface netIf) throws IOException;
 
-    protected native void leave(InetAddress inetaddr, NetworkInterface netIf)
-        throws IOException;
+    protected native void leave(InetAddress inetaddr, NetworkInterface netIf) throws IOException;
 
     protected native void datagramSocketCreate() throws SocketException;
 
     protected native void datagramSocketClose();
 
-    protected native void socketSetOption0(int opt, Object val)
-        throws SocketException;
+    protected native void socketSetOption0(int opt, Object val) throws SocketException;
 
     protected native Object socketGetOption(int opt) throws SocketException;
 

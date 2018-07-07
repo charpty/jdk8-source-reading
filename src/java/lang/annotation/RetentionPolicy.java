@@ -31,7 +31,7 @@ package java.lang.annotation;
  * in conjunction with the {@link Retention} meta-annotation type to specify
  * how long annotations are to be retained.
  *
- * @author  Joshua Bloch
+ * @author Joshua Bloch
  * @since 1.5
  */
 public enum RetentionPolicy {

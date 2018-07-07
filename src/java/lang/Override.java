@@ -25,7 +25,10 @@
 
 package java.lang;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Indicates that a method declaration is intended to override a
@@ -41,9 +44,8 @@ import java.lang.annotation.*;
  * any public method declared in {@linkplain Object}.
  * </li></ul>
  *
- * @author  Peter von der Ah&eacute;
- * @author  Joshua Bloch
- * @jls 9.6.1.4 @Override
+ * @author Peter von der Ah&eacute;
+ * @author Joshua Bloch
  * @since 1.5
  */
 @Target(ElementType.METHOD)

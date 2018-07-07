@@ -40,8 +40,8 @@ package java.io;
  * <i>cause</i>, and may be accessed via the {@link Throwable#getCause()}
  * method, as well as the aforementioned "legacy field."
  *
- * @author  unascribed
- * @since   JDK1.1
+ * @author unascribed
+ * @since JDK1.1
  */
 public class WriteAbortedException extends ObjectStreamException {
     private static final long serialVersionUID = -3326426625597282442L;
@@ -52,16 +52,17 @@ public class WriteAbortedException extends ObjectStreamException {
      * <p>This field predates the general-purpose exception chaining facility.
      * The {@link Throwable#getCause()} method is now the preferred means of
      * obtaining this information.
-     *
-     * @serial
      */
     public Exception detail;
 
     /**
      * Constructs a WriteAbortedException with a string describing
      * the exception and the exception causing the abort.
-     * @param s   String describing the exception.
-     * @param ex  Exception causing the abort.
+     *
+     * @param s
+     *         String describing the exception.
+     * @param ex
+     *         Exception causing the abort.
      */
     public WriteAbortedException(String s, Exception ex) {
         super(s);
@@ -74,18 +75,20 @@ public class WriteAbortedException extends ObjectStreamException {
      * exception, if there is one.
      */
     public String getMessage() {
-        if (detail == null)
+        if (detail == null) {
             return super.getMessage();
-        else
+        } else {
             return super.getMessage() + "; " + detail.toString();
+        }
     }
 
     /**
      * Returns the exception that terminated the operation (the <i>cause</i>).
      *
-     * @return  the exception that terminated the operation (the <i>cause</i>),
-     *          which may be null.
-     * @since   1.4
+     * @return the exception that terminated the operation (the <i>cause</i>),
+     * which may be null.
+     *
+     * @since 1.4
      */
     public Throwable getCause() {
         return detail;

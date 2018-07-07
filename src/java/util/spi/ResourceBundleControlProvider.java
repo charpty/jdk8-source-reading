@@ -43,10 +43,10 @@ import java.util.ResourceBundle;
  * java.util.ServiceLoader} at the {@code ResourceBundle} class loading time.
  *
  * @author Masayoshi Okutsu
- * @since 1.8
  * @see ResourceBundle#getBundle(String, java.util.Locale, ClassLoader, ResourceBundle.Control)
- *      ResourceBundle.getBundle
+ * ResourceBundle.getBundle
  * @see java.util.ServiceLoader#loadInstalled(Class)
+ * @since 1.8
  */
 public interface ResourceBundleControlProvider {
     /**
@@ -55,11 +55,15 @@ public interface ResourceBundleControlProvider {
      * baseName}. This method must return {@code null} if the given
      * {@code baseName} isn't handled by this provider.
      *
-     * @param baseName the base name of the resource bundle
+     * @param baseName
+     *         the base name of the resource bundle
+     *
      * @return a {@code ResourceBundle.Control} instance,
-     *         or {@code null} if the given {@code baseName} is not
-     *         applicable to this provider.
-     * @throws NullPointerException if {@code baseName} is {@code null}
+     * or {@code null} if the given {@code baseName} is not
+     * applicable to this provider.
+     *
+     * @throws NullPointerException
+     *         if {@code baseName} is {@code null}
      */
     public ResourceBundle.Control getControl(String baseName);
 }

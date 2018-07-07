@@ -29,7 +29,6 @@
 
 package java.nio.channels;
 
-
 /**
  * Unchecked exception thrown when an attempt is made to bind or connect
  * to a socket address of a type that is not supported.
@@ -37,15 +36,14 @@ package java.nio.channels;
  * @since 1.4
  */
 
-public class UnsupportedAddressTypeException
-    extends IllegalArgumentException
-{
+public class UnsupportedAddressTypeException extends IllegalArgumentException {
 
     private static final long serialVersionUID = -2964323842829700493L;
 
     /**
      * Constructs an instance of this class.
      */
-    public UnsupportedAddressTypeException() { }
+    public UnsupportedAddressTypeException() {
+    }
 
 }

@@ -25,13 +25,13 @@
 
 package java.lang.reflect;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.Objects;
 import sun.reflect.annotation.AnnotationParser;
 import sun.reflect.annotation.AnnotationSupport;
-import sun.reflect.annotation.TypeAnnotationParser;
 import sun.reflect.annotation.TypeAnnotation;
+import sun.reflect.annotation.TypeAnnotationParser;
 import sun.reflect.generics.repository.ConstructorRepository;
 
 /**
@@ -40,12 +40,12 @@ import sun.reflect.generics.repository.ConstructorRepository;
  *
  * @since 1.8
  */
-public abstract class Executable extends AccessibleObject
-    implements Member, GenericDeclaration {
+public abstract class Executable extends AccessibleObject implements Member, GenericDeclaration {
     /*
      * Only grant package-visibility to the constructor.
      */
-    Executable() {}
+    Executable() {
+    }
 
     /**
      * Accessor method to allow code sharing
@@ -68,8 +68,9 @@ public abstract class Executable extends AccessibleObject
         /* Avoid unnecessary cloning */
         if (params1.length == params2.length) {
             for (int i = 0; i < params1.length; i++) {
-                if (params1[i] != params2[i])
+                if (params1[i] != params2[i]) {
                     return false;
+                }
             }
             return true;
         }
@@ -77,18 +78,16 @@ public abstract class Executable extends AccessibleObject
     }
 
     Annotation[][] parseParameterAnnotations(byte[] parameterAnnotations) {
-        return AnnotationParser.parseParameterAnnotations(
-               parameterAnnotations,
-               sun.misc.SharedSecrets.getJavaLangAccess().
-               getConstantPool(getDeclaringClass()),
-               getDeclaringClass());
+        return AnnotationParser.parseParameterAnnotations(parameterAnnotations, sun.misc.SharedSecrets.getJavaLangAccess().
+                getConstantPool(getDeclaringClass()), getDeclaringClass());
     }
 
     void separateWithCommas(Class<?>[] types, StringBuilder sb) {
         for (int j = 0; j < types.length; j++) {
             sb.append(types[j].getTypeName());
-            if (j < (types.length - 1))
+            if (j < (types.length - 1)) {
                 sb.append(",");
+            }
         }
 
     }
@@ -100,20 +99,20 @@ public abstract class Executable extends AccessibleObject
             sb.append(Modifier.toString(mod)).append(' ');
         } else {
             int access_mod = mod & Modifier.ACCESS_MODIFIERS;
-            if (access_mod != 0)
+            if (access_mod != 0) {
                 sb.append(Modifier.toString(access_mod)).append(' ');
-            if (isDefault)
+            }
+            if (isDefault) {
                 sb.append("default ");
+            }
             mod = (mod & ~Modifier.ACCESS_MODIFIERS);
-            if (mod != 0)
+            if (mod != 0) {
                 sb.append(Modifier.toString(mod)).append(' ');
+            }
         }
     }
 
-    String sharedToString(int modifierMask,
-                          boolean isDefault,
-                          Class<?>[] parameterTypes,
-                          Class<?>[] exceptionTypes) {
+    String sharedToString(int modifierMask, boolean isDefault, Class<?>[] parameterTypes, Class<?>[] exceptionTypes) {
         try {
             StringBuilder sb = new StringBuilder();
 
@@ -149,9 +148,10 @@ public abstract class Executable extends AccessibleObject
             if (typeparms.length > 0) {
                 boolean first = true;
                 sb.append('<');
-                for(TypeVariable<?> typeparm: typeparms) {
-                    if (!first)
+                for (TypeVariable<?> typeparm : typeparms) {
+                    if (!first) {
                         sb.append(',');
+                    }
                     // Class objects can't occur here; no need to test
                     // and call Class.getName().
                     sb.append(typeparm.toString());
@@ -167,21 +167,23 @@ public abstract class Executable extends AccessibleObject
             for (int j = 0; j < params.length; j++) {
                 String param = params[j].getTypeName();
                 if (isVarArgs() && (j == params.length - 1)) // replace T[] with T...
+                {
                     param = param.replaceFirst("\\[\\]$", "...");
+                }
                 sb.append(param);
-                if (j < (params.length - 1))
+                if (j < (params.length - 1)) {
                     sb.append(',');
+                }
             }
             sb.append(')');
             Type[] exceptions = getGenericExceptionTypes();
             if (exceptions.length > 0) {
                 sb.append(" throws ");
                 for (int k = 0; k < exceptions.length; k++) {
-                    sb.append((exceptions[k] instanceof Class)?
-                              ((Class)exceptions[k]).getName():
-                              exceptions[k].toString());
-                    if (k < (exceptions.length - 1))
+                    sb.append((exceptions[k] instanceof Class) ? ((Class) exceptions[k]).getName() : exceptions[k].toString());
+                    if (k < (exceptions.length - 1)) {
                         sb.append(',');
+                    }
                 }
             }
             return sb.toString();
@@ -221,11 +223,13 @@ public abstract class Executable extends AccessibleObject
      * variables.
      *
      * @return an array of {@code TypeVariable} objects that represent
-     *     the type variables declared by this generic declaration
-     * @throws GenericSignatureFormatError if the generic
-     *     signature of this generic declaration does not conform to
-     *     the format specified in
-     *     <cite>The Java&trade; Virtual Machine Specification</cite>
+     * the type variables declared by this generic declaration
+     *
+     * @throws GenericSignatureFormatError
+     *         if the generic
+     *         signature of this generic declaration does not conform to
+     *         the format specified in
+     *         <cite>The Java&trade; Virtual Machine Specification</cite>
      */
     public abstract TypeVariable<?>[] getTypeParameters();
 
@@ -266,23 +270,27 @@ public abstract class Executable extends AccessibleObject
      * type, it is created. Otherwise, it is resolved.
      *
      * @return an array of {@code Type}s that represent the formal
-     *     parameter types of the underlying executable, in declaration order
+     * parameter types of the underlying executable, in declaration order
+     *
      * @throws GenericSignatureFormatError
-     *     if the generic method signature does not conform to the format
-     *     specified in
-     *     <cite>The Java&trade; Virtual Machine Specification</cite>
-     * @throws TypeNotPresentException if any of the parameter
-     *     types of the underlying executable refers to a non-existent type
-     *     declaration
-     * @throws MalformedParameterizedTypeException if any of
-     *     the underlying executable's parameter types refer to a parameterized
-     *     type that cannot be instantiated for any reason
+     *         if the generic method signature does not conform to the format
+     *         specified in
+     *         <cite>The Java&trade; Virtual Machine Specification</cite>
+     * @throws TypeNotPresentException
+     *         if any of the parameter
+     *         types of the underlying executable refers to a non-existent type
+     *         declaration
+     * @throws MalformedParameterizedTypeException
+     *         if any of
+     *         the underlying executable's parameter types refer to a parameterized
+     *         type that cannot be instantiated for any reason
      */
     public Type[] getGenericParameterTypes() {
-        if (hasGenericInformation())
+        if (hasGenericInformation()) {
             return getGenericInfo().getParameterTypes();
-        else
+        } else {
             return getParameterTypes();
+        }
     }
 
     /**
@@ -325,8 +333,7 @@ public abstract class Executable extends AccessibleObject
                 // no way to figure out which parameters are
                 // synthetic/mandated, thus, no way to match up the
                 // indexes.
-                return genericParamTypes.length == nonGenericParamTypes.length ?
-                    genericParamTypes : nonGenericParamTypes;
+                return genericParamTypes.length == nonGenericParamTypes.length ? genericParamTypes : nonGenericParamTypes;
             }
             return out;
         }
@@ -342,10 +349,12 @@ public abstract class Executable extends AccessibleObject
      * have unique names, or names that are legal identifiers in the
      * Java programming language (JLS 3.8).
      *
-     * @throws MalformedParametersException if the class file contains
-     * a MethodParameters attribute that is improperly formatted.
      * @return an array of {@code Parameter} objects representing all
      * the parameters to the executable this object represents.
+     *
+     * @throws MalformedParametersException
+     *         if the class file contains
+     *         a MethodParameters attribute that is improperly formatted.
      */
     public Parameter[] getParameters() {
         // TODO: This may eventually need to be guarded by security
@@ -361,28 +370,29 @@ public abstract class Executable extends AccessibleObject
         final int realparams = getParameterCount();
         final Parameter[] out = new Parameter[realparams];
         for (int i = 0; i < realparams; i++)
-            // TODO: is there a way to synthetically derive the
-            // modifiers?  Probably not in the general case, since
-            // we'd have no way of knowing about them, but there
-            // may be specific cases.
+        // TODO: is there a way to synthetically derive the
+        // modifiers?  Probably not in the general case, since
+        // we'd have no way of knowing about them, but there
+        // may be specific cases.
+        {
             out[i] = new Parameter("arg" + i, 0, this, i);
+        }
         return out;
     }
 
     private void verifyParameters(final Parameter[] parameters) {
         final int mask = Modifier.FINAL | Modifier.SYNTHETIC | Modifier.MANDATED;
 
-        if (getParameterTypes().length != parameters.length)
+        if (getParameterTypes().length != parameters.length) {
             throw new MalformedParametersException("Wrong number of parameters in MethodParameters attribute");
+        }
 
         for (Parameter parameter : parameters) {
             final String name = parameter.getRealName();
             final int mods = parameter.getModifiers();
 
             if (name != null) {
-                if (name.isEmpty() || name.indexOf('.') != -1 ||
-                    name.indexOf(';') != -1 || name.indexOf('[') != -1 ||
-                    name.indexOf('/') != -1) {
+                if (name.isEmpty() || name.indexOf('.') != -1 || name.indexOf(';') != -1 || name.indexOf('[') != -1 || name.indexOf('/') != -1) {
                     throw new MalformedParametersException("Invalid parameter name \"" + name + "\"");
                 }
             }
@@ -402,7 +412,7 @@ public abstract class Executable extends AccessibleObject
             // Otherwise, go to the JVM to get them
             try {
                 tmp = getParameters0();
-            } catch(IllegalArgumentException e) {
+            } catch (IllegalArgumentException e) {
                 // Rethrow ClassFormatErrors
                 throw new MalformedParametersException("Invalid constant pool index");
             }
@@ -435,6 +445,7 @@ public abstract class Executable extends AccessibleObject
     private transient volatile Parameter[] parameters;
 
     private native Parameter[] getParameters0();
+
     native byte[] getTypeAnnotationBytes0();
 
     // Needed by reflectaccess
@@ -464,29 +475,33 @@ public abstract class Executable extends AccessibleObject
      * type, it is created. Otherwise, it is resolved.
      *
      * @return an array of Types that represent the exception types
-     *     thrown by the underlying executable
+     * thrown by the underlying executable
+     *
      * @throws GenericSignatureFormatError
-     *     if the generic method signature does not conform to the format
-     *     specified in
-     *     <cite>The Java&trade; Virtual Machine Specification</cite>
-     * @throws TypeNotPresentException if the underlying executable's
-     *     {@code throws} clause refers to a non-existent type declaration
-     * @throws MalformedParameterizedTypeException if
-     *     the underlying executable's {@code throws} clause refers to a
-     *     parameterized type that cannot be instantiated for any reason
+     *         if the generic method signature does not conform to the format
+     *         specified in
+     *         <cite>The Java&trade; Virtual Machine Specification</cite>
+     * @throws TypeNotPresentException
+     *         if the underlying executable's
+     *         {@code throws} clause refers to a non-existent type declaration
+     * @throws MalformedParameterizedTypeException
+     *         if
+     *         the underlying executable's {@code throws} clause refers to a
+     *         parameterized type that cannot be instantiated for any reason
      */
     public Type[] getGenericExceptionTypes() {
         Type[] result;
-        if (hasGenericInformation() &&
-            ((result = getGenericInfo().getExceptionTypes()).length > 0))
+        if (hasGenericInformation() && ((result = getGenericInfo().getExceptionTypes()).length > 0)) {
             return result;
-        else
+        } else {
             return getExceptionTypes();
+        }
     }
 
     /**
      * Returns a string describing this {@code Executable}, including
      * any type parameters.
+     *
      * @return a string describing this {@code Executable}, including
      * any type parameters
      */
@@ -499,7 +514,7 @@ public abstract class Executable extends AccessibleObject
      * @return {@code true} if an only if this executable was declared
      * to take a variable number of arguments.
      */
-    public boolean isVarArgs()  {
+    public boolean isVarArgs() {
         return (getModifiers() & Modifier.VARARGS) != 0;
     }
 
@@ -510,7 +525,6 @@ public abstract class Executable extends AccessibleObject
      * @return true if and only if this executable is a synthetic
      * construct as defined by
      * <cite>The Java&trade; Language Specification</cite>.
-     * @jls 13.1 The Form of a Binary
      */
     public boolean isSynthetic() {
         return Modifier.isSynthetic(getModifiers());
@@ -538,24 +552,26 @@ public abstract class Executable extends AccessibleObject
      * ("synthetic") to the parameter list for a method.  See {@link
      * java.lang.reflect.Parameter} for more information.
      *
+     * @return an array of arrays that represent the annotations on
+     * the formal and implicit parameters, in declaration order, of
+     * the executable represented by this object
+     *
      * @see java.lang.reflect.Parameter
      * @see java.lang.reflect.Parameter#getAnnotations
-     * @return an array of arrays that represent the annotations on
-     *    the formal and implicit parameters, in declaration order, of
-     *    the executable represented by this object
      */
     public abstract Annotation[][] getParameterAnnotations();
 
-    Annotation[][] sharedGetParameterAnnotations(Class<?>[] parameterTypes,
-                                                 byte[] parameterAnnotations) {
+    Annotation[][] sharedGetParameterAnnotations(Class<?>[] parameterTypes, byte[] parameterAnnotations) {
         int numParameters = parameterTypes.length;
-        if (parameterAnnotations == null)
+        if (parameterAnnotations == null) {
             return new Annotation[numParameters][0];
+        }
 
         Annotation[][] result = parseParameterAnnotations(parameterAnnotations);
 
-        if (result.length != numParameters)
+        if (result.length != numParameters) {
             handleParameterNumberMismatch(result.length, numParameters);
+        }
         return result;
     }
 
@@ -563,7 +579,9 @@ public abstract class Executable extends AccessibleObject
 
     /**
      * {@inheritDoc}
-     * @throws NullPointerException  {@inheritDoc}
+     *
+     * @throws NullPointerException
+     *         {@inheritDoc}
      */
     public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
         Objects.requireNonNull(annotationClass);
@@ -572,7 +590,9 @@ public abstract class Executable extends AccessibleObject
 
     /**
      * {@inheritDoc}
-     * @throws NullPointerException {@inheritDoc}
+     *
+     * @throws NullPointerException
+     *         {@inheritDoc}
      */
     @Override
     public <T extends Annotation> T[] getAnnotationsByType(Class<T> annotationClass) {
@@ -584,23 +604,20 @@ public abstract class Executable extends AccessibleObject
     /**
      * {@inheritDoc}
      */
-    public Annotation[] getDeclaredAnnotations()  {
+    public Annotation[] getDeclaredAnnotations() {
         return AnnotationParser.toArray(declaredAnnotations());
     }
 
     private transient Map<Class<? extends Annotation>, Annotation> declaredAnnotations;
 
-    private synchronized  Map<Class<? extends Annotation>, Annotation> declaredAnnotations() {
+    private synchronized Map<Class<? extends Annotation>, Annotation> declaredAnnotations() {
         if (declaredAnnotations == null) {
             Executable root = getRoot();
             if (root != null) {
                 declaredAnnotations = root.declaredAnnotations();
             } else {
-                declaredAnnotations = AnnotationParser.parseAnnotations(
-                    getAnnotationBytes(),
-                    sun.misc.SharedSecrets.getJavaLangAccess().
-                    getConstantPool(getDeclaringClass()),
-                    getDeclaringClass());
+                declaredAnnotations = AnnotationParser.parseAnnotations(getAnnotationBytes(), sun.misc.SharedSecrets.getJavaLangAccess().
+                        getConstantPool(getDeclaringClass()), getDeclaringClass());
             }
         }
         return declaredAnnotations;
@@ -630,13 +647,8 @@ public abstract class Executable extends AccessibleObject
      * Executable.
      */
     AnnotatedType getAnnotatedReturnType0(Type returnType) {
-        return TypeAnnotationParser.buildAnnotatedType(getTypeAnnotationBytes0(),
-                sun.misc.SharedSecrets.getJavaLangAccess().
-                        getConstantPool(getDeclaringClass()),
-                this,
-                getDeclaringClass(),
-                returnType,
-                TypeAnnotation.TypeAnnotationTarget.METHOD_RETURN);
+        return TypeAnnotationParser.buildAnnotatedType(getTypeAnnotationBytes0(), sun.misc.SharedSecrets.getJavaLangAccess().
+                getConstantPool(getDeclaringClass()), this, getDeclaringClass(), returnType, TypeAnnotation.TypeAnnotationTarget.METHOD_RETURN);
     }
 
     /**
@@ -659,15 +671,11 @@ public abstract class Executable extends AccessibleObject
      * constructor represented by this {@code Executable}
      */
     public AnnotatedType getAnnotatedReceiverType() {
-        if (Modifier.isStatic(this.getModifiers()))
+        if (Modifier.isStatic(this.getModifiers())) {
             return null;
-        return TypeAnnotationParser.buildAnnotatedType(getTypeAnnotationBytes0(),
-                sun.misc.SharedSecrets.getJavaLangAccess().
-                        getConstantPool(getDeclaringClass()),
-                this,
-                getDeclaringClass(),
-                getDeclaringClass(),
-                TypeAnnotation.TypeAnnotationTarget.METHOD_RECEIVER);
+        }
+        return TypeAnnotationParser.buildAnnotatedType(getTypeAnnotationBytes0(), sun.misc.SharedSecrets.getJavaLangAccess().
+                getConstantPool(getDeclaringClass()), this, getDeclaringClass(), getDeclaringClass(), TypeAnnotation.TypeAnnotationTarget.METHOD_RECEIVER);
     }
 
     /**
@@ -685,12 +693,8 @@ public abstract class Executable extends AccessibleObject
      * {@code Executable}
      */
     public AnnotatedType[] getAnnotatedParameterTypes() {
-        return TypeAnnotationParser.buildAnnotatedTypes(getTypeAnnotationBytes0(),
-                sun.misc.SharedSecrets.getJavaLangAccess().
-                        getConstantPool(getDeclaringClass()),
-                this,
-                getDeclaringClass(),
-                getAllGenericParameterTypes(),
+        return TypeAnnotationParser.buildAnnotatedTypes(getTypeAnnotationBytes0(), sun.misc.SharedSecrets.getJavaLangAccess().
+                        getConstantPool(getDeclaringClass()), this, getDeclaringClass(), getAllGenericParameterTypes(),
                 TypeAnnotation.TypeAnnotationTarget.METHOD_FORMAL_PARAMETER);
     }
 
@@ -709,13 +713,8 @@ public abstract class Executable extends AccessibleObject
      * Executable}
      */
     public AnnotatedType[] getAnnotatedExceptionTypes() {
-        return TypeAnnotationParser.buildAnnotatedTypes(getTypeAnnotationBytes0(),
-                sun.misc.SharedSecrets.getJavaLangAccess().
-                        getConstantPool(getDeclaringClass()),
-                this,
-                getDeclaringClass(),
-                getGenericExceptionTypes(),
-                TypeAnnotation.TypeAnnotationTarget.THROWS);
+        return TypeAnnotationParser.buildAnnotatedTypes(getTypeAnnotationBytes0(), sun.misc.SharedSecrets.getJavaLangAccess().
+                getConstantPool(getDeclaringClass()), this, getDeclaringClass(), getGenericExceptionTypes(), TypeAnnotation.TypeAnnotationTarget.THROWS);
     }
 
 }

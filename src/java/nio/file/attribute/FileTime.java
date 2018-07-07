@@ -40,14 +40,12 @@ import java.util.concurrent.TimeUnit;
  *
  * <p> Instances of this class are immutable.
  *
- * @since 1.7
  * @see java.nio.file.Files#setLastModifiedTime
  * @see java.nio.file.Files#getLastModifiedTime
+ * @since 1.7
  */
 
-public final class FileTime
-    implements Comparable<FileTime>
-{
+public final class FileTime implements Comparable<FileTime> {
     /**
      * The unit of granularity to interpret the value. Null if
      * this {@code FileTime} is converted from an {@code Instant},
@@ -84,13 +82,13 @@ public final class FileTime
      * Returns a {@code FileTime} representing a value at the given unit of
      * granularity.
      *
-     * @param   value
-     *          the value since the epoch (1970-01-01T00:00:00Z); can be
-     *          negative
-     * @param   unit
-     *          the unit of granularity to interpret the value
+     * @param value
+     *         the value since the epoch (1970-01-01T00:00:00Z); can be
+     *         negative
+     * @param unit
+     *         the unit of granularity to interpret the value
      *
-     * @return  a {@code FileTime} representing the given value
+     * @return a {@code FileTime} representing the given value
      */
     public static FileTime from(long value, TimeUnit unit) {
         Objects.requireNonNull(unit, "unit");
@@ -100,11 +98,11 @@ public final class FileTime
     /**
      * Returns a {@code FileTime} representing the given value in milliseconds.
      *
-     * @param   value
-     *          the value, in milliseconds, since the epoch
-     *          (1970-01-01T00:00:00Z); can be negative
+     * @param value
+     *         the value, in milliseconds, since the epoch
+     *         (1970-01-01T00:00:00Z); can be negative
      *
-     * @return  a {@code FileTime} representing the given value
+     * @return a {@code FileTime} representing the given value
      */
     public static FileTime fromMillis(long value) {
         return new FileTime(value, TimeUnit.MILLISECONDS, null);
@@ -114,10 +112,12 @@ public final class FileTime
      * Returns a {@code FileTime} representing the same point of time value
      * on the time-line as the provided {@code Instant} object.
      *
-     * @param   instant
-     *          the instant to convert
-     * @return  a {@code FileTime} representing the same point on the time-line
-     *          as the provided instant
+     * @param instant
+     *         the instant to convert
+     *
+     * @return a {@code FileTime} representing the same point on the time-line
+     * as the provided instant
+     *
      * @since 1.8
      */
     public static FileTime from(Instant instant) {
@@ -132,11 +132,11 @@ public final class FileTime
      * saturate to {@code Long.MIN_VALUE} if negative or {@code Long.MAX_VALUE}
      * if positive.
      *
-     * @param   unit
-     *          the unit of granularity for the return value
+     * @param unit
+     *         the unit of granularity for the return value
      *
-     * @return  value in the given unit of granularity, since the epoch
-     *          since the epoch (1970-01-01T00:00:00Z); can be negative
+     * @return value in the given unit of granularity, since the epoch
+     * since the epoch (1970-01-01T00:00:00Z); can be negative
      */
     public long to(TimeUnit unit) {
         Objects.requireNonNull(unit, "unit");
@@ -164,14 +164,14 @@ public final class FileTime
      * saturate to {@code Long.MIN_VALUE} if negative or {@code Long.MAX_VALUE}
      * if positive.
      *
-     * @return  the value in milliseconds, since the epoch (1970-01-01T00:00:00Z)
+     * @return the value in milliseconds, since the epoch (1970-01-01T00:00:00Z)
      */
     public long toMillis() {
         if (unit != null) {
             return unit.toMillis(value);
         } else {
             long secs = instant.getEpochSecond();
-            int  nanos = instant.getNano();
+            int nanos = instant.getNano();
             // Math.multiplyExact() variant
             long r = secs * 1000;
             long ax = Math.abs(secs);
@@ -187,16 +187,16 @@ public final class FileTime
     /**
      * Time unit constants for conversion.
      */
-    private static final long HOURS_PER_DAY      = 24L;
-    private static final long MINUTES_PER_HOUR   = 60L;
+    private static final long HOURS_PER_DAY = 24L;
+    private static final long MINUTES_PER_HOUR = 60L;
     private static final long SECONDS_PER_MINUTE = 60L;
-    private static final long SECONDS_PER_HOUR   = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
-    private static final long SECONDS_PER_DAY    = SECONDS_PER_HOUR * HOURS_PER_DAY;
-    private static final long MILLIS_PER_SECOND  = 1000L;
-    private static final long MICROS_PER_SECOND  = 1000_000L;
-    private static final long NANOS_PER_SECOND   = 1000_000_000L;
-    private static final int  NANOS_PER_MILLI    = 1000_000;
-    private static final int  NANOS_PER_MICRO    = 1000;
+    private static final long SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
+    private static final long SECONDS_PER_DAY = SECONDS_PER_HOUR * HOURS_PER_DAY;
+    private static final long MILLIS_PER_SECOND = 1000L;
+    private static final long MICROS_PER_SECOND = 1000_000L;
+    private static final long NANOS_PER_SECOND = 1000_000_000L;
+    private static final int NANOS_PER_MILLI = 1000_000;
+    private static final int NANOS_PER_MICRO = 1000;
     // The epoch second of Instant.MIN.
     private static final long MIN_SECOND = -31557014167219200L;
     // The epoch second of Instant.MAX.
@@ -206,8 +206,12 @@ public final class FileTime
      * Scale d by m, checking for overflow.
      */
     private static long scale(long d, long m, long over) {
-        if (d >  over) return Long.MAX_VALUE;
-        if (d < -over) return Long.MIN_VALUE;
+        if (d > over) {
+            return Long.MAX_VALUE;
+        }
+        if (d < -over) {
+            return Long.MIN_VALUE;
+        }
         return d * m;
     }
 
@@ -223,8 +227,9 @@ public final class FileTime
      * earlier than {@code Instant.MIN} or {@link Instant#MAX} if later
      * than {@code Instant.MAX}.
      *
-     * @return  an instant representing the same point on the time-line as
-     *          this {@code FileTime} object
+     * @return an instant representing the same point on the time-line as
+     * this {@code FileTime} object
+     *
      * @since 1.8
      */
     public Instant toInstant() {
@@ -232,43 +237,40 @@ public final class FileTime
             long secs = 0L;
             int nanos = 0;
             switch (unit) {
-                case DAYS:
-                    secs = scale(value, SECONDS_PER_DAY,
-                                 Long.MAX_VALUE/SECONDS_PER_DAY);
-                    break;
-                case HOURS:
-                    secs = scale(value, SECONDS_PER_HOUR,
-                                 Long.MAX_VALUE/SECONDS_PER_HOUR);
-                    break;
-                case MINUTES:
-                    secs = scale(value, SECONDS_PER_MINUTE,
-                                 Long.MAX_VALUE/SECONDS_PER_MINUTE);
-                    break;
-                case SECONDS:
-                    secs = value;
-                    break;
-                case MILLISECONDS:
-                    secs = Math.floorDiv(value, MILLIS_PER_SECOND);
-                    nanos = (int)Math.floorMod(value, MILLIS_PER_SECOND)
-                            * NANOS_PER_MILLI;
-                    break;
-                case MICROSECONDS:
-                    secs = Math.floorDiv(value, MICROS_PER_SECOND);
-                    nanos = (int)Math.floorMod(value, MICROS_PER_SECOND)
-                            * NANOS_PER_MICRO;
-                    break;
-                case NANOSECONDS:
-                    secs = Math.floorDiv(value, NANOS_PER_SECOND);
-                    nanos = (int)Math.floorMod(value, NANOS_PER_SECOND);
-                    break;
-                default : throw new AssertionError("Unit not handled");
+            case DAYS:
+                secs = scale(value, SECONDS_PER_DAY, Long.MAX_VALUE / SECONDS_PER_DAY);
+                break;
+            case HOURS:
+                secs = scale(value, SECONDS_PER_HOUR, Long.MAX_VALUE / SECONDS_PER_HOUR);
+                break;
+            case MINUTES:
+                secs = scale(value, SECONDS_PER_MINUTE, Long.MAX_VALUE / SECONDS_PER_MINUTE);
+                break;
+            case SECONDS:
+                secs = value;
+                break;
+            case MILLISECONDS:
+                secs = Math.floorDiv(value, MILLIS_PER_SECOND);
+                nanos = (int) Math.floorMod(value, MILLIS_PER_SECOND) * NANOS_PER_MILLI;
+                break;
+            case MICROSECONDS:
+                secs = Math.floorDiv(value, MICROS_PER_SECOND);
+                nanos = (int) Math.floorMod(value, MICROS_PER_SECOND) * NANOS_PER_MICRO;
+                break;
+            case NANOSECONDS:
+                secs = Math.floorDiv(value, NANOS_PER_SECOND);
+                nanos = (int) Math.floorMod(value, NANOS_PER_SECOND);
+                break;
+            default:
+                throw new AssertionError("Unit not handled");
             }
-            if (secs <= MIN_SECOND)
+            if (secs <= MIN_SECOND) {
                 instant = Instant.MIN;
-            else if (secs >= MAX_SECOND)
+            } else if (secs >= MAX_SECOND) {
                 instant = Instant.MAX;
-            else
+            } else {
                 instant = Instant.ofEpochSecond(secs, nanos);
+            }
         }
         return instant;
     }
@@ -280,15 +282,15 @@ public final class FileTime
      * null} and is a {@code FileTime} that represents the same time. This
      * method satisfies the general contract of the {@code Object.equals} method.
      *
-     * @param   obj
-     *          the object to compare with
+     * @param obj
+     *         the object to compare with
      *
-     * @return  {@code true} if, and only if, the given object is a {@code
-     *          FileTime} that represents the same time
+     * @return {@code true} if, and only if, the given object is a {@code
+     * FileTime} that represents the same time
      */
     @Override
     public boolean equals(Object obj) {
-        return (obj instanceof FileTime) ? compareTo((FileTime)obj) == 0 : false;
+        return (obj instanceof FileTime) ? compareTo((FileTime) obj) == 0 : false;
     }
 
     /**
@@ -297,7 +299,7 @@ public final class FileTime
      * <p> The hash code is based upon the value represented, and satisfies the
      * general contract of the {@link Object#hashCode} method.
      *
-     * @return  the hash-code value
+     * @return the hash-code value
      */
     @Override
     public int hashCode() {
@@ -317,21 +319,20 @@ public final class FileTime
         if (unit != null) {
             return unit.toNanos(value - unit.convert(days, TimeUnit.DAYS));
         } else {
-            return TimeUnit.SECONDS.toNanos(toInstant().getEpochSecond()
-                                            - TimeUnit.DAYS.toSeconds(days));
+            return TimeUnit.SECONDS.toNanos(toInstant().getEpochSecond() - TimeUnit.DAYS.toSeconds(days));
         }
     }
 
     /**
      * Compares the value of two {@code FileTime} objects for order.
      *
-     * @param   other
-     *          the other {@code FileTime} to be compared
+     * @param other
+     *         the other {@code FileTime} to be compared
      *
-     * @return  {@code 0} if this {@code FileTime} is equal to {@code other}, a
-     *          value less than 0 if this {@code FileTime} represents a time
-     *          that is before {@code other}, and a value greater than 0 if this
-     *          {@code FileTime} represents a time that is after {@code other}
+     * @return {@code 0} if this {@code FileTime} is equal to {@code other}, a
+     * value less than 0 if this {@code FileTime} represents a time
+     * that is before {@code other}, and a value greater than 0 if this
+     * {@code FileTime} represents a time that is after {@code other}
      */
     @Override
     public int compareTo(FileTime other) {
@@ -375,7 +376,7 @@ public final class FileTime
     // append year/month/day/hour/minute/second/nano with width and 0 padding
     private StringBuilder append(StringBuilder sb, int w, int d) {
         while (w > 0) {
-            sb.append((char)(d/w + '0'));
+            sb.append((char) (d / w + '0'));
             d = d % w;
             w /= 10;
         }
@@ -405,13 +406,13 @@ public final class FileTime
      * and may be negative-signed. If more than four digits then leading zeros
      * are not present. The year before "{@code 0001}" is "{@code -0001}".
      *
-     * @return  the string representation of this file time
+     * @return the string representation of this file time
      */
     @Override
     public String toString() {
         if (valueAsString == null) {
             long secs = 0L;
-            int  nanos = 0;
+            int nanos = 0;
             if (instant == null && unit.compareTo(TimeUnit.SECONDS) >= 0) {
                 secs = unit.toSeconds(value);
             } else {
@@ -426,14 +427,14 @@ public final class FileTime
                 long hi = Math.floorDiv(zeroSecs, SECONDS_PER_10000_YEARS) + 1;
                 long lo = Math.floorMod(zeroSecs, SECONDS_PER_10000_YEARS);
                 ldt = LocalDateTime.ofEpochSecond(lo - SECONDS_0000_TO_1970, nanos, ZoneOffset.UTC);
-                year = ldt.getYear() +  (int)hi * 10000;
+                year = ldt.getYear() + (int) hi * 10000;
             } else {
                 // before current era
                 long zeroSecs = secs + SECONDS_0000_TO_1970;
                 long hi = zeroSecs / SECONDS_PER_10000_YEARS;
                 long lo = zeroSecs % SECONDS_PER_10000_YEARS;
                 ldt = LocalDateTime.ofEpochSecond(lo - SECONDS_0000_TO_1970, nanos, ZoneOffset.UTC);
-                year = ldt.getYear() + (int)hi * 10000;
+                year = ldt.getYear() + (int) hi * 10000;
             }
             if (year <= 0) {
                 year = year - 1;

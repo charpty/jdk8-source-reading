@@ -25,16 +25,18 @@
 
 package java.nio.channels;
 
-import java.nio.file.*;
-import java.nio.file.attribute.FileAttribute;
-import java.nio.file.spi.*;
-import java.nio.ByteBuffer;
 import java.io.IOException;
-import java.util.concurrent.Future;
-import java.util.concurrent.ExecutorService;
-import java.util.Set;
-import java.util.HashSet;
+import java.nio.ByteBuffer;
+import java.nio.file.OpenOption;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.spi.FileSystemProvider;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 /**
  * An asynchronous channel for reading, writing, and manipulating a file.
@@ -60,12 +62,12 @@ import java.util.Collections;
  *
  * <ul>
  *
- *   <li><p> Updates made to a file may be {@link #force <i>forced
- *   out</i>} to the underlying storage device, ensuring that data are not
- *   lost in the event of a system crash.  </p></li>
+ * <li><p> Updates made to a file may be {@link #force <i>forced
+ * out</i>} to the underlying storage device, ensuring that data are not
+ * lost in the event of a system crash.  </p></li>
  *
- *   <li><p> A region of a file may be {@link #lock <i>locked</i>} against
- *   access by other programs.  </p></li>
+ * <li><p> A region of a file may be {@link #lock <i>locked</i>} against
+ * access by other programs.  </p></li>
  *
  * </ul>
  *
@@ -111,9 +113,7 @@ import java.util.Collections;
  * @since 1.7
  */
 
-public abstract class AsynchronousFileChannel
-    implements AsynchronousChannel
-{
+public abstract class AsynchronousFileChannel implements AsynchronousChannel {
     /**
      * Initializes a new instance of this class.
      */
@@ -136,55 +136,55 @@ public abstract class AsynchronousFileChannel
      * <table border=1 cellpadding=5 summary="">
      * <tr> <th>Option</th> <th>Description</th> </tr>
      * <tr>
-     *   <td> {@link StandardOpenOption#TRUNCATE_EXISTING TRUNCATE_EXISTING} </td>
-     *   <td> When opening an existing file, the file is first truncated to a
-     *   size of 0 bytes. This option is ignored when the file is opened only
-     *   for reading.</td>
+     * <td> {@link StandardOpenOption#TRUNCATE_EXISTING TRUNCATE_EXISTING} </td>
+     * <td> When opening an existing file, the file is first truncated to a
+     * size of 0 bytes. This option is ignored when the file is opened only
+     * for reading.</td>
      * </tr>
      * <tr>
-     *   <td> {@link StandardOpenOption#CREATE_NEW CREATE_NEW} </td>
-     *   <td> If this option is present then a new file is created, failing if
-     *   the file already exists. When creating a file the check for the
-     *   existence of the file and the creation of the file if it does not exist
-     *   is atomic with respect to other file system operations. This option is
-     *   ignored when the file is opened only for reading. </td>
+     * <td> {@link StandardOpenOption#CREATE_NEW CREATE_NEW} </td>
+     * <td> If this option is present then a new file is created, failing if
+     * the file already exists. When creating a file the check for the
+     * existence of the file and the creation of the file if it does not exist
+     * is atomic with respect to other file system operations. This option is
+     * ignored when the file is opened only for reading. </td>
      * </tr>
      * <tr>
-     *   <td > {@link StandardOpenOption#CREATE CREATE} </td>
-     *   <td> If this option is present then an existing file is opened if it
-     *   exists, otherwise a new file is created. When creating a file the check
-     *   for the existence of the file and the creation of the file if it does
-     *   not exist is atomic with respect to other file system operations. This
-     *   option is ignored if the {@code CREATE_NEW} option is also present or
-     *   the file is opened only for reading. </td>
+     * <td > {@link StandardOpenOption#CREATE CREATE} </td>
+     * <td> If this option is present then an existing file is opened if it
+     * exists, otherwise a new file is created. When creating a file the check
+     * for the existence of the file and the creation of the file if it does
+     * not exist is atomic with respect to other file system operations. This
+     * option is ignored if the {@code CREATE_NEW} option is also present or
+     * the file is opened only for reading. </td>
      * </tr>
      * <tr>
-     *   <td > {@link StandardOpenOption#DELETE_ON_CLOSE DELETE_ON_CLOSE} </td>
-     *   <td> When this option is present then the implementation makes a
-     *   <em>best effort</em> attempt to delete the file when closed by the
-     *   the {@link #close close} method. If the {@code close} method is not
-     *   invoked then a <em>best effort</em> attempt is made to delete the file
-     *   when the Java virtual machine terminates. </td>
+     * <td > {@link StandardOpenOption#DELETE_ON_CLOSE DELETE_ON_CLOSE} </td>
+     * <td> When this option is present then the implementation makes a
+     * <em>best effort</em> attempt to delete the file when closed by the
+     * the {@link #close close} method. If the {@code close} method is not
+     * invoked then a <em>best effort</em> attempt is made to delete the file
+     * when the Java virtual machine terminates. </td>
      * </tr>
      * <tr>
-     *   <td>{@link StandardOpenOption#SPARSE SPARSE} </td>
-     *   <td> When creating a new file this option is a <em>hint</em> that the
-     *   new file will be sparse. This option is ignored when not creating
-     *   a new file. </td>
+     * <td>{@link StandardOpenOption#SPARSE SPARSE} </td>
+     * <td> When creating a new file this option is a <em>hint</em> that the
+     * new file will be sparse. This option is ignored when not creating
+     * a new file. </td>
      * </tr>
      * <tr>
-     *   <td> {@link StandardOpenOption#SYNC SYNC} </td>
-     *   <td> Requires that every update to the file's content or metadata be
-     *   written synchronously to the underlying storage device. (see <a
-     *   href="../file/package-summary.html#integrity"> Synchronized I/O file
-     *   integrity</a>). </td>
+     * <td> {@link StandardOpenOption#SYNC SYNC} </td>
+     * <td> Requires that every update to the file's content or metadata be
+     * written synchronously to the underlying storage device. (see <a
+     * href="../file/package-summary.html#integrity"> Synchronized I/O file
+     * integrity</a>). </td>
      * </tr>
      * <tr>
-     *   <td> {@link StandardOpenOption#DSYNC DSYNC} </td>
-     *   <td> Requires that every update to the file's content be written
-     *   synchronously to the underlying storage device. (see <a
-     *   href="../file/package-summary.html#integrity"> Synchronized I/O file
-     *   integrity</a>). </td>
+     * <td> {@link StandardOpenOption#DSYNC DSYNC} </td>
+     * <td> Requires that every update to the file's content be written
+     * synchronously to the underlying storage device. (see <a
+     * href="../file/package-summary.html#integrity"> Synchronized I/O file
+     * integrity</a>). </td>
      * </tr>
      * </table>
      *
@@ -207,48 +207,44 @@ public abstract class AsynchronousFileChannel
      * FileSystemProvider#newFileChannel newFileChannel} method on the
      * provider that created the {@code Path}.
      *
-     * @param   file
-     *          The path of the file to open or create
-     * @param   options
-     *          Options specifying how the file is opened
-     * @param   executor
-     *          The thread pool or {@code null} to associate the channel with
-     *          the default thread pool
-     * @param   attrs
-     *          An optional list of file attributes to set atomically when
-     *          creating the file
+     * @param file
+     *         The path of the file to open or create
+     * @param options
+     *         Options specifying how the file is opened
+     * @param executor
+     *         The thread pool or {@code null} to associate the channel with
+     *         the default thread pool
+     * @param attrs
+     *         An optional list of file attributes to set atomically when
+     *         creating the file
      *
-     * @return  A new asynchronous file channel
+     * @return A new asynchronous file channel
      *
-     * @throws  IllegalArgumentException
-     *          If the set contains an invalid combination of options
-     * @throws  UnsupportedOperationException
-     *          If the {@code file} is associated with a provider that does not
-     *          support creating asynchronous file channels, or an unsupported
-     *          open option is specified, or the array contains an attribute that
-     *          cannot be set atomically when creating the file
-     * @throws  IOException
-     *          If an I/O error occurs
-     * @throws  SecurityException
-     *          If a security manager is installed and it denies an
-     *          unspecified permission required by the implementation.
-     *          In the case of the default provider, the {@link
-     *          SecurityManager#checkRead(String)} method is invoked to check
-     *          read access if the file is opened for reading. The {@link
-     *          SecurityManager#checkWrite(String)} method is invoked to check
-     *          write access if the file is opened for writing
+     * @throws IllegalArgumentException
+     *         If the set contains an invalid combination of options
+     * @throws UnsupportedOperationException
+     *         If the {@code file} is associated with a provider that does not
+     *         support creating asynchronous file channels, or an unsupported
+     *         open option is specified, or the array contains an attribute that
+     *         cannot be set atomically when creating the file
+     * @throws IOException
+     *         If an I/O error occurs
+     * @throws SecurityException
+     *         If a security manager is installed and it denies an
+     *         unspecified permission required by the implementation.
+     *         In the case of the default provider, the {@link
+     *         SecurityManager#checkRead(String)} method is invoked to check
+     *         read access if the file is opened for reading. The {@link
+     *         SecurityManager#checkWrite(String)} method is invoked to check
+     *         write access if the file is opened for writing
      */
-    public static AsynchronousFileChannel open(Path file,
-                                               Set<? extends OpenOption> options,
-                                               ExecutorService executor,
-                                               FileAttribute<?>... attrs)
-        throws IOException
-    {
+    public static AsynchronousFileChannel open(Path file, Set<? extends OpenOption> options, ExecutorService executor, FileAttribute<?>... attrs)
+            throws IOException {
         FileSystemProvider provider = file.getFileSystem().provider();
         return provider.newAsynchronousFileChannel(file, options, executor, attrs);
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"}) // generic array construction
+    @SuppressWarnings({ "unchecked", "rawtypes" }) // generic array construction
     private static final FileAttribute<?>[] NO_ATTRIBUTES = new FileAttribute[0];
 
     /**
@@ -258,7 +254,7 @@ public abstract class AsynchronousFileChannel
      * <p> An invocation of this method behaves in exactly the same way as the
      * invocation
      * <pre>
-     *     ch.{@link #open(Path,Set,ExecutorService,FileAttribute[])
+     *     ch.{@link #open(Path, Set, ExecutorService, FileAttribute[])
      *       open}(file, opts, null, new FileAttribute&lt;?&gt;[0]);
      * </pre>
      * where {@code opts} is a {@code Set} containing the options specified to
@@ -269,33 +265,31 @@ public abstract class AsynchronousFileChannel
      * handlers that consume the result of asynchronous operations performed on
      * the resulting channel.
      *
-     * @param   file
-     *          The path of the file to open or create
-     * @param   options
-     *          Options specifying how the file is opened
+     * @param file
+     *         The path of the file to open or create
+     * @param options
+     *         Options specifying how the file is opened
      *
-     * @return  A new asynchronous file channel
+     * @return A new asynchronous file channel
      *
-     * @throws  IllegalArgumentException
-     *          If the set contains an invalid combination of options
-     * @throws  UnsupportedOperationException
-     *          If the {@code file} is associated with a provider that does not
-     *          support creating file channels, or an unsupported open option is
-     *          specified
-     * @throws  IOException
-     *          If an I/O error occurs
-     * @throws  SecurityException
-     *          If a security manager is installed and it denies an
-     *          unspecified permission required by the implementation.
-     *          In the case of the default provider, the {@link
-     *          SecurityManager#checkRead(String)} method is invoked to check
-     *          read access if the file is opened for reading. The {@link
-     *          SecurityManager#checkWrite(String)} method is invoked to check
-     *          write access if the file is opened for writing
+     * @throws IllegalArgumentException
+     *         If the set contains an invalid combination of options
+     * @throws UnsupportedOperationException
+     *         If the {@code file} is associated with a provider that does not
+     *         support creating file channels, or an unsupported open option is
+     *         specified
+     * @throws IOException
+     *         If an I/O error occurs
+     * @throws SecurityException
+     *         If a security manager is installed and it denies an
+     *         unspecified permission required by the implementation.
+     *         In the case of the default provider, the {@link
+     *         SecurityManager#checkRead(String)} method is invoked to check
+     *         read access if the file is opened for reading. The {@link
+     *         SecurityManager#checkWrite(String)} method is invoked to check
+     *         write access if the file is opened for writing
      */
-    public static AsynchronousFileChannel open(Path file, OpenOption... options)
-        throws IOException
-    {
+    public static AsynchronousFileChannel open(Path file, OpenOption... options) throws IOException {
         Set<OpenOption> set = new HashSet<OpenOption>(options.length);
         Collections.addAll(set, options);
         return open(file, set, null, NO_ATTRIBUTES);
@@ -304,12 +298,12 @@ public abstract class AsynchronousFileChannel
     /**
      * Returns the current size of this channel's file.
      *
-     * @return  The current size of this channel's file, measured in bytes
+     * @return The current size of this channel's file, measured in bytes
      *
-     * @throws  ClosedChannelException
-     *          If this channel is closed
-     * @throws  IOException
-     *          If some other I/O error occurs
+     * @throws ClosedChannelException
+     *         If this channel is closed
+     * @throws IOException
+     *         If some other I/O error occurs
      */
     public abstract long size() throws IOException;
 
@@ -321,22 +315,19 @@ public abstract class AsynchronousFileChannel
      * the given size is greater than or equal to the file's current size then
      * the file is not modified. </p>
      *
-     * @param  size
+     * @param size
      *         The new size, a non-negative byte count
      *
-     * @return  This file channel
+     * @return This file channel
      *
-     * @throws  NonWritableChannelException
-     *          If this channel was not opened for writing
-     *
-     * @throws  ClosedChannelException
-     *          If this channel is closed
-     *
-     * @throws  IllegalArgumentException
-     *          If the new size is negative
-     *
-     * @throws  IOException
-     *          If some other I/O error occurs
+     * @throws NonWritableChannelException
+     *         If this channel was not opened for writing
+     * @throws ClosedChannelException
+     *         If this channel is closed
+     * @throws IllegalArgumentException
+     *         If the new size is negative
+     * @throws IOException
+     *         If some other I/O error occurs
      */
     public abstract AsynchronousFileChannel truncate(long size) throws IOException;
 
@@ -371,17 +362,16 @@ public abstract class AsynchronousFileChannel
      * <p> This method is only guaranteed to force changes that were made to
      * this channel's file via the methods defined in this class.
      *
-     * @param   metaData
-     *          If {@code true} then this method is required to force changes
-     *          to both the file's content and metadata to be written to
-     *          storage; otherwise, it need only force content changes to be
-     *          written
+     * @param metaData
+     *         If {@code true} then this method is required to force changes
+     *         to both the file's content and metadata to be written to
+     *         storage; otherwise, it need only force content changes to be
+     *         written
      *
-     * @throws  ClosedChannelException
-     *          If this channel is closed
-     *
-     * @throws  IOException
-     *          If some other I/O error occurs
+     * @throws ClosedChannelException
+     *         If this channel is closed
+     * @throws IOException
+     *         If some other I/O error occurs
      */
     public abstract void force(boolean metaData) throws IOException;
 
@@ -402,7 +392,7 @@ public abstract class AsynchronousFileChannel
      * If a file is expected to grow in size and a lock on the entire file is
      * required then a region starting at zero, and no smaller than the
      * expected maximum size of the file, should be locked.  The two-argument
-     * {@link #lock(Object,CompletionHandler)} method simply locks a region
+     * {@link #lock(Object, CompletionHandler)} method simply locks a region
      * of size {@link Long#MAX_VALUE}. If a lock that overlaps the requested
      * region is already held by this Java virtual machine, or this method has
      * been invoked to lock an overlapping region and that operation has not
@@ -425,40 +415,36 @@ public abstract class AsynchronousFileChannel
      * They are not suitable for controlling access to a file by multiple
      * threads within the same virtual machine.
      *
-     * @param   <A>
-     *          The type of the attachment
-     * @param   position
-     *          The position at which the locked region is to start; must be
-     *          non-negative
-     * @param   size
-     *          The size of the locked region; must be non-negative, and the sum
-     *          {@code position}&nbsp;+&nbsp;{@code size} must be non-negative
-     * @param   shared
-     *          {@code true} to request a shared lock, in which case this
-     *          channel must be open for reading (and possibly writing);
-     *          {@code false} to request an exclusive lock, in which case this
-     *          channel must be open for writing (and possibly reading)
-     * @param   attachment
-     *          The object to attach to the I/O operation; can be {@code null}
-     * @param   handler
-     *          The handler for consuming the result
+     * @param <A>
+     *         The type of the attachment
+     * @param position
+     *         The position at which the locked region is to start; must be
+     *         non-negative
+     * @param size
+     *         The size of the locked region; must be non-negative, and the sum
+     *         {@code position}&nbsp;+&nbsp;{@code size} must be non-negative
+     * @param shared
+     *         {@code true} to request a shared lock, in which case this
+     *         channel must be open for reading (and possibly writing);
+     *         {@code false} to request an exclusive lock, in which case this
+     *         channel must be open for writing (and possibly reading)
+     * @param attachment
+     *         The object to attach to the I/O operation; can be {@code null}
+     * @param handler
+     *         The handler for consuming the result
      *
-     * @throws  OverlappingFileLockException
-     *          If a lock that overlaps the requested region is already held by
-     *          this Java virtual machine, or there is already a pending attempt
-     *          to lock an overlapping region
-     * @throws  IllegalArgumentException
-     *          If the preconditions on the parameters do not hold
-     * @throws  NonReadableChannelException
-     *          If {@code shared} is true but this channel was not opened for reading
-     * @throws  NonWritableChannelException
-     *          If {@code shared} is false but this channel was not opened for writing
+     * @throws OverlappingFileLockException
+     *         If a lock that overlaps the requested region is already held by
+     *         this Java virtual machine, or there is already a pending attempt
+     *         to lock an overlapping region
+     * @throws IllegalArgumentException
+     *         If the preconditions on the parameters do not hold
+     * @throws NonReadableChannelException
+     *         If {@code shared} is true but this channel was not opened for reading
+     * @throws NonWritableChannelException
+     *         If {@code shared} is false but this channel was not opened for writing
      */
-    public abstract <A> void lock(long position,
-                                  long size,
-                                  boolean shared,
-                                  A attachment,
-                                  CompletionHandler<FileLock,? super A> handler);
+    public abstract <A> void lock(long position, long size, boolean shared, A attachment, CompletionHandler<FileLock, ? super A> handler);
 
     /**
      * Acquires an exclusive lock on this channel's file.
@@ -472,25 +458,23 @@ public abstract class AsynchronousFileChannel
      * <p> An invocation of this method of the form {@code ch.lock(att,handler)}
      * behaves in exactly the same way as the invocation
      * <pre>
-     *     ch.{@link #lock(long,long,boolean,Object,CompletionHandler) lock}(0L, Long.MAX_VALUE, false, att, handler)
+     *     ch.{@link #lock(long, long, boolean, Object, CompletionHandler) lock}(0L, Long.MAX_VALUE, false, att, handler)
      * </pre>
      *
-     * @param   <A>
-     *          The type of the attachment
-     * @param   attachment
-     *          The object to attach to the I/O operation; can be {@code null}
-     * @param   handler
-     *          The handler for consuming the result
+     * @param <A>
+     *         The type of the attachment
+     * @param attachment
+     *         The object to attach to the I/O operation; can be {@code null}
+     * @param handler
+     *         The handler for consuming the result
      *
-     * @throws  OverlappingFileLockException
-     *          If a lock is already held by this Java virtual machine, or there
-     *          is already a pending attempt to lock a region
-     * @throws  NonWritableChannelException
-     *          If this channel was not opened for writing
+     * @throws OverlappingFileLockException
+     *         If a lock is already held by this Java virtual machine, or there
+     *         is already a pending attempt to lock a region
+     * @throws NonWritableChannelException
+     *         If this channel was not opened for writing
      */
-    public final <A> void lock(A attachment,
-                               CompletionHandler<FileLock,? super A> handler)
-    {
+    public final <A> void lock(A attachment, CompletionHandler<FileLock, ? super A> handler) {
         lock(0L, Long.MAX_VALUE, false, attachment, handler);
     }
 
@@ -505,29 +489,29 @@ public abstract class AsynchronousFileChannel
      * {@code Future}'s {@link Future#get() get} method returns the {@link
      * FileLock} on successful completion.
      *
-     * @param   position
-     *          The position at which the locked region is to start; must be
-     *          non-negative
-     * @param   size
-     *          The size of the locked region; must be non-negative, and the sum
-     *          {@code position}&nbsp;+&nbsp;{@code size} must be non-negative
-     * @param   shared
-     *          {@code true} to request a shared lock, in which case this
-     *          channel must be open for reading (and possibly writing);
-     *          {@code false} to request an exclusive lock, in which case this
-     *          channel must be open for writing (and possibly reading)
+     * @param position
+     *         The position at which the locked region is to start; must be
+     *         non-negative
+     * @param size
+     *         The size of the locked region; must be non-negative, and the sum
+     *         {@code position}&nbsp;+&nbsp;{@code size} must be non-negative
+     * @param shared
+     *         {@code true} to request a shared lock, in which case this
+     *         channel must be open for reading (and possibly writing);
+     *         {@code false} to request an exclusive lock, in which case this
+     *         channel must be open for writing (and possibly reading)
      *
-     * @return  a {@code Future} object representing the pending result
+     * @return a {@code Future} object representing the pending result
      *
-     * @throws  OverlappingFileLockException
-     *          If a lock is already held by this Java virtual machine, or there
-     *          is already a pending attempt to lock a region
-     * @throws  IllegalArgumentException
-     *          If the preconditions on the parameters do not hold
-     * @throws  NonReadableChannelException
-     *          If {@code shared} is true but this channel was not opened for reading
-     * @throws  NonWritableChannelException
-     *          If {@code shared} is false but this channel was not opened for writing
+     * @throws OverlappingFileLockException
+     *         If a lock is already held by this Java virtual machine, or there
+     *         is already a pending attempt to lock a region
+     * @throws IllegalArgumentException
+     *         If the preconditions on the parameters do not hold
+     * @throws NonReadableChannelException
+     *         If {@code shared} is true but this channel was not opened for reading
+     * @throws NonWritableChannelException
+     *         If {@code shared} is false but this channel was not opened for writing
      */
     public abstract Future<FileLock> lock(long position, long size, boolean shared);
 
@@ -542,16 +526,16 @@ public abstract class AsynchronousFileChannel
      * <p> An invocation of this method behaves in exactly the same way as the
      * invocation
      * <pre>
-     *     ch.{@link #lock(long,long,boolean) lock}(0L, Long.MAX_VALUE, false)
+     *     ch.{@link #lock(long, long, boolean) lock}(0L, Long.MAX_VALUE, false)
      * </pre>
      *
-     * @return  a {@code Future} object representing the pending result
+     * @return a {@code Future} object representing the pending result
      *
-     * @throws  OverlappingFileLockException
-     *          If a lock is already held by this Java virtual machine, or there
-     *          is already a pending attempt to lock a region
-     * @throws  NonWritableChannelException
-     *          If this channel was not opened for writing
+     * @throws OverlappingFileLockException
+     *         If a lock is already held by this Java virtual machine, or there
+     *         is already a pending attempt to lock a region
+     * @throws NonWritableChannelException
+     *         If this channel was not opened for writing
      */
     public final Future<FileLock> lock() {
         return lock(0L, Long.MAX_VALUE, false);
@@ -566,45 +550,40 @@ public abstract class AsynchronousFileChannel
      * by another program then it returns {@code null}.  If it fails to acquire
      * a lock for any other reason then an appropriate exception is thrown.
      *
-     * @param  position
+     * @param position
      *         The position at which the locked region is to start; must be
      *         non-negative
-     *
-     * @param  size
+     * @param size
      *         The size of the locked region; must be non-negative, and the sum
      *         {@code position}&nbsp;+&nbsp;{@code size} must be non-negative
-     *
-     * @param  shared
+     * @param shared
      *         {@code true} to request a shared lock,
      *         {@code false} to request an exclusive lock
      *
-     * @return  A lock object representing the newly-acquired lock,
-     *          or {@code null} if the lock could not be acquired
-     *          because another program holds an overlapping lock
+     * @return A lock object representing the newly-acquired lock,
+     * or {@code null} if the lock could not be acquired
+     * because another program holds an overlapping lock
      *
-     * @throws  IllegalArgumentException
-     *          If the preconditions on the parameters do not hold
-     * @throws  ClosedChannelException
-     *          If this channel is closed
-     * @throws  OverlappingFileLockException
-     *          If a lock that overlaps the requested region is already held by
-     *          this Java virtual machine, or if another thread is already
-     *          blocked in this method and is attempting to lock an overlapping
-     *          region of the same file
-     * @throws  NonReadableChannelException
-     *          If {@code shared} is true but this channel was not opened for reading
-     * @throws  NonWritableChannelException
-     *          If {@code shared} is false but this channel was not opened for writing
-     *
-     * @throws  IOException
-     *          If some other I/O error occurs
-     *
-     * @see     #lock(Object,CompletionHandler)
-     * @see     #lock(long,long,boolean,Object,CompletionHandler)
-     * @see     #tryLock()
+     * @throws IllegalArgumentException
+     *         If the preconditions on the parameters do not hold
+     * @throws ClosedChannelException
+     *         If this channel is closed
+     * @throws OverlappingFileLockException
+     *         If a lock that overlaps the requested region is already held by
+     *         this Java virtual machine, or if another thread is already
+     *         blocked in this method and is attempting to lock an overlapping
+     *         region of the same file
+     * @throws NonReadableChannelException
+     *         If {@code shared} is true but this channel was not opened for reading
+     * @throws NonWritableChannelException
+     *         If {@code shared} is false but this channel was not opened for writing
+     * @throws IOException
+     *         If some other I/O error occurs
+     * @see #lock(Object, CompletionHandler)
+     * @see #lock(long, long, boolean, Object, CompletionHandler)
+     * @see #tryLock()
      */
-    public abstract FileLock tryLock(long position, long size, boolean shared)
-        throws IOException;
+    public abstract FileLock tryLock(long position, long size, boolean shared) throws IOException;
 
     /**
      * Attempts to acquire an exclusive lock on this channel's file.
@@ -613,28 +592,26 @@ public abstract class AsynchronousFileChannel
      * behaves in exactly the same way as the invocation
      *
      * <pre>
-     *     ch.{@link #tryLock(long,long,boolean) tryLock}(0L, Long.MAX_VALUE, false) </pre>
+     *     ch.{@link #tryLock(long, long, boolean) tryLock}(0L, Long.MAX_VALUE, false) </pre>
      *
-     * @return  A lock object representing the newly-acquired lock,
-     *          or {@code null} if the lock could not be acquired
-     *          because another program holds an overlapping lock
+     * @return A lock object representing the newly-acquired lock,
+     * or {@code null} if the lock could not be acquired
+     * because another program holds an overlapping lock
      *
-     * @throws  ClosedChannelException
-     *          If this channel is closed
-     * @throws  OverlappingFileLockException
-     *          If a lock that overlaps the requested region is already held by
-     *          this Java virtual machine, or if another thread is already
-     *          blocked in this method and is attempting to lock an overlapping
-     *          region
-     * @throws  NonWritableChannelException
-     *          If {@code shared} is false but this channel was not opened for writing
-     *
-     * @throws  IOException
-     *          If some other I/O error occurs
-     *
-     * @see     #lock(Object,CompletionHandler)
-     * @see     #lock(long,long,boolean,Object,CompletionHandler)
-     * @see     #tryLock(long,long,boolean)
+     * @throws ClosedChannelException
+     *         If this channel is closed
+     * @throws OverlappingFileLockException
+     *         If a lock that overlaps the requested region is already held by
+     *         this Java virtual machine, or if another thread is already
+     *         blocked in this method and is attempting to lock an overlapping
+     *         region
+     * @throws NonWritableChannelException
+     *         If {@code shared} is false but this channel was not opened for writing
+     * @throws IOException
+     *         If some other I/O error occurs
+     * @see #lock(Object, CompletionHandler)
+     * @see #lock(long, long, boolean, Object, CompletionHandler)
+     * @see #tryLock(long, long, boolean)
      */
     public final FileLock tryLock() throws IOException {
         return tryLock(0L, Long.MAX_VALUE, false);
@@ -651,32 +628,29 @@ public abstract class AsynchronousFileChannel
      * read is attempted.
      *
      * <p> This method works in the same manner as the {@link
-     * AsynchronousByteChannel#read(ByteBuffer,Object,CompletionHandler)}
+     * AsynchronousByteChannel#read(ByteBuffer, Object, CompletionHandler)}
      * method, except that bytes are read starting at the given file position.
      * If the given file position is greater than the file's size at the time
      * that the read is attempted then no bytes are read.
      *
-     * @param   <A>
-     *          The type of the attachment
-     * @param   dst
-     *          The buffer into which bytes are to be transferred
-     * @param   position
-     *          The file position at which the transfer is to begin;
-     *          must be non-negative
-     * @param   attachment
-     *          The object to attach to the I/O operation; can be {@code null}
-     * @param   handler
-     *          The handler for consuming the result
+     * @param <A>
+     *         The type of the attachment
+     * @param dst
+     *         The buffer into which bytes are to be transferred
+     * @param position
+     *         The file position at which the transfer is to begin;
+     *         must be non-negative
+     * @param attachment
+     *         The object to attach to the I/O operation; can be {@code null}
+     * @param handler
+     *         The handler for consuming the result
      *
-     * @throws  IllegalArgumentException
-     *          If the position is negative or the buffer is read-only
-     * @throws  NonReadableChannelException
-     *          If this channel was not opened for reading
+     * @throws IllegalArgumentException
+     *         If the position is negative or the buffer is read-only
+     * @throws NonReadableChannelException
+     *         If this channel was not opened for reading
      */
-    public abstract <A> void read(ByteBuffer dst,
-                                  long position,
-                                  A attachment,
-                                  CompletionHandler<Integer,? super A> handler);
+    public abstract <A> void read(ByteBuffer dst, long position, A attachment, CompletionHandler<Integer, ? super A> handler);
 
     /**
      * Reads a sequence of bytes from this channel into the given buffer,
@@ -695,18 +669,18 @@ public abstract class AsynchronousFileChannel
      * greater than the file's size at the time that the read is attempted then
      * no bytes are read.
      *
-     * @param   dst
-     *          The buffer into which bytes are to be transferred
-     * @param   position
-     *          The file position at which the transfer is to begin;
-     *          must be non-negative
+     * @param dst
+     *         The buffer into which bytes are to be transferred
+     * @param position
+     *         The file position at which the transfer is to begin;
+     *         must be non-negative
      *
-     * @return  A {@code Future} object representing the pending result
+     * @return A {@code Future} object representing the pending result
      *
-     * @throws  IllegalArgumentException
-     *          If the position is negative or the buffer is read-only
-     * @throws  NonReadableChannelException
-     *          If this channel was not opened for reading
+     * @throws IllegalArgumentException
+     *         If the position is negative or the buffer is read-only
+     * @throws NonReadableChannelException
+     *         If this channel was not opened for reading
      */
     public abstract Future<Integer> read(ByteBuffer dst, long position);
 
@@ -715,34 +689,31 @@ public abstract class AsynchronousFileChannel
      * at the given file position.
      *
      * <p> This method works in the same manner as the {@link
-     * AsynchronousByteChannel#write(ByteBuffer,Object,CompletionHandler)}
+     * AsynchronousByteChannel#write(ByteBuffer, Object, CompletionHandler)}
      * method, except that bytes are written starting at the given file position.
      * If the given position is greater than the file's size, at the time that
      * the write is attempted, then the file will be grown to accommodate the new
      * bytes; the values of any bytes between the previous end-of-file and the
      * newly-written bytes are unspecified.
      *
-     * @param   <A>
-     *          The type of the attachment
-     * @param   src
-     *          The buffer from which bytes are to be transferred
-     * @param   position
-     *          The file position at which the transfer is to begin;
-     *          must be non-negative
-     * @param   attachment
-     *          The object to attach to the I/O operation; can be {@code null}
-     * @param   handler
-     *          The handler for consuming the result
+     * @param <A>
+     *         The type of the attachment
+     * @param src
+     *         The buffer from which bytes are to be transferred
+     * @param position
+     *         The file position at which the transfer is to begin;
+     *         must be non-negative
+     * @param attachment
+     *         The object to attach to the I/O operation; can be {@code null}
+     * @param handler
+     *         The handler for consuming the result
      *
-     * @throws  IllegalArgumentException
-     *          If the position is negative
-     * @throws  NonWritableChannelException
-     *          If this channel was not opened for writing
+     * @throws IllegalArgumentException
+     *         If the position is negative
+     * @throws NonWritableChannelException
+     *         If this channel was not opened for writing
      */
-    public abstract <A> void write(ByteBuffer src,
-                                   long position,
-                                   A attachment,
-                                   CompletionHandler<Integer,? super A> handler);
+    public abstract <A> void write(ByteBuffer src, long position, A attachment, CompletionHandler<Integer, ? super A> handler);
 
     /**
      * Writes a sequence of bytes to this channel from the given buffer, starting
@@ -762,18 +733,18 @@ public abstract class AsynchronousFileChannel
      * any bytes between the previous end-of-file and the newly-written bytes
      * are unspecified.
      *
-     * @param   src
-     *          The buffer from which bytes are to be transferred
-     * @param   position
-     *          The file position at which the transfer is to begin;
-     *          must be non-negative
+     * @param src
+     *         The buffer from which bytes are to be transferred
+     * @param position
+     *         The file position at which the transfer is to begin;
+     *         must be non-negative
      *
-     * @return  A {@code Future} object representing the pending result
+     * @return A {@code Future} object representing the pending result
      *
-     * @throws  IllegalArgumentException
-     *          If the position is negative
-     * @throws  NonWritableChannelException
-     *          If this channel was not opened for writing
+     * @throws IllegalArgumentException
+     *         If the position is negative
+     * @throws NonWritableChannelException
+     *         If this channel was not opened for writing
      */
     public abstract Future<Integer> write(ByteBuffer src, long position);
 }

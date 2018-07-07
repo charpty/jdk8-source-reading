@@ -24,18 +24,13 @@
  */
 package java.util.stream;
 
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.DoubleSummaryStatistics;
 import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
@@ -70,9 +65,9 @@ import java.util.function.Supplier;
  * specification of streams, stream operations, stream pipelines, and
  * parallelism.
  *
- * @since 1.8
  * @see Stream
  * @see <a href="package-summary.html">java.util.stream</a>
+ * @since 1.8
  */
 public interface DoubleStream extends BaseStream<Double, DoubleStream> {
 
@@ -83,10 +78,12 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      * <p>This is an <a href="package-summary.html#StreamOps">intermediate
      * operation</a>.
      *
-     * @param predicate a <a href="package-summary.html#NonInterference">non-interfering</a>,
-     *                  <a href="package-summary.html#Statelessness">stateless</a>
-     *                  predicate to apply to each element to determine if it
-     *                  should be included
+     * @param predicate
+     *         a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *         <a href="package-summary.html#Statelessness">stateless</a>
+     *         predicate to apply to each element to determine if it
+     *         should be included
+     *
      * @return the new stream
      */
     DoubleStream filter(DoublePredicate predicate);
@@ -98,9 +95,11 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      * <p>This is an <a href="package-summary.html#StreamOps">intermediate
      * operation</a>.
      *
-     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
-     *               <a href="package-summary.html#Statelessness">stateless</a>
-     *               function to apply to each element
+     * @param mapper
+     *         a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *         <a href="package-summary.html#Statelessness">stateless</a>
+     *         function to apply to each element
+     *
      * @return the new stream
      */
     DoubleStream map(DoubleUnaryOperator mapper);
@@ -110,12 +109,15 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      * applying the given function to the elements of this stream.
      *
      * <p>This is an <a href="package-summary.html#StreamOps">
-     *     intermediate operation</a>.
+     * intermediate operation</a>.
      *
-     * @param <U> the element type of the new stream
-     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
-     *               <a href="package-summary.html#Statelessness">stateless</a>
-     *               function to apply to each element
+     * @param <U>
+     *         the element type of the new stream
+     * @param mapper
+     *         a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *         <a href="package-summary.html#Statelessness">stateless</a>
+     *         function to apply to each element
+     *
      * @return the new stream
      */
     <U> Stream<U> mapToObj(DoubleFunction<? extends U> mapper);
@@ -127,9 +129,11 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      * <p>This is an <a href="package-summary.html#StreamOps">intermediate
      * operation</a>.
      *
-     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
-     *               <a href="package-summary.html#Statelessness">stateless</a>
-     *               function to apply to each element
+     * @param mapper
+     *         a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *         <a href="package-summary.html#Statelessness">stateless</a>
+     *         function to apply to each element
+     *
      * @return the new stream
      */
     IntStream mapToInt(DoubleToIntFunction mapper);
@@ -141,9 +145,11 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      * <p>This is an <a href="package-summary.html#StreamOps">intermediate
      * operation</a>.
      *
-     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
-     *               <a href="package-summary.html#Statelessness">stateless</a>
-     *               function to apply to each element
+     * @param mapper
+     *         a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *         <a href="package-summary.html#Statelessness">stateless</a>
+     *         function to apply to each element
+     *
      * @return the new stream
      */
     LongStream mapToLong(DoubleToLongFunction mapper);
@@ -159,11 +165,14 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      * <p>This is an <a href="package-summary.html#StreamOps">intermediate
      * operation</a>.
      *
-     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
-     *               <a href="package-summary.html#Statelessness">stateless</a>
-     *               function to apply to each element which produces a
-     *               {@code DoubleStream} of new values
+     * @param mapper
+     *         a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *         <a href="package-summary.html#Statelessness">stateless</a>
+     *         function to apply to each element which produces a
+     *         {@code DoubleStream} of new values
+     *
      * @return the new stream
+     *
      * @see Stream#flatMap(Function)
      */
     DoubleStream flatMap(DoubleFunction<? extends DoubleStream> mapper);
@@ -205,20 +214,11 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      * upstream operation.  If the action modifies shared state,
      * it is responsible for providing the required synchronization.
      *
-     * @apiNote This method exists mainly to support debugging, where you want
-     * to see the elements as they flow past a certain point in a pipeline:
-     * <pre>{@code
-     *     DoubleStream.of(1, 2, 3, 4)
-     *         .filter(e -> e > 2)
-     *         .peek(e -> System.out.println("Filtered value: " + e))
-     *         .map(e -> e * e)
-     *         .peek(e -> System.out.println("Mapped value: " + e))
-     *         .sum();
-     * }</pre>
+     * @param action
+     *         a <a href="package-summary.html#NonInterference">
+     *         non-interfering</a> action to perform on the elements as
+     *         they are consumed from the stream
      *
-     * @param action a <a href="package-summary.html#NonInterference">
-     *               non-interfering</a> action to perform on the elements as
-     *               they are consumed from the stream
      * @return the new stream
      */
     DoubleStream peek(DoubleConsumer action);
@@ -230,23 +230,13 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      * <p>This is a <a href="package-summary.html#StreamOps">short-circuiting
      * stateful intermediate operation</a>.
      *
-     * @apiNote
-     * While {@code limit()} is generally a cheap operation on sequential
-     * stream pipelines, it can be quite expensive on ordered parallel pipelines,
-     * especially for large values of {@code maxSize}, since {@code limit(n)}
-     * is constrained to return not just any <em>n</em> elements, but the
-     * <em>first n</em> elements in the encounter order.  Using an unordered
-     * stream source (such as {@link #generate(DoubleSupplier)}) or removing the
-     * ordering constraint with {@link #unordered()} may result in significant
-     * speedups of {@code limit()} in parallel pipelines, if the semantics of
-     * your situation permit.  If consistency with encounter order is required,
-     * and you are experiencing poor performance or memory utilization with
-     * {@code limit()} in parallel pipelines, switching to sequential execution
-     * with {@link #sequential()} may improve performance.
+     * @param maxSize
+     *         the number of elements the stream should be limited to
      *
-     * @param maxSize the number of elements the stream should be limited to
      * @return the new stream
-     * @throws IllegalArgumentException if {@code maxSize} is negative
+     *
+     * @throws IllegalArgumentException
+     *         if {@code maxSize} is negative
      */
     DoubleStream limit(long maxSize);
 
@@ -259,23 +249,13 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      * <p>This is a <a href="package-summary.html#StreamOps">stateful
      * intermediate operation</a>.
      *
-     * @apiNote
-     * While {@code skip()} is generally a cheap operation on sequential
-     * stream pipelines, it can be quite expensive on ordered parallel pipelines,
-     * especially for large values of {@code n}, since {@code skip(n)}
-     * is constrained to skip not just any <em>n</em> elements, but the
-     * <em>first n</em> elements in the encounter order.  Using an unordered
-     * stream source (such as {@link #generate(DoubleSupplier)}) or removing the
-     * ordering constraint with {@link #unordered()} may result in significant
-     * speedups of {@code skip()} in parallel pipelines, if the semantics of
-     * your situation permit.  If consistency with encounter order is required,
-     * and you are experiencing poor performance or memory utilization with
-     * {@code skip()} in parallel pipelines, switching to sequential execution
-     * with {@link #sequential()} may improve performance.
+     * @param n
+     *         the number of leading elements to skip
      *
-     * @param n the number of leading elements to skip
      * @return the new stream
-     * @throws IllegalArgumentException if {@code n} is negative
+     *
+     * @throws IllegalArgumentException
+     *         if {@code n} is negative
      */
     DoubleStream skip(long n);
 
@@ -292,8 +272,9 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      * library chooses.  If the action accesses shared state, it is
      * responsible for providing the required synchronization.
      *
-     * @param action a <a href="package-summary.html#NonInterference">
-     *               non-interfering</a> action to perform on the elements
+     * @param action
+     *         a <a href="package-summary.html#NonInterference">
+     *         non-interfering</a> action to perform on the elements
      */
     void forEach(DoubleConsumer action);
 
@@ -305,8 +286,10 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
      * operation</a>.
      *
-     * @param action a <a href="package-summary.html#NonInterference">
-     *               non-interfering</a> action to perform on the elements
+     * @param action
+     *         a <a href="package-summary.html#NonInterference">
+     *         non-interfering</a> action to perform on the elements
+     *
      * @see #forEach(DoubleConsumer)
      */
     void forEachOrdered(DoubleConsumer action);
@@ -345,30 +328,16 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
      * operation</a>.
      *
-     * @apiNote Sum, min, max, and average are all special cases of reduction.
-     * Summing a stream of numbers can be expressed as:
-
-     * <pre>{@code
-     *     double sum = numbers.reduce(0, (a, b) -> a+b);
-     * }</pre>
+     * @param identity
+     *         the identity value for the accumulating function
+     * @param op
+     *         an <a href="package-summary.html#Associativity">associative</a>,
+     *         <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *         <a href="package-summary.html#Statelessness">stateless</a>
+     *         function for combining two values
      *
-     * or more compactly:
-     *
-     * <pre>{@code
-     *     double sum = numbers.reduce(0, Double::sum);
-     * }</pre>
-     *
-     * <p>While this may seem a more roundabout way to perform an aggregation
-     * compared to simply mutating a running total in a loop, reduction
-     * operations parallelize more gracefully, without needing additional
-     * synchronization and with greatly reduced risk of data races.
-     *
-     * @param identity the identity value for the accumulating function
-     * @param op an <a href="package-summary.html#Associativity">associative</a>,
-     *           <a href="package-summary.html#NonInterference">non-interfering</a>,
-     *           <a href="package-summary.html#Statelessness">stateless</a>
-     *           function for combining two values
      * @return the result of the reduction
+     *
      * @see #sum()
      * @see #min()
      * @see #max()
@@ -404,11 +373,14 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
      * operation</a>.
      *
-     * @param op an <a href="package-summary.html#Associativity">associative</a>,
-     *           <a href="package-summary.html#NonInterference">non-interfering</a>,
-     *           <a href="package-summary.html#Statelessness">stateless</a>
-     *           function for combining two values
+     * @param op
+     *         an <a href="package-summary.html#Associativity">associative</a>,
+     *         <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *         <a href="package-summary.html#Statelessness">stateless</a>
+     *         function for combining two values
+     *
      * @return the result of the reduction
+     *
      * @see #reduce(double, DoubleBinaryOperator)
      */
     OptionalDouble reduce(DoubleBinaryOperator op);
@@ -434,25 +406,29 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
      * operation</a>.
      *
-     * @param <R> type of the result
-     * @param supplier a function that creates a new result container. For a
-     *                 parallel execution, this function may be called
-     *                 multiple times and must return a fresh value each time.
-     * @param accumulator an <a href="package-summary.html#Associativity">associative</a>,
-     *                    <a href="package-summary.html#NonInterference">non-interfering</a>,
-     *                    <a href="package-summary.html#Statelessness">stateless</a>
-     *                    function for incorporating an additional element into a result
-     * @param combiner an <a href="package-summary.html#Associativity">associative</a>,
-     *                    <a href="package-summary.html#NonInterference">non-interfering</a>,
-     *                    <a href="package-summary.html#Statelessness">stateless</a>
-     *                    function for combining two values, which must be
-     *                    compatible with the accumulator function
+     * @param <R>
+     *         type of the result
+     * @param supplier
+     *         a function that creates a new result container. For a
+     *         parallel execution, this function may be called
+     *         multiple times and must return a fresh value each time.
+     * @param accumulator
+     *         an <a href="package-summary.html#Associativity">associative</a>,
+     *         <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *         <a href="package-summary.html#Statelessness">stateless</a>
+     *         function for incorporating an additional element into a result
+     * @param combiner
+     *         an <a href="package-summary.html#Associativity">associative</a>,
+     *         <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *         <a href="package-summary.html#Statelessness">stateless</a>
+     *         function for combining two values, which must be
+     *         compatible with the accumulator function
+     *
      * @return the result of the reduction
+     *
      * @see Stream#collect(Supplier, BiConsumer, BiConsumer)
      */
-    <R> R collect(Supplier<R> supplier,
-                  ObjDoubleConsumer<R> accumulator,
-                  BiConsumer<R, R> combiner);
+    <R> R collect(Supplier<R> supplier, ObjDoubleConsumer<R> accumulator, BiConsumer<R, R> combiner);
 
     /**
      * Returns the sum of elements in this stream.
@@ -487,9 +463,6 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      *
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
      * operation</a>.
-     *
-     * @apiNote Elements sorted by increasing absolute magnitude tend
-     * to yield more accurate results.
      *
      * @return the sum of elements in this stream
      */
@@ -565,14 +538,11 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      * other technique to reduce the error bound in the {@link #sum
      * numerical sum} used to compute the average.
      *
-     *  <p>The average is a special case of a <a
-     *  href="package-summary.html#Reduction">reduction</a>.
+     * <p>The average is a special case of a <a
+     * href="package-summary.html#Reduction">reduction</a>.
      *
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
      * operation</a>.
-     *
-     * @apiNote Elements sorted by increasing absolute magnitude tend
-     * to yield more accurate results.
      *
      * @return an {@code OptionalDouble} containing the average element of this
      * stream, or an empty optional if the stream is empty
@@ -601,13 +571,11 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      * <p>This is a <a href="package-summary.html#StreamOps">short-circuiting
      * terminal operation</a>.
      *
-     * @apiNote
-     * This method evaluates the <em>existential quantification</em> of the
-     * predicate over the elements of the stream (for some x P(x)).
+     * @param predicate
+     *         a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *         <a href="package-summary.html#Statelessness">stateless</a>
+     *         predicate to apply to elements of this stream
      *
-     * @param predicate a <a href="package-summary.html#NonInterference">non-interfering</a>,
-     *                  <a href="package-summary.html#Statelessness">stateless</a>
-     *                  predicate to apply to elements of this stream
      * @return {@code true} if any elements of the stream match the provided
      * predicate, otherwise {@code false}
      */
@@ -622,15 +590,11 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      * <p>This is a <a href="package-summary.html#StreamOps">short-circuiting
      * terminal operation</a>.
      *
-     * @apiNote
-     * This method evaluates the <em>universal quantification</em> of the
-     * predicate over the elements of the stream (for all x P(x)).  If the
-     * stream is empty, the quantification is said to be <em>vacuously
-     * satisfied</em> and is always {@code true} (regardless of P(x)).
+     * @param predicate
+     *         a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *         <a href="package-summary.html#Statelessness">stateless</a>
+     *         predicate to apply to elements of this stream
      *
-     * @param predicate a <a href="package-summary.html#NonInterference">non-interfering</a>,
-     *                  <a href="package-summary.html#Statelessness">stateless</a>
-     *                  predicate to apply to elements of this stream
      * @return {@code true} if either all elements of the stream match the
      * provided predicate or the stream is empty, otherwise {@code false}
      */
@@ -645,15 +609,11 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      * <p>This is a <a href="package-summary.html#StreamOps">short-circuiting
      * terminal operation</a>.
      *
-     * @apiNote
-     * This method evaluates the <em>universal quantification</em> of the
-     * negated predicate over the elements of the stream (for all x ~P(x)).  If
-     * the stream is empty, the quantification is said to be vacuously satisfied
-     * and is always {@code true}, regardless of P(x).
+     * @param predicate
+     *         a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *         <a href="package-summary.html#Statelessness">stateless</a>
+     *         predicate to apply to elements of this stream
      *
-     * @param predicate a <a href="package-summary.html#NonInterference">non-interfering</a>,
-     *                  <a href="package-summary.html#Statelessness">stateless</a>
-     *                  predicate to apply to elements of this stream
      * @return {@code true} if either no elements of the stream match the
      * provided predicate or the stream is empty, otherwise {@code false}
      */
@@ -687,6 +647,7 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      *
      * @return an {@code OptionalDouble} describing some element of this stream,
      * or an empty {@code OptionalDouble} if the stream is empty
+     *
      * @see #findFirst()
      */
     OptionalDouble findAny();
@@ -715,7 +676,6 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
     @Override
     Spliterator.OfDouble spliterator();
 
-
     // Static factories
 
     /**
@@ -739,7 +699,9 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
     /**
      * Returns a sequential {@code DoubleStream} containing a single element.
      *
-     * @param t the single element
+     * @param t
+     *         the single element
+     *
      * @return a singleton sequential stream
      */
     public static DoubleStream of(double t) {
@@ -749,7 +711,9 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
     /**
      * Returns a sequential ordered stream whose elements are the specified values.
      *
-     * @param values the elements of the new stream
+     * @param values
+     *         the elements of the new stream
+     *
      * @return the new stream
      */
     public static DoubleStream of(double... values) {
@@ -765,11 +729,14 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      * <p>The first element (position {@code 0}) in the {@code DoubleStream}
      * will be the provided {@code seed}.  For {@code n > 0}, the element at
      * position {@code n}, will be the result of applying the function {@code f}
-     *  to the element at position {@code n - 1}.
+     * to the element at position {@code n - 1}.
      *
-     * @param seed the initial element
-     * @param f a function to be applied to to the previous element to produce
-     *          a new element
+     * @param seed
+     *         the initial element
+     * @param f
+     *         a function to be applied to to the previous element to produce
+     *         a new element
+     *
      * @return a new sequential {@code DoubleStream}
      */
     public static DoubleStream iterate(final double seed, final DoubleUnaryOperator f) {
@@ -789,9 +756,8 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
                 return v;
             }
         };
-        return StreamSupport.doubleStream(Spliterators.spliteratorUnknownSize(
-                iterator,
-                Spliterator.ORDERED | Spliterator.IMMUTABLE | Spliterator.NONNULL), false);
+        return StreamSupport
+                .doubleStream(Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED | Spliterator.IMMUTABLE | Spliterator.NONNULL), false);
     }
 
     /**
@@ -799,13 +765,14 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      * generated by the provided {@code DoubleSupplier}.  This is suitable for
      * generating constant streams, streams of random elements, etc.
      *
-     * @param s the {@code DoubleSupplier} for generated elements
+     * @param s
+     *         the {@code DoubleSupplier} for generated elements
+     *
      * @return a new infinite sequential unordered {@code DoubleStream}
      */
     public static DoubleStream generate(DoubleSupplier s) {
         Objects.requireNonNull(s);
-        return StreamSupport.doubleStream(
-                new StreamSpliterators.InfiniteSupplyingSpliterator.OfDouble(Long.MAX_VALUE, s), false);
+        return StreamSupport.doubleStream(new StreamSpliterators.InfiniteSupplyingSpliterator.OfDouble(Long.MAX_VALUE, s), false);
     }
 
     /**
@@ -816,21 +783,18 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
      * streams is parallel.  When the resulting stream is closed, the close
      * handlers for both input streams are invoked.
      *
-     * @implNote
-     * Use caution when constructing streams from repeated concatenation.
-     * Accessing an element of a deeply concatenated stream can result in deep
-     * call chains, or even {@code StackOverflowException}.
+     * @param a
+     *         the first stream
+     * @param b
+     *         the second stream
      *
-     * @param a the first stream
-     * @param b the second stream
      * @return the concatenation of the two input streams
      */
     public static DoubleStream concat(DoubleStream a, DoubleStream b) {
         Objects.requireNonNull(a);
         Objects.requireNonNull(b);
 
-        Spliterator.OfDouble split = new Streams.ConcatSpliterator.OfDouble(
-                a.spliterator(), b.spliterator());
+        Spliterator.OfDouble split = new Streams.ConcatSpliterator.OfDouble(a.spliterator(), b.spliterator());
         DoubleStream stream = StreamSupport.doubleStream(split, a.isParallel() || b.isParallel());
         return stream.onClose(Streams.composedClose(a, b));
     }
@@ -853,8 +817,9 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
         /**
          * Adds an element to the stream being built.
          *
-         * @throws IllegalStateException if the builder has already transitioned
-         * to the built state
+         * @throws IllegalStateException
+         *         if the builder has already transitioned
+         *         to the built state
          */
         @Override
         void accept(double t);
@@ -862,17 +827,14 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
         /**
          * Adds an element to the stream being built.
          *
-         * @implSpec
-         * The default implementation behaves as if:
-         * <pre>{@code
-         *     accept(t)
-         *     return this;
-         * }</pre>
+         * @param t
+         *         the element to add
          *
-         * @param t the element to add
          * @return {@code this} builder
-         * @throws IllegalStateException if the builder has already transitioned
-         * to the built state
+         *
+         * @throws IllegalStateException
+         *         if the builder has already transitioned
+         *         to the built state
          */
         default Builder add(double t) {
             accept(t);
@@ -886,8 +848,10 @@ public interface DoubleStream extends BaseStream<Double, DoubleStream> {
          * state.
          *
          * @return the built stream
-         * @throws IllegalStateException if the builder has already transitioned
-         * to the built state
+         *
+         * @throws IllegalStateException
+         *         if the builder has already transitioned
+         *         to the built state
          */
         DoubleStream build();
     }

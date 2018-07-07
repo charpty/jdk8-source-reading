@@ -25,8 +25,10 @@
 
 package java.nio.file;
 
-import java.nio.file.attribute.*;
 import java.io.IOException;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.FileAttributeView;
+import java.nio.file.attribute.FileStoreAttributeView;
 
 /**
  * Storage for files. A {@code FileStore} represents a storage pool, device,
@@ -59,7 +61,7 @@ public abstract class FileStore {
      * <p> The string returned by this method may differ from the string
      * returned by the {@link Object#toString() toString} method.
      *
-     * @return  the name of this file store
+     * @return the name of this file store
      */
     public abstract String name();
 
@@ -69,7 +71,7 @@ public abstract class FileStore {
      * indicate, for example, the format used or if the file store is local
      * or remote.
      *
-     * @return  a string representing the type of this file store
+     * @return a string representing the type of this file store
      */
     public abstract String type();
 
@@ -79,17 +81,17 @@ public abstract class FileStore {
      * attempt to create a file, open an existing file for writing etc. causes
      * an {@code IOException} to be thrown.
      *
-     * @return  {@code true} if, and only if, this file store is read-only
+     * @return {@code true} if, and only if, this file store is read-only
      */
     public abstract boolean isReadOnly();
 
     /**
      * Returns the size, in bytes, of the file store.
      *
-     * @return  the size of the file store, in bytes
+     * @return the size of the file store, in bytes
      *
-     * @throws  IOException
-     *          if an I/O error occurs
+     * @throws IOException
+     *         if an I/O error occurs
      */
     public abstract long getTotalSpace() throws IOException;
 
@@ -104,10 +106,10 @@ public abstract class FileStore {
      * by any external I/O operations including those made on the system outside
      * of this Java virtual machine.
      *
-     * @return  the number of bytes available
+     * @return the number of bytes available
      *
-     * @throws  IOException
-     *          if an I/O error occurs
+     * @throws IOException
+     *         if an I/O error occurs
      */
     public abstract long getUsableSpace() throws IOException;
 
@@ -121,10 +123,10 @@ public abstract class FileStore {
      * made inaccurate by any external I/O operations including those made on
      * the system outside of this virtual machine.
      *
-     * @return  the number of unallocated bytes
+     * @return the number of unallocated bytes
      *
-     * @throws  IOException
-     *          if an I/O error occurs
+     * @throws IOException
+     *         if an I/O error occurs
      */
     public abstract long getUnallocatedSpace() throws IOException;
 
@@ -138,11 +140,11 @@ public abstract class FileStore {
      * result when the file store is not a local storage device. The reasons for
      * this are implementation specific and therefore unspecified.
      *
-     * @param   type
-     *          the file attribute view type
+     * @param type
+     *         the file attribute view type
      *
-     * @return  {@code true} if, and only if, the file attribute view is
-     *          supported
+     * @return {@code true} if, and only if, the file attribute view is
+     * supported
      */
     public abstract boolean supportsFileAttributeView(Class<? extends FileAttributeView> type);
 
@@ -157,11 +159,11 @@ public abstract class FileStore {
      * not a local storage device. The reasons for this are implementation
      * specific and therefore unspecified.
      *
-     * @param   name
-     *          the {@link FileAttributeView#name name} of file attribute view
+     * @param name
+     *         the {@link FileAttributeView#name name} of file attribute view
      *
-     * @return  {@code true} if, and only if, the file attribute view is
-     *          supported
+     * @return {@code true} if, and only if, the file attribute view is
+     * supported
      */
     public abstract boolean supportsFileAttributeView(String name);
 
@@ -173,16 +175,15 @@ public abstract class FileStore {
      * The {@code type} parameter is the type of the attribute view required and
      * the method returns an instance of that type if supported.
      *
-     * @param   <V>
-     *          The {@code FileStoreAttributeView} type
-     * @param   type
-     *          the {@code Class} object corresponding to the attribute view
+     * @param <V>
+     *         The {@code FileStoreAttributeView} type
+     * @param type
+     *         the {@code Class} object corresponding to the attribute view
      *
-     * @return  a file store attribute view of the specified type or
-     *          {@code null} if the attribute view is not available
+     * @return a file store attribute view of the specified type or
+     * {@code null} if the attribute view is not available
      */
-    public abstract <V extends FileStoreAttributeView> V
-        getFileStoreAttributeView(Class<V> type);
+    public abstract <V extends FileStoreAttributeView> V getFileStoreAttributeView(Class<V> type);
 
     /**
      * Reads the value of a file store attribute.
@@ -205,17 +206,17 @@ public abstract class FileStore {
      *    boolean compression = (Boolean)fs.getAttribute("zfs:compression");
      * </pre>
      *
-     * @param   attribute
-     *          the attribute to read
-
-     * @return  the attribute value; {@code null} may be a valid valid for some
-     *          attributes
+     * @param attribute
+     *         the attribute to read
      *
-     * @throws  UnsupportedOperationException
-     *          if the attribute view is not available or it does not support
-     *          reading the attribute
-     * @throws  IOException
-     *          if an I/O error occurs
+     * @return the attribute value; {@code null} may be a valid valid for some
+     * attributes
+     *
+     * @throws UnsupportedOperationException
+     *         if the attribute view is not available or it does not support
+     *         reading the attribute
+     * @throws IOException
+     *         if an I/O error occurs
      */
     public abstract Object getAttribute(String attribute) throws IOException;
 }

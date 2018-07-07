@@ -34,6 +34,7 @@
  */
 
 package java.util.concurrent.atomic;
+
 import sun.misc.Unsafe;
 
 /**
@@ -44,8 +45,8 @@ import sun.misc.Unsafe;
  * updated flags, and cannot be used as a replacement for a
  * {@link java.lang.Boolean}.
  *
- * @since 1.5
  * @author Doug Lea
+ * @since 1.5
  */
 public class AtomicBoolean implements java.io.Serializable {
     private static final long serialVersionUID = 4654671469794556979L;
@@ -55,9 +56,10 @@ public class AtomicBoolean implements java.io.Serializable {
 
     static {
         try {
-            valueOffset = unsafe.objectFieldOffset
-                (AtomicBoolean.class.getDeclaredField("value"));
-        } catch (Exception ex) { throw new Error(ex); }
+            valueOffset = unsafe.objectFieldOffset(AtomicBoolean.class.getDeclaredField("value"));
+        } catch (Exception ex) {
+            throw new Error(ex);
+        }
     }
 
     private volatile int value;
@@ -65,7 +67,8 @@ public class AtomicBoolean implements java.io.Serializable {
     /**
      * Creates a new {@code AtomicBoolean} with the given initial value.
      *
-     * @param initialValue the initial value
+     * @param initialValue
+     *         the initial value
      */
     public AtomicBoolean(boolean initialValue) {
         value = initialValue ? 1 : 0;
@@ -90,8 +93,11 @@ public class AtomicBoolean implements java.io.Serializable {
      * Atomically sets the value to the given updated value
      * if the current value {@code ==} the expected value.
      *
-     * @param expect the expected value
-     * @param update the new value
+     * @param expect
+     *         the expected value
+     * @param update
+     *         the new value
+     *
      * @return {@code true} if successful. False return indicates that
      * the actual value was not equal to the expected value.
      */
@@ -109,8 +115,11 @@ public class AtomicBoolean implements java.io.Serializable {
      * spuriously and does not provide ordering guarantees</a>, so is
      * only rarely an appropriate alternative to {@code compareAndSet}.
      *
-     * @param expect the expected value
-     * @param update the new value
+     * @param expect
+     *         the expected value
+     * @param update
+     *         the new value
+     *
      * @return {@code true} if successful
      */
     public boolean weakCompareAndSet(boolean expect, boolean update) {
@@ -122,7 +131,8 @@ public class AtomicBoolean implements java.io.Serializable {
     /**
      * Unconditionally sets to the given value.
      *
-     * @param newValue the new value
+     * @param newValue
+     *         the new value
      */
     public final void set(boolean newValue) {
         value = newValue ? 1 : 0;
@@ -131,7 +141,9 @@ public class AtomicBoolean implements java.io.Serializable {
     /**
      * Eventually sets to the given value.
      *
-     * @param newValue the new value
+     * @param newValue
+     *         the new value
+     *
      * @since 1.6
      */
     public final void lazySet(boolean newValue) {
@@ -142,7 +154,9 @@ public class AtomicBoolean implements java.io.Serializable {
     /**
      * Atomically sets to the given value and returns the previous value.
      *
-     * @param newValue the new value
+     * @param newValue
+     *         the new value
+     *
      * @return the previous value
      */
     public final boolean getAndSet(boolean newValue) {
@@ -155,6 +169,7 @@ public class AtomicBoolean implements java.io.Serializable {
 
     /**
      * Returns the String representation of the current value.
+     *
      * @return the String representation of the current value
      */
     public String toString() {

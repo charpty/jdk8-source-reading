@@ -25,8 +25,7 @@
 
 package java.beans;
 
-import java.awt.Image;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.image.ImageProducer;
 import java.net.URL;
 
@@ -114,10 +113,13 @@ public class SimpleBeanInfo implements BeanInfo {
      * current object's class file and loads an image object
      * from that file.  Typically images will be GIFs.
      * <p>
-     * @param resourceName  A pathname relative to the directory
-     *          holding the class file of the current class.  For example,
-     *          "wombat.gif".
-     * @return  an image object.  May be null if the load failed.
+     *
+     * @param resourceName
+     *         A pathname relative to the directory
+     *         holding the class file of the current class.  For example,
+     *         "wombat.gif".
+     *
+     * @return an image object.  May be null if the load failed.
      */
     public Image loadImage(final String resourceName) {
         try {

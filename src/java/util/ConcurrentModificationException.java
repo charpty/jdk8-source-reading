@@ -54,18 +54,18 @@ package java.util;
  * exception for its correctness: <i>{@code ConcurrentModificationException}
  * should be used only to detect bugs.</i>
  *
- * @author  Josh Bloch
- * @see     Collection
- * @see     Iterator
- * @see     Spliterator
- * @see     ListIterator
- * @see     Vector
- * @see     LinkedList
- * @see     HashSet
- * @see     Hashtable
- * @see     TreeMap
- * @see     AbstractList
- * @since   1.2
+ * @author Josh Bloch
+ * @see Collection
+ * @see Iterator
+ * @see Spliterator
+ * @see ListIterator
+ * @see Vector
+ * @see LinkedList
+ * @see HashSet
+ * @see Hashtable
+ * @see TreeMap
+ * @see AbstractList
+ * @since 1.2
  */
 public class ConcurrentModificationException extends RuntimeException {
     private static final long serialVersionUID = -3666751008965953603L;
@@ -81,7 +81,8 @@ public class ConcurrentModificationException extends RuntimeException {
      * Constructs a {@code ConcurrentModificationException} with the
      * specified detail message.
      *
-     * @param message the detail message pertaining to this exception.
+     * @param message
+     *         the detail message pertaining to this exception.
      */
     public ConcurrentModificationException(String message) {
         super(message);
@@ -92,11 +93,13 @@ public class ConcurrentModificationException extends RuntimeException {
      * message of {@code (cause==null ? null : cause.toString())} (which
      * typically contains the class and detail message of {@code cause}.
      *
-     * @param  cause the cause (which is saved for later retrieval by the
+     * @param cause
+     *         the cause (which is saved for later retrieval by the
      *         {@link Throwable#getCause()} method).  (A {@code null} value is
      *         permitted, and indicates that the cause is nonexistent or
      *         unknown.)
-     * @since  1.7
+     *
+     * @since 1.7
      */
     public ConcurrentModificationException(Throwable cause) {
         super(cause);
@@ -110,12 +113,15 @@ public class ConcurrentModificationException extends RuntimeException {
      * <i>not</i> automatically incorporated in this exception's detail
      * message.
      *
-     * @param  message the detail message (which is saved for later retrieval
+     * @param message
+     *         the detail message (which is saved for later retrieval
      *         by the {@link Throwable#getMessage()} method).
-     * @param  cause the cause (which is saved for later retrieval by the
+     * @param cause
+     *         the cause (which is saved for later retrieval by the
      *         {@link Throwable#getCause()} method).  (A {@code null} value
      *         is permitted, and indicates that the cause is nonexistent or
      *         unknown.)
+     *
      * @since 1.7
      */
     public ConcurrentModificationException(String message, Throwable cause) {

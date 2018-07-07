@@ -122,7 +122,7 @@
  * all threads.  Any other bootstrap method calls are allowed to complete, but their
  * results are ignored, and their dynamic call site invocations proceed with the originally
  * chosen target object.
-
+ *
  * <p style="font-size:smaller;">
  * <em>Discussion:</em>
  * These rules do not enable the JVM to duplicate dynamic call sites,
@@ -204,7 +204,6 @@
  * since each call site could be given its own unique bootstrap method.
  * Such a practice is likely to produce large class files and constant pools.
  *
- * @author John Rose, JSR 292 EG
  * @since 1.7
  */
 

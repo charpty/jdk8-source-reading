@@ -30,9 +30,7 @@ package java.nio.file;
  * associated with a {@link FileSystem#isReadOnly() read-only} {@code FileSystem}.
  */
 
-public class ReadOnlyFileSystemException
-    extends UnsupportedOperationException
-{
+public class ReadOnlyFileSystemException extends UnsupportedOperationException {
     static final long serialVersionUID = -6822409595617487197L;
 
     /**

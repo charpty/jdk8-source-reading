@@ -45,10 +45,10 @@ package java.lang;
  * fact that it implements this interface.  Even if the clone method is invoked
  * reflectively, there is no guarantee that it will succeed.
  *
- * @author  unascribed
- * @see     java.lang.CloneNotSupportedException
- * @see     java.lang.Object#clone()
- * @since   JDK1.0
+ * @author unascribed
+ * @see java.lang.CloneNotSupportedException
+ * @see java.lang.Object#clone()
+ * @since JDK1.0
  */
 public interface Cloneable {
 }

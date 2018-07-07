@@ -61,10 +61,6 @@
  */
 package java.time.format;
 
-import static java.time.temporal.ChronoField.EPOCH_DAY;
-import static java.time.temporal.ChronoField.INSTANT_SECONDS;
-import static java.time.temporal.ChronoField.OFFSET_SECONDS;
-
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -81,15 +77,13 @@ import java.time.temporal.ValueRange;
 import java.util.Locale;
 import java.util.Objects;
 
+
+import static java.time.temporal.ChronoField.*;
+
 /**
  * Context object used during date and time printing.
  * <p>
  * This class provides a single wrapper to items used in the format.
- *
- * @implSpec
- * This class is a mutable context intended for use from a single thread.
- * Usage of the class is thread-safe within standard printing as the framework creates
- * a new instance of the class for each format and printing is single-threaded.
  *
  * @since 1.8
  */
@@ -111,8 +105,10 @@ final class DateTimePrintContext {
     /**
      * Creates a new instance of the context.
      *
-     * @param temporal  the temporal object being output, not null
-     * @param formatter  the formatter controlling the format, not null
+     * @param temporal
+     *         the temporal object being output, not null
+     * @param formatter
+     *         the formatter controlling the format, not null
      */
     DateTimePrintContext(TemporalAccessor temporal, DateTimeFormatter formatter) {
         super();
@@ -150,11 +146,11 @@ final class DateTimePrintContext {
                 return chrono.zonedDateTime(Instant.from(temporal), overrideZone);
             }
             // block changing zone on OffsetTime, and similar problem cases
-            if (overrideZone.normalized() instanceof ZoneOffset && temporal.isSupported(OFFSET_SECONDS) &&
-                    temporal.get(OFFSET_SECONDS) != overrideZone.getRules().getOffset(Instant.EPOCH).getTotalSeconds()) {
-                throw new DateTimeException("Unable to apply override zone '" + overrideZone +
-                        "' because the temporal object being formatted has a different offset but" +
-                        " does not represent an instant: " + temporal);
+            if (overrideZone.normalized() instanceof ZoneOffset && temporal.isSupported(OFFSET_SECONDS) && temporal.get(OFFSET_SECONDS) != overrideZone
+                    .getRules().getOffset(Instant.EPOCH).getTotalSeconds()) {
+                throw new DateTimeException(
+                        "Unable to apply override zone '" + overrideZone + "' because the temporal object being formatted has a different offset but"
+                                + " does not represent an instant: " + temporal);
             }
         }
         final ZoneId effectiveZone = (overrideZone != null ? overrideZone : temporalZone);
@@ -167,9 +163,9 @@ final class DateTimePrintContext {
                 if (!(overrideChrono == IsoChronology.INSTANCE && temporalChrono == null)) {
                     for (ChronoField f : ChronoField.values()) {
                         if (f.isDateBased() && temporal.isSupported(f)) {
-                            throw new DateTimeException("Unable to apply override chronology '" + overrideChrono +
-                                    "' because the temporal object being formatted contains date fields but" +
-                                    " does not represent a whole date: " + temporal);
+                            throw new DateTimeException("Unable to apply override chronology '" + overrideChrono
+                                    + "' because the temporal object being formatted contains date fields but" + " does not represent a whole date: "
+                                    + temporal);
                         }
                     }
                 }
@@ -190,6 +186,7 @@ final class DateTimePrintContext {
                 }
                 return temporal.isSupported(field);
             }
+
             @Override
             public ValueRange range(TemporalField field) {
                 if (effectiveDate != null && field.isDateBased()) {
@@ -197,6 +194,7 @@ final class DateTimePrintContext {
                 }
                 return temporal.range(field);
             }
+
             @Override
             public long getLong(TemporalField field) {
                 if (effectiveDate != null && field.isDateBased()) {
@@ -204,6 +202,7 @@ final class DateTimePrintContext {
                 }
                 return temporal.getLong(field);
             }
+
             @SuppressWarnings("unchecked")
             @Override
             public <R> R query(TemporalQuery<R> query) {
@@ -222,6 +221,7 @@ final class DateTimePrintContext {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the temporal object being output.
      *
@@ -255,6 +255,7 @@ final class DateTimePrintContext {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Starts the printing of an optional segment of the input.
      */
@@ -272,9 +273,13 @@ final class DateTimePrintContext {
     /**
      * Gets a value using a query.
      *
-     * @param query  the query to use, not null
+     * @param query
+     *         the query to use, not null
+     *
      * @return the result, null if not found and optional is true
-     * @throws DateTimeException if the type is not available and the section is not optional
+     *
+     * @throws DateTimeException
+     *         if the type is not available and the section is not optional
      */
     <R> R getValue(TemporalQuery<R> query) {
         R result = temporal.query(query);
@@ -289,9 +294,13 @@ final class DateTimePrintContext {
      * <p>
      * This will return the value for the specified field.
      *
-     * @param field  the field to find, not null
+     * @param field
+     *         the field to find, not null
+     *
      * @return the value, null if not found and optional is true
-     * @throws DateTimeException if the field is not available and the section is not optional
+     *
+     * @throws DateTimeException
+     *         if the field is not available and the section is not optional
      */
     Long getValue(TemporalField field) {
         try {
@@ -305,6 +314,7 @@ final class DateTimePrintContext {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns a string version of the context for debugging.
      *

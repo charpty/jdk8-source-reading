@@ -57,8 +57,8 @@ package java.util;
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
- * @author  Josh Bloch
- * @author  Neal Gafter
+ * @author Josh Bloch
+ * @author Neal Gafter
  * @see Collection
  * @see List
  * @see AbstractList
@@ -81,13 +81,14 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      * indexed element (with <tt>listIterator(index)</tt>).  Then, it gets
      * the element using <tt>ListIterator.next</tt> and returns it.
      *
-     * @throws IndexOutOfBoundsException {@inheritDoc}
+     * @throws IndexOutOfBoundsException
+     *         {@inheritDoc}
      */
     public E get(int index) {
         try {
             return listIterator(index).next();
         } catch (NoSuchElementException exc) {
-            throw new IndexOutOfBoundsException("Index: "+index);
+            throw new IndexOutOfBoundsException("Index: " + index);
         }
     }
 
@@ -104,11 +105,16 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      * <tt>UnsupportedOperationException</tt> if the list iterator does not
      * implement the <tt>set</tt> operation.
      *
-     * @throws UnsupportedOperationException {@inheritDoc}
-     * @throws ClassCastException            {@inheritDoc}
-     * @throws NullPointerException          {@inheritDoc}
-     * @throws IllegalArgumentException      {@inheritDoc}
-     * @throws IndexOutOfBoundsException     {@inheritDoc}
+     * @throws UnsupportedOperationException
+     *         {@inheritDoc}
+     * @throws ClassCastException
+     *         {@inheritDoc}
+     * @throws NullPointerException
+     *         {@inheritDoc}
+     * @throws IllegalArgumentException
+     *         {@inheritDoc}
+     * @throws IndexOutOfBoundsException
+     *         {@inheritDoc}
      */
     public E set(int index, E element) {
         try {
@@ -117,7 +123,7 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
             e.set(element);
             return oldVal;
         } catch (NoSuchElementException exc) {
-            throw new IndexOutOfBoundsException("Index: "+index);
+            throw new IndexOutOfBoundsException("Index: " + index);
         }
     }
 
@@ -135,17 +141,22 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      * <tt>UnsupportedOperationException</tt> if the list iterator does not
      * implement the <tt>add</tt> operation.
      *
-     * @throws UnsupportedOperationException {@inheritDoc}
-     * @throws ClassCastException            {@inheritDoc}
-     * @throws NullPointerException          {@inheritDoc}
-     * @throws IllegalArgumentException      {@inheritDoc}
-     * @throws IndexOutOfBoundsException     {@inheritDoc}
+     * @throws UnsupportedOperationException
+     *         {@inheritDoc}
+     * @throws ClassCastException
+     *         {@inheritDoc}
+     * @throws NullPointerException
+     *         {@inheritDoc}
+     * @throws IllegalArgumentException
+     *         {@inheritDoc}
+     * @throws IndexOutOfBoundsException
+     *         {@inheritDoc}
      */
     public void add(int index, E element) {
         try {
             listIterator(index).add(element);
         } catch (NoSuchElementException exc) {
-            throw new IndexOutOfBoundsException("Index: "+index);
+            throw new IndexOutOfBoundsException("Index: " + index);
         }
     }
 
@@ -163,8 +174,10 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      * <tt>UnsupportedOperationException</tt> if the list iterator does not
      * implement the <tt>remove</tt> operation.
      *
-     * @throws UnsupportedOperationException {@inheritDoc}
-     * @throws IndexOutOfBoundsException     {@inheritDoc}
+     * @throws UnsupportedOperationException
+     *         {@inheritDoc}
+     * @throws IndexOutOfBoundsException
+     *         {@inheritDoc}
      */
     public E remove(int index) {
         try {
@@ -173,10 +186,9 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
             e.remove();
             return outCast;
         } catch (NoSuchElementException exc) {
-            throw new IndexOutOfBoundsException("Index: "+index);
+            throw new IndexOutOfBoundsException("Index: " + index);
         }
     }
-
 
     // Bulk Operations
 
@@ -203,11 +215,16 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      * the <tt>listIterator</tt> method does not implement the <tt>add</tt>
      * operation.
      *
-     * @throws UnsupportedOperationException {@inheritDoc}
-     * @throws ClassCastException            {@inheritDoc}
-     * @throws NullPointerException          {@inheritDoc}
-     * @throws IllegalArgumentException      {@inheritDoc}
-     * @throws IndexOutOfBoundsException     {@inheritDoc}
+     * @throws UnsupportedOperationException
+     *         {@inheritDoc}
+     * @throws ClassCastException
+     *         {@inheritDoc}
+     * @throws NullPointerException
+     *         {@inheritDoc}
+     * @throws IllegalArgumentException
+     *         {@inheritDoc}
+     * @throws IndexOutOfBoundsException
+     *         {@inheritDoc}
      */
     public boolean addAll(int index, Collection<? extends E> c) {
         try {
@@ -220,10 +237,9 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
             }
             return modified;
         } catch (NoSuchElementException exc) {
-            throw new IndexOutOfBoundsException("Index: "+index);
+            throw new IndexOutOfBoundsException("Index: " + index);
         }
     }
-
 
     // Iterators
 
@@ -243,11 +259,15 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
      * Returns a list iterator over the elements in this list (in proper
      * sequence).
      *
-     * @param  index index of first element to be returned from the list
+     * @param index
+     *         index of first element to be returned from the list
      *         iterator (by a call to the <code>next</code> method)
+     *
      * @return a list iterator over the elements in this list (in proper
-     *         sequence)
-     * @throws IndexOutOfBoundsException {@inheritDoc}
+     * sequence)
+     *
+     * @throws IndexOutOfBoundsException
+     *         {@inheritDoc}
      */
     public abstract ListIterator<E> listIterator(int index);
 }

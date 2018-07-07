@@ -61,11 +61,7 @@
  */
 package java.time.chrono;
 
-import static java.time.temporal.ChronoField.ERA;
-import static java.time.temporal.ChronoUnit.ERAS;
-
 import java.time.DateTimeException;
-import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoField;
@@ -75,8 +71,13 @@ import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalQuery;
+import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Locale;
+
+
+import static java.time.temporal.ChronoField.ERA;
+import static java.time.temporal.ChronoUnit.ERAS;
 
 /**
  * An era of the time-line.
@@ -93,11 +94,6 @@ import java.util.Locale;
  * has one era for the reign of each Emperor.
  * <p>
  * Instances of {@code Era} may be compared using the {@code ==} operator.
- *
- * @implSpec
- * This interface must be implemented with care to ensure other classes operate correctly.
- * All implementations must be singletons - final, immutable and thread-safe.
- * It is recommended to use an enum whenever possible.
  *
  * @since 1.8
  */
@@ -122,6 +118,7 @@ public interface Era extends TemporalAccessor, TemporalAdjuster {
     int getValue();
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks if the specified field is supported.
      * <p>
@@ -138,7 +135,9 @@ public interface Era extends TemporalAccessor, TemporalAdjuster {
      * passing {@code this} as the argument.
      * Whether the field is supported is determined by the field.
      *
-     * @param field  the field to check, null returns false
+     * @param field
+     *         the field to check, null returns false
+     *
      * @return true if the field is supported on this era, false if not
      */
     @Override
@@ -169,10 +168,15 @@ public interface Era extends TemporalAccessor, TemporalAdjuster {
      * The default implementation must return a range for {@code ERA} from
      * zero to one, suitable for two era calendar systems such as ISO.
      *
-     * @param field  the field to query the range for, not null
+     * @param field
+     *         the field to query the range for, not null
+     *
      * @return the range of valid values for the field, not null
-     * @throws DateTimeException if the range for the field cannot be obtained
-     * @throws UnsupportedTemporalTypeException if the unit is not supported
+     *
+     * @throws DateTimeException
+     *         if the range for the field cannot be obtained
+     * @throws UnsupportedTemporalTypeException
+     *         if the unit is not supported
      */
     @Override  // override for Javadoc
     default ValueRange range(TemporalField field) {
@@ -196,13 +200,19 @@ public interface Era extends TemporalAccessor, TemporalAdjuster {
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
-     * @param field  the field to get, not null
+     * @param field
+     *         the field to get, not null
+     *
      * @return the value for the field
-     * @throws DateTimeException if a value for the field cannot be obtained or
+     *
+     * @throws DateTimeException
+     *         if a value for the field cannot be obtained or
      *         the value is outside the range of valid values for the field
-     * @throws UnsupportedTemporalTypeException if the field is not supported or
+     * @throws UnsupportedTemporalTypeException
+     *         if the field is not supported or
      *         the range of values exceeds an {@code int}
-     * @throws ArithmeticException if numeric overflow occurs
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override  // override for Javadoc and performance
     default int get(TemporalField field) {
@@ -228,11 +238,17 @@ public interface Era extends TemporalAccessor, TemporalAdjuster {
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
-     * @param field  the field to get, not null
+     * @param field
+     *         the field to get, not null
+     *
      * @return the value for the field
-     * @throws DateTimeException if a value for the field cannot be obtained
-     * @throws UnsupportedTemporalTypeException if the field is not supported
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if a value for the field cannot be obtained
+     * @throws UnsupportedTemporalTypeException
+     *         if the field is not supported
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override
     default long getLong(TemporalField field) {
@@ -245,6 +261,7 @@ public interface Era extends TemporalAccessor, TemporalAdjuster {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Queries this era using the specified query.
      * <p>
@@ -257,11 +274,17 @@ public interface Era extends TemporalAccessor, TemporalAdjuster {
      * {@link TemporalQuery#queryFrom(TemporalAccessor)} method on the
      * specified query passing {@code this} as the argument.
      *
-     * @param <R> the type of the result
-     * @param query  the query to invoke, not null
+     * @param <R>
+     *         the type of the result
+     * @param query
+     *         the query to invoke, not null
+     *
      * @return the query result, null may be returned (defined by the query)
-     * @throws DateTimeException if unable to query (defined by the query)
-     * @throws ArithmeticException if numeric overflow occurs (defined by the query)
+     *
+     * @throws DateTimeException
+     *         if unable to query (defined by the query)
+     * @throws ArithmeticException
+     *         if numeric overflow occurs (defined by the query)
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -291,10 +314,15 @@ public interface Era extends TemporalAccessor, TemporalAdjuster {
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param temporal  the target object to be adjusted, not null
+     * @param temporal
+     *         the target object to be adjusted, not null
+     *
      * @return the adjusted object, not null
-     * @throws DateTimeException if unable to make the adjustment
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if unable to make the adjustment
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override
     default Temporal adjustInto(Temporal temporal) {
@@ -302,6 +330,7 @@ public interface Era extends TemporalAccessor, TemporalAdjuster {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the textual representation of this era.
      * <p>
@@ -313,8 +342,11 @@ public interface Era extends TemporalAccessor, TemporalAdjuster {
      * <p>
      * This default implementation is suitable for all implementations.
      *
-     * @param style  the style of the text required, not null
-     * @param locale  the locale to use, not null
+     * @param style
+     *         the style of the text required, not null
+     * @param locale
+     *         the locale to use, not null
+     *
      * @return the text value of the era, not null
      */
     default String getDisplayName(TextStyle style, Locale locale) {

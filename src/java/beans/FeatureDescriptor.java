@@ -25,17 +25,14 @@
 
 package java.beans;
 
-import com.sun.beans.TypeResolver;
-
 import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.lang.ref.SoftReference;
-
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
-
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map.Entry;
+import com.sun.beans.TypeResolver;
 
 /**
  * The FeatureDescriptor class is the common baseclass for PropertyDescriptor,
@@ -71,7 +68,8 @@ public class FeatureDescriptor {
     /**
      * Sets the programmatic name of this feature.
      *
-     * @param name  The programmatic name of the property/method/event
+     * @param name
+     *         The programmatic name of the property/method/event
      */
     public void setName(String name) {
         this.name = name;
@@ -81,7 +79,7 @@ public class FeatureDescriptor {
      * Gets the localized display name of this feature.
      *
      * @return The localized display name for the property/method/event.
-     *  This defaults to the same as its programmatic name from getName.
+     * This defaults to the same as its programmatic name from getName.
      */
     public String getDisplayName() {
         if (displayName == null) {
@@ -93,8 +91,9 @@ public class FeatureDescriptor {
     /**
      * Sets the localized display name of this feature.
      *
-     * @param displayName  The localized display name for the
-     *          property/method/event.
+     * @param displayName
+     *         The localized display name for the
+     *         property/method/event.
      */
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
@@ -114,7 +113,8 @@ public class FeatureDescriptor {
      * The "expert" flag is used to distinguish between features that are
      * intended for expert users from those that are intended for normal users.
      *
-     * @param expert True if this feature is intended for use by experts only.
+     * @param expert
+     *         True if this feature is intended for use by experts only.
      */
     public void setExpert(boolean expert) {
         this.expert = expert;
@@ -134,7 +134,8 @@ public class FeatureDescriptor {
      * The "hidden" flag is used to identify features that are intended only
      * for tool use, and which should not be exposed to humans.
      *
-     * @param hidden  True if this feature should be hidden from human users.
+     * @param hidden
+     *         True if this feature should be hidden from human users.
      */
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
@@ -154,8 +155,9 @@ public class FeatureDescriptor {
      * The "preferred" flag is used to identify features that are particularly
      * important for presenting to humans.
      *
-     * @param preferred  True if this feature should be preferentially shown
-     *                   to human users.
+     * @param preferred
+     *         True if this feature should be preferentially shown
+     *         to human users.
      */
     public void setPreferred(boolean preferred) {
         this.preferred = preferred;
@@ -164,8 +166,8 @@ public class FeatureDescriptor {
     /**
      * Gets the short description of this feature.
      *
-     * @return  A localized short description associated with this
-     *   property/method/event.  This defaults to be the display name.
+     * @return A localized short description associated with this
+     * property/method/event.  This defaults to be the display name.
      */
     public String getShortDescription() {
         if (shortDescription == null) {
@@ -177,8 +179,10 @@ public class FeatureDescriptor {
     /**
      * You can associate a short descriptive string with a feature.  Normally
      * these descriptive strings should be less than about 40 characters.
-     * @param text  A (localized) short description to be associated with
-     * this property/method/event.
+     *
+     * @param text
+     *         A (localized) short description to be associated with
+     *         this property/method/event.
      */
     public void setShortDescription(String text) {
         shortDescription = text;
@@ -187,8 +191,10 @@ public class FeatureDescriptor {
     /**
      * Associate a named attribute with this feature.
      *
-     * @param attributeName  The locale-independent name of the attribute
-     * @param value  The value.
+     * @param attributeName
+     *         The locale-independent name of the attribute
+     * @param value
+     *         The value.
      */
     public void setValue(String attributeName, Object value) {
         getTable().put(attributeName, value);
@@ -197,22 +203,22 @@ public class FeatureDescriptor {
     /**
      * Retrieve a named attribute with this feature.
      *
-     * @param attributeName  The locale-independent name of the attribute
-     * @return  The value of the attribute.  May be null if
-     *     the attribute is unknown.
+     * @param attributeName
+     *         The locale-independent name of the attribute
+     *
+     * @return The value of the attribute.  May be null if
+     * the attribute is unknown.
      */
     public Object getValue(String attributeName) {
-        return (this.table != null)
-                ? this.table.get(attributeName)
-                : null;
+        return (this.table != null) ? this.table.get(attributeName) : null;
     }
 
     /**
      * Gets an enumeration of the locale-independent names of this
      * feature.
      *
-     * @return  An enumeration of the locale-independent names of any
-     *    attributes that have been registered with setValue.
+     * @return An enumeration of the locale-independent names of any
+     * attributes that have been registered with setValue.
      */
     public Enumeration<String> attributeNames() {
         return getTable().keys();
@@ -225,8 +231,10 @@ public class FeatureDescriptor {
      * In the event of other conflicts, the second argument (y) is
      * given priority over the first argument (x).
      *
-     * @param x  The first (lower priority) MethodDescriptor
-     * @param y  The second (higher priority) MethodDescriptor
+     * @param x
+     *         The first (lower priority) MethodDescriptor
+     * @param y
+     *         The second (higher priority) MethodDescriptor
      */
     FeatureDescriptor(FeatureDescriptor x, FeatureDescriptor y) {
         expert = x.expert | y.expert;
@@ -269,7 +277,8 @@ public class FeatureDescriptor {
      * Copies all values from the specified attribute table.
      * If some attribute is exist its value should be overridden.
      *
-     * @param table  the attribute table with new values
+     * @param table
+     *         the attribute table with new values
      */
     private void addTable(Hashtable<String, Object> table) {
         if ((table != null) && !table.isEmpty()) {
@@ -294,7 +303,8 @@ public class FeatureDescriptor {
      * If the "transient" attribute is already set
      * it should not be changed.
      *
-     * @param annotation  the annotation of the element of the feature
+     * @param annotation
+     *         the annotation of the element of the feature
      */
     void setTransient(Transient annotation) {
         if ((annotation != null) && (null == getValue(TRANSIENT))) {
@@ -306,13 +316,11 @@ public class FeatureDescriptor {
      * Indicates whether the feature is transient.
      *
      * @return {@code true} if the feature is transient,
-     *         {@code false} otherwise
+     * {@code false} otherwise
      */
     boolean isTransient() {
         Object value = getValue(TRANSIENT);
-        return (value instanceof Boolean)
-                ? (Boolean) value
-                : false;
+        return (value instanceof Boolean) ? (Boolean) value : false;
     }
 
     // Package private methods for recreating the weak/soft referent
@@ -322,9 +330,7 @@ public class FeatureDescriptor {
     }
 
     Class<?> getClass0() {
-        return (this.classRef != null)
-                ? this.classRef.get()
-                : null;
+        return (this.classRef != null) ? this.classRef.get() : null;
     }
 
     /**
@@ -335,9 +341,7 @@ public class FeatureDescriptor {
      * @see SoftReference
      */
     static <T> Reference<T> getSoftReference(T object) {
-        return (object != null)
-                ? new SoftReference<>(object)
-                : null;
+        return (object != null) ? new SoftReference<>(object) : null;
     }
 
     /**
@@ -348,16 +352,17 @@ public class FeatureDescriptor {
      * @see WeakReference
      */
     static <T> Reference<T> getWeakReference(T object) {
-        return (object != null)
-                ? new WeakReference<>(object)
-                : null;
+        return (object != null) ? new WeakReference<>(object) : null;
     }
 
     /**
      * Resolves the return type of the method.
      *
-     * @param base    the class that contains the method in the hierarchy
-     * @param method  the object that represents the method
+     * @param base
+     *         the class that contains the method in the hierarchy
+     * @param method
+     *         the object that represents the method
+     *
      * @return a class identifying the return type of the method
      *
      * @see Method#getGenericReturnType
@@ -373,8 +378,11 @@ public class FeatureDescriptor {
     /**
      * Resolves the parameter types of the method.
      *
-     * @param base    the class that contains the method in the hierarchy
-     * @param method  the object that represents the method
+     * @param base
+     *         the class that contains the method in the hierarchy
+     * @param method
+     *         the object that represents the method
+     *
      * @return an array of classes identifying the parameter types of the method
      *
      * @see Method#getGenericParameterTypes

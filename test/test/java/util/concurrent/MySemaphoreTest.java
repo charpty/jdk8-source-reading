@@ -1,8 +1,6 @@
 package test.java.util.concurrent;
 
 import java.util.Scanner;
-import java.util.concurrent.Semaphore;
-import java.util.function.Function;
 
 public class MySemaphoreTest {
 

@@ -29,11 +29,10 @@ package java.io;
  * Indicates that one or more deserialized objects failed validation
  * tests.  The argument should provide the reason for the failure.
  *
+ * @author unascribed
  * @see ObjectInputValidation
  * @since JDK1.1
- *
- * @author  unascribed
- * @since   JDK1.1
+ * @since JDK1.1
  */
 public class InvalidObjectException extends ObjectStreamException {
 
@@ -41,11 +40,13 @@ public class InvalidObjectException extends ObjectStreamException {
 
     /**
      * Constructs an <code>InvalidObjectException</code>.
-     * @param reason Detailed message explaining the reason for the failure.
+     *
+     * @param reason
+     *         Detailed message explaining the reason for the failure.
      *
      * @see ObjectInputValidation
      */
-    public  InvalidObjectException(String reason) {
+    public InvalidObjectException(String reason) {
         super(reason);
     }
 }

@@ -23,12 +23,12 @@
  *
  */
 
-
 package java.util.logging;
 
-import java.io.*;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.ResourceBundle;
 
 /**
  * Format a LogRecord into a standard XML format.
@@ -99,7 +99,9 @@ public class XMLFormatter extends Formatter {
      * It is recommended to use the {@link Formatter#formatMessage}
      * convenience method to localize and format the message field.
      *
-     * @param record the log record to be formatted.
+     * @param record
+     *         the log record to be formatted.
+     *
      * @return a formatted log record
      */
     public String format(LogRecord record) {
@@ -173,8 +175,7 @@ public class XMLFormatter extends Formatter {
         Object parameters[] = record.getParameters();
         //  Check to see if the parameter was not a messagetext format
         //  or was not null or empty
-        if ( parameters != null && parameters.length != 0
-                && record.getMessage().indexOf("{") == -1 ) {
+        if (parameters != null && parameters.length != 0 && record.getMessage().indexOf("{") == -1) {
             for (int i = 0; i < parameters.length; i++) {
                 sb.append("  <param>");
                 try {
@@ -221,8 +222,10 @@ public class XMLFormatter extends Formatter {
     /**
      * Return the header string for a set of XML formatted records.
      *
-     * @param   h  The target handler (can be null)
-     * @return  a valid XML string
+     * @param h
+     *         The target handler (can be null)
+     *
+     * @return a valid XML string
      */
     public String getHead(Handler h) {
         StringBuilder sb = new StringBuilder();
@@ -260,8 +263,10 @@ public class XMLFormatter extends Formatter {
     /**
      * Return the tail string for a set of XML formatted records.
      *
-     * @param   h  The target handler (can be null)
-     * @return  a valid XML string
+     * @param h
+     *         The target handler (can be null)
+     *
+     * @return a valid XML string
      */
     public String getTail(Handler h) {
         return "</log>\n";

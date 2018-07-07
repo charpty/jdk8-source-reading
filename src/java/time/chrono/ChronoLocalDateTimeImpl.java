@@ -61,8 +61,6 @@
  */
 package java.time.chrono;
 
-import static java.time.temporal.ChronoField.EPOCH_DAY;
-
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInput;
@@ -80,6 +78,9 @@ import java.time.temporal.TemporalUnit;
 import java.time.temporal.ValueRange;
 import java.util.Objects;
 
+
+import static java.time.temporal.ChronoField.EPOCH_DAY;
+
 /**
  * A date-time without a time-zone for the calendar neutral API.
  * <p>
@@ -91,14 +92,12 @@ import java.util.Objects;
  * It does not store or represent a time-zone. For example, the value
  * "2nd October 2007 at 13:45.30.123456789" can be stored in an {@code ChronoLocalDateTime}.
  *
- * @implSpec
- * This class is immutable and thread-safe.
- * @serial
- * @param <D> the concrete type for the date of this date-time
+ * @param <D>
+ *         the concrete type for the date of this date-time
+ *
  * @since 1.8
  */
-final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate>
-        implements  ChronoLocalDateTime<D>, Temporal, TemporalAdjuster, Serializable {
+final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate> implements ChronoLocalDateTime<D>, Temporal, TemporalAdjuster, Serializable {
 
     /**
      * Serialization version.
@@ -163,11 +162,15 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate>
     private final transient LocalTime time;
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code ChronoLocalDateTime} from a date and time.
      *
-     * @param date  the local date, not null
-     * @param time  the local time, not null
+     * @param date
+     *         the local date, not null
+     * @param time
+     *         the local time, not null
+     *
      * @return the local date-time, not null
      */
     static <R extends ChronoLocalDate> ChronoLocalDateTimeImpl<R> of(R date, LocalTime time) {
@@ -177,18 +180,22 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate>
     /**
      * Casts the {@code Temporal} to {@code ChronoLocalDateTime} ensuring it bas the specified chronology.
      *
-     * @param chrono  the chronology to check for, not null
-     * @param temporal   a date-time to cast, not null
+     * @param chrono
+     *         the chronology to check for, not null
+     * @param temporal
+     *         a date-time to cast, not null
+     *
      * @return the date-time checked and cast to {@code ChronoLocalDateTime}, not null
-     * @throws ClassCastException if the date-time cannot be cast to ChronoLocalDateTimeImpl
-     *  or the chronology is not equal this Chronology
+     *
+     * @throws ClassCastException
+     *         if the date-time cannot be cast to ChronoLocalDateTimeImpl
+     *         or the chronology is not equal this Chronology
      */
     static <R extends ChronoLocalDate> ChronoLocalDateTimeImpl<R> ensureValid(Chronology chrono, Temporal temporal) {
         @SuppressWarnings("unchecked")
         ChronoLocalDateTimeImpl<R> other = (ChronoLocalDateTimeImpl<R>) temporal;
         if (chrono.equals(other.getChronology()) == false) {
-            throw new ClassCastException("Chronology mismatch, required: " + chrono.getId()
-                    + ", actual: " + other.getChronology().getId());
+            throw new ClassCastException("Chronology mismatch, required: " + chrono.getId() + ", actual: " + other.getChronology().getId());
         }
         return other;
     }
@@ -196,8 +203,10 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate>
     /**
      * Constructor.
      *
-     * @param date  the date part of the date-time, not null
-     * @param time  the time part of the date-time, not null
+     * @param date
+     *         the date part of the date-time, not null
+     * @param time
+     *         the time part of the date-time, not null
      */
     private ChronoLocalDateTimeImpl(D date, LocalTime time) {
         Objects.requireNonNull(date, "date");
@@ -210,8 +219,11 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate>
      * Returns a copy of this date-time with the new date and time, checking
      * to see if a new object is in fact required.
      *
-     * @param newDate  the date of the new date-time, not null
-     * @param newTime  the time of the new date-time, not null
+     * @param newDate
+     *         the date of the new date-time, not null
+     * @param newTime
+     *         the time of the new date-time, not null
+     *
      * @return the date-time, not null
      */
     private ChronoLocalDateTimeImpl<D> with(Temporal newDate, LocalTime newTime) {
@@ -305,13 +317,20 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate>
         if (unit instanceof ChronoUnit) {
             ChronoUnit f = (ChronoUnit) unit;
             switch (f) {
-                case NANOS: return plusNanos(amountToAdd);
-                case MICROS: return plusDays(amountToAdd / MICROS_PER_DAY).plusNanos((amountToAdd % MICROS_PER_DAY) * 1000);
-                case MILLIS: return plusDays(amountToAdd / MILLIS_PER_DAY).plusNanos((amountToAdd % MILLIS_PER_DAY) * 1000000);
-                case SECONDS: return plusSeconds(amountToAdd);
-                case MINUTES: return plusMinutes(amountToAdd);
-                case HOURS: return plusHours(amountToAdd);
-                case HALF_DAYS: return plusDays(amountToAdd / 256).plusHours((amountToAdd % 256) * 12);  // no overflow (256 is multiple of 2)
+            case NANOS:
+                return plusNanos(amountToAdd);
+            case MICROS:
+                return plusDays(amountToAdd / MICROS_PER_DAY).plusNanos((amountToAdd % MICROS_PER_DAY) * 1000);
+            case MILLIS:
+                return plusDays(amountToAdd / MILLIS_PER_DAY).plusNanos((amountToAdd % MILLIS_PER_DAY) * 1000000);
+            case SECONDS:
+                return plusSeconds(amountToAdd);
+            case MINUTES:
+                return plusMinutes(amountToAdd);
+            case HOURS:
+                return plusHours(amountToAdd);
+            case HALF_DAYS:
+                return plusDays(amountToAdd / 256).plusHours((amountToAdd % 256) * 12);  // no overflow (256 is multiple of 2)
             }
             return with(date.plus(amountToAdd, unit), time);
         }
@@ -376,13 +395,27 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate>
             if (unit.isTimeBased()) {
                 long amount = end.getLong(EPOCH_DAY) - date.getLong(EPOCH_DAY);
                 switch ((ChronoUnit) unit) {
-                    case NANOS: amount = Math.multiplyExact(amount, NANOS_PER_DAY); break;
-                    case MICROS: amount = Math.multiplyExact(amount, MICROS_PER_DAY); break;
-                    case MILLIS: amount = Math.multiplyExact(amount, MILLIS_PER_DAY); break;
-                    case SECONDS: amount = Math.multiplyExact(amount, SECONDS_PER_DAY); break;
-                    case MINUTES: amount = Math.multiplyExact(amount, MINUTES_PER_DAY); break;
-                    case HOURS: amount = Math.multiplyExact(amount, HOURS_PER_DAY); break;
-                    case HALF_DAYS: amount = Math.multiplyExact(amount, 2); break;
+                case NANOS:
+                    amount = Math.multiplyExact(amount, NANOS_PER_DAY);
+                    break;
+                case MICROS:
+                    amount = Math.multiplyExact(amount, MICROS_PER_DAY);
+                    break;
+                case MILLIS:
+                    amount = Math.multiplyExact(amount, MILLIS_PER_DAY);
+                    break;
+                case SECONDS:
+                    amount = Math.multiplyExact(amount, SECONDS_PER_DAY);
+                    break;
+                case MINUTES:
+                    amount = Math.multiplyExact(amount, MINUTES_PER_DAY);
+                    break;
+                case HOURS:
+                    amount = Math.multiplyExact(amount, HOURS_PER_DAY);
+                    break;
+                case HALF_DAYS:
+                    amount = Math.multiplyExact(amount, 2);
+                    break;
                 }
                 return Math.addExact(amount, time.until(end.toLocalTime(), unit));
             }
@@ -397,15 +430,10 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate>
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Writes the ChronoLocalDateTime using a
      * <a href="../../../serialized-form.html#java.time.chrono.Ser">dedicated serialized form</a>.
-     * @serialData
-     * <pre>
-     *  out.writeByte(2);              // identifies a ChronoLocalDateTime
-     *  out.writeObject(toLocalDate());
-     *  out.witeObject(toLocalTime());
-     * </pre>
      *
      * @return the instance of {@code Ser}, not null
      */
@@ -416,8 +444,11 @@ final class ChronoLocalDateTimeImpl<D extends ChronoLocalDate>
     /**
      * Defend against malicious streams.
      *
-     * @param s the stream to read
-     * @throws InvalidObjectException always
+     * @param s
+     *         the stream to read
+     *
+     * @throws InvalidObjectException
+     *         always
      */
     private void readObject(ObjectInputStream s) throws InvalidObjectException {
         throw new InvalidObjectException("Deserialization via serialization delegate");

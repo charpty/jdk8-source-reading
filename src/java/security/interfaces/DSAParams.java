@@ -32,12 +32,11 @@ import java.math.BigInteger;
  * DSA <em>key family</em>. DSA (Digital Signature Algorithm) is defined
  * in NIST's FIPS-186.
  *
+ * @author Benjamin Renaud
+ * @author Josh Bloch
  * @see DSAKey
  * @see java.security.Key
  * @see java.security.Signature
- *
- * @author Benjamin Renaud
- * @author Josh Bloch
  */
 public interface DSAParams {
 

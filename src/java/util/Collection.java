@@ -115,29 +115,24 @@ import java.util.stream.StreamSupport;
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
- * @implSpec
- * The default method implementations (inherited or otherwise) do not apply any
- * synchronization protocol.  If a {@code Collection} implementation has a
- * specific synchronization protocol, then it must override default
- * implementations to apply that protocol.
+ * @param <E>
+ *         the type of elements in this collection
  *
- * @param <E> the type of elements in this collection
- *
- * @author  Josh Bloch
- * @author  Neal Gafter
- * @see     Set
- * @see     List
- * @see     Map
- * @see     SortedSet
- * @see     SortedMap
- * @see     HashSet
- * @see     TreeSet
- * @see     ArrayList
- * @see     LinkedList
- * @see     Vector
- * @see     Collections
- * @see     Arrays
- * @see     AbstractCollection
+ * @author Josh Bloch
+ * @author Neal Gafter
+ * @see Set
+ * @see List
+ * @see Map
+ * @see SortedSet
+ * @see SortedMap
+ * @see HashSet
+ * @see TreeSet
+ * @see ArrayList
+ * @see LinkedList
+ * @see Vector
+ * @see Collections
+ * @see Arrays
+ * @see AbstractCollection
  * @since 1.2
  */
 
@@ -166,13 +161,18 @@ public interface Collection<E> extends Iterable<E> {
      * contains at least one element <tt>e</tt> such that
      * <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>.
      *
-     * @param o element whose presence in this collection is to be tested
+     * @param o
+     *         element whose presence in this collection is to be tested
+     *
      * @return <tt>true</tt> if this collection contains the specified
-     *         element
-     * @throws ClassCastException if the type of the specified element
+     * element
+     *
+     * @throws ClassCastException
+     *         if the type of the specified element
      *         is incompatible with this collection
      *         (<a href="#optional-restrictions">optional</a>)
-     * @throws NullPointerException if the specified element is null and this
+     * @throws NullPointerException
+     *         if the specified element is null and this
      *         collection does not permit null elements
      *         (<a href="#optional-restrictions">optional</a>)
      */
@@ -239,15 +239,21 @@ public interface Collection<E> extends Iterable<E> {
      * Note that <tt>toArray(new Object[0])</tt> is identical in function to
      * <tt>toArray()</tt>.
      *
-     * @param <T> the runtime type of the array to contain the collection
-     * @param a the array into which the elements of this collection are to be
-     *        stored, if it is big enough; otherwise, a new array of the same
-     *        runtime type is allocated for this purpose.
+     * @param <T>
+     *         the runtime type of the array to contain the collection
+     * @param a
+     *         the array into which the elements of this collection are to be
+     *         stored, if it is big enough; otherwise, a new array of the same
+     *         runtime type is allocated for this purpose.
+     *
      * @return an array containing all of the elements in this collection
-     * @throws ArrayStoreException if the runtime type of the specified array
+     *
+     * @throws ArrayStoreException
+     *         if the runtime type of the specified array
      *         is not a supertype of the runtime type of every element in
      *         this collection
-     * @throws NullPointerException if the specified array is null
+     * @throws NullPointerException
+     *         if the specified array is null
      */
     <T> T[] toArray(T[] a);
 
@@ -272,18 +278,26 @@ public interface Collection<E> extends Iterable<E> {
      * the invariant that a collection always contains the specified element
      * after this call returns.
      *
-     * @param e element whose presence in this collection is to be ensured
+     * @param e
+     *         element whose presence in this collection is to be ensured
+     *
      * @return <tt>true</tt> if this collection changed as a result of the
-     *         call
-     * @throws UnsupportedOperationException if the <tt>add</tt> operation
+     * call
+     *
+     * @throws UnsupportedOperationException
+     *         if the <tt>add</tt> operation
      *         is not supported by this collection
-     * @throws ClassCastException if the class of the specified element
+     * @throws ClassCastException
+     *         if the class of the specified element
      *         prevents it from being added to this collection
-     * @throws NullPointerException if the specified element is null and this
+     * @throws NullPointerException
+     *         if the specified element is null and this
      *         collection does not permit null elements
-     * @throws IllegalArgumentException if some property of the element
+     * @throws IllegalArgumentException
+     *         if some property of the element
      *         prevents it from being added to this collection
-     * @throws IllegalStateException if the element cannot be added at this
+     * @throws IllegalStateException
+     *         if the element cannot be added at this
      *         time due to insertion restrictions
      */
     boolean add(E e);
@@ -297,19 +311,24 @@ public interface Collection<E> extends Iterable<E> {
      * <tt>true</tt> if this collection contained the specified element (or
      * equivalently, if this collection changed as a result of the call).
      *
-     * @param o element to be removed from this collection, if present
+     * @param o
+     *         element to be removed from this collection, if present
+     *
      * @return <tt>true</tt> if an element was removed as a result of this call
-     * @throws ClassCastException if the type of the specified element
+     *
+     * @throws ClassCastException
+     *         if the type of the specified element
      *         is incompatible with this collection
      *         (<a href="#optional-restrictions">optional</a>)
-     * @throws NullPointerException if the specified element is null and this
+     * @throws NullPointerException
+     *         if the specified element is null and this
      *         collection does not permit null elements
      *         (<a href="#optional-restrictions">optional</a>)
-     * @throws UnsupportedOperationException if the <tt>remove</tt> operation
+     * @throws UnsupportedOperationException
+     *         if the <tt>remove</tt> operation
      *         is not supported by this collection
      */
     boolean remove(Object o);
-
 
     // Bulk Operations
 
@@ -317,19 +336,24 @@ public interface Collection<E> extends Iterable<E> {
      * Returns <tt>true</tt> if this collection contains all of the elements
      * in the specified collection.
      *
-     * @param  c collection to be checked for containment in this collection
+     * @param c
+     *         collection to be checked for containment in this collection
+     *
      * @return <tt>true</tt> if this collection contains all of the elements
-     *         in the specified collection
-     * @throws ClassCastException if the types of one or more elements
+     * in the specified collection
+     *
+     * @throws ClassCastException
+     *         if the types of one or more elements
      *         in the specified collection are incompatible with this
      *         collection
      *         (<a href="#optional-restrictions">optional</a>)
-     * @throws NullPointerException if the specified collection contains one
+     * @throws NullPointerException
+     *         if the specified collection contains one
      *         or more null elements and this collection does not permit null
      *         elements
      *         (<a href="#optional-restrictions">optional</a>),
      *         or if the specified collection is null.
-     * @see    #contains(Object)
+     * @see #contains(Object)
      */
     boolean containsAll(Collection<?> c);
 
@@ -341,19 +365,27 @@ public interface Collection<E> extends Iterable<E> {
      * specified collection is this collection, and this collection is
      * nonempty.)
      *
-     * @param c collection containing elements to be added to this collection
+     * @param c
+     *         collection containing elements to be added to this collection
+     *
      * @return <tt>true</tt> if this collection changed as a result of the call
-     * @throws UnsupportedOperationException if the <tt>addAll</tt> operation
+     *
+     * @throws UnsupportedOperationException
+     *         if the <tt>addAll</tt> operation
      *         is not supported by this collection
-     * @throws ClassCastException if the class of an element of the specified
+     * @throws ClassCastException
+     *         if the class of an element of the specified
      *         collection prevents it from being added to this collection
-     * @throws NullPointerException if the specified collection contains a
+     * @throws NullPointerException
+     *         if the specified collection contains a
      *         null element and this collection does not permit null elements,
      *         or if the specified collection is null
-     * @throws IllegalArgumentException if some property of an element of the
+     * @throws IllegalArgumentException
+     *         if some property of an element of the
      *         specified collection prevents it from being added to this
      *         collection
-     * @throws IllegalStateException if not all the elements can be added at
+     * @throws IllegalStateException
+     *         if not all the elements can be added at
      *         this time due to insertion restrictions
      * @see #add(Object)
      */
@@ -365,16 +397,22 @@ public interface Collection<E> extends Iterable<E> {
      * this collection will contain no elements in common with the specified
      * collection.
      *
-     * @param c collection containing elements to be removed from this collection
+     * @param c
+     *         collection containing elements to be removed from this collection
+     *
      * @return <tt>true</tt> if this collection changed as a result of the
-     *         call
-     * @throws UnsupportedOperationException if the <tt>removeAll</tt> method
+     * call
+     *
+     * @throws UnsupportedOperationException
+     *         if the <tt>removeAll</tt> method
      *         is not supported by this collection
-     * @throws ClassCastException if the types of one or more elements
+     * @throws ClassCastException
+     *         if the types of one or more elements
      *         in this collection are incompatible with the specified
      *         collection
      *         (<a href="#optional-restrictions">optional</a>)
-     * @throws NullPointerException if this collection contains one or more
+     * @throws NullPointerException
+     *         if this collection contains one or more
      *         null elements and the specified collection does not support
      *         null elements
      *         (<a href="#optional-restrictions">optional</a>),
@@ -389,18 +427,16 @@ public interface Collection<E> extends Iterable<E> {
      * predicate.  Errors or runtime exceptions thrown during iteration or by
      * the predicate are relayed to the caller.
      *
-     * @implSpec
-     * The default implementation traverses all elements of the collection using
-     * its {@link #iterator}.  Each matching element is removed using
-     * {@link Iterator#remove()}.  If the collection's iterator does not
-     * support removal then an {@code UnsupportedOperationException} will be
-     * thrown on the first matching element.
+     * @param filter
+     *         a predicate which returns {@code true} for elements to be
+     *         removed
      *
-     * @param filter a predicate which returns {@code true} for elements to be
-     *        removed
      * @return {@code true} if any elements were removed
-     * @throws NullPointerException if the specified filter is null
-     * @throws UnsupportedOperationException if elements cannot be removed
+     *
+     * @throws NullPointerException
+     *         if the specified filter is null
+     * @throws UnsupportedOperationException
+     *         if elements cannot be removed
      *         from this collection.  Implementations may throw this exception if a
      *         matching element cannot be removed or if, in general, removal is not
      *         supported.
@@ -425,15 +461,21 @@ public interface Collection<E> extends Iterable<E> {
      * this collection all of its elements that are not contained in the
      * specified collection.
      *
-     * @param c collection containing elements to be retained in this collection
+     * @param c
+     *         collection containing elements to be retained in this collection
+     *
      * @return <tt>true</tt> if this collection changed as a result of the call
-     * @throws UnsupportedOperationException if the <tt>retainAll</tt> operation
+     *
+     * @throws UnsupportedOperationException
+     *         if the <tt>retainAll</tt> operation
      *         is not supported by this collection
-     * @throws ClassCastException if the types of one or more elements
+     * @throws ClassCastException
+     *         if the types of one or more elements
      *         in this collection are incompatible with the specified
      *         collection
      *         (<a href="#optional-restrictions">optional</a>)
-     * @throws NullPointerException if this collection contains one or more
+     * @throws NullPointerException
+     *         if this collection contains one or more
      *         null elements and the specified collection does not permit null
      *         elements
      *         (<a href="#optional-restrictions">optional</a>),
@@ -447,11 +489,11 @@ public interface Collection<E> extends Iterable<E> {
      * Removes all of the elements from this collection (optional operation).
      * The collection will be empty after this method returns.
      *
-     * @throws UnsupportedOperationException if the <tt>clear</tt> operation
+     * @throws UnsupportedOperationException
+     *         if the <tt>clear</tt> operation
      *         is not supported by this collection
      */
     void clear();
-
 
     // Comparison and hashing
 
@@ -480,7 +522,9 @@ public interface Collection<E> extends Iterable<E> {
      * to write a class that correctly implements both the <tt>Set</tt> and
      * <tt>List</tt> interfaces.)
      *
-     * @param o object to be compared for equality with this collection
+     * @param o
+     *         object to be compared for equality with this collection
+     *
      * @return <tt>true</tt> if the specified object is equal to this
      * collection
      *
@@ -534,27 +578,8 @@ public interface Collection<E> extends Iterable<E> {
      * contents of the collection as of initiation of the terminal stream
      * operation.
      *
-     * @implSpec
-     * The default implementation creates a
-     * <em><a href="Spliterator.html#binding">late-binding</a></em> spliterator
-     * from the collections's {@code Iterator}.  The spliterator inherits the
-     * <em>fail-fast</em> properties of the collection's iterator.
-     * <p>
-     * The created {@code Spliterator} reports {@link Spliterator#SIZED}.
-     *
-     * @implNote
-     * The created {@code Spliterator} additionally reports
-     * {@link Spliterator#SUBSIZED}.
-     *
-     * <p>If a spliterator covers no elements then the reporting of additional
-     * characteristic values, beyond that of {@code SIZED} and {@code SUBSIZED},
-     * does not aid clients to control, specialize or simplify computation.
-     * However, this does enable shared use of an immutable and empty
-     * spliterator instance (see {@link Spliterators#emptySpliterator()}) for
-     * empty collections, and enables clients to determine if such a spliterator
-     * covers no elements.
-     *
      * @return a {@code Spliterator} over the elements in this collection
+     *
      * @since 1.8
      */
     @Override
@@ -570,11 +595,8 @@ public interface Collection<E> extends Iterable<E> {
      * {@code CONCURRENT}, or <em>late-binding</em>. (See {@link #spliterator()}
      * for details.)
      *
-     * @implSpec
-     * The default implementation creates a sequential {@code Stream} from the
-     * collection's {@code Spliterator}.
-     *
      * @return a sequential {@code Stream} over the elements in this collection
+     *
      * @since 1.8
      */
     default Stream<E> stream() {
@@ -590,12 +612,9 @@ public interface Collection<E> extends Iterable<E> {
      * {@code CONCURRENT}, or <em>late-binding</em>. (See {@link #spliterator()}
      * for details.)
      *
-     * @implSpec
-     * The default implementation creates a parallel {@code Stream} from the
-     * collection's {@code Spliterator}.
-     *
      * @return a possibly parallel {@code Stream} over the elements in this
      * collection
+     *
      * @since 1.8
      */
     default Stream<E> parallelStream() {

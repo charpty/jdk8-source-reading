@@ -45,10 +45,11 @@ package java.util;
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
- * @param <E> the type of elements maintained by this set
+ * @param <E>
+ *         the type of elements maintained by this set
  *
- * @author  Josh Bloch
- * @author  Neal Gafter
+ * @author Josh Bloch
+ * @author Neal Gafter
  * @see Collection
  * @see AbstractCollection
  * @see Set
@@ -79,21 +80,26 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
      * this set; if not, it returns false.  If so, it returns
      * <tt>containsAll((Collection) o)</tt>.
      *
-     * @param o object to be compared for equality with this set
+     * @param o
+     *         object to be compared for equality with this set
+     *
      * @return <tt>true</tt> if the specified object is equal to this set
      */
     public boolean equals(Object o) {
-        if (o == this)
+        if (o == this) {
             return true;
+        }
 
-        if (!(o instanceof Set))
+        if (!(o instanceof Set)) {
             return false;
+        }
         Collection<?> c = (Collection<?>) o;
-        if (c.size() != size())
+        if (c.size() != size()) {
             return false;
+        }
         try {
             return containsAll(c);
-        } catch (ClassCastException unused)   {
+        } catch (ClassCastException unused) {
             return false;
         } catch (NullPointerException unused) {
             return false;
@@ -114,6 +120,7 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
      * the results.
      *
      * @return the hash code value for this set
+     *
      * @see Object#equals(Object)
      * @see Set#equals(Object)
      */
@@ -122,8 +129,9 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
         Iterator<E> i = iterator();
         while (i.hasNext()) {
             E obj = i.next();
-            if (obj != null)
+            if (obj != null) {
                 h += obj.hashCode();
+            }
         }
         return h;
     }
@@ -151,16 +159,22 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
      * <tt>UnsupportedOperationException</tt> if the iterator returned by the
      * <tt>iterator</tt> method does not implement the <tt>remove</tt> method.
      *
-     * @param  c collection containing elements to be removed from this set
+     * @param c
+     *         collection containing elements to be removed from this set
+     *
      * @return <tt>true</tt> if this set changed as a result of the call
-     * @throws UnsupportedOperationException if the <tt>removeAll</tt> operation
+     *
+     * @throws UnsupportedOperationException
+     *         if the <tt>removeAll</tt> operation
      *         is not supported by this set
-     * @throws ClassCastException if the class of an element of this set
+     * @throws ClassCastException
+     *         if the class of an element of this set
      *         is incompatible with the specified collection
-     * (<a href="Collection.html#optional-restrictions">optional</a>)
-     * @throws NullPointerException if this set contains a null element and the
+     *         (<a href="Collection.html#optional-restrictions">optional</a>)
+     * @throws NullPointerException
+     *         if this set contains a null element and the
      *         specified collection does not permit null elements
-     * (<a href="Collection.html#optional-restrictions">optional</a>),
+     *         (<a href="Collection.html#optional-restrictions">optional</a>),
      *         or if the specified collection is null
      * @see #remove(Object)
      * @see #contains(Object)
@@ -170,8 +184,9 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
         boolean modified = false;
 
         if (size() > c.size()) {
-            for (Iterator<?> i = c.iterator(); i.hasNext(); )
+            for (Iterator<?> i = c.iterator(); i.hasNext(); ) {
                 modified |= remove(i.next());
+            }
         } else {
             for (Iterator<?> i = iterator(); i.hasNext(); ) {
                 if (c.contains(i.next())) {

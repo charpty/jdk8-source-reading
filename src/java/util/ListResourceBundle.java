@@ -140,7 +140,8 @@ public abstract class ListResourceBundle extends ResourceBundle {
      * this <code>ResourceBundle</code> and its parent bundles.
      *
      * @return an <code>Enumeration</code> of the keys contained in
-     *         this <code>ResourceBundle</code> and its parent bundles.
+     * this <code>ResourceBundle</code> and its parent bundles.
+     *
      * @see #keySet()
      */
     public Enumeration<String> getKeys() {
@@ -150,8 +151,7 @@ public abstract class ListResourceBundle extends ResourceBundle {
         }
 
         ResourceBundle parent = this.parent;
-        return new ResourceBundleEnumeration(lookup.keySet(),
-                (parent != null) ? parent.getKeys() : null);
+        return new ResourceBundleEnumeration(lookup.keySet(), (parent != null) ? parent.getKeys() : null);
     }
 
     /**
@@ -159,9 +159,10 @@ public abstract class ListResourceBundle extends ResourceBundle {
      * <em>only</em> in this <code>ResourceBundle</code>.
      *
      * @return a <code>Set</code> of the keys contained only in this
-     *         <code>ResourceBundle</code>
-     * @since 1.6
+     * <code>ResourceBundle</code>
+     *
      * @see #keySet()
+     * @since 1.6
      */
     protected Set<String> handleKeySet() {
         if (lookup == null) {
@@ -189,11 +190,12 @@ public abstract class ListResourceBundle extends ResourceBundle {
      * loading.
      */
     private synchronized void loadLookup() {
-        if (lookup != null)
+        if (lookup != null) {
             return;
+        }
 
         Object[][] contents = getContents();
-        HashMap<String,Object> temp = new HashMap<>(contents.length);
+        HashMap<String, Object> temp = new HashMap<>(contents.length);
         for (int i = 0; i < contents.length; ++i) {
             // key must be non-null String, value must be non-null
             String key = (String) contents[i][0];
@@ -206,5 +208,5 @@ public abstract class ListResourceBundle extends ResourceBundle {
         lookup = temp;
     }
 
-    private Map<String,Object> lookup = null;
+    private Map<String, Object> lookup = null;
 }

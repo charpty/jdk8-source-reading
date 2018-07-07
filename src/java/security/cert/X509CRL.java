@@ -25,20 +25,18 @@
 
 package java.security.cert;
 
+import java.math.BigInteger;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.InvalidKeyException;
-import java.security.SignatureException;
 import java.security.Principal;
 import java.security.Provider;
 import java.security.PublicKey;
-import javax.security.auth.x500.X500Principal;
-
-import java.math.BigInteger;
+import java.security.SignatureException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Set;
-import java.util.Arrays;
-
+import javax.security.auth.x500.X500Principal;
 import sun.security.x509.X509CRLImpl;
 
 /**
@@ -102,8 +100,6 @@ import sun.security.x509.X509CRLImpl;
  * }</pre>
  *
  * @author Hemma Prafullchandra
- *
- *
  * @see CRL
  * @see CertificateFactory
  * @see X509Extension
@@ -127,7 +123,8 @@ public abstract class X509CRL extends CRL implements X509Extension {
      * its encoded form is retrieved and compared with the
      * encoded form of this CRL.
      *
-     * @param other the object to test for equality with this CRL.
+     * @param other
+     *         the object to test for equality with this CRL.
      *
      * @return true iff the encoded forms of the two CRLs
      * match, false otherwise.
@@ -141,7 +138,7 @@ public abstract class X509CRL extends CRL implements X509Extension {
         }
         try {
             byte[] thisCRL = X509CRLImpl.getEncodedInternal(this);
-            byte[] otherCRL = X509CRLImpl.getEncodedInternal((X509CRL)other);
+            byte[] otherCRL = X509CRLImpl.getEncodedInternal((X509CRL) other);
 
             return Arrays.equals(thisCRL, otherCRL);
         } catch (CRLException e) {
@@ -160,7 +157,7 @@ public abstract class X509CRL extends CRL implements X509Extension {
         try {
             byte[] crlData = X509CRLImpl.getEncodedInternal(this);
             for (int i = 1; i < crlData.length; i++) {
-                 retval += crlData[i] * i;
+                retval += crlData[i] * i;
             }
             return retval;
         } catch (CRLException e) {
@@ -172,28 +169,32 @@ public abstract class X509CRL extends CRL implements X509Extension {
      * Returns the ASN.1 DER-encoded form of this CRL.
      *
      * @return the encoded form of this certificate
-     * @exception CRLException if an encoding error occurs.
+     *
+     * @throws CRLException
+     *         if an encoding error occurs.
      */
-    public abstract byte[] getEncoded()
-        throws CRLException;
+    public abstract byte[] getEncoded() throws CRLException;
 
     /**
      * Verifies that this CRL was signed using the
      * private key that corresponds to the given public key.
      *
-     * @param key the PublicKey used to carry out the verification.
+     * @param key
+     *         the PublicKey used to carry out the verification.
      *
-     * @exception NoSuchAlgorithmException on unsupported signature
-     * algorithms.
-     * @exception InvalidKeyException on incorrect key.
-     * @exception NoSuchProviderException if there's no default provider.
-     * @exception SignatureException on signature errors.
-     * @exception CRLException on encoding errors.
+     * @throws NoSuchAlgorithmException
+     *         on unsupported signature
+     *         algorithms.
+     * @throws InvalidKeyException
+     *         on incorrect key.
+     * @throws NoSuchProviderException
+     *         if there's no default provider.
+     * @throws SignatureException
+     *         on signature errors.
+     * @throws CRLException
+     *         on encoding errors.
      */
-    public abstract void verify(PublicKey key)
-        throws CRLException,  NoSuchAlgorithmException,
-        InvalidKeyException, NoSuchProviderException,
-        SignatureException;
+    public abstract void verify(PublicKey key) throws CRLException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException;
 
     /**
      * Verifies that this CRL was signed using the
@@ -201,20 +202,25 @@ public abstract class X509CRL extends CRL implements X509Extension {
      * This method uses the signature verification engine
      * supplied by the given provider.
      *
-     * @param key the PublicKey used to carry out the verification.
-     * @param sigProvider the name of the signature provider.
+     * @param key
+     *         the PublicKey used to carry out the verification.
+     * @param sigProvider
+     *         the name of the signature provider.
      *
-     * @exception NoSuchAlgorithmException on unsupported signature
-     * algorithms.
-     * @exception InvalidKeyException on incorrect key.
-     * @exception NoSuchProviderException on incorrect provider.
-     * @exception SignatureException on signature errors.
-     * @exception CRLException on encoding errors.
+     * @throws NoSuchAlgorithmException
+     *         on unsupported signature
+     *         algorithms.
+     * @throws InvalidKeyException
+     *         on incorrect key.
+     * @throws NoSuchProviderException
+     *         on incorrect provider.
+     * @throws SignatureException
+     *         on signature errors.
+     * @throws CRLException
+     *         on encoding errors.
      */
     public abstract void verify(PublicKey key, String sigProvider)
-        throws CRLException, NoSuchAlgorithmException,
-        InvalidKeyException, NoSuchProviderException,
-        SignatureException;
+            throws CRLException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException;
 
     /**
      * Verifies that this CRL was signed using the
@@ -228,19 +234,23 @@ public abstract class X509CRL extends CRL implements X509Extension {
      * service providers, this method is not {@code abstract}
      * and it provides a default implementation.
      *
-     * @param key the PublicKey used to carry out the verification.
-     * @param sigProvider the signature provider.
+     * @param key
+     *         the PublicKey used to carry out the verification.
+     * @param sigProvider
+     *         the signature provider.
      *
-     * @exception NoSuchAlgorithmException on unsupported signature
-     * algorithms.
-     * @exception InvalidKeyException on incorrect key.
-     * @exception SignatureException on signature errors.
-     * @exception CRLException on encoding errors.
+     * @throws NoSuchAlgorithmException
+     *         on unsupported signature
+     *         algorithms.
+     * @throws InvalidKeyException
+     *         on incorrect key.
+     * @throws SignatureException
+     *         on signature errors.
+     * @throws CRLException
+     *         on encoding errors.
      * @since 1.8
      */
-    public void verify(PublicKey key, Provider sigProvider)
-        throws CRLException, NoSuchAlgorithmException,
-        InvalidKeyException, SignatureException {
+    public void verify(PublicKey key, Provider sigProvider) throws CRLException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         X509CRLImpl.verify(this, key, sigProvider);
     }
 
@@ -308,7 +318,8 @@ public abstract class X509CRL extends CRL implements X509Extension {
      * It is recommended that subclasses override this method.
      *
      * @return an {@code X500Principal} representing the issuer
-     *          distinguished name
+     * distinguished name
+     *
      * @since 1.4
      */
     public X500Principal getIssuerX500Principal() {
@@ -343,14 +354,16 @@ public abstract class X509CRL extends CRL implements X509Extension {
     /**
      * Gets the CRL entry, if any, with the given certificate serialNumber.
      *
-     * @param serialNumber the serial number of the certificate for which a CRL entry
-     * is to be looked up
+     * @param serialNumber
+     *         the serial number of the certificate for which a CRL entry
+     *         is to be looked up
+     *
      * @return the entry with the given serial number, or null if no such entry
      * exists in this CRL.
+     *
      * @see X509CRLEntry
      */
-    public abstract X509CRLEntry
-        getRevokedCertificate(BigInteger serialNumber);
+    public abstract X509CRLEntry getRevokedCertificate(BigInteger serialNumber);
 
     /**
      * Get the CRL entry, if any, for the given certificate.
@@ -361,12 +374,15 @@ public abstract class X509CRL extends CRL implements X509Extension {
      * certificates issued by the CRL issuer. Subclasses that wish to
      * support indirect CRLs should override this method.
      *
-     * @param certificate the certificate for which a CRL entry is to be looked
-     *   up
-     * @return the entry for the given certificate, or null if no such entry
-     *   exists in this CRL.
-     * @exception NullPointerException if certificate is null
+     * @param certificate
+     *         the certificate for which a CRL entry is to be looked
+     *         up
      *
+     * @return the entry for the given certificate, or null if no such entry
+     * exists in this CRL.
+     *
+     * @throws NullPointerException
+     *         if certificate is null
      * @since 1.5
      */
     public X509CRLEntry getRevokedCertificate(X509Certificate certificate) {
@@ -383,6 +399,7 @@ public abstract class X509CRL extends CRL implements X509Extension {
      * This returns a Set of X509CRLEntry objects.
      *
      * @return all the entries or null if there are none present.
+     *
      * @see X509CRLEntry
      */
     public abstract Set<? extends X509CRLEntry> getRevokedCertificates();
@@ -393,7 +410,9 @@ public abstract class X509CRL extends CRL implements X509Extension {
      * This can be used to verify the signature independently.
      *
      * @return the DER-encoded CRL information.
-     * @exception CRLException if an encoding error occurs.
+     *
+     * @throws CRLException
+     *         if an encoding error occurs.
      */
     public abstract byte[] getTBSCertList() throws CRLException;
 
@@ -462,7 +481,7 @@ public abstract class X509CRL extends CRL implements X509Extension {
      * relevant ASN.1 definitions.
      *
      * @return the DER-encoded signature algorithm parameters, or
-     *         null if no parameters are present.
+     * null if no parameters are present.
      */
     public abstract byte[] getSigAlgParams();
 }

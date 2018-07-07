@@ -26,7 +26,6 @@
 package java.beans;
 
 import java.applet.Applet;
-
 import java.beans.beancontext.BeanContext;
 
 /**
@@ -38,11 +37,8 @@ import java.beans.beancontext.BeanContext;
  * </p>
  *
  * @see java.beans.Beans#instantiate
- *
  * @since 1.2
- *
  */
-
 
 public interface AppletInitializer {
 
@@ -69,9 +65,11 @@ public interface AppletInitializer {
      * addChildren() method.
      * </ol>
      *
-     * @param newAppletBean  The newly instantiated JavaBean
-     * @param bCtxt          The BeanContext intended for this Applet, or
-     *                       null.
+     * @param newAppletBean
+     *         The newly instantiated JavaBean
+     * @param bCtxt
+     *         The BeanContext intended for this Applet, or
+     *         null.
      */
 
     void initialize(Applet newAppletBean, BeanContext bCtxt);
@@ -83,7 +81,8 @@ public interface AppletInitializer {
      * method.
      * </p>
      *
-     * @param newApplet  The newly instantiated JavaBean
+     * @param newApplet
+     *         The newly instantiated JavaBean
      */
 
     void activate(Applet newApplet);

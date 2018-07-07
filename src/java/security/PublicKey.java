@@ -40,7 +40,6 @@ package java.security;
  * @see Signature#initVerify
  * @see java.security.interfaces.DSAPublicKey
  * @see java.security.interfaces.RSAPublicKey
- *
  */
 
 public interface PublicKey extends Key {

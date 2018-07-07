@@ -44,8 +44,8 @@ package java.lang.management;
  * <p>The <tt>ObjectName</tt> for uniquely identifying the MXBean for
  * a garbage collector within an MBeanServer is:
  * <blockquote>
- *   {@link ManagementFactory#GARBAGE_COLLECTOR_MXBEAN_DOMAIN_TYPE
- *    <tt>java.lang:type=GarbageCollector</tt>}<tt>,name=</tt><i>collector's name</i>
+ * {@link ManagementFactory#GARBAGE_COLLECTOR_MXBEAN_DOMAIN_TYPE
+ * <tt>java.lang:type=GarbageCollector</tt>}<tt>,name=</tt><i>collector's name</i>
  * </blockquote>
  *
  * It can be obtained by calling the
@@ -54,16 +54,14 @@ package java.lang.management;
  * A platform usually includes additional platform-dependent information
  * specific to a garbage collection algorithm for monitoring.
  *
+ * @author Mandy Chung
  * @see ManagementFactory#getPlatformMXBeans(Class)
  * @see MemoryMXBean
- *
  * @see <a href="../../../javax/management/package-summary.html">
- *      JMX Specification.</a>
+ * JMX Specification.</a>
  * @see <a href="package-summary.html#examples">
- *      Ways to Access MXBeans</a>
- *
- * @author  Mandy Chung
- * @since   1.5
+ * Ways to Access MXBeans</a>
+ * @since 1.5
  */
 public interface GarbageCollectorMXBean extends MemoryManagerMXBean {
     /**
@@ -89,6 +87,5 @@ public interface GarbageCollectorMXBean extends MemoryManagerMXBean {
      * in milliseconds.
      */
     public long getCollectionTime();
-
 
 }

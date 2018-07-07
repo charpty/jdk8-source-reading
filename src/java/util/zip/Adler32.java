@@ -36,11 +36,10 @@ import sun.nio.ch.DirectBuffer;
  * <p> Passing a {@code null} argument to a method in this class will cause
  * a {@link NullPointerException} to be thrown.
  *
- * @see         Checksum
- * @author      David Connelly
+ * @author David Connelly
+ * @see Checksum
  */
-public
-class Adler32 implements Checksum {
+public class Adler32 implements Checksum {
 
     private int adler = 1;
 
@@ -54,7 +53,8 @@ class Adler32 implements Checksum {
      * Updates the checksum with the specified byte (the low eight
      * bits of the argument b).
      *
-     * @param b the byte to update the checksum with
+     * @param b
+     *         the byte to update the checksum with
      */
     public void update(int b) {
         adler = update(adler, b);
@@ -63,10 +63,10 @@ class Adler32 implements Checksum {
     /**
      * Updates the checksum with the specified array of bytes.
      *
-     * @throws  ArrayIndexOutOfBoundsException
-     *          if {@code off} is negative, or {@code len} is negative,
-     *          or {@code off+len} is greater than the length of the
-     *          array {@code b}
+     * @throws ArrayIndexOutOfBoundsException
+     *         if {@code off} is negative, or {@code len} is negative,
+     *         or {@code off+len} is greater than the length of the
+     *         array {@code b}
      */
     public void update(byte[] b, int off, int len) {
         if (b == null) {
@@ -81,12 +81,12 @@ class Adler32 implements Checksum {
     /**
      * Updates the checksum with the specified array of bytes.
      *
-     * @param b the byte array to update the checksum with
+     * @param b
+     *         the byte array to update the checksum with
      */
     public void update(byte[] b) {
         adler = updateBytes(adler, b, 0, b.length);
     }
-
 
     /**
      * Updates the checksum with the bytes from the specified buffer.
@@ -98,7 +98,9 @@ class Adler32 implements Checksum {
      * Upon return, the buffer's position will be updated to its
      * limit; its limit will not have been changed.
      *
-     * @param buffer the ByteBuffer to update the checksum with
+     * @param buffer
+     *         the ByteBuffer to update the checksum with
+     *
      * @since 1.8
      */
     public void update(ByteBuffer buffer) {
@@ -106,10 +108,11 @@ class Adler32 implements Checksum {
         int limit = buffer.limit();
         assert (pos <= limit);
         int rem = limit - pos;
-        if (rem <= 0)
+        if (rem <= 0) {
             return;
+        }
         if (buffer instanceof DirectBuffer) {
-            adler = updateByteBuffer(adler, ((DirectBuffer)buffer).address(), pos, rem);
+            adler = updateByteBuffer(adler, ((DirectBuffer) buffer).address(), pos, rem);
         } else if (buffer.hasArray()) {
             adler = updateBytes(adler, buffer.array(), pos + buffer.arrayOffset(), rem);
         } else {
@@ -131,12 +134,12 @@ class Adler32 implements Checksum {
      * Returns the checksum value.
      */
     public long getValue() {
-        return (long)adler & 0xffffffffL;
+        return (long) adler & 0xffffffffL;
     }
 
     private native static int update(int adler, int b);
-    private native static int updateBytes(int adler, byte[] b, int off,
-                                          int len);
-    private native static int updateByteBuffer(int adler, long addr,
-                                               int off, int len);
+
+    private native static int updateBytes(int adler, byte[] b, int off, int len);
+
+    private native static int updateByteBuffer(int adler, long addr, int off, int len);
 }

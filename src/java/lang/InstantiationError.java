@@ -33,13 +33,11 @@ package java.lang;
  * only occur at run time if the definition of a class has
  * incompatibly changed.
  *
- * @author  unascribed
- * @since   JDK1.0
+ * @author unascribed
+ * @since JDK1.0
  */
 
-
-public
-class InstantiationError extends IncompatibleClassChangeError {
+public class InstantiationError extends IncompatibleClassChangeError {
     private static final long serialVersionUID = -4885810657349421204L;
 
     /**
@@ -53,7 +51,8 @@ class InstantiationError extends IncompatibleClassChangeError {
      * Constructs an <code>InstantiationError</code> with the specified
      * detail message.
      *
-     * @param   s   the detail message.
+     * @param s
+     *         the detail message.
      */
     public InstantiationError(String s) {
         super(s);

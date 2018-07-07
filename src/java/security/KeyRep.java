@@ -25,14 +25,12 @@
 
 package java.security;
 
-import java.io.*;
-import java.util.Locale;
-
+import java.io.NotSerializableException;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.security.spec.InvalidKeySpecException;
-
-import javax.crypto.SecretKeyFactory;
+import java.util.Locale;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -51,7 +49,6 @@ import javax.crypto.spec.SecretKeySpec;
  * @see javax.crypto.spec.SecretKeySpec
  * @see java.security.spec.X509EncodedKeySpec
  * @see java.security.spec.PKCS8EncodedKeySpec
- *
  * @since 1.5
  */
 
@@ -83,29 +80,21 @@ public class KeyRep implements Serializable {
 
     /**
      * Either one of Type.SECRET, Type.PUBLIC, or Type.PRIVATE
-     *
-     * @serial
      */
     private Type type;
 
     /**
      * The Key algorithm
-     *
-     * @serial
      */
     private String algorithm;
 
     /**
      * The Key encoding format
-     *
-     * @serial
      */
     private String format;
 
     /**
      * The encoded Key bytes
-     *
-     * @serial
      */
     private byte[] encoded;
 
@@ -114,25 +103,27 @@ public class KeyRep implements Serializable {
      *
      * <p>
      *
-     * @param type either one of Type.SECRET, Type.PUBLIC, or Type.PRIVATE
-     * @param algorithm the algorithm returned from
-     *          {@code Key.getAlgorithm()}
-     * @param format the encoding format returned from
-     *          {@code Key.getFormat()}
-     * @param encoded the encoded bytes returned from
-     *          {@code Key.getEncoded()}
+     * @param type
+     *         either one of Type.SECRET, Type.PUBLIC, or Type.PRIVATE
+     * @param algorithm
+     *         the algorithm returned from
+     *         {@code Key.getAlgorithm()}
+     * @param format
+     *         the encoding format returned from
+     *         {@code Key.getFormat()}
+     * @param encoded
+     *         the encoded bytes returned from
+     *         {@code Key.getEncoded()}
      *
-     * @exception NullPointerException
-     *          if type is {@code null},
-     *          if algorithm is {@code null},
-     *          if format is {@code null},
-     *          or if encoded is {@code null}
+     * @throws NullPointerException
+     *         if type is {@code null},
+     *         if algorithm is {@code null},
+     *         if format is {@code null},
+     *         or if encoded is {@code null}
      */
-    public KeyRep(Type type, String algorithm,
-                String format, byte[] encoded) {
+    public KeyRep(Type type, String algorithm, String format, byte[] encoded) {
 
-        if (type == null || algorithm == null ||
-            format == null || encoded == null) {
+        if (type == null || algorithm == null || format == null || encoded == null) {
             throw new NullPointerException("invalid null input(s)");
         }
 
@@ -161,10 +152,11 @@ public class KeyRep implements Serializable {
      *
      * @return the resolved Key object
      *
-     * @exception ObjectStreamException if the Type/format
-     *  combination is unrecognized, if the algorithm, key format, or
-     *  encoded key bytes are unrecognized/invalid, of if the
-     *  resolution of the key fails for any reason
+     * @throws ObjectStreamException
+     *         if the Type/format
+     *         combination is unrecognized, if the algorithm, key format, or
+     *         encoded key bytes are unrecognized/invalid, of if the
+     *         resolution of the key fails for any reason
      */
     protected Object readResolve() throws ObjectStreamException {
         try {
@@ -177,18 +169,13 @@ public class KeyRep implements Serializable {
                 KeyFactory f = KeyFactory.getInstance(algorithm);
                 return f.generatePrivate(new PKCS8EncodedKeySpec(encoded));
             } else {
-                throw new NotSerializableException
-                        ("unrecognized type/format combination: " +
-                        type + "/" + format);
+                throw new NotSerializableException("unrecognized type/format combination: " + type + "/" + format);
             }
         } catch (NotSerializableException nse) {
             throw nse;
         } catch (Exception e) {
-            NotSerializableException nse = new NotSerializableException
-                                        ("java.security.Key: " +
-                                        "[" + type + "] " +
-                                        "[" + algorithm + "] " +
-                                        "[" + format + "]");
+            NotSerializableException nse = new NotSerializableException(
+                    "java.security.Key: " + "[" + type + "] " + "[" + algorithm + "] " + "[" + format + "]");
             nse.initCause(e);
             throw nse;
         }

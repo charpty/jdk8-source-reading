@@ -34,9 +34,7 @@ import java.io.IOException;
  * @since 1.7
  */
 
-public class FileSystemException
-    extends IOException
-{
+public class FileSystemException extends IOException {
     static final long serialVersionUID = -3055425747967319812L;
 
     private final String file;
@@ -47,11 +45,11 @@ public class FileSystemException
      * when an operation involving one file fails and there isn't any additional
      * information to explain the reason.
      *
-     * @param   file
-     *          a string identifying the file or {@code null} if not known.
+     * @param file
+     *         a string identifying the file or {@code null} if not known.
      */
     public FileSystemException(String file) {
-        super((String)null);
+        super((String) null);
         this.file = file;
         this.other = null;
     }
@@ -61,13 +59,13 @@ public class FileSystemException
      * when an operation involving two files fails, or there is additional
      * information to explain the reason.
      *
-     * @param   file
-     *          a string identifying the file or {@code null} if not known.
-     * @param   other
-     *          a string identifying the other file or {@code null} if there
-     *          isn't another file or if not known
-     * @param   reason
-     *          a reason message with additional information or {@code null}
+     * @param file
+     *         a string identifying the file or {@code null} if not known.
+     * @param other
+     *         a string identifying the other file or {@code null} if there
+     *         isn't another file or if not known
+     * @param reason
+     *         a reason message with additional information or {@code null}
      */
     public FileSystemException(String file, String other, String reason) {
         super(reason);
@@ -78,7 +76,7 @@ public class FileSystemException
     /**
      * Returns the file used to create this exception.
      *
-     * @return  the file (can be {@code null})
+     * @return the file (can be {@code null})
      */
     public String getFile() {
         return file;
@@ -87,7 +85,7 @@ public class FileSystemException
     /**
      * Returns the other file used to create this exception.
      *
-     * @return  the other file (can be {@code null})
+     * @return the other file (can be {@code null})
      */
     public String getOtherFile() {
         return other;
@@ -96,7 +94,7 @@ public class FileSystemException
     /**
      * Returns the string explaining why the file system operation failed.
      *
-     * @return  the string explaining why the file system operation failed
+     * @return the string explaining why the file system operation failed
      */
     public String getReason() {
         return super.getMessage();
@@ -107,11 +105,13 @@ public class FileSystemException
      */
     @Override
     public String getMessage() {
-        if (file == null && other == null)
+        if (file == null && other == null) {
             return getReason();
+        }
         StringBuilder sb = new StringBuilder();
-        if (file != null)
+        if (file != null) {
             sb.append(file);
+        }
         if (other != null) {
             sb.append(" -> ");
             sb.append(other);

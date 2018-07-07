@@ -25,17 +25,31 @@
 
 package java.util;
 
-import java.nio.file.Path;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.nio.CharBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.UnsupportedCharsetException;
 import java.nio.file.Files;
-import java.util.regex.*;
-import java.io.*;
-import java.math.*;
-import java.nio.*;
-import java.nio.channels.*;
-import java.nio.charset.*;
-import java.text.*;
-import java.util.Locale;
-
+import java.nio.file.Path;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import sun.misc.LRUCache;
 
 /**
@@ -167,47 +181,47 @@ import sun.misc.LRUCache;
  * <tt>dfs</tt>.
  *
  * <blockquote><dl>
- *     <dt><i>LocalGroupSeparator&nbsp;&nbsp;</i>
- *         <dd>The character used to separate thousands groups,
- *         <i>i.e.,</i>&nbsp;<tt>dfs.</tt>{@link
- *         java.text.DecimalFormatSymbols#getGroupingSeparator
- *         getGroupingSeparator()}
- *     <dt><i>LocalDecimalSeparator&nbsp;&nbsp;</i>
- *         <dd>The character used for the decimal point,
- *     <i>i.e.,</i>&nbsp;<tt>dfs.</tt>{@link
- *     java.text.DecimalFormatSymbols#getDecimalSeparator
- *     getDecimalSeparator()}
- *     <dt><i>LocalPositivePrefix&nbsp;&nbsp;</i>
- *         <dd>The string that appears before a positive number (may
- *         be empty), <i>i.e.,</i>&nbsp;<tt>df.</tt>{@link
- *         java.text.DecimalFormat#getPositivePrefix
- *         getPositivePrefix()}
- *     <dt><i>LocalPositiveSuffix&nbsp;&nbsp;</i>
- *         <dd>The string that appears after a positive number (may be
- *         empty), <i>i.e.,</i>&nbsp;<tt>df.</tt>{@link
- *         java.text.DecimalFormat#getPositiveSuffix
- *         getPositiveSuffix()}
- *     <dt><i>LocalNegativePrefix&nbsp;&nbsp;</i>
- *         <dd>The string that appears before a negative number (may
- *         be empty), <i>i.e.,</i>&nbsp;<tt>df.</tt>{@link
- *         java.text.DecimalFormat#getNegativePrefix
- *         getNegativePrefix()}
- *     <dt><i>LocalNegativeSuffix&nbsp;&nbsp;</i>
- *         <dd>The string that appears after a negative number (may be
- *         empty), <i>i.e.,</i>&nbsp;<tt>df.</tt>{@link
- *     java.text.DecimalFormat#getNegativeSuffix
- *     getNegativeSuffix()}
- *     <dt><i>LocalNaN&nbsp;&nbsp;</i>
- *         <dd>The string that represents not-a-number for
- *         floating-point values,
- *         <i>i.e.,</i>&nbsp;<tt>dfs.</tt>{@link
- *         java.text.DecimalFormatSymbols#getNaN
- *         getNaN()}
- *     <dt><i>LocalInfinity&nbsp;&nbsp;</i>
- *         <dd>The string that represents infinity for floating-point
- *         values, <i>i.e.,</i>&nbsp;<tt>dfs.</tt>{@link
- *         java.text.DecimalFormatSymbols#getInfinity
- *         getInfinity()}
+ * <dt><i>LocalGroupSeparator&nbsp;&nbsp;</i>
+ * <dd>The character used to separate thousands groups,
+ * <i>i.e.,</i>&nbsp;<tt>dfs.</tt>{@link
+ * java.text.DecimalFormatSymbols#getGroupingSeparator
+ * getGroupingSeparator()}
+ * <dt><i>LocalDecimalSeparator&nbsp;&nbsp;</i>
+ * <dd>The character used for the decimal point,
+ * <i>i.e.,</i>&nbsp;<tt>dfs.</tt>{@link
+ * java.text.DecimalFormatSymbols#getDecimalSeparator
+ * getDecimalSeparator()}
+ * <dt><i>LocalPositivePrefix&nbsp;&nbsp;</i>
+ * <dd>The string that appears before a positive number (may
+ * be empty), <i>i.e.,</i>&nbsp;<tt>df.</tt>{@link
+ * java.text.DecimalFormat#getPositivePrefix
+ * getPositivePrefix()}
+ * <dt><i>LocalPositiveSuffix&nbsp;&nbsp;</i>
+ * <dd>The string that appears after a positive number (may be
+ * empty), <i>i.e.,</i>&nbsp;<tt>df.</tt>{@link
+ * java.text.DecimalFormat#getPositiveSuffix
+ * getPositiveSuffix()}
+ * <dt><i>LocalNegativePrefix&nbsp;&nbsp;</i>
+ * <dd>The string that appears before a negative number (may
+ * be empty), <i>i.e.,</i>&nbsp;<tt>df.</tt>{@link
+ * java.text.DecimalFormat#getNegativePrefix
+ * getNegativePrefix()}
+ * <dt><i>LocalNegativeSuffix&nbsp;&nbsp;</i>
+ * <dd>The string that appears after a negative number (may be
+ * empty), <i>i.e.,</i>&nbsp;<tt>df.</tt>{@link
+ * java.text.DecimalFormat#getNegativeSuffix
+ * getNegativeSuffix()}
+ * <dt><i>LocalNaN&nbsp;&nbsp;</i>
+ * <dd>The string that represents not-a-number for
+ * floating-point values,
+ * <i>i.e.,</i>&nbsp;<tt>dfs.</tt>{@link
+ * java.text.DecimalFormatSymbols#getNaN
+ * getNaN()}
+ * <dt><i>LocalInfinity&nbsp;&nbsp;</i>
+ * <dd>The string that represents infinity for floating-point
+ * values, <i>i.e.,</i>&nbsp;<tt>dfs.</tt>{@link
+ * java.text.DecimalFormatSymbols#getInfinity
+ * getInfinity()}
  * </dl></blockquote>
  *
  * <h4> <a name="number-syntax">Number syntax</a> </h4>
@@ -217,89 +231,89 @@ import sun.misc.LRUCache;
  * Rmax is the highest digit in the radix being used (for example, Rmax is 9 in base 10).
  *
  * <dl>
- *   <dt><i>NonAsciiDigit</i>:
- *       <dd>A non-ASCII character c for which
- *            {@link java.lang.Character#isDigit Character.isDigit}<tt>(c)</tt>
- *                        returns&nbsp;true
+ * <dt><i>NonAsciiDigit</i>:
+ * <dd>A non-ASCII character c for which
+ * {@link java.lang.Character#isDigit Character.isDigit}<tt>(c)</tt>
+ * returns&nbsp;true
  *
- *   <dt><i>Non0Digit</i>:
- *       <dd><tt>[1-</tt><i>Rmax</i><tt>] | </tt><i>NonASCIIDigit</i>
+ * <dt><i>Non0Digit</i>:
+ * <dd><tt>[1-</tt><i>Rmax</i><tt>] | </tt><i>NonASCIIDigit</i>
  *
- *   <dt><i>Digit</i>:
- *       <dd><tt>[0-</tt><i>Rmax</i><tt>] | </tt><i>NonASCIIDigit</i>
+ * <dt><i>Digit</i>:
+ * <dd><tt>[0-</tt><i>Rmax</i><tt>] | </tt><i>NonASCIIDigit</i>
  *
- *   <dt><i>GroupedNumeral</i>:
- *       <dd><tt>(&nbsp;</tt><i>Non0Digit</i>
- *                   <i>Digit</i><tt>?
- *                   </tt><i>Digit</i><tt>?</tt>
- *       <dd>&nbsp;&nbsp;&nbsp;&nbsp;<tt>(&nbsp;</tt><i>LocalGroupSeparator</i>
- *                         <i>Digit</i>
- *                         <i>Digit</i>
- *                         <i>Digit</i><tt> )+ )</tt>
+ * <dt><i>GroupedNumeral</i>:
+ * <dd><tt>(&nbsp;</tt><i>Non0Digit</i>
+ * <i>Digit</i><tt>?
+ * </tt><i>Digit</i><tt>?</tt>
+ * <dd>&nbsp;&nbsp;&nbsp;&nbsp;<tt>(&nbsp;</tt><i>LocalGroupSeparator</i>
+ * <i>Digit</i>
+ * <i>Digit</i>
+ * <i>Digit</i><tt> )+ )</tt>
  *
- *   <dt><i>Numeral</i>:
- *       <dd><tt>( ( </tt><i>Digit</i><tt>+ )
- *               | </tt><i>GroupedNumeral</i><tt> )</tt>
+ * <dt><i>Numeral</i>:
+ * <dd><tt>( ( </tt><i>Digit</i><tt>+ )
+ * | </tt><i>GroupedNumeral</i><tt> )</tt>
  *
- *   <dt><a name="Integer-regex"><i>Integer</i>:</a>
- *       <dd><tt>( [-+]? ( </tt><i>Numeral</i><tt>
- *                               ) )</tt>
- *       <dd><tt>| </tt><i>LocalPositivePrefix</i> <i>Numeral</i>
- *                      <i>LocalPositiveSuffix</i>
- *       <dd><tt>| </tt><i>LocalNegativePrefix</i> <i>Numeral</i>
- *                 <i>LocalNegativeSuffix</i>
+ * <dt><a name="Integer-regex"><i>Integer</i>:</a>
+ * <dd><tt>( [-+]? ( </tt><i>Numeral</i><tt>
+ * ) )</tt>
+ * <dd><tt>| </tt><i>LocalPositivePrefix</i> <i>Numeral</i>
+ * <i>LocalPositiveSuffix</i>
+ * <dd><tt>| </tt><i>LocalNegativePrefix</i> <i>Numeral</i>
+ * <i>LocalNegativeSuffix</i>
  *
- *   <dt><i>DecimalNumeral</i>:
- *       <dd><i>Numeral</i>
- *       <dd><tt>| </tt><i>Numeral</i>
- *                 <i>LocalDecimalSeparator</i>
- *                 <i>Digit</i><tt>*</tt>
- *       <dd><tt>| </tt><i>LocalDecimalSeparator</i>
- *                 <i>Digit</i><tt>+</tt>
+ * <dt><i>DecimalNumeral</i>:
+ * <dd><i>Numeral</i>
+ * <dd><tt>| </tt><i>Numeral</i>
+ * <i>LocalDecimalSeparator</i>
+ * <i>Digit</i><tt>*</tt>
+ * <dd><tt>| </tt><i>LocalDecimalSeparator</i>
+ * <i>Digit</i><tt>+</tt>
  *
- *   <dt><i>Exponent</i>:
- *       <dd><tt>( [eE] [+-]? </tt><i>Digit</i><tt>+ )</tt>
+ * <dt><i>Exponent</i>:
+ * <dd><tt>( [eE] [+-]? </tt><i>Digit</i><tt>+ )</tt>
  *
- *   <dt><a name="Decimal-regex"><i>Decimal</i>:</a>
- *       <dd><tt>( [-+]? </tt><i>DecimalNumeral</i>
- *                         <i>Exponent</i><tt>? )</tt>
- *       <dd><tt>| </tt><i>LocalPositivePrefix</i>
- *                 <i>DecimalNumeral</i>
- *                 <i>LocalPositiveSuffix</i>
- *                 <i>Exponent</i><tt>?</tt>
- *       <dd><tt>| </tt><i>LocalNegativePrefix</i>
- *                 <i>DecimalNumeral</i>
- *                 <i>LocalNegativeSuffix</i>
- *                 <i>Exponent</i><tt>?</tt>
+ * <dt><a name="Decimal-regex"><i>Decimal</i>:</a>
+ * <dd><tt>( [-+]? </tt><i>DecimalNumeral</i>
+ * <i>Exponent</i><tt>? )</tt>
+ * <dd><tt>| </tt><i>LocalPositivePrefix</i>
+ * <i>DecimalNumeral</i>
+ * <i>LocalPositiveSuffix</i>
+ * <i>Exponent</i><tt>?</tt>
+ * <dd><tt>| </tt><i>LocalNegativePrefix</i>
+ * <i>DecimalNumeral</i>
+ * <i>LocalNegativeSuffix</i>
+ * <i>Exponent</i><tt>?</tt>
  *
- *   <dt><i>HexFloat</i>:
- *       <dd><tt>[-+]? 0[xX][0-9a-fA-F]*\.[0-9a-fA-F]+
- *                 ([pP][-+]?[0-9]+)?</tt>
+ * <dt><i>HexFloat</i>:
+ * <dd><tt>[-+]? 0[xX][0-9a-fA-F]*\.[0-9a-fA-F]+
+ * ([pP][-+]?[0-9]+)?</tt>
  *
- *   <dt><i>NonNumber</i>:
- *       <dd><tt>NaN
- *                          | </tt><i>LocalNan</i><tt>
- *                          | Infinity
- *                          | </tt><i>LocalInfinity</i>
+ * <dt><i>NonNumber</i>:
+ * <dd><tt>NaN
+ * | </tt><i>LocalNan</i><tt>
+ * | Infinity
+ * | </tt><i>LocalInfinity</i>
  *
- *   <dt><i>SignedNonNumber</i>:
- *       <dd><tt>( [-+]? </tt><i>NonNumber</i><tt> )</tt>
- *       <dd><tt>| </tt><i>LocalPositivePrefix</i>
- *                 <i>NonNumber</i>
- *                 <i>LocalPositiveSuffix</i>
- *       <dd><tt>| </tt><i>LocalNegativePrefix</i>
- *                 <i>NonNumber</i>
- *                 <i>LocalNegativeSuffix</i>
+ * <dt><i>SignedNonNumber</i>:
+ * <dd><tt>( [-+]? </tt><i>NonNumber</i><tt> )</tt>
+ * <dd><tt>| </tt><i>LocalPositivePrefix</i>
+ * <i>NonNumber</i>
+ * <i>LocalPositiveSuffix</i>
+ * <dd><tt>| </tt><i>LocalNegativePrefix</i>
+ * <i>NonNumber</i>
+ * <i>LocalNegativeSuffix</i>
  *
- *   <dt><a name="Float-regex"><i>Float</i></a>:
- *       <dd><i>Decimal</i>
- *           <tt>| </tt><i>HexFloat</i>
- *           <tt>| </tt><i>SignedNonNumber</i>
+ * <dt><a name="Float-regex"><i>Float</i></a>:
+ * <dd><i>Decimal</i>
+ * <tt>| </tt><i>HexFloat</i>
+ * <tt>| </tt><i>SignedNonNumber</i>
  *
  * </dl>
  * <p>Whitespace is not significant in the above regular expressions.
  *
- * @since   1.5
+ * @since 1.5
  */
 public final class Scanner implements Iterator<String>, Closeable {
 
@@ -361,11 +375,11 @@ public final class Scanner implements Iterator<String>, Closeable {
     private Locale locale = null;
 
     // A cache of the last few recently used Patterns
-    private LRUCache<String,Pattern> patternCache =
-    new LRUCache<String,Pattern>(7) {
+    private LRUCache<String, Pattern> patternCache = new LRUCache<String, Pattern>(7) {
         protected Pattern create(String s) {
             return Pattern.compile(s);
         }
+
         protected boolean hasName(Pattern p, String s) {
             return p.pattern().equals(s);
         }
@@ -375,15 +389,13 @@ public final class Scanner implements Iterator<String>, Closeable {
     private IOException lastException;
 
     // A pattern for java whitespace
-    private static Pattern WHITESPACE_PATTERN = Pattern.compile(
-                                                "\\p{javaWhitespace}+");
+    private static Pattern WHITESPACE_PATTERN = Pattern.compile("\\p{javaWhitespace}+");
 
     // A pattern for any token
     private static Pattern FIND_ANY_PATTERN = Pattern.compile("(?s).*");
 
     // A pattern for non-ASCII digits
-    private static Pattern NON_ASCII_DIGIT = Pattern.compile(
-        "[\\p{javaDigit}&&[^0-9]]");
+    private static Pattern NON_ASCII_DIGIT = Pattern.compile("[\\p{javaDigit}&&[^0-9]]");
 
     // Fields and methods to support scanning primitive types
 
@@ -404,11 +416,12 @@ public final class Scanner implements Iterator<String>, Closeable {
      */
     private static volatile Pattern boolPattern;
     private static final String BOOLEAN_PATTERN = "true|false";
+
     private static Pattern boolPattern() {
         Pattern bp = boolPattern;
-        if (bp == null)
-            boolPattern = bp = Pattern.compile(BOOLEAN_PATTERN,
-                                          Pattern.CASE_INSENSITIVE);
+        if (bp == null) {
+            boolPattern = bp = Pattern.compile(BOOLEAN_PATTERN, Pattern.CASE_INSENSITIVE);
+        }
         return bp;
     }
 
@@ -419,25 +432,24 @@ public final class Scanner implements Iterator<String>, Closeable {
     private String digits = "0123456789abcdefghijklmnopqrstuvwxyz";
     private String non0Digit = "[\\p{javaDigit}&&[^0]]";
     private int SIMPLE_GROUP_INDEX = 5;
+
     private String buildIntegerPatternString() {
         String radixDigits = digits.substring(0, radix);
         // \\p{javaDigit} is not guaranteed to be appropriate
         // here but what can we do? The final authority will be
         // whatever parse method is invoked, so ultimately the
         // Scanner will do the right thing
-        String digit = "((?i)["+radixDigits+"]|\\p{javaDigit})";
-        String groupedNumeral = "("+non0Digit+digit+"?"+digit+"?("+
-                                groupSeparator+digit+digit+digit+")+)";
+        String digit = "((?i)[" + radixDigits + "]|\\p{javaDigit})";
+        String groupedNumeral = "(" + non0Digit + digit + "?" + digit + "?(" + groupSeparator + digit + digit + digit + ")+)";
         // digit++ is the possessive form which is necessary for reducing
         // backtracking that would otherwise cause unacceptable performance
-        String numeral = "(("+ digit+"++)|"+groupedNumeral+")";
+        String numeral = "((" + digit + "++)|" + groupedNumeral + ")";
         String javaStyleInteger = "([-+]?(" + numeral + "))";
         String negativeInteger = negativePrefix + numeral + negativeSuffix;
         String positiveInteger = positivePrefix + numeral + positiveSuffix;
-        return "("+ javaStyleInteger + ")|(" +
-            positiveInteger + ")|(" +
-            negativeInteger + ")";
+        return "(" + javaStyleInteger + ")|(" + positiveInteger + ")|(" + negativeInteger + ")";
     }
+
     private Pattern integerPattern() {
         if (integerPattern == null) {
             integerPattern = patternCache.forName(buildIntegerPatternString());
@@ -450,21 +462,22 @@ public final class Scanner implements Iterator<String>, Closeable {
      */
     private static volatile Pattern separatorPattern;
     private static volatile Pattern linePattern;
-    private static final String LINE_SEPARATOR_PATTERN =
-                                           "\r\n|[\n\r\u2028\u2029\u0085]";
-    private static final String LINE_PATTERN = ".*("+LINE_SEPARATOR_PATTERN+")|.+$";
+    private static final String LINE_SEPARATOR_PATTERN = "\r\n|[\n\r\u2028\u2029\u0085]";
+    private static final String LINE_PATTERN = ".*(" + LINE_SEPARATOR_PATTERN + ")|.+$";
 
     private static Pattern separatorPattern() {
         Pattern sp = separatorPattern;
-        if (sp == null)
+        if (sp == null) {
             separatorPattern = sp = Pattern.compile(LINE_SEPARATOR_PATTERN);
+        }
         return sp;
     }
 
     private static Pattern linePattern() {
         Pattern lp = linePattern;
-        if (lp == null)
+        if (lp == null) {
             linePattern = lp = Pattern.compile(LINE_PATTERN);
+        }
         return lp;
     }
 
@@ -473,44 +486,34 @@ public final class Scanner implements Iterator<String>, Closeable {
      */
     private Pattern floatPattern;
     private Pattern decimalPattern;
+
     private void buildFloatAndDecimalPattern() {
         // \\p{javaDigit} may not be perfect, see above
         String digit = "([0-9]|(\\p{javaDigit}))";
-        String exponent = "([eE][+-]?"+digit+"+)?";
-        String groupedNumeral = "("+non0Digit+digit+"?"+digit+"?("+
-                                groupSeparator+digit+digit+digit+")+)";
+        String exponent = "([eE][+-]?" + digit + "+)?";
+        String groupedNumeral = "(" + non0Digit + digit + "?" + digit + "?(" + groupSeparator + digit + digit + digit + ")+)";
         // Once again digit++ is used for performance, as above
-        String numeral = "(("+digit+"++)|"+groupedNumeral+")";
-        String decimalNumeral = "("+numeral+"|"+numeral +
-            decimalSeparator + digit + "*+|"+ decimalSeparator +
-            digit + "++)";
-        String nonNumber = "(NaN|"+nanString+"|Infinity|"+
-                               infinityString+")";
-        String positiveFloat = "(" + positivePrefix + decimalNumeral +
-                            positiveSuffix + exponent + ")";
-        String negativeFloat = "(" + negativePrefix + decimalNumeral +
-                            negativeSuffix + exponent + ")";
-        String decimal = "(([-+]?" + decimalNumeral + exponent + ")|"+
-            positiveFloat + "|" + negativeFloat + ")";
-        String hexFloat =
-            "[-+]?0[xX][0-9a-fA-F]*\\.[0-9a-fA-F]+([pP][-+]?[0-9]+)?";
-        String positiveNonNumber = "(" + positivePrefix + nonNumber +
-                            positiveSuffix + ")";
-        String negativeNonNumber = "(" + negativePrefix + nonNumber +
-                            negativeSuffix + ")";
-        String signedNonNumber = "(([-+]?"+nonNumber+")|" +
-                                 positiveNonNumber + "|" +
-                                 negativeNonNumber + ")";
-        floatPattern = Pattern.compile(decimal + "|" + hexFloat + "|" +
-                                       signedNonNumber);
+        String numeral = "((" + digit + "++)|" + groupedNumeral + ")";
+        String decimalNumeral = "(" + numeral + "|" + numeral + decimalSeparator + digit + "*+|" + decimalSeparator + digit + "++)";
+        String nonNumber = "(NaN|" + nanString + "|Infinity|" + infinityString + ")";
+        String positiveFloat = "(" + positivePrefix + decimalNumeral + positiveSuffix + exponent + ")";
+        String negativeFloat = "(" + negativePrefix + decimalNumeral + negativeSuffix + exponent + ")";
+        String decimal = "(([-+]?" + decimalNumeral + exponent + ")|" + positiveFloat + "|" + negativeFloat + ")";
+        String hexFloat = "[-+]?0[xX][0-9a-fA-F]*\\.[0-9a-fA-F]+([pP][-+]?[0-9]+)?";
+        String positiveNonNumber = "(" + positivePrefix + nonNumber + positiveSuffix + ")";
+        String negativeNonNumber = "(" + negativePrefix + nonNumber + negativeSuffix + ")";
+        String signedNonNumber = "(([-+]?" + nonNumber + ")|" + positiveNonNumber + "|" + negativeNonNumber + ")";
+        floatPattern = Pattern.compile(decimal + "|" + hexFloat + "|" + signedNonNumber);
         decimalPattern = Pattern.compile(decimal);
     }
+
     private Pattern floatPattern() {
         if (floatPattern == null) {
             buildFloatAndDecimalPattern();
         }
         return floatPattern;
     }
+
     private Pattern decimalPattern() {
         if (decimalPattern == null) {
             buildFloatAndDecimalPattern();
@@ -524,8 +527,10 @@ public final class Scanner implements Iterator<String>, Closeable {
      * Constructs a <code>Scanner</code> that returns values scanned
      * from the specified source delimited by the specified pattern.
      *
-     * @param source A character source implementing the Readable interface
-     * @param pattern A delimiting pattern
+     * @param source
+     *         A character source implementing the Readable interface
+     * @param pattern
+     *         A delimiting pattern
      */
     private Scanner(Readable source, Pattern pattern) {
         assert source != null : "source should not be null";
@@ -544,7 +549,8 @@ public final class Scanner implements Iterator<String>, Closeable {
      * Constructs a new <code>Scanner</code> that produces values scanned
      * from the specified source.
      *
-     * @param  source A character source implementing the {@link Readable}
+     * @param source
+     *         A character source implementing the {@link Readable}
      *         interface
      */
     public Scanner(Readable source) {
@@ -557,7 +563,8 @@ public final class Scanner implements Iterator<String>, Closeable {
      * into characters using the underlying platform's
      * {@linkplain java.nio.charset.Charset#defaultCharset() default charset}.
      *
-     * @param  source An input stream to be scanned
+     * @param source
+     *         An input stream to be scanned
      */
     public Scanner(InputStream source) {
         this(new InputStreamReader(source), WHITESPACE_PATTERN);
@@ -568,27 +575,33 @@ public final class Scanner implements Iterator<String>, Closeable {
      * from the specified input stream. Bytes from the stream are converted
      * into characters using the specified charset.
      *
-     * @param  source An input stream to be scanned
-     * @param charsetName The encoding type used to convert bytes from the
-     *        stream into characters to be scanned
-     * @throws IllegalArgumentException if the specified character set
+     * @param source
+     *         An input stream to be scanned
+     * @param charsetName
+     *         The encoding type used to convert bytes from the
+     *         stream into characters to be scanned
+     *
+     * @throws IllegalArgumentException
+     *         if the specified character set
      *         does not exist
      */
     public Scanner(InputStream source, String charsetName) {
-        this(makeReadable(Objects.requireNonNull(source, "source"), toCharset(charsetName)),
-             WHITESPACE_PATTERN);
+        this(makeReadable(Objects.requireNonNull(source, "source"), toCharset(charsetName)), WHITESPACE_PATTERN);
     }
 
     /**
      * Returns a charset object for the given charset name.
-     * @throws NullPointerException          is csn is null
-     * @throws IllegalArgumentException      if the charset is not supported
+     *
+     * @throws NullPointerException
+     *         is csn is null
+     * @throws IllegalArgumentException
+     *         if the charset is not supported
      */
     private static Charset toCharset(String csn) {
         Objects.requireNonNull(csn, "charsetName");
         try {
             return Charset.forName(csn);
-        } catch (IllegalCharsetNameException|UnsupportedCharsetException e) {
+        } catch (IllegalCharsetNameException | UnsupportedCharsetException e) {
             // IllegalArgumentException should be thrown
             throw new IllegalArgumentException(e);
         }
@@ -604,11 +617,14 @@ public final class Scanner implements Iterator<String>, Closeable {
      * characters using the underlying platform's
      * {@linkplain java.nio.charset.Charset#defaultCharset() default charset}.
      *
-     * @param  source A file to be scanned
-     * @throws FileNotFoundException if source is not found
+     * @param source
+     *         A file to be scanned
+     *
+     * @throws FileNotFoundException
+     *         if source is not found
      */
     public Scanner(File source) throws FileNotFoundException {
-        this((ReadableByteChannel)(new FileInputStream(source).getChannel()));
+        this((ReadableByteChannel) (new FileInputStream(source).getChannel()));
     }
 
     /**
@@ -616,36 +632,36 @@ public final class Scanner implements Iterator<String>, Closeable {
      * from the specified file. Bytes from the file are converted into
      * characters using the specified charset.
      *
-     * @param  source A file to be scanned
-     * @param charsetName The encoding type used to convert bytes from the file
-     *        into characters to be scanned
-     * @throws FileNotFoundException if source is not found
-     * @throws IllegalArgumentException if the specified encoding is
+     * @param source
+     *         A file to be scanned
+     * @param charsetName
+     *         The encoding type used to convert bytes from the file
+     *         into characters to be scanned
+     *
+     * @throws FileNotFoundException
+     *         if source is not found
+     * @throws IllegalArgumentException
+     *         if the specified encoding is
      *         not found
      */
-    public Scanner(File source, String charsetName)
-        throws FileNotFoundException
-    {
+    public Scanner(File source, String charsetName) throws FileNotFoundException {
         this(Objects.requireNonNull(source), toDecoder(charsetName));
     }
 
-    private Scanner(File source, CharsetDecoder dec)
-        throws FileNotFoundException
-    {
-        this(makeReadable((ReadableByteChannel)(new FileInputStream(source).getChannel()), dec));
+    private Scanner(File source, CharsetDecoder dec) throws FileNotFoundException {
+        this(makeReadable((ReadableByteChannel) (new FileInputStream(source).getChannel()), dec));
     }
 
     private static CharsetDecoder toDecoder(String charsetName) {
         Objects.requireNonNull(charsetName, "charsetName");
         try {
             return Charset.forName(charsetName).newDecoder();
-        } catch (IllegalCharsetNameException|UnsupportedCharsetException unused) {
+        } catch (IllegalCharsetNameException | UnsupportedCharsetException unused) {
             throw new IllegalArgumentException(charsetName);
         }
     }
 
-    private static Readable makeReadable(ReadableByteChannel source,
-                                         CharsetDecoder dec) {
+    private static Readable makeReadable(ReadableByteChannel source, CharsetDecoder dec) {
         return Channels.newReader(source, dec, -1);
     }
 
@@ -655,16 +671,14 @@ public final class Scanner implements Iterator<String>, Closeable {
      * characters using the underlying platform's
      * {@linkplain java.nio.charset.Charset#defaultCharset() default charset}.
      *
-     * @param   source
-     *          the path to the file to be scanned
-     * @throws  IOException
-     *          if an I/O error occurs opening source
+     * @param source
+     *         the path to the file to be scanned
      *
-     * @since   1.7
+     * @throws IOException
+     *         if an I/O error occurs opening source
+     * @since 1.7
      */
-    public Scanner(Path source)
-        throws IOException
-    {
+    public Scanner(Path source) throws IOException {
         this(Files.newInputStream(source));
     }
 
@@ -673,22 +687,23 @@ public final class Scanner implements Iterator<String>, Closeable {
      * from the specified file. Bytes from the file are converted into
      * characters using the specified charset.
      *
-     * @param   source
-     *          the path to the file to be scanned
-     * @param   charsetName
-     *          The encoding type used to convert bytes from the file
-     *          into characters to be scanned
-     * @throws  IOException
-     *          if an I/O error occurs opening source
-     * @throws  IllegalArgumentException
-     *          if the specified encoding is not found
-     * @since   1.7
+     * @param source
+     *         the path to the file to be scanned
+     * @param charsetName
+     *         The encoding type used to convert bytes from the file
+     *         into characters to be scanned
+     *
+     * @throws IOException
+     *         if an I/O error occurs opening source
+     * @throws IllegalArgumentException
+     *         if the specified encoding is not found
+     * @since 1.7
      */
     public Scanner(Path source, String charsetName) throws IOException {
         this(Objects.requireNonNull(source), toCharset(charsetName));
     }
 
-    private Scanner(Path source, Charset charset)  throws IOException {
+    private Scanner(Path source, Charset charset) throws IOException {
         this(makeReadable(Files.newInputStream(source), charset));
     }
 
@@ -696,7 +711,8 @@ public final class Scanner implements Iterator<String>, Closeable {
      * Constructs a new <code>Scanner</code> that produces values scanned
      * from the specified string.
      *
-     * @param  source A string to scan
+     * @param source
+     *         A string to scan
      */
     public Scanner(String source) {
         this(new StringReader(source), WHITESPACE_PATTERN);
@@ -708,11 +724,11 @@ public final class Scanner implements Iterator<String>, Closeable {
      * characters using the underlying platform's
      * {@linkplain java.nio.charset.Charset#defaultCharset() default charset}.
      *
-     * @param  source A channel to scan
+     * @param source
+     *         A channel to scan
      */
     public Scanner(ReadableByteChannel source) {
-        this(makeReadable(Objects.requireNonNull(source, "source")),
-             WHITESPACE_PATTERN);
+        this(makeReadable(Objects.requireNonNull(source, "source")), WHITESPACE_PATTERN);
     }
 
     private static Readable makeReadable(ReadableByteChannel source) {
@@ -724,15 +740,18 @@ public final class Scanner implements Iterator<String>, Closeable {
      * from the specified channel. Bytes from the source are converted into
      * characters using the specified charset.
      *
-     * @param  source A channel to scan
-     * @param charsetName The encoding type used to convert bytes from the
-     *        channel into characters to be scanned
-     * @throws IllegalArgumentException if the specified character set
+     * @param source
+     *         A channel to scan
+     * @param charsetName
+     *         The encoding type used to convert bytes from the
+     *         channel into characters to be scanned
+     *
+     * @throws IllegalArgumentException
+     *         if the specified character set
      *         does not exist
      */
     public Scanner(ReadableByteChannel source, String charsetName) {
-        this(makeReadable(Objects.requireNonNull(source, "source"), toDecoder(charsetName)),
-             WHITESPACE_PATTERN);
+        this(makeReadable(Objects.requireNonNull(source, "source"), toDecoder(charsetName)), WHITESPACE_PATTERN);
     }
 
     // Private primitives used to support scanning
@@ -782,8 +801,9 @@ public final class Scanner implements Iterator<String>, Closeable {
 
     // Also clears both the regular cache and the type cache
     private void useTypeCache() {
-        if (closed)
+        if (closed) {
             throw new IllegalStateException("Scanner closed");
+        }
         position = hasNextPosition;
         hasNextPattern = null;
         typeCache = null;
@@ -791,8 +811,9 @@ public final class Scanner implements Iterator<String>, Closeable {
 
     // Tries to read more input. May block.
     private void readInput() {
-        if (buf.limit() == buf.capacity())
+        if (buf.limit() == buf.capacity()) {
             makeSpace();
+        }
 
         // Prepare to receive data
         int p = buf.position();
@@ -812,8 +833,9 @@ public final class Scanner implements Iterator<String>, Closeable {
             needInput = false;
         }
 
-        if (n > 0)
+        if (n > 0) {
             needInput = false;
+        }
 
         // Restore current position and limit for reading
         buf.limit(buf.position());
@@ -824,8 +846,7 @@ public final class Scanner implements Iterator<String>, Closeable {
     // or else there will be space in the buffer
     private boolean makeSpace() {
         clearCaches();
-        int offset = savedScannerPosition == -1 ?
-            position : savedScannerPosition;
+        int offset = savedScannerPosition == -1 ? position : savedScannerPosition;
         buf.position(offset);
         // Gain space by compacting buffer
         if (offset > 0) {
@@ -850,18 +871,20 @@ public final class Scanner implements Iterator<String>, Closeable {
     // When a buffer compaction/reallocation occurs the saved indexes must
     // be modified appropriately
     private void translateSavedIndexes(int offset) {
-        if (savedScannerPosition != -1)
+        if (savedScannerPosition != -1) {
             savedScannerPosition -= offset;
+        }
     }
 
     // If we are at the end of input then NoSuchElement;
     // If there is still input left then InputMismatch
     private void throwFor() {
         skipped = false;
-        if ((sourceClosed) && (position == buf.limit()))
+        if ((sourceClosed) && (position == buf.limit())) {
             throw new NoSuchElementException();
-        else
+        } else {
             throw new InputMismatchException();
+        }
     }
 
     // Returns true if a complete token or partial token is in the buffer.
@@ -873,12 +896,14 @@ public final class Scanner implements Iterator<String>, Closeable {
         matcher.region(position, buf.limit());
 
         // Skip delims first
-        if (matcher.lookingAt())
+        if (matcher.lookingAt()) {
             position = matcher.end();
+        }
 
         // If we are sitting at the end, no more tokens in buffer
-        if (position == buf.limit())
+        if (position == buf.limit()) {
             return false;
+        }
 
         return true;
     }
@@ -920,8 +945,9 @@ public final class Scanner implements Iterator<String>, Closeable {
 
         // If we are sitting at the end, no more tokens in buffer
         if (position == buf.limit()) {
-            if (sourceClosed)
+            if (sourceClosed) {
                 return null;
+            }
             needInput = true;
             return null;
         }
@@ -1004,15 +1030,16 @@ public final class Scanner implements Iterator<String>, Closeable {
         int searchLimit = bufferLimit;
         if (horizon > 0) {
             horizonLimit = position + horizon;
-            if (horizonLimit < bufferLimit)
+            if (horizonLimit < bufferLimit) {
                 searchLimit = horizonLimit;
+            }
         }
         matcher.region(position, searchLimit);
         if (matcher.find()) {
             if (matcher.hitEnd() && (!sourceClosed)) {
                 // The match may be longer if didn't hit horizon or real end
                 if (searchLimit != horizonLimit) {
-                     // Hit an artificial end; try to extend the match
+                    // Hit an artificial end; try to extend the match
                     needInput = true;
                     return null;
                 }
@@ -1030,13 +1057,15 @@ public final class Scanner implements Iterator<String>, Closeable {
             return matcher.group();
         }
 
-        if (sourceClosed)
+        if (sourceClosed) {
             return null;
+        }
 
         // If there is no specified horizon, or if we have not searched
         // to the specified horizon yet, get more input
-        if ((horizon == 0) || (searchLimit != horizonLimit))
+        if ((horizon == 0) || (searchLimit != horizonLimit)) {
             needInput = true;
+        }
         return null;
     }
 
@@ -1056,8 +1085,9 @@ public final class Scanner implements Iterator<String>, Closeable {
             return matcher.group();
         }
 
-        if (sourceClosed)
+        if (sourceClosed) {
             return null;
+        }
 
         // Read more to find pattern
         needInput = true;
@@ -1066,8 +1096,9 @@ public final class Scanner implements Iterator<String>, Closeable {
 
     // Throws if the scanner is closed
     private void ensureOpen() {
-        if (closed)
+        if (closed) {
             throw new IllegalStateException("Scanner closed");
+        }
     }
 
     // Public methods
@@ -1083,14 +1114,14 @@ public final class Scanner implements Iterator<String>, Closeable {
      *
      * <p>Attempting to perform search operations after a scanner has
      * been closed will result in an {@link IllegalStateException}.
-     *
      */
     public void close() {
-        if (closed)
+        if (closed) {
             return;
+        }
         if (source instanceof Closeable) {
             try {
-                ((Closeable)source).close();
+                ((Closeable) source).close();
             } catch (IOException ioe) {
                 lastException = ioe;
             }
@@ -1124,7 +1155,9 @@ public final class Scanner implements Iterator<String>, Closeable {
     /**
      * Sets this scanner's delimiting pattern to the specified pattern.
      *
-     * @param pattern A delimiting pattern
+     * @param pattern
+     *         A delimiting pattern
+     *
      * @return this scanner
      */
     public Scanner useDelimiter(Pattern pattern) {
@@ -1143,7 +1176,9 @@ public final class Scanner implements Iterator<String>, Closeable {
      * <p> Invoking the {@link #reset} method will set the scanner's delimiter
      * to the <a href= "#default-delimiter">default</a>.
      *
-     * @param pattern A string specifying a delimiting pattern
+     * @param pattern
+     *         A string specifying a delimiting pattern
+     *
      * @return this scanner
      */
     public Scanner useDelimiter(String pattern) {
@@ -1174,21 +1209,23 @@ public final class Scanner implements Iterator<String>, Closeable {
      * <p>Invoking the {@link #reset} method will set the scanner's locale to
      * the <a href= "#initial-locale">initial locale</a>.
      *
-     * @param locale A string specifying the locale to use
+     * @param locale
+     *         A string specifying the locale to use
+     *
      * @return this scanner
      */
     public Scanner useLocale(Locale locale) {
-        if (locale.equals(this.locale))
+        if (locale.equals(this.locale)) {
             return this;
+        }
 
         this.locale = locale;
-        DecimalFormat df =
-            (DecimalFormat)NumberFormat.getNumberInstance(locale);
+        DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(locale);
         DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(locale);
 
         // These must be literalized to avoid collision with regex
         // metacharacters such as dot or parenthesis
-        groupSeparator =   "\\" + dfs.getGroupingSeparator();
+        groupSeparator = "\\" + dfs.getGroupingSeparator();
         decimalSeparator = "\\" + dfs.getDecimalSeparator();
 
         // Quoting the nonzero length locale-specific things
@@ -1196,17 +1233,21 @@ public final class Scanner implements Iterator<String>, Closeable {
         nanString = "\\Q" + dfs.getNaN() + "\\E";
         infinityString = "\\Q" + dfs.getInfinity() + "\\E";
         positivePrefix = df.getPositivePrefix();
-        if (positivePrefix.length() > 0)
+        if (positivePrefix.length() > 0) {
             positivePrefix = "\\Q" + positivePrefix + "\\E";
+        }
         negativePrefix = df.getNegativePrefix();
-        if (negativePrefix.length() > 0)
+        if (negativePrefix.length() > 0) {
             negativePrefix = "\\Q" + negativePrefix + "\\E";
+        }
         positiveSuffix = df.getPositiveSuffix();
-        if (positiveSuffix.length() > 0)
+        if (positiveSuffix.length() > 0) {
             positiveSuffix = "\\Q" + positiveSuffix + "\\E";
+        }
         negativeSuffix = df.getNegativeSuffix();
-        if (negativeSuffix.length() > 0)
+        if (negativeSuffix.length() > 0) {
             negativeSuffix = "\\Q" + negativeSuffix + "\\E";
+        }
 
         // Force rebuilding and recompilation of locale dependent
         // primitive patterns
@@ -1243,16 +1284,22 @@ public final class Scanner implements Iterator<String>, Closeable {
      * <p>Invoking the {@link #reset} method will set the scanner's radix to
      * <code>10</code>.
      *
-     * @param radix The radix to use when scanning numbers
+     * @param radix
+     *         The radix to use when scanning numbers
+     *
      * @return this scanner
-     * @throws IllegalArgumentException if radix is out of range
+     *
+     * @throws IllegalArgumentException
+     *         if radix is out of range
      */
     public Scanner useRadix(int radix) {
-        if ((radix < Character.MIN_RADIX) || (radix > Character.MAX_RADIX))
-            throw new IllegalArgumentException("radix:"+radix);
+        if ((radix < Character.MIN_RADIX) || (radix > Character.MAX_RADIX)) {
+            throw new IllegalArgumentException("radix:" + radix);
+        }
 
-        if (this.defaultRadix == radix)
+        if (this.defaultRadix == radix) {
             return this;
+        }
         this.defaultRadix = radix;
         // Force rebuilding and recompilation of radix dependent patterns
         integerPattern = null;
@@ -1286,11 +1333,14 @@ public final class Scanner implements Iterator<String>, Closeable {
      * match available if they succeed.
      *
      * @return a match result for the last match operation
-     * @throws IllegalStateException  If no match result is available
+     *
+     * @throws IllegalStateException
+     *         If no match result is available
      */
     public MatchResult match() {
-        if (!matchValid)
+        if (!matchValid) {
             throw new IllegalStateException("No match result available");
+        }
         return matcher.toMatchResult();
     }
 
@@ -1299,7 +1349,7 @@ public final class Scanner implements Iterator<String>, Closeable {
      * string representation of a <code>Scanner</code> contains information
      * that may be useful for debugging. The exact format is unspecified.
      *
-     * @return  The string representation of this scanner
+     * @return The string representation of this scanner
      */
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -1327,15 +1377,18 @@ public final class Scanner implements Iterator<String>, Closeable {
      * The scanner does not advance past any input.
      *
      * @return true if and only if this scanner has another token
-     * @throws IllegalStateException if this scanner is closed
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
      * @see java.util.Iterator
      */
     public boolean hasNext() {
         ensureOpen();
         saveState();
         while (!sourceClosed) {
-            if (hasTokenInBuffer())
+            if (hasTokenInBuffer()) {
                 return revertState(true);
+            }
             readInput();
         }
         boolean result = hasTokenInBuffer();
@@ -1350,8 +1403,11 @@ public final class Scanner implements Iterator<String>, Closeable {
      * <code>true</code>.
      *
      * @return the next token
-     * @throws NoSuchElementException if no more tokens are available
-     * @throws IllegalStateException if this scanner is closed
+     *
+     * @throws NoSuchElementException
+     *         if no more tokens are available
+     * @throws IllegalStateException
+     *         if this scanner is closed
      * @see java.util.Iterator
      */
     public String next() {
@@ -1365,10 +1421,11 @@ public final class Scanner implements Iterator<String>, Closeable {
                 skipped = false;
                 return token;
             }
-            if (needInput)
+            if (needInput) {
                 readInput();
-            else
+            } else {
                 throwFor();
+            }
         }
     }
 
@@ -1376,7 +1433,8 @@ public final class Scanner implements Iterator<String>, Closeable {
      * The remove operation is not supported by this implementation of
      * <code>Iterator</code>.
      *
-     * @throws UnsupportedOperationException if this method is invoked.
+     * @throws UnsupportedOperationException
+     *         if this method is invoked.
      * @see java.util.Iterator
      */
     public void remove() {
@@ -1391,12 +1449,16 @@ public final class Scanner implements Iterator<String>, Closeable {
      * behaves in exactly the same way as the invocation
      * <tt>hasNext(Pattern.compile(pattern))</tt>.
      *
-     * @param pattern a string specifying the pattern to scan
+     * @param pattern
+     *         a string specifying the pattern to scan
+     *
      * @return true if and only if this scanner has another token matching
-     *         the specified pattern
-     * @throws IllegalStateException if this scanner is closed
+     * the specified pattern
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
-    public boolean hasNext(String pattern)  {
+    public boolean hasNext(String pattern) {
         return hasNext(patternCache.forName(pattern));
     }
 
@@ -1409,12 +1471,17 @@ public final class Scanner implements Iterator<String>, Closeable {
      * behaves in exactly the same way as the invocation
      * <tt>next(Pattern.compile(pattern))</tt>.
      *
-     * @param pattern a string specifying the pattern to scan
+     * @param pattern
+     *         a string specifying the pattern to scan
+     *
      * @return the next token
-     * @throws NoSuchElementException if no such tokens are available
-     * @throws IllegalStateException if this scanner is closed
+     *
+     * @throws NoSuchElementException
+     *         if no such tokens are available
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
-    public String next(String pattern)  {
+    public String next(String pattern) {
         return next(patternCache.forName(pattern));
     }
 
@@ -1424,15 +1491,20 @@ public final class Scanner implements Iterator<String>, Closeable {
      * the delimiter pattern. This method may block while waiting for input.
      * The scanner does not advance past any input.
      *
-     * @param pattern the pattern to scan for
+     * @param pattern
+     *         the pattern to scan for
+     *
      * @return true if and only if this scanner has another token matching
-     *         the specified pattern
-     * @throws IllegalStateException if this scanner is closed
+     * the specified pattern
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public boolean hasNext(Pattern pattern) {
         ensureOpen();
-        if (pattern == null)
+        if (pattern == null) {
             throw new NullPointerException();
+        }
         hasNextPattern = null;
         saveState();
 
@@ -1442,10 +1514,11 @@ public final class Scanner implements Iterator<String>, Closeable {
                 cacheResult();
                 return revertState(true);
             }
-            if (needInput)
+            if (needInput) {
                 readInput();
-            else
+            } else {
                 return revertState(false);
+            }
         }
     }
 
@@ -1456,19 +1529,26 @@ public final class Scanner implements Iterator<String>, Closeable {
      * If the match is successful, the scanner advances past the input that
      * matched the pattern.
      *
-     * @param pattern the pattern to scan for
+     * @param pattern
+     *         the pattern to scan for
+     *
      * @return the next token
-     * @throws NoSuchElementException if no more tokens are available
-     * @throws IllegalStateException if this scanner is closed
+     *
+     * @throws NoSuchElementException
+     *         if no more tokens are available
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public String next(Pattern pattern) {
         ensureOpen();
-        if (pattern == null)
+        if (pattern == null) {
             throw new NullPointerException();
+        }
 
         // Did we already find this pattern?
-        if (hasNextPattern == pattern)
+        if (hasNextPattern == pattern) {
             return getCachedResult();
+        }
         clearCaches();
 
         // Search for the pattern
@@ -1479,10 +1559,11 @@ public final class Scanner implements Iterator<String>, Closeable {
                 skipped = false;
                 return token;
             }
-            if (needInput)
+            if (needInput) {
                 readInput();
-            else
+            } else {
                 throwFor();
+            }
         }
     }
 
@@ -1492,7 +1573,9 @@ public final class Scanner implements Iterator<String>, Closeable {
      * advance past any input.
      *
      * @return true if and only if this scanner has another line of input
-     * @throws IllegalStateException if this scanner is closed
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public boolean hasNextLine() {
         saveState();
@@ -1502,8 +1585,7 @@ public final class Scanner implements Iterator<String>, Closeable {
             MatchResult mr = this.match();
             String lineSep = mr.group(1);
             if (lineSep != null) {
-                result = result.substring(0, result.length() -
-                                          lineSep.length());
+                result = result.substring(0, result.length() - lineSep.length());
                 cacheResult(result);
 
             } else {
@@ -1527,25 +1609,32 @@ public final class Scanner implements Iterator<String>, Closeable {
      * the line to skip if no line separators are present.
      *
      * @return the line that was skipped
-     * @throws NoSuchElementException if no line was found
-     * @throws IllegalStateException if this scanner is closed
+     *
+     * @throws NoSuchElementException
+     *         if no line was found
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public String nextLine() {
-        if (hasNextPattern == linePattern())
+        if (hasNextPattern == linePattern()) {
             return getCachedResult();
+        }
         clearCaches();
 
         String result = findWithinHorizon(linePattern, 0);
-        if (result == null)
+        if (result == null) {
             throw new NoSuchElementException("No line found");
+        }
         MatchResult mr = this.match();
         String lineSep = mr.group(1);
-        if (lineSep != null)
+        if (lineSep != null) {
             result = result.substring(0, result.length() - lineSep.length());
-        if (result == null)
+        }
+        if (result == null) {
             throw new NoSuchElementException();
-        else
+        } else {
             return result;
+        }
     }
 
     // Public methods that ignore delimiters
@@ -1558,9 +1647,13 @@ public final class Scanner implements Iterator<String>, Closeable {
      * behaves in exactly the same way as the invocation
      * <tt>findInLine(Pattern.compile(pattern))</tt>.
      *
-     * @param pattern a string specifying the pattern to search for
+     * @param pattern
+     *         a string specifying the pattern to search for
+     *
      * @return the text that matched the specified pattern
-     * @throws IllegalStateException if this scanner is closed
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public String findInLine(String pattern) {
         return findInLine(patternCache.forName(pattern));
@@ -1580,14 +1673,19 @@ public final class Scanner implements Iterator<String>, Closeable {
      * for the specified pattern, it may buffer all of the input searching for
      * the desired token if no line separators are present.
      *
-     * @param pattern the pattern to scan for
+     * @param pattern
+     *         the pattern to scan for
+     *
      * @return the text that matched the specified pattern
-     * @throws IllegalStateException if this scanner is closed
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public String findInLine(Pattern pattern) {
         ensureOpen();
-        if (pattern == null)
+        if (pattern == null) {
             throw new NullPointerException();
+        }
         clearCaches();
         // Expand buffer to include the next newline or end of input
         int endPosition = 0;
@@ -1610,8 +1708,9 @@ public final class Scanner implements Iterator<String>, Closeable {
         // If there is nothing between the current pos and the next
         // newline simply return null, invoking findWithinHorizon
         // with "horizon=0" will scan beyond the line bound.
-        if (horizonForLine == 0)
+        if (horizonForLine == 0) {
             return null;
+        }
         // Search for the pattern
         return findWithinHorizon(pattern, horizonForLine);
     }
@@ -1625,11 +1724,17 @@ public final class Scanner implements Iterator<String>, Closeable {
      * the invocation
      * <tt>findWithinHorizon(Pattern.compile(pattern, horizon))</tt>.
      *
-     * @param pattern a string specifying the pattern to search for
-     * @param horizon the search horizon
+     * @param pattern
+     *         a string specifying the pattern to search for
+     * @param horizon
+     *         the search horizon
+     *
      * @return the text that matched the specified pattern
-     * @throws IllegalStateException if this scanner is closed
-     * @throws IllegalArgumentException if horizon is negative
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
+     * @throws IllegalArgumentException
+     *         if horizon is negative
      */
     public String findWithinHorizon(String pattern, int horizon) {
         return findWithinHorizon(patternCache.forName(pattern), horizon);
@@ -1660,18 +1765,26 @@ public final class Scanner implements Iterator<String>, Closeable {
      * <p>If horizon is negative, then an IllegalArgumentException is
      * thrown.
      *
-     * @param pattern the pattern to scan for
-     * @param horizon the search horizon
+     * @param pattern
+     *         the pattern to scan for
+     * @param horizon
+     *         the search horizon
+     *
      * @return the text that matched the specified pattern
-     * @throws IllegalStateException if this scanner is closed
-     * @throws IllegalArgumentException if horizon is negative
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
+     * @throws IllegalArgumentException
+     *         if horizon is negative
      */
     public String findWithinHorizon(Pattern pattern, int horizon) {
         ensureOpen();
-        if (pattern == null)
+        if (pattern == null) {
             throw new NullPointerException();
-        if (horizon < 0)
+        }
+        if (horizon < 0) {
             throw new IllegalArgumentException("horizon < 0");
+        }
         clearCaches();
 
         // Search for the pattern
@@ -1681,10 +1794,11 @@ public final class Scanner implements Iterator<String>, Closeable {
                 matchValid = true;
                 return token;
             }
-            if (needInput)
+            if (needInput) {
                 readInput();
-            else
+            } else {
                 break; // up to end of input
+            }
         }
         return null;
     }
@@ -1707,15 +1821,21 @@ public final class Scanner implements Iterator<String>, Closeable {
      * <code>NoSuchElementException</code> by using a pattern that can
      * match nothing, e.g., <code>sc.skip("[ \t]*")</code>.
      *
-     * @param pattern a string specifying the pattern to skip over
+     * @param pattern
+     *         a string specifying the pattern to skip over
+     *
      * @return this scanner
-     * @throws NoSuchElementException if the specified pattern is not found
-     * @throws IllegalStateException if this scanner is closed
+     *
+     * @throws NoSuchElementException
+     *         if the specified pattern is not found
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public Scanner skip(Pattern pattern) {
         ensureOpen();
-        if (pattern == null)
+        if (pattern == null) {
             throw new NullPointerException();
+        }
         clearCaches();
 
         // Search for the pattern
@@ -1726,10 +1846,11 @@ public final class Scanner implements Iterator<String>, Closeable {
                 position = matcher.end();
                 return this;
             }
-            if (needInput)
+            if (needInput) {
                 readInput();
-            else
+            } else {
                 throw new NoSuchElementException();
+            }
         }
     }
 
@@ -1741,9 +1862,13 @@ public final class Scanner implements Iterator<String>, Closeable {
      * behaves in exactly the same way as the invocation
      * <tt>skip(Pattern.compile(pattern))</tt>.
      *
-     * @param pattern a string specifying the pattern to skip over
+     * @param pattern
+     *         a string specifying the pattern to skip over
+     *
      * @return this scanner
-     * @throws IllegalStateException if this scanner is closed
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public Scanner skip(String pattern) {
         return skip(patternCache.forName(pattern));
@@ -1758,10 +1883,12 @@ public final class Scanner implements Iterator<String>, Closeable {
      * advance past the input that matched.
      *
      * @return true if and only if this scanner's next token is a valid
-     *         boolean value
-     * @throws IllegalStateException if this scanner is closed
+     * boolean value
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
-    public boolean hasNextBoolean()  {
+    public boolean hasNextBoolean() {
         return hasNext(boolPattern());
     }
 
@@ -1773,11 +1900,15 @@ public final class Scanner implements Iterator<String>, Closeable {
      * matched.
      *
      * @return the boolean scanned from the input
-     * @throws InputMismatchException if the next token is not a valid boolean
-     * @throws NoSuchElementException if input is exhausted
-     * @throws IllegalStateException if this scanner is closed
+     *
+     * @throws InputMismatchException
+     *         if the next token is not a valid boolean
+     * @throws NoSuchElementException
+     *         if input is exhausted
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
-    public boolean nextBoolean()  {
+    public boolean nextBoolean() {
         clearCaches();
         return Boolean.parseBoolean(next(boolPattern()));
     }
@@ -1788,8 +1919,10 @@ public final class Scanner implements Iterator<String>, Closeable {
      * {@link #nextByte} method. The scanner does not advance past any input.
      *
      * @return true if and only if this scanner's next token is a valid
-     *         byte value
-     * @throws IllegalStateException if this scanner is closed
+     * byte value
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public boolean hasNextByte() {
         return hasNextByte(defaultRadix);
@@ -1800,19 +1933,21 @@ public final class Scanner implements Iterator<String>, Closeable {
      * interpreted as a byte value in the specified radix using the
      * {@link #nextByte} method. The scanner does not advance past any input.
      *
-     * @param radix the radix used to interpret the token as a byte value
+     * @param radix
+     *         the radix used to interpret the token as a byte value
+     *
      * @return true if and only if this scanner's next token is a valid
-     *         byte value
-     * @throws IllegalStateException if this scanner is closed
+     * byte value
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public boolean hasNextByte(int radix) {
         setRadix(radix);
         boolean result = hasNext(integerPattern());
         if (result) { // Cache it
             try {
-                String s = (matcher.group(SIMPLE_GROUP_INDEX) == null) ?
-                    processIntegerToken(hasNextResult) :
-                    hasNextResult;
+                String s = (matcher.group(SIMPLE_GROUP_INDEX) == null) ? processIntegerToken(hasNextResult) : hasNextResult;
                 typeCache = Byte.parseByte(s, radix);
             } catch (NumberFormatException nfe) {
                 result = false;
@@ -1830,14 +1965,17 @@ public final class Scanner implements Iterator<String>, Closeable {
      * is the default radix of this scanner.
      *
      * @return the <tt>byte</tt> scanned from the input
+     *
      * @throws InputMismatchException
      *         if the next token does not match the <i>Integer</i>
      *         regular expression, or is out of range
-     * @throws NoSuchElementException if input is exhausted
-     * @throws IllegalStateException if this scanner is closed
+     * @throws NoSuchElementException
+     *         if input is exhausted
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public byte nextByte() {
-         return nextByte(defaultRadix);
+        return nextByte(defaultRadix);
     }
 
     /**
@@ -1858,19 +1996,23 @@ public final class Scanner implements Iterator<String>, Closeable {
      * {@link Byte#parseByte(String, int) Byte.parseByte} with the
      * specified radix.
      *
-     * @param radix the radix used to interpret the token as a byte value
+     * @param radix
+     *         the radix used to interpret the token as a byte value
+     *
      * @return the <tt>byte</tt> scanned from the input
+     *
      * @throws InputMismatchException
      *         if the next token does not match the <i>Integer</i>
      *         regular expression, or is out of range
-     * @throws NoSuchElementException if input is exhausted
-     * @throws IllegalStateException if this scanner is closed
+     * @throws NoSuchElementException
+     *         if input is exhausted
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public byte nextByte(int radix) {
         // Check cached result
-        if ((typeCache != null) && (typeCache instanceof Byte)
-            && this.radix == radix) {
-            byte val = ((Byte)typeCache).byteValue();
+        if ((typeCache != null) && (typeCache instanceof Byte) && this.radix == radix) {
+            byte val = ((Byte) typeCache).byteValue();
             useTypeCache();
             return val;
         }
@@ -1879,8 +2021,9 @@ public final class Scanner implements Iterator<String>, Closeable {
         // Search for next byte
         try {
             String s = next(integerPattern());
-            if (matcher.group(SIMPLE_GROUP_INDEX) == null)
+            if (matcher.group(SIMPLE_GROUP_INDEX) == null) {
                 s = processIntegerToken(s);
+            }
             return Byte.parseByte(s, radix);
         } catch (NumberFormatException nfe) {
             position = matcher.start(); // don't skip bad token
@@ -1894,8 +2037,10 @@ public final class Scanner implements Iterator<String>, Closeable {
      * {@link #nextShort} method. The scanner does not advance past any input.
      *
      * @return true if and only if this scanner's next token is a valid
-     *         short value in the default radix
-     * @throws IllegalStateException if this scanner is closed
+     * short value in the default radix
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public boolean hasNextShort() {
         return hasNextShort(defaultRadix);
@@ -1906,19 +2051,21 @@ public final class Scanner implements Iterator<String>, Closeable {
      * interpreted as a short value in the specified radix using the
      * {@link #nextShort} method. The scanner does not advance past any input.
      *
-     * @param radix the radix used to interpret the token as a short value
+     * @param radix
+     *         the radix used to interpret the token as a short value
+     *
      * @return true if and only if this scanner's next token is a valid
-     *         short value in the specified radix
-     * @throws IllegalStateException if this scanner is closed
+     * short value in the specified radix
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public boolean hasNextShort(int radix) {
         setRadix(radix);
         boolean result = hasNext(integerPattern());
         if (result) { // Cache it
             try {
-                String s = (matcher.group(SIMPLE_GROUP_INDEX) == null) ?
-                    processIntegerToken(hasNextResult) :
-                    hasNextResult;
+                String s = (matcher.group(SIMPLE_GROUP_INDEX) == null) ? processIntegerToken(hasNextResult) : hasNextResult;
                 typeCache = Short.parseShort(s, radix);
             } catch (NumberFormatException nfe) {
                 result = false;
@@ -1936,11 +2083,14 @@ public final class Scanner implements Iterator<String>, Closeable {
      * is the default radix of this scanner.
      *
      * @return the <tt>short</tt> scanned from the input
+     *
      * @throws InputMismatchException
      *         if the next token does not match the <i>Integer</i>
      *         regular expression, or is out of range
-     * @throws NoSuchElementException if input is exhausted
-     * @throws IllegalStateException if this scanner is closed
+     * @throws NoSuchElementException
+     *         if input is exhausted
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public short nextShort() {
         return nextShort(defaultRadix);
@@ -1964,19 +2114,23 @@ public final class Scanner implements Iterator<String>, Closeable {
      * {@link Short#parseShort(String, int) Short.parseShort} with the
      * specified radix.
      *
-     * @param radix the radix used to interpret the token as a short value
+     * @param radix
+     *         the radix used to interpret the token as a short value
+     *
      * @return the <tt>short</tt> scanned from the input
+     *
      * @throws InputMismatchException
      *         if the next token does not match the <i>Integer</i>
      *         regular expression, or is out of range
-     * @throws NoSuchElementException if input is exhausted
-     * @throws IllegalStateException if this scanner is closed
+     * @throws NoSuchElementException
+     *         if input is exhausted
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public short nextShort(int radix) {
         // Check cached result
-        if ((typeCache != null) && (typeCache instanceof Short)
-            && this.radix == radix) {
-            short val = ((Short)typeCache).shortValue();
+        if ((typeCache != null) && (typeCache instanceof Short) && this.radix == radix) {
+            short val = ((Short) typeCache).shortValue();
             useTypeCache();
             return val;
         }
@@ -1985,8 +2139,9 @@ public final class Scanner implements Iterator<String>, Closeable {
         // Search for next short
         try {
             String s = next(integerPattern());
-            if (matcher.group(SIMPLE_GROUP_INDEX) == null)
+            if (matcher.group(SIMPLE_GROUP_INDEX) == null) {
                 s = processIntegerToken(s);
+            }
             return Short.parseShort(s, radix);
         } catch (NumberFormatException nfe) {
             position = matcher.start(); // don't skip bad token
@@ -2000,8 +2155,10 @@ public final class Scanner implements Iterator<String>, Closeable {
      * {@link #nextInt} method. The scanner does not advance past any input.
      *
      * @return true if and only if this scanner's next token is a valid
-     *         int value
-     * @throws IllegalStateException if this scanner is closed
+     * int value
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public boolean hasNextInt() {
         return hasNextInt(defaultRadix);
@@ -2012,19 +2169,21 @@ public final class Scanner implements Iterator<String>, Closeable {
      * interpreted as an int value in the specified radix using the
      * {@link #nextInt} method. The scanner does not advance past any input.
      *
-     * @param radix the radix used to interpret the token as an int value
+     * @param radix
+     *         the radix used to interpret the token as an int value
+     *
      * @return true if and only if this scanner's next token is a valid
-     *         int value
-     * @throws IllegalStateException if this scanner is closed
+     * int value
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public boolean hasNextInt(int radix) {
         setRadix(radix);
         boolean result = hasNext(integerPattern());
         if (result) { // Cache it
             try {
-                String s = (matcher.group(SIMPLE_GROUP_INDEX) == null) ?
-                    processIntegerToken(hasNextResult) :
-                    hasNextResult;
+                String s = (matcher.group(SIMPLE_GROUP_INDEX) == null) ? processIntegerToken(hasNextResult) : hasNextResult;
                 typeCache = Integer.parseInt(s, radix);
             } catch (NumberFormatException nfe) {
                 result = false;
@@ -2039,7 +2198,7 @@ public final class Scanner implements Iterator<String>, Closeable {
      * before parse will accept it.
      */
     private String processIntegerToken(String token) {
-        String result = token.replaceAll(""+groupSeparator, "");
+        String result = token.replaceAll("" + groupSeparator, "");
         boolean isNegative = false;
         int preLen = negativePrefix.length();
         if ((preLen > 0) && result.startsWith(negativePrefix)) {
@@ -2049,11 +2208,11 @@ public final class Scanner implements Iterator<String>, Closeable {
         int sufLen = negativeSuffix.length();
         if ((sufLen > 0) && result.endsWith(negativeSuffix)) {
             isNegative = true;
-            result = result.substring(result.length() - sufLen,
-                                      result.length());
+            result = result.substring(result.length() - sufLen, result.length());
         }
-        if (isNegative)
+        if (isNegative) {
             result = "-" + result;
+        }
         return result;
     }
 
@@ -2066,11 +2225,14 @@ public final class Scanner implements Iterator<String>, Closeable {
      * is the default radix of this scanner.
      *
      * @return the <tt>int</tt> scanned from the input
+     *
      * @throws InputMismatchException
      *         if the next token does not match the <i>Integer</i>
      *         regular expression, or is out of range
-     * @throws NoSuchElementException if input is exhausted
-     * @throws IllegalStateException if this scanner is closed
+     * @throws NoSuchElementException
+     *         if input is exhausted
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public int nextInt() {
         return nextInt(defaultRadix);
@@ -2094,19 +2256,23 @@ public final class Scanner implements Iterator<String>, Closeable {
      * {@link Integer#parseInt(String, int) Integer.parseInt} with the
      * specified radix.
      *
-     * @param radix the radix used to interpret the token as an int value
+     * @param radix
+     *         the radix used to interpret the token as an int value
+     *
      * @return the <tt>int</tt> scanned from the input
+     *
      * @throws InputMismatchException
      *         if the next token does not match the <i>Integer</i>
      *         regular expression, or is out of range
-     * @throws NoSuchElementException if input is exhausted
-     * @throws IllegalStateException if this scanner is closed
+     * @throws NoSuchElementException
+     *         if input is exhausted
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public int nextInt(int radix) {
         // Check cached result
-        if ((typeCache != null) && (typeCache instanceof Integer)
-            && this.radix == radix) {
-            int val = ((Integer)typeCache).intValue();
+        if ((typeCache != null) && (typeCache instanceof Integer) && this.radix == radix) {
+            int val = ((Integer) typeCache).intValue();
             useTypeCache();
             return val;
         }
@@ -2115,8 +2281,9 @@ public final class Scanner implements Iterator<String>, Closeable {
         // Search for next int
         try {
             String s = next(integerPattern());
-            if (matcher.group(SIMPLE_GROUP_INDEX) == null)
+            if (matcher.group(SIMPLE_GROUP_INDEX) == null) {
                 s = processIntegerToken(s);
+            }
             return Integer.parseInt(s, radix);
         } catch (NumberFormatException nfe) {
             position = matcher.start(); // don't skip bad token
@@ -2130,8 +2297,10 @@ public final class Scanner implements Iterator<String>, Closeable {
      * {@link #nextLong} method. The scanner does not advance past any input.
      *
      * @return true if and only if this scanner's next token is a valid
-     *         long value
-     * @throws IllegalStateException if this scanner is closed
+     * long value
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public boolean hasNextLong() {
         return hasNextLong(defaultRadix);
@@ -2142,19 +2311,21 @@ public final class Scanner implements Iterator<String>, Closeable {
      * interpreted as a long value in the specified radix using the
      * {@link #nextLong} method. The scanner does not advance past any input.
      *
-     * @param radix the radix used to interpret the token as a long value
+     * @param radix
+     *         the radix used to interpret the token as a long value
+     *
      * @return true if and only if this scanner's next token is a valid
-     *         long value
-     * @throws IllegalStateException if this scanner is closed
+     * long value
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public boolean hasNextLong(int radix) {
         setRadix(radix);
         boolean result = hasNext(integerPattern());
         if (result) { // Cache it
             try {
-                String s = (matcher.group(SIMPLE_GROUP_INDEX) == null) ?
-                    processIntegerToken(hasNextResult) :
-                    hasNextResult;
+                String s = (matcher.group(SIMPLE_GROUP_INDEX) == null) ? processIntegerToken(hasNextResult) : hasNextResult;
                 typeCache = Long.parseLong(s, radix);
             } catch (NumberFormatException nfe) {
                 result = false;
@@ -2172,11 +2343,14 @@ public final class Scanner implements Iterator<String>, Closeable {
      * is the default radix of this scanner.
      *
      * @return the <tt>long</tt> scanned from the input
+     *
      * @throws InputMismatchException
      *         if the next token does not match the <i>Integer</i>
      *         regular expression, or is out of range
-     * @throws NoSuchElementException if input is exhausted
-     * @throws IllegalStateException if this scanner is closed
+     * @throws NoSuchElementException
+     *         if input is exhausted
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public long nextLong() {
         return nextLong(defaultRadix);
@@ -2200,19 +2374,23 @@ public final class Scanner implements Iterator<String>, Closeable {
      * {@link Long#parseLong(String, int) Long.parseLong} with the
      * specified radix.
      *
-     * @param radix the radix used to interpret the token as an int value
+     * @param radix
+     *         the radix used to interpret the token as an int value
+     *
      * @return the <tt>long</tt> scanned from the input
+     *
      * @throws InputMismatchException
      *         if the next token does not match the <i>Integer</i>
      *         regular expression, or is out of range
-     * @throws NoSuchElementException if input is exhausted
-     * @throws IllegalStateException if this scanner is closed
+     * @throws NoSuchElementException
+     *         if input is exhausted
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public long nextLong(int radix) {
         // Check cached result
-        if ((typeCache != null) && (typeCache instanceof Long)
-            && this.radix == radix) {
-            long val = ((Long)typeCache).longValue();
+        if ((typeCache != null) && (typeCache instanceof Long) && this.radix == radix) {
+            long val = ((Long) typeCache).longValue();
             useTypeCache();
             return val;
         }
@@ -2220,8 +2398,9 @@ public final class Scanner implements Iterator<String>, Closeable {
         clearCaches();
         try {
             String s = next(integerPattern());
-            if (matcher.group(SIMPLE_GROUP_INDEX) == null)
+            if (matcher.group(SIMPLE_GROUP_INDEX) == null) {
                 s = processIntegerToken(s);
+            }
             return Long.parseLong(s, radix);
         } catch (NumberFormatException nfe) {
             position = matcher.start(); // don't skip bad token
@@ -2239,8 +2418,9 @@ public final class Scanner implements Iterator<String>, Closeable {
      */
     private String processFloatToken(String token) {
         String result = token.replaceAll(groupSeparator, "");
-        if (!decimalSeparator.equals("\\."))
+        if (!decimalSeparator.equals("\\.")) {
             result = result.replaceAll(decimalSeparator, ".");
+        }
         boolean isNegative = false;
         int preLen = negativePrefix.length();
         if ((preLen > 0) && result.startsWith(negativePrefix)) {
@@ -2250,28 +2430,31 @@ public final class Scanner implements Iterator<String>, Closeable {
         int sufLen = negativeSuffix.length();
         if ((sufLen > 0) && result.endsWith(negativeSuffix)) {
             isNegative = true;
-            result = result.substring(result.length() - sufLen,
-                                      result.length());
+            result = result.substring(result.length() - sufLen, result.length());
         }
-        if (result.equals(nanString))
+        if (result.equals(nanString)) {
             result = "NaN";
-        if (result.equals(infinityString))
+        }
+        if (result.equals(infinityString)) {
             result = "Infinity";
-        if (isNegative)
+        }
+        if (isNegative) {
             result = "-" + result;
+        }
 
         // Translate non-ASCII digits
         Matcher m = NON_ASCII_DIGIT.matcher(result);
         if (m.find()) {
             StringBuilder inASCII = new StringBuilder();
-            for (int i=0; i<result.length(); i++) {
+            for (int i = 0; i < result.length(); i++) {
                 char nextChar = result.charAt(i);
                 if (Character.isDigit(nextChar)) {
                     int d = Character.digit(nextChar, 10);
-                    if (d != -1)
+                    if (d != -1) {
                         inASCII.append(d);
-                    else
+                    } else {
                         inASCII.append(nextChar);
+                    }
                 } else {
                     inASCII.append(nextChar);
                 }
@@ -2288,8 +2471,10 @@ public final class Scanner implements Iterator<String>, Closeable {
      * method. The scanner does not advance past any input.
      *
      * @return true if and only if this scanner's next token is a valid
-     *         float value
-     * @throws IllegalStateException if this scanner is closed
+     * float value
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public boolean hasNextFloat() {
         setRadix(10);
@@ -2326,16 +2511,19 @@ public final class Scanner implements Iterator<String>, Closeable {
      * appropriate.
      *
      * @return the <tt>float</tt> scanned from the input
+     *
      * @throws InputMismatchException
      *         if the next token does not match the <i>Float</i>
      *         regular expression, or is out of range
-     * @throws NoSuchElementException if input is exhausted
-     * @throws IllegalStateException if this scanner is closed
+     * @throws NoSuchElementException
+     *         if input is exhausted
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public float nextFloat() {
         // Check cached result
         if ((typeCache != null) && (typeCache instanceof Float)) {
-            float val = ((Float)typeCache).floatValue();
+            float val = ((Float) typeCache).floatValue();
             useTypeCache();
             return val;
         }
@@ -2355,8 +2543,10 @@ public final class Scanner implements Iterator<String>, Closeable {
      * method. The scanner does not advance past any input.
      *
      * @return true if and only if this scanner's next token is a valid
-     *         double value
-     * @throws IllegalStateException if this scanner is closed
+     * double value
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public boolean hasNextDouble() {
         setRadix(10);
@@ -2393,16 +2583,19 @@ public final class Scanner implements Iterator<String>, Closeable {
      * appropriate.
      *
      * @return the <tt>double</tt> scanned from the input
+     *
      * @throws InputMismatchException
      *         if the next token does not match the <i>Float</i>
      *         regular expression, or is out of range
-     * @throws NoSuchElementException if the input is exhausted
-     * @throws IllegalStateException if this scanner is closed
+     * @throws NoSuchElementException
+     *         if the input is exhausted
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public double nextDouble() {
         // Check cached result
         if ((typeCache != null) && (typeCache instanceof Double)) {
-            double val = ((Double)typeCache).doubleValue();
+            double val = ((Double) typeCache).doubleValue();
             useTypeCache();
             return val;
         }
@@ -2426,8 +2619,10 @@ public final class Scanner implements Iterator<String>, Closeable {
      * input.
      *
      * @return true if and only if this scanner's next token is a valid
-     *         <code>BigInteger</code>
-     * @throws IllegalStateException if this scanner is closed
+     * <code>BigInteger</code>
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public boolean hasNextBigInteger() {
         return hasNextBigInteger(defaultRadix);
@@ -2439,19 +2634,21 @@ public final class Scanner implements Iterator<String>, Closeable {
      * the {@link #nextBigInteger} method. The scanner does not advance past
      * any input.
      *
-     * @param radix the radix used to interpret the token as an integer
+     * @param radix
+     *         the radix used to interpret the token as an integer
+     *
      * @return true if and only if this scanner's next token is a valid
-     *         <code>BigInteger</code>
-     * @throws IllegalStateException if this scanner is closed
+     * <code>BigInteger</code>
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public boolean hasNextBigInteger(int radix) {
         setRadix(radix);
         boolean result = hasNext(integerPattern());
         if (result) { // Cache it
             try {
-                String s = (matcher.group(SIMPLE_GROUP_INDEX) == null) ?
-                    processIntegerToken(hasNextResult) :
-                    hasNextResult;
+                String s = (matcher.group(SIMPLE_GROUP_INDEX) == null) ? processIntegerToken(hasNextResult) : hasNextResult;
                 typeCache = new BigInteger(s, radix);
             } catch (NumberFormatException nfe) {
                 result = false;
@@ -2470,11 +2667,14 @@ public final class Scanner implements Iterator<String>, Closeable {
      * is the default radix of this scanner.
      *
      * @return the <tt>BigInteger</tt> scanned from the input
+     *
      * @throws InputMismatchException
      *         if the next token does not match the <i>Integer</i>
      *         regular expression, or is out of range
-     * @throws NoSuchElementException if the input is exhausted
-     * @throws IllegalStateException if this scanner is closed
+     * @throws NoSuchElementException
+     *         if the input is exhausted
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public BigInteger nextBigInteger() {
         return nextBigInteger(defaultRadix);
@@ -2493,19 +2693,23 @@ public final class Scanner implements Iterator<String>, Closeable {
      * java.math.BigInteger#BigInteger(java.lang.String)
      * BigInteger(String, int)} constructor with the specified radix.
      *
-     * @param radix the radix used to interpret the token
+     * @param radix
+     *         the radix used to interpret the token
+     *
      * @return the <tt>BigInteger</tt> scanned from the input
+     *
      * @throws InputMismatchException
      *         if the next token does not match the <i>Integer</i>
      *         regular expression, or is out of range
-     * @throws NoSuchElementException if the input is exhausted
-     * @throws IllegalStateException if this scanner is closed
+     * @throws NoSuchElementException
+     *         if the input is exhausted
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public BigInteger nextBigInteger(int radix) {
         // Check cached result
-        if ((typeCache != null) && (typeCache instanceof BigInteger)
-            && this.radix == radix) {
-            BigInteger val = (BigInteger)typeCache;
+        if ((typeCache != null) && (typeCache instanceof BigInteger) && this.radix == radix) {
+            BigInteger val = (BigInteger) typeCache;
             useTypeCache();
             return val;
         }
@@ -2514,8 +2718,9 @@ public final class Scanner implements Iterator<String>, Closeable {
         // Search for next int
         try {
             String s = next(integerPattern());
-            if (matcher.group(SIMPLE_GROUP_INDEX) == null)
+            if (matcher.group(SIMPLE_GROUP_INDEX) == null) {
                 s = processIntegerToken(s);
+            }
             return new BigInteger(s, radix);
         } catch (NumberFormatException nfe) {
             position = matcher.start(); // don't skip bad token
@@ -2530,8 +2735,10 @@ public final class Scanner implements Iterator<String>, Closeable {
      * input.
      *
      * @return true if and only if this scanner's next token is a valid
-     *         <code>BigDecimal</code>
-     * @throws IllegalStateException if this scanner is closed
+     * <code>BigDecimal</code>
+     *
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public boolean hasNextBigDecimal() {
         setRadix(10);
@@ -2561,16 +2768,19 @@ public final class Scanner implements Iterator<String>, Closeable {
      * constructor.
      *
      * @return the <tt>BigDecimal</tt> scanned from the input
+     *
      * @throws InputMismatchException
      *         if the next token does not match the <i>Decimal</i>
      *         regular expression, or is out of range
-     * @throws NoSuchElementException if the input is exhausted
-     * @throws IllegalStateException if this scanner is closed
+     * @throws NoSuchElementException
+     *         if the input is exhausted
+     * @throws IllegalStateException
+     *         if this scanner is closed
      */
     public BigDecimal nextBigDecimal() {
         // Check cached result
         if ((typeCache != null) && (typeCache instanceof BigDecimal)) {
-            BigDecimal val = (BigDecimal)typeCache;
+            BigDecimal val = (BigDecimal) typeCache;
             useTypeCache();
             return val;
         }

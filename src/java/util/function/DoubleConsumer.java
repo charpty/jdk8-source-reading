@@ -44,7 +44,8 @@ public interface DoubleConsumer {
     /**
      * Performs this operation on the given argument.
      *
-     * @param value the input argument
+     * @param value
+     *         the input argument
      */
     void accept(double value);
 
@@ -55,13 +56,20 @@ public interface DoubleConsumer {
      * composed operation.  If performing this operation throws an exception,
      * the {@code after} operation will not be performed.
      *
-     * @param after the operation to perform after this operation
+     * @param after
+     *         the operation to perform after this operation
+     *
      * @return a composed {@code DoubleConsumer} that performs in sequence this
      * operation followed by the {@code after} operation
-     * @throws NullPointerException if {@code after} is null
+     *
+     * @throws NullPointerException
+     *         if {@code after} is null
      */
     default DoubleConsumer andThen(DoubleConsumer after) {
         Objects.requireNonNull(after);
-        return (double t) -> { accept(t); after.accept(t); };
+        return (double t) -> {
+            accept(t);
+            after.accept(t);
+        };
     }
 }

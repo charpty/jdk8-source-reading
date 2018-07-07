@@ -31,7 +31,6 @@ package java.util;
  *
  * @author Josh Bloch
  * @since 1.5
- * @serial exclude
  */
 class RegularEnumSet<E extends Enum<E>> extends EnumSet<E> {
     private static final long serialVersionUID = 3411599620347842686L;
@@ -41,17 +40,18 @@ class RegularEnumSet<E extends Enum<E>> extends EnumSet<E> {
      */
     private long elements = 0L;
 
-    RegularEnumSet(Class<E>elementType, Enum<?>[] universe) {
+    RegularEnumSet(Class<E> elementType, Enum<?>[] universe) {
         super(elementType, universe);
     }
 
     void addRange(E from, E to) {
-        elements = (-1L >>>  (from.ordinal() - to.ordinal() - 1)) << from.ordinal();
+        elements = (-1L >>> (from.ordinal() - to.ordinal() - 1)) << from.ordinal();
     }
 
     void addAll() {
-        if (universe.length != 0)
+        if (universe.length != 0) {
             elements = -1L >>> -universe.length;
+        }
     }
 
     void complement() {
@@ -98,16 +98,18 @@ class RegularEnumSet<E extends Enum<E>> extends EnumSet<E> {
 
         @SuppressWarnings("unchecked")
         public E next() {
-            if (unseen == 0)
+            if (unseen == 0) {
                 throw new NoSuchElementException();
+            }
             lastReturned = unseen & -unseen;
             unseen -= lastReturned;
             return (E) universe[Long.numberOfTrailingZeros(lastReturned)];
         }
 
         public void remove() {
-            if (lastReturned == 0)
+            if (lastReturned == 0) {
                 throw new IllegalStateException();
+            }
             elements &= ~lastReturned;
             lastReturned = 0;
         }
@@ -134,17 +136,21 @@ class RegularEnumSet<E extends Enum<E>> extends EnumSet<E> {
     /**
      * Returns <tt>true</tt> if this set contains the specified element.
      *
-     * @param e element to be checked for containment in this collection
+     * @param e
+     *         element to be checked for containment in this collection
+     *
      * @return <tt>true</tt> if this set contains the specified element
      */
     public boolean contains(Object e) {
-        if (e == null)
+        if (e == null) {
             return false;
+        }
         Class<?> eClass = e.getClass();
-        if (eClass != elementType && eClass.getSuperclass() != elementType)
+        if (eClass != elementType && eClass.getSuperclass() != elementType) {
             return false;
+        }
 
-        return (elements & (1L << ((Enum<?>)e).ordinal())) != 0;
+        return (elements & (1L << ((Enum<?>) e).ordinal())) != 0;
     }
 
     // Modification Operations
@@ -152,34 +158,41 @@ class RegularEnumSet<E extends Enum<E>> extends EnumSet<E> {
     /**
      * Adds the specified element to this set if it is not already present.
      *
-     * @param e element to be added to this set
+     * @param e
+     *         element to be added to this set
+     *
      * @return <tt>true</tt> if the set changed as a result of the call
      *
-     * @throws NullPointerException if <tt>e</tt> is null
+     * @throws NullPointerException
+     *         if <tt>e</tt> is null
      */
     public boolean add(E e) {
         typeCheck(e);
 
         long oldElements = elements;
-        elements |= (1L << ((Enum<?>)e).ordinal());
+        elements |= (1L << ((Enum<?>) e).ordinal());
         return elements != oldElements;
     }
 
     /**
      * Removes the specified element from this set if it is present.
      *
-     * @param e element to be removed from this set, if present
+     * @param e
+     *         element to be removed from this set, if present
+     *
      * @return <tt>true</tt> if the set contained the specified element
      */
     public boolean remove(Object e) {
-        if (e == null)
+        if (e == null) {
             return false;
+        }
         Class<?> eClass = e.getClass();
-        if (eClass != elementType && eClass.getSuperclass() != elementType)
+        if (eClass != elementType && eClass.getSuperclass() != elementType) {
             return false;
+        }
 
         long oldElements = elements;
-        elements &= ~(1L << ((Enum<?>)e).ordinal());
+        elements &= ~(1L << ((Enum<?>) e).ordinal());
         return elements != oldElements;
     }
 
@@ -189,18 +202,24 @@ class RegularEnumSet<E extends Enum<E>> extends EnumSet<E> {
      * Returns <tt>true</tt> if this set contains all of the elements
      * in the specified collection.
      *
-     * @param c collection to be checked for containment in this set
+     * @param c
+     *         collection to be checked for containment in this set
+     *
      * @return <tt>true</tt> if this set contains all of the elements
-     *        in the specified collection
-     * @throws NullPointerException if the specified collection is null
+     * in the specified collection
+     *
+     * @throws NullPointerException
+     *         if the specified collection is null
      */
     public boolean containsAll(Collection<?> c) {
-        if (!(c instanceof RegularEnumSet))
+        if (!(c instanceof RegularEnumSet)) {
             return super.containsAll(c);
+        }
 
-        RegularEnumSet<?> es = (RegularEnumSet<?>)c;
-        if (es.elementType != elementType)
+        RegularEnumSet<?> es = (RegularEnumSet<?>) c;
+        if (es.elementType != elementType) {
             return es.isEmpty();
+        }
 
         return (es.elements & ~elements) == 0;
     }
@@ -208,22 +227,27 @@ class RegularEnumSet<E extends Enum<E>> extends EnumSet<E> {
     /**
      * Adds all of the elements in the specified collection to this set.
      *
-     * @param c collection whose elements are to be added to this set
+     * @param c
+     *         collection whose elements are to be added to this set
+     *
      * @return <tt>true</tt> if this set changed as a result of the call
-     * @throws NullPointerException if the specified collection or any
-     *     of its elements are null
+     *
+     * @throws NullPointerException
+     *         if the specified collection or any
+     *         of its elements are null
      */
     public boolean addAll(Collection<? extends E> c) {
-        if (!(c instanceof RegularEnumSet))
+        if (!(c instanceof RegularEnumSet)) {
             return super.addAll(c);
+        }
 
-        RegularEnumSet<?> es = (RegularEnumSet<?>)c;
+        RegularEnumSet<?> es = (RegularEnumSet<?>) c;
         if (es.elementType != elementType) {
-            if (es.isEmpty())
+            if (es.isEmpty()) {
                 return false;
-            else
-                throw new ClassCastException(
-                    es.elementType + " != " + elementType);
+            } else {
+                throw new ClassCastException(es.elementType + " != " + elementType);
+            }
         }
 
         long oldElements = elements;
@@ -235,17 +259,23 @@ class RegularEnumSet<E extends Enum<E>> extends EnumSet<E> {
      * Removes from this set all of its elements that are contained in
      * the specified collection.
      *
-     * @param c elements to be removed from this set
+     * @param c
+     *         elements to be removed from this set
+     *
      * @return <tt>true</tt> if this set changed as a result of the call
-     * @throws NullPointerException if the specified collection is null
+     *
+     * @throws NullPointerException
+     *         if the specified collection is null
      */
     public boolean removeAll(Collection<?> c) {
-        if (!(c instanceof RegularEnumSet))
+        if (!(c instanceof RegularEnumSet)) {
             return super.removeAll(c);
+        }
 
-        RegularEnumSet<?> es = (RegularEnumSet<?>)c;
-        if (es.elementType != elementType)
+        RegularEnumSet<?> es = (RegularEnumSet<?>) c;
+        if (es.elementType != elementType) {
             return false;
+        }
 
         long oldElements = elements;
         elements &= ~es.elements;
@@ -256,15 +286,20 @@ class RegularEnumSet<E extends Enum<E>> extends EnumSet<E> {
      * Retains only the elements in this set that are contained in the
      * specified collection.
      *
-     * @param c elements to be retained in this set
+     * @param c
+     *         elements to be retained in this set
+     *
      * @return <tt>true</tt> if this set changed as a result of the call
-     * @throws NullPointerException if the specified collection is null
+     *
+     * @throws NullPointerException
+     *         if the specified collection is null
      */
     public boolean retainAll(Collection<?> c) {
-        if (!(c instanceof RegularEnumSet))
+        if (!(c instanceof RegularEnumSet)) {
             return super.retainAll(c);
+        }
 
-        RegularEnumSet<?> es = (RegularEnumSet<?>)c;
+        RegularEnumSet<?> es = (RegularEnumSet<?>) c;
         if (es.elementType != elementType) {
             boolean changed = (elements != 0);
             elements = 0;
@@ -289,16 +324,20 @@ class RegularEnumSet<E extends Enum<E>> extends EnumSet<E> {
      * the same size, and every member of the given set is contained in
      * this set.
      *
-     * @param o object to be compared for equality with this set
+     * @param o
+     *         object to be compared for equality with this set
+     *
      * @return <tt>true</tt> if the specified object is equal to this set
      */
     public boolean equals(Object o) {
-        if (!(o instanceof RegularEnumSet))
+        if (!(o instanceof RegularEnumSet)) {
             return super.equals(o);
+        }
 
-        RegularEnumSet<?> es = (RegularEnumSet<?>)o;
-        if (es.elementType != elementType)
+        RegularEnumSet<?> es = (RegularEnumSet<?>) o;
+        if (es.elementType != elementType) {
             return elements == 0 && es.elements == 0;
+        }
         return es.elements == elements;
     }
 }

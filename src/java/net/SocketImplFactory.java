@@ -31,18 +31,18 @@ package java.net;
  * {@code ServerSocket} to create actual socket
  * implementations.
  *
- * @author  Arthur van Hoff
- * @see     java.net.Socket
- * @see     java.net.ServerSocket
- * @since   JDK1.0
+ * @author Arthur van Hoff
+ * @see java.net.Socket
+ * @see java.net.ServerSocket
+ * @since JDK1.0
  */
-public
-interface SocketImplFactory {
+public interface SocketImplFactory {
     /**
      * Creates a new {@code SocketImpl} instance.
      *
-     * @return  a new instance of {@code SocketImpl}.
-     * @see     java.net.SocketImpl
+     * @return a new instance of {@code SocketImpl}.
+     *
+     * @see java.net.SocketImpl
      */
     SocketImpl createSocketImpl();
 }

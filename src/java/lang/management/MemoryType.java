@@ -28,8 +28,8 @@ package java.lang.management;
 /**
  * Types of {@link MemoryPoolMXBean memory pools}.
  *
- * @author  Mandy Chung
- * @since   1.5
+ * @author Mandy Chung
+ * @since 1.5
  */
 public enum MemoryType {
 
@@ -63,6 +63,7 @@ public enum MemoryType {
 
     /**
      * Returns the string representation of this <tt>MemoryType</tt>.
+     *
      * @return the string representation of this <tt>MemoryType</tt>.
      */
     public String toString() {

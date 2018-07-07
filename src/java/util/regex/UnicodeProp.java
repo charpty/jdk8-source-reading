@@ -69,10 +69,8 @@ enum UnicodeProp {
     WHITE_SPACE {
         // \p{Whitespace}
         public boolean is(int ch) {
-            return ((((1 << Character.SPACE_SEPARATOR) |
-                      (1 << Character.LINE_SEPARATOR) |
-                      (1 << Character.PARAGRAPH_SEPARATOR)) >> Character.getType(ch)) & 1)
-                   != 0 || (ch >= 0x9 && ch <= 0xd) || (ch == 0x85);
+            return ((((1 << Character.SPACE_SEPARATOR) | (1 << Character.LINE_SEPARATOR) | (1 << Character.PARAGRAPH_SEPARATOR)) >> Character.getType(ch)) & 1)
+                    != 0 || (ch >= 0x9 && ch <= 0xd) || (ch == 0x85);
         }
     },
 
@@ -86,14 +84,9 @@ enum UnicodeProp {
     PUNCTUATION {
         // \p{gc=Punctuation}
         public boolean is(int ch) {
-            return ((((1 << Character.CONNECTOR_PUNCTUATION) |
-                      (1 << Character.DASH_PUNCTUATION) |
-                      (1 << Character.START_PUNCTUATION) |
-                      (1 << Character.END_PUNCTUATION) |
-                      (1 << Character.OTHER_PUNCTUATION) |
-                      (1 << Character.INITIAL_QUOTE_PUNCTUATION) |
-                      (1 << Character.FINAL_QUOTE_PUNCTUATION)) >> Character.getType(ch)) & 1)
-                   != 0;
+            return ((((1 << Character.CONNECTOR_PUNCTUATION) | (1 << Character.DASH_PUNCTUATION) | (1 << Character.START_PUNCTUATION) | (1
+                    << Character.END_PUNCTUATION) | (1 << Character.OTHER_PUNCTUATION) | (1 << Character.INITIAL_QUOTE_PUNCTUATION) | (1
+                    << Character.FINAL_QUOTE_PUNCTUATION)) >> Character.getType(ch)) & 1) != 0;
         }
     },
 
@@ -101,13 +94,8 @@ enum UnicodeProp {
         // \p{gc=Decimal_Number}
         // \p{Hex_Digit}    -> PropList.txt: Hex_Digit
         public boolean is(int ch) {
-            return DIGIT.is(ch) ||
-                   (ch >= 0x0030 && ch <= 0x0039) ||
-                   (ch >= 0x0041 && ch <= 0x0046) ||
-                   (ch >= 0x0061 && ch <= 0x0066) ||
-                   (ch >= 0xFF10 && ch <= 0xFF19) ||
-                   (ch >= 0xFF21 && ch <= 0xFF26) ||
-                   (ch >= 0xFF41 && ch <= 0xFF46);
+            return DIGIT.is(ch) || (ch >= 0x0030 && ch <= 0x0039) || (ch >= 0x0041 && ch <= 0x0046) || (ch >= 0x0061 && ch <= 0x0066) || (ch >= 0xFF10
+                    && ch <= 0xFF19) || (ch >= 0xFF21 && ch <= 0xFF26) || (ch >= 0xFF41 && ch <= 0xFF46);
         }
     },
 
@@ -145,8 +133,7 @@ enum UnicodeProp {
         //  \p{gc=Line_Separator}
         //  \p{gc=Paragraph_Separator}]
         public boolean is(int ch) {
-            return Character.getType(ch) == Character.SPACE_SEPARATOR ||
-                   ch == 0x9; // \N{HT}
+            return Character.getType(ch) == Character.SPACE_SEPARATOR || ch == 0x9; // \N{HT}
         }
     },
 
@@ -157,13 +144,8 @@ enum UnicodeProp {
         //  \p{gc=Surrogate}
         //  \p{gc=Unassigned}]
         public boolean is(int ch) {
-            return ((((1 << Character.SPACE_SEPARATOR) |
-                      (1 << Character.LINE_SEPARATOR) |
-                      (1 << Character.PARAGRAPH_SEPARATOR) |
-                      (1 << Character.CONTROL) |
-                      (1 << Character.SURROGATE) |
-                      (1 << Character.UNASSIGNED)) >> Character.getType(ch)) & 1)
-                   == 0;
+            return ((((1 << Character.SPACE_SEPARATOR) | (1 << Character.LINE_SEPARATOR) | (1 << Character.PARAGRAPH_SEPARATOR) | (1 << Character.CONTROL) | (1
+                    << Character.SURROGATE) | (1 << Character.UNASSIGNED)) >> Character.getType(ch)) & 1) == 0;
         }
     },
 
@@ -184,33 +166,28 @@ enum UnicodeProp {
         //  \p{Join_Control}    200C..200D
 
         public boolean is(int ch) {
-            return ALPHABETIC.is(ch) ||
-                   ((((1 << Character.NON_SPACING_MARK) |
-                      (1 << Character.ENCLOSING_MARK) |
-                      (1 << Character.COMBINING_SPACING_MARK) |
-                      (1 << Character.DECIMAL_DIGIT_NUMBER) |
-                      (1 << Character.CONNECTOR_PUNCTUATION)) >> Character.getType(ch)) & 1)
-                   != 0 ||
-                   JOIN_CONTROL.is(ch);
+            return ALPHABETIC.is(ch) || ((((1 << Character.NON_SPACING_MARK) | (1 << Character.ENCLOSING_MARK) | (1 << Character.COMBINING_SPACING_MARK) | (1
+                    << Character.DECIMAL_DIGIT_NUMBER) | (1 << Character.CONNECTOR_PUNCTUATION)) >> Character.getType(ch)) & 1) != 0 || JOIN_CONTROL.is(ch);
         }
     },
 
     JOIN_CONTROL {
         //  200C..200D    PropList.txt:Join_Control
         public boolean is(int ch) {
-           return (ch == 0x200C || ch == 0x200D);
+            return (ch == 0x200C || ch == 0x200D);
         }
     };
 
     private final static HashMap<String, String> posix = new HashMap<>();
     private final static HashMap<String, String> aliases = new HashMap<>();
+
     static {
         posix.put("ALPHA", "ALPHABETIC");
         posix.put("LOWER", "LOWERCASE");
         posix.put("UPPER", "UPPERCASE");
         posix.put("SPACE", "WHITE_SPACE");
         posix.put("PUNCT", "PUNCTUATION");
-        posix.put("XDIGIT","HEX_DIGIT");
+        posix.put("XDIGIT", "HEX_DIGIT");
         posix.put("ALNUM", "ALNUM");
         posix.put("CNTRL", "CONTROL");
         posix.put("DIGIT", "DIGIT");
@@ -219,7 +196,7 @@ enum UnicodeProp {
         posix.put("PRINT", "PRINT");
 
         aliases.put("WHITESPACE", "WHITE_SPACE");
-        aliases.put("HEXDIGIT","HEX_DIGIT");
+        aliases.put("HEXDIGIT", "HEX_DIGIT");
         aliases.put("NONCHARACTERCODEPOINT", "NONCHARACTER_CODE_POINT");
         aliases.put("JOINCONTROL", "JOIN_CONTROL");
     }
@@ -227,19 +204,22 @@ enum UnicodeProp {
     public static UnicodeProp forName(String propName) {
         propName = propName.toUpperCase(Locale.ENGLISH);
         String alias = aliases.get(propName);
-        if (alias != null)
+        if (alias != null) {
             propName = alias;
+        }
         try {
-            return valueOf (propName);
-        } catch (IllegalArgumentException x) {}
+            return valueOf(propName);
+        } catch (IllegalArgumentException x) {
+        }
         return null;
     }
 
     public static UnicodeProp forPOSIXName(String propName) {
         propName = posix.get(propName.toUpperCase(Locale.ENGLISH));
-        if (propName == null)
+        if (propName == null) {
             return null;
-        return valueOf (propName);
+        }
+        return valueOf(propName);
     }
 
     public abstract boolean is(int ch);

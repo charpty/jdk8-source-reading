@@ -27,43 +27,16 @@
 
 package java.nio;
 
-
 class ByteBufferAsCharBufferRL                  // package-private
-    extends ByteBufferAsCharBufferL
-{
-
-
-
-
-
-
-
+        extends ByteBufferAsCharBufferL {
 
     ByteBufferAsCharBufferRL(ByteBuffer bb) {   // package-private
-
-
-
-
-
-
-
-
-
-
-
 
         super(bb);
 
     }
 
-    ByteBufferAsCharBufferRL(ByteBuffer bb,
-                                     int mark, int pos, int lim, int cap,
-                                     int off)
-    {
-
-
-
-
+    ByteBufferAsCharBufferRL(ByteBuffer bb, int mark, int pos, int lim, int cap, int off) {
 
         super(bb, mark, pos, lim, cap, off);
 
@@ -80,53 +53,16 @@ class ByteBufferAsCharBufferRL                  // package-private
     }
 
     public CharBuffer duplicate() {
-        return new ByteBufferAsCharBufferRL(bb,
-                                                    this.markValue(),
-                                                    this.position(),
-                                                    this.limit(),
-                                                    this.capacity(),
-                                                    offset);
+        return new ByteBufferAsCharBufferRL(bb, this.markValue(), this.position(), this.limit(), this.capacity(), offset);
     }
 
     public CharBuffer asReadOnlyBuffer() {
-
-
-
-
-
-
-
 
         return duplicate();
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public CharBuffer put(char x) {
-
-
-
 
         throw new ReadOnlyBufferException();
 
@@ -134,30 +70,11 @@ class ByteBufferAsCharBufferRL                  // package-private
 
     public CharBuffer put(int i, char x) {
 
-
-
-
         throw new ReadOnlyBufferException();
 
     }
 
     public CharBuffer compact() {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         throw new ReadOnlyBufferException();
 
@@ -171,11 +88,10 @@ class ByteBufferAsCharBufferRL                  // package-private
         return true;
     }
 
-
-
     public String toString(int start, int end) {
-        if ((end > limit()) || (start > end))
+        if ((end > limit()) || (start > end)) {
             throw new IndexOutOfBoundsException();
+        }
         try {
             int len = end - start;
             char[] ca = new char[len];
@@ -190,7 +106,6 @@ class ByteBufferAsCharBufferRL                  // package-private
         }
     }
 
-
     // --- Methods to support CharSequence ---
 
     public CharBuffer subSequence(int start, int end) {
@@ -200,23 +115,13 @@ class ByteBufferAsCharBufferRL                  // package-private
         pos = (pos <= lim ? pos : lim);
         int len = lim - pos;
 
-        if ((start < 0) || (end > len) || (start > end))
+        if ((start < 0) || (end > len) || (start > end)) {
             throw new IndexOutOfBoundsException();
-        return new ByteBufferAsCharBufferRL(bb,
-                                                  -1,
-                                                  pos + start,
-                                                  pos + end,
-                                                  capacity(),
-                                                  offset);
+        }
+        return new ByteBufferAsCharBufferRL(bb, -1, pos + start, pos + end, capacity(), offset);
     }
 
-
-
-
     public ByteOrder order() {
-
-
-
 
         return ByteOrder.LITTLE_ENDIAN;
 

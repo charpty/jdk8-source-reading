@@ -46,15 +46,15 @@ public class IllegalFormatConversionException extends IllegalFormatException {
      * Constructs an instance of this class with the mismatched conversion and
      * the corresponding argument class.
      *
-     * @param  c
+     * @param c
      *         Inapplicable conversion
-     *
-     * @param  arg
+     * @param arg
      *         Class of the mismatched argument
      */
     public IllegalFormatConversionException(char c, Class<?> arg) {
-        if (arg == null)
+        if (arg == null) {
             throw new NullPointerException();
+        }
         this.c = c;
         this.arg = arg;
     }
@@ -62,7 +62,7 @@ public class IllegalFormatConversionException extends IllegalFormatException {
     /**
      * Returns the inapplicable conversion.
      *
-     * @return  The inapplicable conversion
+     * @return The inapplicable conversion
      */
     public char getConversion() {
         return c;
@@ -71,7 +71,7 @@ public class IllegalFormatConversionException extends IllegalFormatException {
     /**
      * Returns the class of the mismatched argument.
      *
-     * @return   The class of the mismatched argument
+     * @return The class of the mismatched argument
      */
     public Class<?> getArgumentClass() {
         return arg;

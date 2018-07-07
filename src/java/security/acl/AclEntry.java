@@ -25,8 +25,8 @@
 
 package java.security.acl;
 
-import java.util.Enumeration;
 import java.security.Principal;
+import java.util.Enumeration;
 
 /**
  * This is the interface used for representing one entry in an Access
@@ -47,9 +47,8 @@ import java.security.Principal;
  * {@link #setNegativePermissions() setNegativePermissions}
  * method is called on it.
  *
+ * @author Satish Dharmaraj
  * @see java.security.acl.Acl
- *
- * @author      Satish Dharmaraj
  */
 public interface AclEntry extends Cloneable {
 
@@ -58,7 +57,8 @@ public interface AclEntry extends Cloneable {
      * by this ACL entry. If a principal was already set for this ACL entry,
      * false is returned, otherwise true is returned.
      *
-     * @param user the principal to be set for this entry.
+     * @param user
+     *         the principal to be set for this entry.
      *
      * @return true if the principal is set, false if there was
      * already a principal set for this entry.
@@ -102,8 +102,9 @@ public interface AclEntry extends Cloneable {
      * Adds the specified permission to this ACL entry. Note: An entry can
      * have multiple permissions.
      *
-     * @param permission the permission to be associated with
-     * the principal in this entry.
+     * @param permission
+     *         the permission to be associated with
+     *         the principal in this entry.
      *
      * @return true if the permission was added, false if the
      * permission was already part of this entry's permission set.
@@ -113,7 +114,8 @@ public interface AclEntry extends Cloneable {
     /**
      * Removes the specified permission from this ACL entry.
      *
-     * @param permission the permission to be removed from this entry.
+     * @param permission
+     *         the permission to be removed from this entry.
      *
      * @return true if the permission is removed, false if the
      * permission was not part of this entry's permission set.
@@ -124,7 +126,8 @@ public interface AclEntry extends Cloneable {
      * Checks if the specified permission is part of the
      * permission set in this entry.
      *
-     * @param permission the permission to be checked for.
+     * @param permission
+     *         the permission to be checked for.
      *
      * @return true if the permission is part of the
      * permission set in this entry, false otherwise.

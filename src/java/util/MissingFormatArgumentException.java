@@ -46,19 +46,20 @@ public class MissingFormatArgumentException extends IllegalFormatException {
      * Constructs an instance of this class with the unmatched format
      * specifier.
      *
-     * @param  s
+     * @param s
      *         Format specifier which does not have a corresponding argument
      */
     public MissingFormatArgumentException(String s) {
-        if (s == null)
+        if (s == null) {
             throw new NullPointerException();
+        }
         this.s = s;
     }
 
     /**
      * Returns the unmatched format specifier.
      *
-     * @return  The unmatched format specifier
+     * @return The unmatched format specifier
      */
     public String getFormatSpecifier() {
         return s;

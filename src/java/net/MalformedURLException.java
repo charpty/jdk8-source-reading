@@ -32,8 +32,8 @@ import java.io.IOException;
  * legal protocol could be found in a specification string or the
  * string could not be parsed.
  *
- * @author  Arthur van Hoff
- * @since   JDK1.0
+ * @author Arthur van Hoff
+ * @since JDK1.0
  */
 public class MalformedURLException extends IOException {
     private static final long serialVersionUID = -182787522200415866L;
@@ -48,7 +48,8 @@ public class MalformedURLException extends IOException {
      * Constructs a {@code MalformedURLException} with the
      * specified detail message.
      *
-     * @param   msg   the detail message.
+     * @param msg
+     *         the detail message.
      */
     public MalformedURLException(String msg) {
         super(msg);

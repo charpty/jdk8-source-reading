@@ -40,11 +40,10 @@ package java.util;
  * concurrently.
  * </p>
  *
+ * @author Laurence P. G. Cable
  * @see java.util.EventObject
  * @see java.util.EventListener
- *
- * @author Laurence P. G. Cable
- * @since  JDK1.1
+ * @since JDK1.1
  */
 
 public class TooManyListenersException extends Exception {
@@ -62,7 +61,9 @@ public class TooManyListenersException extends Exception {
     /**
      * Constructs a TooManyListenersException with the specified detail message.
      * A detail message is a String that describes this particular exception.
-     * @param s the detail message
+     *
+     * @param s
+     *         the detail message
      */
 
     public TooManyListenersException(String s) {

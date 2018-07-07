@@ -67,11 +67,10 @@ package java.util.zip;
  * }
  * </pre></blockquote>
  *
- * @see         Inflater
- * @author      David Connelly
+ * @author David Connelly
+ * @see Inflater
  */
-public
-class Deflater {
+public class Deflater {
 
     private final ZStreamRef zsRef;
     private byte[] buf = new byte[0];
@@ -162,8 +161,11 @@ class Deflater {
      * If 'nowrap' is true then the ZLIB header and checksum fields will
      * not be used in order to support the compression format used in
      * both GZIP and PKZIP.
-     * @param level the compression level (0-9)
-     * @param nowrap if true then use GZIP compatible compression
+     *
+     * @param level
+     *         the compression level (0-9)
+     * @param nowrap
+     *         if true then use GZIP compatible compression
      */
     public Deflater(int level, boolean nowrap) {
         this.level = level;
@@ -174,7 +176,9 @@ class Deflater {
     /**
      * Creates a new compressor using the specified compression level.
      * Compressed data will be generated in ZLIB format.
-     * @param level the compression level (0-9)
+     *
+     * @param level
+     *         the compression level (0-9)
      */
     public Deflater(int level) {
         this(level, false);
@@ -191,13 +195,18 @@ class Deflater {
     /**
      * Sets input data for compression. This should be called whenever
      * needsInput() returns true indicating that more input data is required.
-     * @param b the input data bytes
-     * @param off the start offset of the data
-     * @param len the length of the data
+     *
+     * @param b
+     *         the input data bytes
+     * @param off
+     *         the start offset of the data
+     * @param len
+     *         the length of the data
+     *
      * @see Deflater#needsInput
      */
     public void setInput(byte[] b, int off, int len) {
-        if (b== null) {
+        if (b == null) {
             throw new NullPointerException();
         }
         if (off < 0 || len < 0 || off > b.length - len) {
@@ -213,7 +222,10 @@ class Deflater {
     /**
      * Sets input data for compression. This should be called whenever
      * needsInput() returns true indicating that more input data is required.
-     * @param b the input data bytes
+     *
+     * @param b
+     *         the input data bytes
+     *
      * @see Deflater#needsInput
      */
     public void setInput(byte[] b) {
@@ -226,9 +238,14 @@ class Deflater {
      * uncompressed with Inflater.inflate(), Inflater.getAdler() can be called
      * in order to get the Adler-32 value of the dictionary required for
      * decompression.
-     * @param b the dictionary data bytes
-     * @param off the start offset of the data
-     * @param len the length of the data
+     *
+     * @param b
+     *         the dictionary data bytes
+     * @param off
+     *         the start offset of the data
+     * @param len
+     *         the length of the data
+     *
      * @see Inflater#inflate
      * @see Inflater#getAdler
      */
@@ -251,7 +268,10 @@ class Deflater {
      * uncompressed with Inflater.inflate(), Inflater.getAdler() can be called
      * in order to get the Adler-32 value of the dictionary required for
      * decompression.
-     * @param b the dictionary data bytes
+     *
+     * @param b
+     *         the dictionary data bytes
+     *
      * @see Inflater#inflate
      * @see Inflater#getAdler
      */
@@ -267,17 +287,20 @@ class Deflater {
      * the old strategy (and may be flushed); the new strategy will take
      * effect only after that invocation.
      *
-     * @param strategy the new compression strategy
-     * @exception IllegalArgumentException if the compression strategy is
-     *                                     invalid
+     * @param strategy
+     *         the new compression strategy
+     *
+     * @throws IllegalArgumentException
+     *         if the compression strategy is
+     *         invalid
      */
     public void setStrategy(int strategy) {
         switch (strategy) {
-          case DEFAULT_STRATEGY:
-          case FILTERED:
-          case HUFFMAN_ONLY:
+        case DEFAULT_STRATEGY:
+        case FILTERED:
+        case HUFFMAN_ONLY:
             break;
-          default:
+        default:
             throw new IllegalArgumentException();
         }
         synchronized (zsRef) {
@@ -296,8 +319,11 @@ class Deflater {
      * with the old level (and may be flushed); the new level will
      * take effect only after that invocation.
      *
-     * @param level the new compression level (0-9)
-     * @exception IllegalArgumentException if the compression level is invalid
+     * @param level
+     *         the new compression level (0-9)
+     *
+     * @throws IllegalArgumentException
+     *         if the compression level is invalid
      */
     public void setLevel(int level) {
         if ((level < 0 || level > 9) && level != DEFAULT_COMPRESSION) {
@@ -314,6 +340,7 @@ class Deflater {
     /**
      * Returns true if the input data buffer is empty and setInput()
      * should be called in order to provide more input.
+     *
      * @return true if the input data buffer is empty and setInput()
      * should be called in order to provide more input
      */
@@ -336,6 +363,7 @@ class Deflater {
     /**
      * Returns true if the end of the compressed data output stream has
      * been reached.
+     *
      * @return true if the end of the compressed data output stream has
      * been reached
      */
@@ -356,11 +384,15 @@ class Deflater {
      * yields the same result as the invocation of
      * {@code deflater.deflate(b, off, len, Deflater.NO_FLUSH)}.
      *
-     * @param b the buffer for the compressed data
-     * @param off the start offset of the data
-     * @param len the maximum number of bytes of compressed data
+     * @param b
+     *         the buffer for the compressed data
+     * @param off
+     *         the start offset of the data
+     * @param len
+     *         the maximum number of bytes of compressed data
+     *
      * @return the actual number of bytes of compressed data written to the
-     *         output buffer
+     * output buffer
      */
     public int deflate(byte[] b, int off, int len) {
         return deflate(b, off, len, NO_FLUSH);
@@ -377,9 +409,11 @@ class Deflater {
      * yields the same result as the invocation of
      * {@code deflater.deflate(b, 0, b.length, Deflater.NO_FLUSH)}.
      *
-     * @param b the buffer for the compressed data
+     * @param b
+     *         the buffer for the compressed data
+     *
      * @return the actual number of bytes of compressed data written to the
-     *         output buffer
+     * output buffer
      */
     public int deflate(byte[] b) {
         return deflate(b, 0, b.length, NO_FLUSH);
@@ -419,14 +453,20 @@ class Deflater {
      * buffer {@code b}, this method should be invoked again with the same
      * {@code flush} parameter and more output space.
      *
-     * @param b the buffer for the compressed data
-     * @param off the start offset of the data
-     * @param len the maximum number of bytes of compressed data
-     * @param flush the compression flush mode
-     * @return the actual number of bytes of compressed data written to
-     *         the output buffer
+     * @param b
+     *         the buffer for the compressed data
+     * @param off
+     *         the start offset of the data
+     * @param len
+     *         the maximum number of bytes of compressed data
+     * @param flush
+     *         the compression flush mode
      *
-     * @throws IllegalArgumentException if the flush mode is invalid
+     * @return the actual number of bytes of compressed data written to
+     * the output buffer
+     *
+     * @throws IllegalArgumentException
+     *         if the flush mode is invalid
      * @since 1.7
      */
     public int deflate(byte[] b, int off, int len, int flush) {
@@ -438,8 +478,7 @@ class Deflater {
         }
         synchronized (zsRef) {
             ensureOpen();
-            if (flush == NO_FLUSH || flush == SYNC_FLUSH ||
-                flush == FULL_FLUSH) {
+            if (flush == NO_FLUSH || flush == SYNC_FLUSH || flush == FULL_FLUSH) {
                 int thisLen = this.len;
                 int n = deflateBytes(zsRef.address(), b, off, len, flush);
                 bytesWritten += n;
@@ -452,6 +491,7 @@ class Deflater {
 
     /**
      * Returns the ADLER-32 value of the uncompressed data.
+     *
      * @return the ADLER-32 value of the uncompressed data
      */
     public int getAdler() {
@@ -478,6 +518,7 @@ class Deflater {
      * Returns the total number of uncompressed bytes input so far.
      *
      * @return the total (non-negative) number of uncompressed bytes input so far
+     *
      * @since 1.5
      */
     public long getBytesRead() {
@@ -504,6 +545,7 @@ class Deflater {
      * Returns the total number of compressed bytes output so far.
      *
      * @return the total (non-negative) number of compressed bytes output so far
+     *
      * @since 1.5
      */
     public long getBytesWritten() {
@@ -555,16 +597,22 @@ class Deflater {
 
     private void ensureOpen() {
         assert Thread.holdsLock(zsRef);
-        if (zsRef.address() == 0)
+        if (zsRef.address() == 0) {
             throw new NullPointerException("Deflater has been closed");
+        }
     }
 
     private static native void initIDs();
+
     private native static long init(int level, int strategy, boolean nowrap);
+
     private native static void setDictionary(long addr, byte[] b, int off, int len);
-    private native int deflateBytes(long addr, byte[] b, int off, int len,
-                                    int flush);
+
+    private native int deflateBytes(long addr, byte[] b, int off, int len, int flush);
+
     private native static int getAdler(long addr);
+
     private native static void reset(long addr);
+
     private native static void end(long addr);
 }

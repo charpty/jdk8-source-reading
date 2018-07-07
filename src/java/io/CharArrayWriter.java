@@ -36,11 +36,10 @@ import java.util.Arrays;
  * of this class can be called after the stream has closed
  * without generating an IOException.
  *
- * @author      Herb Jellinek
- * @since       JDK1.1
+ * @author Herb Jellinek
+ * @since JDK1.1
  */
-public
-class CharArrayWriter extends Writer {
+public class CharArrayWriter extends Writer {
     /**
      * The buffer where data is stored.
      */
@@ -61,13 +60,15 @@ class CharArrayWriter extends Writer {
     /**
      * Creates a new CharArrayWriter with the specified initial size.
      *
-     * @param initialSize  an int specifying the initial buffer size.
-     * @exception IllegalArgumentException if initialSize is negative
+     * @param initialSize
+     *         an int specifying the initial buffer size.
+     *
+     * @throws IllegalArgumentException
+     *         if initialSize is negative
      */
     public CharArrayWriter(int initialSize) {
         if (initialSize < 0) {
-            throw new IllegalArgumentException("Negative initial size: "
-                                               + initialSize);
+            throw new IllegalArgumentException("Negative initial size: " + initialSize);
         }
         buf = new char[initialSize];
     }
@@ -81,20 +82,23 @@ class CharArrayWriter extends Writer {
             if (newcount > buf.length) {
                 buf = Arrays.copyOf(buf, Math.max(buf.length << 1, newcount));
             }
-            buf[count] = (char)c;
+            buf[count] = (char) c;
             count = newcount;
         }
     }
 
     /**
      * Writes characters to the buffer.
-     * @param c the data to be written
-     * @param off       the start offset in the data
-     * @param len       the number of chars that are written
+     *
+     * @param c
+     *         the data to be written
+     * @param off
+     *         the start offset in the data
+     * @param len
+     *         the number of chars that are written
      */
     public void write(char c[], int off, int len) {
-        if ((off < 0) || (off > c.length) || (len < 0) ||
-            ((off + len) > c.length) || ((off + len) < 0)) {
+        if ((off < 0) || (off > c.length) || (len < 0) || ((off + len) > c.length) || ((off + len) < 0)) {
             throw new IndexOutOfBoundsException();
         } else if (len == 0) {
             return;
@@ -111,9 +115,13 @@ class CharArrayWriter extends Writer {
 
     /**
      * Write a portion of a string to the buffer.
-     * @param  str  String to be written from
-     * @param  off  Offset from which to start reading characters
-     * @param  len  Number of characters to be written
+     *
+     * @param str
+     *         String to be written from
+     * @param off
+     *         Offset from which to start reading characters
+     * @param len
+     *         Number of characters to be written
      */
     public void write(String str, int off, int len) {
         synchronized (lock) {
@@ -129,8 +137,11 @@ class CharArrayWriter extends Writer {
     /**
      * Writes the contents of the buffer to another character stream.
      *
-     * @param out       the output stream to write to
-     * @throws IOException If an I/O error occurs.
+     * @param out
+     *         the output stream to write to
+     *
+     * @throws IOException
+     *         If an I/O error occurs.
      */
     public void writeTo(Writer out) throws IOException {
         synchronized (lock) {
@@ -153,14 +164,14 @@ class CharArrayWriter extends Writer {
      * character buffer will return a subsequence whose content depends upon
      * the buffer's position and limit.
      *
-     * @param  csq
+     * @param csq
      *         The character sequence to append.  If <tt>csq</tt> is
      *         <tt>null</tt>, then the four characters <tt>"null"</tt> are
      *         appended to this writer.
      *
-     * @return  This writer
+     * @return This writer
      *
-     * @since  1.5
+     * @since 1.5
      */
     public CharArrayWriter append(CharSequence csq) {
         String s = (csq == null ? "null" : csq.toString());
@@ -178,27 +189,24 @@ class CharArrayWriter extends Writer {
      * <pre>
      *     out.write(csq.subSequence(start, end).toString()) </pre>
      *
-     * @param  csq
+     * @param csq
      *         The character sequence from which a subsequence will be
      *         appended.  If <tt>csq</tt> is <tt>null</tt>, then characters
      *         will be appended as if <tt>csq</tt> contained the four
      *         characters <tt>"null"</tt>.
-     *
-     * @param  start
+     * @param start
      *         The index of the first character in the subsequence
-     *
-     * @param  end
+     * @param end
      *         The index of the character following the last character in the
      *         subsequence
      *
-     * @return  This writer
+     * @return This writer
      *
-     * @throws  IndexOutOfBoundsException
-     *          If <tt>start</tt> or <tt>end</tt> are negative, <tt>start</tt>
-     *          is greater than <tt>end</tt>, or <tt>end</tt> is greater than
-     *          <tt>csq.length()</tt>
-     *
-     * @since  1.5
+     * @throws IndexOutOfBoundsException
+     *         If <tt>start</tt> or <tt>end</tt> are negative, <tt>start</tt>
+     *         is greater than <tt>end</tt>, or <tt>end</tt> is greater than
+     *         <tt>csq.length()</tt>
+     * @since 1.5
      */
     public CharArrayWriter append(CharSequence csq, int start, int end) {
         String s = (csq == null ? "null" : csq).subSequence(start, end).toString();
@@ -215,10 +223,10 @@ class CharArrayWriter extends Writer {
      * <pre>
      *     out.write(c) </pre>
      *
-     * @param  c
+     * @param c
      *         The 16-bit character to append
      *
-     * @return  This writer
+     * @return This writer
      *
      * @since 1.5
      */
@@ -257,6 +265,7 @@ class CharArrayWriter extends Writer {
 
     /**
      * Converts input data to a string.
+     *
      * @return the string.
      */
     public String toString() {
@@ -268,13 +277,15 @@ class CharArrayWriter extends Writer {
     /**
      * Flush the stream.
      */
-    public void flush() { }
+    public void flush() {
+    }
 
     /**
      * Close the stream.  This method does not release the buffer, since its
      * contents might still be required. Note: Invoking this method in this class
      * will have no effect.
      */
-    public void close() { }
+    public void close() {
+    }
 
 }

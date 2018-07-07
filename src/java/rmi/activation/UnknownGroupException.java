@@ -34,13 +34,13 @@ package java.rmi.activation;
  * <code>ActivationGroupID</code> in an <code>ActivationDesc</code> refers to
  * a group that is not registered with the <code>ActivationSystem</code>
  *
- * @author  Ann Wollrath
- * @since   1.2
- * @see     java.rmi.activation.Activatable
- * @see     java.rmi.activation.ActivationGroup
- * @see     java.rmi.activation.ActivationGroupID
- * @see     java.rmi.activation.ActivationMonitor
- * @see     java.rmi.activation.ActivationSystem
+ * @author Ann Wollrath
+ * @see java.rmi.activation.Activatable
+ * @see java.rmi.activation.ActivationGroup
+ * @see java.rmi.activation.ActivationGroupID
+ * @see java.rmi.activation.ActivationMonitor
+ * @see java.rmi.activation.ActivationSystem
+ * @since 1.2
  */
 public class UnknownGroupException extends ActivationException {
 
@@ -51,7 +51,9 @@ public class UnknownGroupException extends ActivationException {
      * Constructs an <code>UnknownGroupException</code> with the specified
      * detail message.
      *
-     * @param s the detail message
+     * @param s
+     *         the detail message
+     *
      * @since 1.2
      */
     public UnknownGroupException(String s) {

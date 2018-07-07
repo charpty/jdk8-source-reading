@@ -34,8 +34,8 @@ package java.rmi;
  * A <code>ServerException</code> instance contains the original
  * <code>RemoteException</code> that occurred as its cause.
  *
- * @author  Ann Wollrath
- * @since   JDK1.1
+ * @author Ann Wollrath
+ * @since JDK1.1
  */
 public class ServerException extends RemoteException {
 
@@ -46,7 +46,9 @@ public class ServerException extends RemoteException {
      * Constructs a <code>ServerException</code> with the specified
      * detail message.
      *
-     * @param s the detail message
+     * @param s
+     *         the detail message
+     *
      * @since JDK1.1
      */
     public ServerException(String s) {
@@ -57,8 +59,11 @@ public class ServerException extends RemoteException {
      * Constructs a <code>ServerException</code> with the specified
      * detail message and nested exception.
      *
-     * @param s the detail message
-     * @param ex the nested exception
+     * @param s
+     *         the detail message
+     * @param ex
+     *         the nested exception
+     *
      * @since JDK1.1
      */
     public ServerException(String s, Exception ex) {

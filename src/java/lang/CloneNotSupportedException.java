@@ -35,14 +35,13 @@ package java.lang;
  * throw this exception to indicate that an object could not or
  * should not be cloned.
  *
- * @author  unascribed
- * @see     java.lang.Cloneable
- * @see     java.lang.Object#clone()
- * @since   JDK1.0
+ * @author unascribed
+ * @see java.lang.Cloneable
+ * @see java.lang.Object#clone()
+ * @since JDK1.0
  */
 
-public
-class CloneNotSupportedException extends Exception {
+public class CloneNotSupportedException extends Exception {
     private static final long serialVersionUID = 5195511250079656443L;
 
     /**
@@ -57,7 +56,8 @@ class CloneNotSupportedException extends Exception {
      * Constructs a <code>CloneNotSupportedException</code> with the
      * specified detail message.
      *
-     * @param   s   the detail message.
+     * @param s
+     *         the detail message.
      */
     public CloneNotSupportedException(String s) {
         super(s);

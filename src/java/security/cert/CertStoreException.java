@@ -43,10 +43,9 @@ import java.security.GeneralSecurityException;
  * provide the necessary locking. Multiple threads each manipulating
  * separate objects need not synchronize.
  *
+ * @author Sean Mullan
  * @see CertStore
- *
- * @since       1.4
- * @author      Sean Mullan
+ * @since 1.4
  */
 public class CertStoreException extends GeneralSecurityException {
 
@@ -65,7 +64,8 @@ public class CertStoreException extends GeneralSecurityException {
      * message. A detail message is a {@code String} that describes this
      * particular exception.
      *
-     * @param msg the detail message
+     * @param msg
+     *         the detail message
      */
     public CertStoreException(String msg) {
         super(msg);
@@ -79,9 +79,10 @@ public class CertStoreException extends GeneralSecurityException {
      * set to ({@code cause==null ? null : cause.toString()}) (which
      * typically contains the class and detail message of cause).
      *
-     * @param cause the cause (which is saved for later retrieval by the
-     * {@link #getCause getCause()} method). (A {@code null} value is
-     * permitted, and indicates that the cause is nonexistent or unknown.)
+     * @param cause
+     *         the cause (which is saved for later retrieval by the
+     *         {@link #getCause getCause()} method). (A {@code null} value is
+     *         permitted, and indicates that the cause is nonexistent or unknown.)
      */
     public CertStoreException(Throwable cause) {
         super(cause);
@@ -91,10 +92,12 @@ public class CertStoreException extends GeneralSecurityException {
      * Creates a {@code CertStoreException} with the specified detail
      * message and cause.
      *
-     * @param msg the detail message
-     * @param cause the cause (which is saved for later retrieval by the
-     * {@link #getCause getCause()} method). (A {@code null} value is
-     * permitted, and indicates that the cause is nonexistent or unknown.)
+     * @param msg
+     *         the detail message
+     * @param cause
+     *         the cause (which is saved for later retrieval by the
+     *         {@link #getCause getCause()} method). (A {@code null} value is
+     *         permitted, and indicates that the cause is nonexistent or unknown.)
      */
     public CertStoreException(String msg, Throwable cause) {
         super(msg, cause);

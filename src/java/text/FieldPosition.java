@@ -43,11 +43,11 @@ package java.text;
  * and its subclasses to identify fields in formatted output. Fields can
  * be identified in two ways:
  * <ul>
- *  <li>By an integer constant, whose names typically end with
- *      <code>_FIELD</code>. The constants are defined in the various
- *      subclasses of <code>Format</code>.
- *  <li>By a <code>Format.Field</code> constant, see <code>ERA_FIELD</code>
- *      and its friends in <code>DateFormat</code> for an example.
+ * <li>By an integer constant, whose names typically end with
+ * <code>_FIELD</code>. The constants are defined in the various
+ * subclasses of <code>Format</code>.
+ * <li>By a <code>Format.Field</code> constant, see <code>ERA_FIELD</code>
+ * and its friends in <code>DateFormat</code> for an example.
  * </ul>
  * <p>
  * <code>FieldPosition</code> keeps track of the position of the
@@ -67,8 +67,8 @@ package java.text;
  * formatted string use the <code>Format</code> method
  * <code>formatToCharacterIterator</code>.
  *
- * @author      Mark Davis
- * @see         java.text.Format
+ * @author Mark Davis
+ * @see java.text.Format
  */
 public class FieldPosition {
 
@@ -100,7 +100,9 @@ public class FieldPosition {
      * identified by constants, whose names typically end with _FIELD,
      * in the various subclasses of Format.
      *
-     * @param field the field identifier
+     * @param field
+     *         the field identifier
+     *
      * @see java.text.NumberFormat#INTEGER_FIELD
      * @see java.text.NumberFormat#FRACTION_FIELD
      * @see java.text.DateFormat#YEAR_FIELD
@@ -116,7 +118,9 @@ public class FieldPosition {
      * subclasses. This is equivalent to calling
      * <code>new FieldPosition(attribute, -1)</code>.
      *
-     * @param attribute Format.Field constant identifying a field
+     * @param attribute
+     *         Format.Field constant identifying a field
+     *
      * @since 1.4
      */
     public FieldPosition(Format.Field attribute) {
@@ -135,8 +139,11 @@ public class FieldPosition {
      * <code>fieldID</code>. If the field has no corresponding integer
      * constant, <code>fieldID</code> should be -1.
      *
-     * @param attribute Format.Field constant identifying a field
-     * @param fieldID integer constant identifying a field
+     * @param attribute
+     *         Format.Field constant identifying a field
+     * @param fieldID
+     *         integer constant identifying a field
+     *
      * @since 1.4
      */
     public FieldPosition(Format.Field attribute, int fieldID) {
@@ -150,6 +157,7 @@ public class FieldPosition {
      * the field is specified only by an integer field ID.
      *
      * @return Identifier for the field
+     *
      * @since 1.4
      */
     public Format.Field getFieldAttribute() {
@@ -187,7 +195,9 @@ public class FieldPosition {
     /**
      * Sets the begin index.  For use by subclasses of Format.
      *
-     * @param bi the begin index
+     * @param bi
+     *         the begin index
+     *
      * @since 1.2
      */
     public void setBeginIndex(int bi) {
@@ -197,7 +207,9 @@ public class FieldPosition {
     /**
      * Sets the end index.  For use by subclasses of Format.
      *
-     * @param ei the end index
+     * @param ei
+     *         the end index
+     *
      * @since 1.2
      */
     public void setEndIndex(int ei) {
@@ -217,27 +229,27 @@ public class FieldPosition {
     /**
      * Overrides equals
      */
-    public boolean equals(Object obj)
-    {
-        if (obj == null) return false;
-        if (!(obj instanceof FieldPosition))
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
+        }
+        if (!(obj instanceof FieldPosition)) {
+            return false;
+        }
         FieldPosition other = (FieldPosition) obj;
         if (attribute == null) {
             if (other.attribute != null) {
                 return false;
             }
-        }
-        else if (!attribute.equals(other.attribute)) {
+        } else if (!attribute.equals(other.attribute)) {
             return false;
         }
-        return (beginIndex == other.beginIndex
-            && endIndex == other.endIndex
-            && field == other.field);
+        return (beginIndex == other.beginIndex && endIndex == other.endIndex && field == other.field);
     }
 
     /**
      * Returns a hash code for this FieldPosition.
+     *
      * @return a hash code value for this object
      */
     public int hashCode() {
@@ -246,15 +258,12 @@ public class FieldPosition {
 
     /**
      * Return a string representation of this FieldPosition.
-     * @return  a string representation of this object
+     *
+     * @return a string representation of this object
      */
     public String toString() {
-        return getClass().getName() +
-            "[field=" + field + ",attribute=" + attribute +
-            ",beginIndex=" + beginIndex +
-            ",endIndex=" + endIndex + ']';
+        return getClass().getName() + "[field=" + field + ",attribute=" + attribute + ",beginIndex=" + beginIndex + ",endIndex=" + endIndex + ']';
     }
-
 
     /**
      * Return true if the receiver wants a <code>Format.Field</code> value and
@@ -279,7 +288,6 @@ public class FieldPosition {
         return (field == this.field);
     }
 
-
     /**
      * An implementation of FieldDelegate that will adjust the begin/end
      * of the FieldPosition if the arguments match the field of
@@ -293,8 +301,7 @@ public class FieldPosition {
          */
         private boolean encounteredField;
 
-        public void formatted(Format.Field attr, Object value, int start,
-                              int end, StringBuffer buffer) {
+        public void formatted(Format.Field attr, Object value, int start, int end, StringBuffer buffer) {
             if (!encounteredField && matchesField(attr)) {
                 setBeginIndex(start);
                 setEndIndex(end);
@@ -302,8 +309,7 @@ public class FieldPosition {
             }
         }
 
-        public void formatted(int fieldID, Format.Field attr, Object value,
-                              int start, int end, StringBuffer buffer) {
+        public void formatted(int fieldID, Format.Field attr, Object value, int start, int end, StringBuffer buffer) {
             if (!encounteredField && matchesField(attr, fieldID)) {
                 setBeginIndex(start);
                 setEndIndex(end);

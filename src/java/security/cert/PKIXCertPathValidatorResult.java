@@ -49,11 +49,10 @@ import java.security.PublicKey;
  * provide the necessary locking. Multiple threads each manipulating
  * separate objects need not synchronize.
  *
+ * @author Yassir Elley
+ * @author Sean Mullan
  * @see CertPathValidatorResult
- *
- * @since       1.4
- * @author      Yassir Elley
- * @author      Sean Mullan
+ * @since 1.4
  */
 public class PKIXCertPathValidatorResult implements CertPathValidatorResult {
 
@@ -65,21 +64,26 @@ public class PKIXCertPathValidatorResult implements CertPathValidatorResult {
      * Creates an instance of {@code PKIXCertPathValidatorResult}
      * containing the specified parameters.
      *
-     * @param trustAnchor a {@code TrustAnchor} describing the CA that
-     * served as a trust anchor for the certification path
-     * @param policyTree the immutable valid policy tree, or {@code null}
-     * if there are no valid policies
-     * @param subjectPublicKey the public key of the subject
-     * @throws NullPointerException if the {@code subjectPublicKey} or
-     * {@code trustAnchor} parameters are {@code null}
+     * @param trustAnchor
+     *         a {@code TrustAnchor} describing the CA that
+     *         served as a trust anchor for the certification path
+     * @param policyTree
+     *         the immutable valid policy tree, or {@code null}
+     *         if there are no valid policies
+     * @param subjectPublicKey
+     *         the public key of the subject
+     *
+     * @throws NullPointerException
+     *         if the {@code subjectPublicKey} or
+     *         {@code trustAnchor} parameters are {@code null}
      */
-    public PKIXCertPathValidatorResult(TrustAnchor trustAnchor,
-        PolicyNode policyTree, PublicKey subjectPublicKey)
-    {
-        if (subjectPublicKey == null)
+    public PKIXCertPathValidatorResult(TrustAnchor trustAnchor, PolicyNode policyTree, PublicKey subjectPublicKey) {
+        if (subjectPublicKey == null) {
             throw new NullPointerException("subjectPublicKey must be non-null");
-        if (trustAnchor == null)
+        }
+        if (trustAnchor == null) {
             throw new NullPointerException("trustAnchor must be non-null");
+        }
         this.trustAnchor = trustAnchor;
         this.policyTree = policyTree;
         this.subjectPublicKey = subjectPublicKey;
@@ -145,7 +149,7 @@ public class PKIXCertPathValidatorResult implements CertPathValidatorResult {
      * {@code PKIXCertPathValidatorResult}.
      *
      * @return a {@code String} describing the contents of this
-     *         {@code PKIXCertPathValidatorResult}
+     * {@code PKIXCertPathValidatorResult}
      */
     public String toString() {
         StringBuffer sb = new StringBuffer();

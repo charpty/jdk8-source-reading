@@ -29,7 +29,6 @@
 
 package java.nio.channels;
 
-
 /**
  * Checked exception received by a thread when another thread interrupts it
  * while it is waiting to acquire a file lock.  Before this exception is thrown
@@ -38,15 +37,14 @@ package java.nio.channels;
  * @since 1.4
  */
 
-public class FileLockInterruptionException
-    extends java.io.IOException
-{
+public class FileLockInterruptionException extends java.io.IOException {
 
     private static final long serialVersionUID = 7104080643653532383L;
 
     /**
      * Constructs an instance of this class.
      */
-    public FileLockInterruptionException() { }
+    public FileLockInterruptionException() {
+    }
 
 }

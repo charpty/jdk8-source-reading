@@ -25,11 +25,6 @@
 package java.util;
 
 import java.io.Serializable;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
 
 /**
  * Package private supporting class for {@link Comparator}.
@@ -78,7 +73,7 @@ class Comparators {
             if (a == null) {
                 return (b == null) ? 0 : (nullFirst ? -1 : 1);
             } else if (b == null) {
-                return nullFirst ? 1: -1;
+                return nullFirst ? 1 : -1;
             } else {
                 return (real == null) ? 0 : real.compare(a, b);
             }

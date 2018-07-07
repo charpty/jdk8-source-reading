@@ -43,8 +43,9 @@ package java.lang.reflect;
  * As a consequence, users of type variables must not rely on the identity
  * of instances of classes implementing this interface.
  *
- * @param <D> the type of generic declaration that declared the
- * underlying type variable.
+ * @param <D>
+ *         the type of generic declaration that declared the
+ *         underlying type variable.
  *
  * @since 1.5
  */
@@ -60,14 +61,17 @@ public interface TypeVariable<D extends GenericDeclaration> extends Type, Annota
      * details of the creation process for parameterized types).
      * <li>Otherwise, B is resolved.  </ul>
      *
-     * @throws TypeNotPresentException  if any of the
-     *     bounds refers to a non-existent type declaration
-     * @throws MalformedParameterizedTypeException if any of the
-     *     bounds refer to a parameterized type that cannot be instantiated
-     *     for any reason
      * @return an array of {@code Type}s representing the upper
-     *     bound(s) of this type variable
-    */
+     * bound(s) of this type variable
+     *
+     * @throws TypeNotPresentException
+     *         if any of the
+     *         bounds refers to a non-existent type declaration
+     * @throws MalformedParameterizedTypeException
+     *         if any of the
+     *         bounds refer to a parameterized type that cannot be instantiated
+     *         for any reason
+     */
     Type[] getBounds();
 
     /**
@@ -96,7 +100,8 @@ public interface TypeVariable<D extends GenericDeclaration> extends Type, Annota
      * Returns an array of length 0 if the type parameter declares no bounds.
      *
      * @return an array of objects representing the upper bounds of the type variable
+     *
      * @since 1.8
      */
-     AnnotatedType[] getAnnotatedBounds();
+    AnnotatedType[] getAnnotatedBounds();
 }

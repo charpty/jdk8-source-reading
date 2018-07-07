@@ -38,16 +38,14 @@
 
 package java.text;
 
-import java.io.InvalidObjectException;
 import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
 
 /**
  * <code>MessageFormat</code> provides a means to produce concatenated
@@ -147,72 +145,72 @@ import java.util.Locale;
  * be a valid pattern string for the {@code Format} subclass used.
  *
  * <table border=1 summary="Shows how FormatType and FormatStyle values map to Format instances">
- *    <tr>
- *       <th id="ft" class="TableHeadingColor">FormatType
- *       <th id="fs" class="TableHeadingColor">FormatStyle
- *       <th id="sc" class="TableHeadingColor">Subformat Created
- *    <tr>
- *       <td headers="ft"><i>(none)</i>
- *       <td headers="fs"><i>(none)</i>
- *       <td headers="sc"><code>null</code>
- *    <tr>
- *       <td headers="ft" rowspan=5><code>number</code>
- *       <td headers="fs"><i>(none)</i>
- *       <td headers="sc">{@link NumberFormat#getInstance(Locale) NumberFormat.getInstance}{@code (getLocale())}
- *    <tr>
- *       <td headers="fs"><code>integer</code>
- *       <td headers="sc">{@link NumberFormat#getIntegerInstance(Locale) NumberFormat.getIntegerInstance}{@code (getLocale())}
- *    <tr>
- *       <td headers="fs"><code>currency</code>
- *       <td headers="sc">{@link NumberFormat#getCurrencyInstance(Locale) NumberFormat.getCurrencyInstance}{@code (getLocale())}
- *    <tr>
- *       <td headers="fs"><code>percent</code>
- *       <td headers="sc">{@link NumberFormat#getPercentInstance(Locale) NumberFormat.getPercentInstance}{@code (getLocale())}
- *    <tr>
- *       <td headers="fs"><i>SubformatPattern</i>
- *       <td headers="sc">{@code new} {@link DecimalFormat#DecimalFormat(String,DecimalFormatSymbols) DecimalFormat}{@code (subformatPattern,} {@link DecimalFormatSymbols#getInstance(Locale) DecimalFormatSymbols.getInstance}{@code (getLocale()))}
- *    <tr>
- *       <td headers="ft" rowspan=6><code>date</code>
- *       <td headers="fs"><i>(none)</i>
- *       <td headers="sc">{@link DateFormat#getDateInstance(int,Locale) DateFormat.getDateInstance}{@code (}{@link DateFormat#DEFAULT}{@code , getLocale())}
- *    <tr>
- *       <td headers="fs"><code>short</code>
- *       <td headers="sc">{@link DateFormat#getDateInstance(int,Locale) DateFormat.getDateInstance}{@code (}{@link DateFormat#SHORT}{@code , getLocale())}
- *    <tr>
- *       <td headers="fs"><code>medium</code>
- *       <td headers="sc">{@link DateFormat#getDateInstance(int,Locale) DateFormat.getDateInstance}{@code (}{@link DateFormat#DEFAULT}{@code , getLocale())}
- *    <tr>
- *       <td headers="fs"><code>long</code>
- *       <td headers="sc">{@link DateFormat#getDateInstance(int,Locale) DateFormat.getDateInstance}{@code (}{@link DateFormat#LONG}{@code , getLocale())}
- *    <tr>
- *       <td headers="fs"><code>full</code>
- *       <td headers="sc">{@link DateFormat#getDateInstance(int,Locale) DateFormat.getDateInstance}{@code (}{@link DateFormat#FULL}{@code , getLocale())}
- *    <tr>
- *       <td headers="fs"><i>SubformatPattern</i>
- *       <td headers="sc">{@code new} {@link SimpleDateFormat#SimpleDateFormat(String,Locale) SimpleDateFormat}{@code (subformatPattern, getLocale())}
- *    <tr>
- *       <td headers="ft" rowspan=6><code>time</code>
- *       <td headers="fs"><i>(none)</i>
- *       <td headers="sc">{@link DateFormat#getTimeInstance(int,Locale) DateFormat.getTimeInstance}{@code (}{@link DateFormat#DEFAULT}{@code , getLocale())}
- *    <tr>
- *       <td headers="fs"><code>short</code>
- *       <td headers="sc">{@link DateFormat#getTimeInstance(int,Locale) DateFormat.getTimeInstance}{@code (}{@link DateFormat#SHORT}{@code , getLocale())}
- *    <tr>
- *       <td headers="fs"><code>medium</code>
- *       <td headers="sc">{@link DateFormat#getTimeInstance(int,Locale) DateFormat.getTimeInstance}{@code (}{@link DateFormat#DEFAULT}{@code , getLocale())}
- *    <tr>
- *       <td headers="fs"><code>long</code>
- *       <td headers="sc">{@link DateFormat#getTimeInstance(int,Locale) DateFormat.getTimeInstance}{@code (}{@link DateFormat#LONG}{@code , getLocale())}
- *    <tr>
- *       <td headers="fs"><code>full</code>
- *       <td headers="sc">{@link DateFormat#getTimeInstance(int,Locale) DateFormat.getTimeInstance}{@code (}{@link DateFormat#FULL}{@code , getLocale())}
- *    <tr>
- *       <td headers="fs"><i>SubformatPattern</i>
- *       <td headers="sc">{@code new} {@link SimpleDateFormat#SimpleDateFormat(String,Locale) SimpleDateFormat}{@code (subformatPattern, getLocale())}
- *    <tr>
- *       <td headers="ft"><code>choice</code>
- *       <td headers="fs"><i>SubformatPattern</i>
- *       <td headers="sc">{@code new} {@link ChoiceFormat#ChoiceFormat(String) ChoiceFormat}{@code (subformatPattern)}
+ * <tr>
+ * <th id="ft" class="TableHeadingColor">FormatType
+ * <th id="fs" class="TableHeadingColor">FormatStyle
+ * <th id="sc" class="TableHeadingColor">Subformat Created
+ * <tr>
+ * <td headers="ft"><i>(none)</i>
+ * <td headers="fs"><i>(none)</i>
+ * <td headers="sc"><code>null</code>
+ * <tr>
+ * <td headers="ft" rowspan=5><code>number</code>
+ * <td headers="fs"><i>(none)</i>
+ * <td headers="sc">{@link NumberFormat#getInstance(Locale) NumberFormat.getInstance}{@code (getLocale())}
+ * <tr>
+ * <td headers="fs"><code>integer</code>
+ * <td headers="sc">{@link NumberFormat#getIntegerInstance(Locale) NumberFormat.getIntegerInstance}{@code (getLocale())}
+ * <tr>
+ * <td headers="fs"><code>currency</code>
+ * <td headers="sc">{@link NumberFormat#getCurrencyInstance(Locale) NumberFormat.getCurrencyInstance}{@code (getLocale())}
+ * <tr>
+ * <td headers="fs"><code>percent</code>
+ * <td headers="sc">{@link NumberFormat#getPercentInstance(Locale) NumberFormat.getPercentInstance}{@code (getLocale())}
+ * <tr>
+ * <td headers="fs"><i>SubformatPattern</i>
+ * <td headers="sc">{@code new} {@link DecimalFormat#DecimalFormat(String, DecimalFormatSymbols) DecimalFormat}{@code (subformatPattern,} {@link DecimalFormatSymbols#getInstance(Locale) DecimalFormatSymbols.getInstance}{@code (getLocale()))}
+ * <tr>
+ * <td headers="ft" rowspan=6><code>date</code>
+ * <td headers="fs"><i>(none)</i>
+ * <td headers="sc">{@link DateFormat#getDateInstance(int, Locale) DateFormat.getDateInstance}{@code (}{@link DateFormat#DEFAULT}{@code , getLocale())}
+ * <tr>
+ * <td headers="fs"><code>short</code>
+ * <td headers="sc">{@link DateFormat#getDateInstance(int, Locale) DateFormat.getDateInstance}{@code (}{@link DateFormat#SHORT}{@code , getLocale())}
+ * <tr>
+ * <td headers="fs"><code>medium</code>
+ * <td headers="sc">{@link DateFormat#getDateInstance(int, Locale) DateFormat.getDateInstance}{@code (}{@link DateFormat#DEFAULT}{@code , getLocale())}
+ * <tr>
+ * <td headers="fs"><code>long</code>
+ * <td headers="sc">{@link DateFormat#getDateInstance(int, Locale) DateFormat.getDateInstance}{@code (}{@link DateFormat#LONG}{@code , getLocale())}
+ * <tr>
+ * <td headers="fs"><code>full</code>
+ * <td headers="sc">{@link DateFormat#getDateInstance(int, Locale) DateFormat.getDateInstance}{@code (}{@link DateFormat#FULL}{@code , getLocale())}
+ * <tr>
+ * <td headers="fs"><i>SubformatPattern</i>
+ * <td headers="sc">{@code new} {@link SimpleDateFormat#SimpleDateFormat(String, Locale) SimpleDateFormat}{@code (subformatPattern, getLocale())}
+ * <tr>
+ * <td headers="ft" rowspan=6><code>time</code>
+ * <td headers="fs"><i>(none)</i>
+ * <td headers="sc">{@link DateFormat#getTimeInstance(int, Locale) DateFormat.getTimeInstance}{@code (}{@link DateFormat#DEFAULT}{@code , getLocale())}
+ * <tr>
+ * <td headers="fs"><code>short</code>
+ * <td headers="sc">{@link DateFormat#getTimeInstance(int, Locale) DateFormat.getTimeInstance}{@code (}{@link DateFormat#SHORT}{@code , getLocale())}
+ * <tr>
+ * <td headers="fs"><code>medium</code>
+ * <td headers="sc">{@link DateFormat#getTimeInstance(int, Locale) DateFormat.getTimeInstance}{@code (}{@link DateFormat#DEFAULT}{@code , getLocale())}
+ * <tr>
+ * <td headers="fs"><code>long</code>
+ * <td headers="sc">{@link DateFormat#getTimeInstance(int, Locale) DateFormat.getTimeInstance}{@code (}{@link DateFormat#LONG}{@code , getLocale())}
+ * <tr>
+ * <td headers="fs"><code>full</code>
+ * <td headers="sc">{@link DateFormat#getTimeInstance(int, Locale) DateFormat.getTimeInstance}{@code (}{@link DateFormat#FULL}{@code , getLocale())}
+ * <tr>
+ * <td headers="fs"><i>SubformatPattern</i>
+ * <td headers="sc">{@code new} {@link SimpleDateFormat#SimpleDateFormat(String, Locale) SimpleDateFormat}{@code (subformatPattern, getLocale())}
+ * <tr>
+ * <td headers="ft"><code>choice</code>
+ * <td headers="fs"><i>SubformatPattern</i>
+ * <td headers="sc">{@code new} {@link ChoiceFormat#ChoiceFormat(String) ChoiceFormat}{@code (subformatPattern)}
  * </table>
  *
  * <h4>Usage Information</h4>
@@ -329,16 +327,15 @@ import java.util.Locale;
  * If multiple threads access a format concurrently, it must be synchronized
  * externally.
  *
- * @see          java.util.Locale
- * @see          Format
- * @see          NumberFormat
- * @see          DecimalFormat
- * @see          DecimalFormatSymbols
- * @see          ChoiceFormat
- * @see          DateFormat
- * @see          SimpleDateFormat
- *
- * @author       Mark Davis
+ * @author Mark Davis
+ * @see java.util.Locale
+ * @see Format
+ * @see NumberFormat
+ * @see DecimalFormat
+ * @see DecimalFormatSymbols
+ * @see ChoiceFormat
+ * @see DateFormat
+ * @see SimpleDateFormat
  */
 
 public class MessageFormat extends Format {
@@ -354,8 +351,11 @@ public class MessageFormat extends Format {
      * Patterns and their interpretation are specified in the
      * <a href="#patterns">class description</a>.
      *
-     * @param pattern the pattern for this message format
-     * @exception IllegalArgumentException if the pattern is invalid
+     * @param pattern
+     *         the pattern for this message format
+     *
+     * @throws IllegalArgumentException
+     *         if the pattern is invalid
      */
     public MessageFormat(String pattern) {
         this.locale = Locale.getDefault(Locale.Category.FORMAT);
@@ -370,9 +370,13 @@ public class MessageFormat extends Format {
      * Patterns and their interpretation are specified in the
      * <a href="#patterns">class description</a>.
      *
-     * @param pattern the pattern for this message format
-     * @param locale the locale for this message format
-     * @exception IllegalArgumentException if the pattern is invalid
+     * @param pattern
+     *         the pattern for this message format
+     * @param locale
+     *         the locale for this message format
+     *
+     * @throws IllegalArgumentException
+     *         if the pattern is invalid
      * @since 1.4
      */
     public MessageFormat(String pattern, Locale locale) {
@@ -385,17 +389,18 @@ public class MessageFormat extends Format {
      * This affects subsequent calls
      * <ul>
      * <li>to the {@link #applyPattern applyPattern}
-     *     and {@link #toPattern toPattern} methods if format elements specify
-     *     a format type and therefore have the subformats created in the
-     *     <code>applyPattern</code> method, as well as
+     * and {@link #toPattern toPattern} methods if format elements specify
+     * a format type and therefore have the subformats created in the
+     * <code>applyPattern</code> method, as well as
      * <li>to the <code>format</code> and
-     *     {@link #formatToCharacterIterator formatToCharacterIterator} methods
-     *     if format elements do not specify a format type and therefore have
-     *     the subformats created in the formatting methods.
+     * {@link #formatToCharacterIterator formatToCharacterIterator} methods
+     * if format elements do not specify a format type and therefore have
+     * the subformats created in the formatting methods.
      * </ul>
      * Subformats that have already been created are not affected.
      *
-     * @param locale the locale to be used when creating or comparing subformats
+     * @param locale
+     *         the locale to be used when creating or comparing subformats
      */
     public void setLocale(Locale locale) {
         this.locale = locale;
@@ -410,7 +415,6 @@ public class MessageFormat extends Format {
         return locale;
     }
 
-
     /**
      * Sets the pattern used by this message format.
      * The method parses the pattern and creates a list of subformats
@@ -418,98 +422,99 @@ public class MessageFormat extends Format {
      * Patterns and their interpretation are specified in the
      * <a href="#patterns">class description</a>.
      *
-     * @param pattern the pattern for this message format
-     * @exception IllegalArgumentException if the pattern is invalid
+     * @param pattern
+     *         the pattern for this message format
+     *
+     * @throws IllegalArgumentException
+     *         if the pattern is invalid
      */
     @SuppressWarnings("fallthrough") // fallthrough in switch is expected, suppress it
     public void applyPattern(String pattern) {
-            StringBuilder[] segments = new StringBuilder[4];
-            // Allocate only segments[SEG_RAW] here. The rest are
-            // allocated on demand.
-            segments[SEG_RAW] = new StringBuilder();
+        StringBuilder[] segments = new StringBuilder[4];
+        // Allocate only segments[SEG_RAW] here. The rest are
+        // allocated on demand.
+        segments[SEG_RAW] = new StringBuilder();
 
-            int part = SEG_RAW;
-            int formatNumber = 0;
-            boolean inQuote = false;
-            int braceStack = 0;
-            maxOffset = -1;
-            for (int i = 0; i < pattern.length(); ++i) {
-                char ch = pattern.charAt(i);
-                if (part == SEG_RAW) {
-                    if (ch == '\'') {
-                        if (i + 1 < pattern.length()
-                            && pattern.charAt(i+1) == '\'') {
-                            segments[part].append(ch);  // handle doubles
-                            ++i;
-                        } else {
-                            inQuote = !inQuote;
-                        }
-                    } else if (ch == '{' && !inQuote) {
-                        part = SEG_INDEX;
-                        if (segments[SEG_INDEX] == null) {
-                            segments[SEG_INDEX] = new StringBuilder();
-                        }
+        int part = SEG_RAW;
+        int formatNumber = 0;
+        boolean inQuote = false;
+        int braceStack = 0;
+        maxOffset = -1;
+        for (int i = 0; i < pattern.length(); ++i) {
+            char ch = pattern.charAt(i);
+            if (part == SEG_RAW) {
+                if (ch == '\'') {
+                    if (i + 1 < pattern.length() && pattern.charAt(i + 1) == '\'') {
+                        segments[part].append(ch);  // handle doubles
+                        ++i;
                     } else {
-                        segments[part].append(ch);
+                        inQuote = !inQuote;
                     }
-                } else  {
-                    if (inQuote) {              // just copy quotes in parts
+                } else if (ch == '{' && !inQuote) {
+                    part = SEG_INDEX;
+                    if (segments[SEG_INDEX] == null) {
+                        segments[SEG_INDEX] = new StringBuilder();
+                    }
+                } else {
+                    segments[part].append(ch);
+                }
+            } else {
+                if (inQuote) {              // just copy quotes in parts
+                    segments[part].append(ch);
+                    if (ch == '\'') {
+                        inQuote = false;
+                    }
+                } else {
+                    switch (ch) {
+                    case ',':
+                        if (part < SEG_MODIFIER) {
+                            if (segments[++part] == null) {
+                                segments[part] = new StringBuilder();
+                            }
+                        } else {
+                            segments[part].append(ch);
+                        }
+                        break;
+                    case '{':
+                        ++braceStack;
                         segments[part].append(ch);
-                        if (ch == '\'') {
-                            inQuote = false;
-                        }
-                    } else {
-                        switch (ch) {
-                        case ',':
-                            if (part < SEG_MODIFIER) {
-                                if (segments[++part] == null) {
-                                    segments[part] = new StringBuilder();
-                                }
-                            } else {
-                                segments[part].append(ch);
-                            }
-                            break;
-                        case '{':
-                            ++braceStack;
+                        break;
+                    case '}':
+                        if (braceStack == 0) {
+                            part = SEG_RAW;
+                            makeFormat(i, formatNumber, segments);
+                            formatNumber++;
+                            // throw away other segments
+                            segments[SEG_INDEX] = null;
+                            segments[SEG_TYPE] = null;
+                            segments[SEG_MODIFIER] = null;
+                        } else {
+                            --braceStack;
                             segments[part].append(ch);
-                            break;
-                        case '}':
-                            if (braceStack == 0) {
-                                part = SEG_RAW;
-                                makeFormat(i, formatNumber, segments);
-                                formatNumber++;
-                                // throw away other segments
-                                segments[SEG_INDEX] = null;
-                                segments[SEG_TYPE] = null;
-                                segments[SEG_MODIFIER] = null;
-                            } else {
-                                --braceStack;
-                                segments[part].append(ch);
-                            }
-                            break;
-                        case ' ':
-                            // Skip any leading space chars for SEG_TYPE.
-                            if (part != SEG_TYPE || segments[SEG_TYPE].length() > 0) {
-                                segments[part].append(ch);
-                            }
-                            break;
-                        case '\'':
-                            inQuote = true;
-                            // fall through, so we keep quotes in other parts
-                        default:
-                            segments[part].append(ch);
-                            break;
                         }
+                        break;
+                    case ' ':
+                        // Skip any leading space chars for SEG_TYPE.
+                        if (part != SEG_TYPE || segments[SEG_TYPE].length() > 0) {
+                            segments[part].append(ch);
+                        }
+                        break;
+                    case '\'':
+                        inQuote = true;
+                        // fall through, so we keep quotes in other parts
+                    default:
+                        segments[part].append(ch);
+                        break;
                     }
                 }
             }
-            if (braceStack == 0 && part != 0) {
-                maxOffset = -1;
-                throw new IllegalArgumentException("Unmatched braces in the pattern.");
-            }
-            this.pattern = segments[0].toString();
+        }
+        if (braceStack == 0 && part != 0) {
+            maxOffset = -1;
+            throw new IllegalArgumentException("Unmatched braces in the pattern.");
+        }
+        this.pattern = segments[0].toString();
     }
-
 
     /**
      * Returns a pattern representing the current state of the message format.
@@ -540,9 +545,9 @@ public class MessageFormat extends Format {
                     result.append(",number,integer");
                 } else {
                     if (fmt instanceof DecimalFormat) {
-                        result.append(",number,").append(((DecimalFormat)fmt).toPattern());
+                        result.append(",number,").append(((DecimalFormat) fmt).toPattern());
                     } else if (fmt instanceof ChoiceFormat) {
-                        result.append(",choice,").append(((ChoiceFormat)fmt).toPattern());
+                        result.append(",choice,").append(((ChoiceFormat) fmt).toPattern());
                     } else {
                         // UNKNOWN
                     }
@@ -550,14 +555,12 @@ public class MessageFormat extends Format {
             } else if (fmt instanceof DateFormat) {
                 int index;
                 for (index = MODIFIER_DEFAULT; index < DATE_TIME_MODIFIERS.length; index++) {
-                    DateFormat df = DateFormat.getDateInstance(DATE_TIME_MODIFIERS[index],
-                                                               locale);
+                    DateFormat df = DateFormat.getDateInstance(DATE_TIME_MODIFIERS[index], locale);
                     if (fmt.equals(df)) {
                         result.append(",date");
                         break;
                     }
-                    df = DateFormat.getTimeInstance(DATE_TIME_MODIFIERS[index],
-                                                    locale);
+                    df = DateFormat.getTimeInstance(DATE_TIME_MODIFIERS[index], locale);
                     if (fmt.equals(df)) {
                         result.append(",time");
                         break;
@@ -565,7 +568,7 @@ public class MessageFormat extends Format {
                 }
                 if (index >= DATE_TIME_MODIFIERS.length) {
                     if (fmt instanceof SimpleDateFormat) {
-                        result.append(",date,").append(((SimpleDateFormat)fmt).toPattern());
+                        result.append(",date,").append(((SimpleDateFormat) fmt).toPattern());
                     } else {
                         // UNKNOWN
                     }
@@ -600,8 +603,11 @@ public class MessageFormat extends Format {
      * than needed, then only the formats for argument indices less
      * than <code>newFormats.length</code> are replaced.
      *
-     * @param newFormats the new formats to use
-     * @exception NullPointerException if <code>newFormats</code> is null
+     * @param newFormats
+     *         the new formats to use
+     *
+     * @throws NullPointerException
+     *         if <code>newFormats</code> is null
      * @since 1.4
      */
     public void setFormatsByArgumentIndex(Format[] newFormats) {
@@ -632,8 +638,11 @@ public class MessageFormat extends Format {
      * the <code>format</code> methods or the result array returned by
      * the <code>parse</code> methods.
      *
-     * @param newFormats the new formats to use
-     * @exception NullPointerException if <code>newFormats</code> is null
+     * @param newFormats
+     *         the new formats to use
+     *
+     * @throws NullPointerException
+     *         if <code>newFormats</code> is null
      */
     public void setFormats(Format[] newFormats) {
         int runsToCopy = newFormats.length;
@@ -659,8 +668,11 @@ public class MessageFormat extends Format {
      * format elements. If the argument index is not used for any format
      * element in the pattern string, then the new format is ignored.
      *
-     * @param argumentIndex the argument index for which to use the new format
-     * @param newFormat the new format to use
+     * @param argumentIndex
+     *         the argument index for which to use the new format
+     * @param newFormat
+     *         the new format to use
+     *
      * @since 1.4
      */
     public void setFormatByArgumentIndex(int argumentIndex, Format newFormat) {
@@ -683,10 +695,14 @@ public class MessageFormat extends Format {
      * method, which accesses format elements based on the argument
      * index they specify.
      *
-     * @param formatElementIndex the index of a format element within the pattern
-     * @param newFormat the format to use for the specified format element
-     * @exception ArrayIndexOutOfBoundsException if {@code formatElementIndex} is equal to or
-     *            larger than the number of format elements in the pattern string
+     * @param formatElementIndex
+     *         the index of a format element within the pattern
+     * @param newFormat
+     *         the format to use for the specified format element
+     *
+     * @throws ArrayIndexOutOfBoundsException
+     *         if {@code formatElementIndex} is equal to or
+     *         larger than the number of format elements in the pattern string
      */
     public void setFormat(int formatElementIndex, Format newFormat) {
         formats[formatElementIndex] = newFormat;
@@ -710,6 +726,7 @@ public class MessageFormat extends Format {
      * null is returned in the array.
      *
      * @return the formats used for the arguments within the pattern
+     *
      * @since 1.4
      */
     public Format[] getFormatsByArgumentIndex() {
@@ -761,63 +778,67 @@ public class MessageFormat extends Format {
      * <code>null</code> or has fewer than argumentIndex+1 elements.
      *
      * <table border=1 summary="Examples of subformat,argument,and formatted text">
-     *    <tr>
-     *       <th>Subformat
-     *       <th>Argument
-     *       <th>Formatted Text
-     *    <tr>
-     *       <td><i>any</i>
-     *       <td><i>unavailable</i>
-     *       <td><code>"{" + argumentIndex + "}"</code>
-     *    <tr>
-     *       <td><i>any</i>
-     *       <td><code>null</code>
-     *       <td><code>"null"</code>
-     *    <tr>
-     *       <td><code>instanceof ChoiceFormat</code>
-     *       <td><i>any</i>
-     *       <td><code>subformat.format(argument).indexOf('{') &gt;= 0 ?<br>
-     *           (new MessageFormat(subformat.format(argument), getLocale())).format(argument) :
-     *           subformat.format(argument)</code>
-     *    <tr>
-     *       <td><code>!= null</code>
-     *       <td><i>any</i>
-     *       <td><code>subformat.format(argument)</code>
-     *    <tr>
-     *       <td><code>null</code>
-     *       <td><code>instanceof Number</code>
-     *       <td><code>NumberFormat.getInstance(getLocale()).format(argument)</code>
-     *    <tr>
-     *       <td><code>null</code>
-     *       <td><code>instanceof Date</code>
-     *       <td><code>DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, getLocale()).format(argument)</code>
-     *    <tr>
-     *       <td><code>null</code>
-     *       <td><code>instanceof String</code>
-     *       <td><code>argument</code>
-     *    <tr>
-     *       <td><code>null</code>
-     *       <td><i>any</i>
-     *       <td><code>argument.toString()</code>
+     * <tr>
+     * <th>Subformat
+     * <th>Argument
+     * <th>Formatted Text
+     * <tr>
+     * <td><i>any</i>
+     * <td><i>unavailable</i>
+     * <td><code>"{" + argumentIndex + "}"</code>
+     * <tr>
+     * <td><i>any</i>
+     * <td><code>null</code>
+     * <td><code>"null"</code>
+     * <tr>
+     * <td><code>instanceof ChoiceFormat</code>
+     * <td><i>any</i>
+     * <td><code>subformat.format(argument).indexOf('{') &gt;= 0 ?<br>
+     * (new MessageFormat(subformat.format(argument), getLocale())).format(argument) :
+     * subformat.format(argument)</code>
+     * <tr>
+     * <td><code>!= null</code>
+     * <td><i>any</i>
+     * <td><code>subformat.format(argument)</code>
+     * <tr>
+     * <td><code>null</code>
+     * <td><code>instanceof Number</code>
+     * <td><code>NumberFormat.getInstance(getLocale()).format(argument)</code>
+     * <tr>
+     * <td><code>null</code>
+     * <td><code>instanceof Date</code>
+     * <td><code>DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, getLocale()).format(argument)</code>
+     * <tr>
+     * <td><code>null</code>
+     * <td><code>instanceof String</code>
+     * <td><code>argument</code>
+     * <tr>
+     * <td><code>null</code>
+     * <td><i>any</i>
+     * <td><code>argument.toString()</code>
      * </table>
      * <p>
      * If <code>pos</code> is non-null, and refers to
      * <code>Field.ARGUMENT</code>, the location of the first formatted
      * string will be returned.
      *
-     * @param arguments an array of objects to be formatted and substituted.
-     * @param result where text is appended.
-     * @param pos On input: an alignment field, if desired.
-     *            On output: the offsets of the alignment field.
+     * @param arguments
+     *         an array of objects to be formatted and substituted.
+     * @param result
+     *         where text is appended.
+     * @param pos
+     *         On input: an alignment field, if desired.
+     *         On output: the offsets of the alignment field.
+     *
      * @return the string buffer passed in as {@code result}, with formatted
      * text appended
-     * @exception IllegalArgumentException if an argument in the
-     *            <code>arguments</code> array is not of the type
-     *            expected by the format element(s) that use it.
+     *
+     * @throws IllegalArgumentException
+     *         if an argument in the
+     *         <code>arguments</code> array is not of the type
+     *         expected by the format element(s) that use it.
      */
-    public final StringBuffer format(Object[] arguments, StringBuffer result,
-                                     FieldPosition pos)
-    {
+    public final StringBuffer format(Object[] arguments, StringBuffer result, FieldPosition pos) {
         return subformat(arguments, result, pos, null);
     }
 
@@ -825,43 +846,52 @@ public class MessageFormat extends Format {
      * Creates a MessageFormat with the given pattern and uses it
      * to format the given arguments. This is equivalent to
      * <blockquote>
-     *     <code>(new {@link #MessageFormat(String) MessageFormat}(pattern)).{@link #format(java.lang.Object[], java.lang.StringBuffer, java.text.FieldPosition) format}(arguments, new StringBuffer(), null).toString()</code>
+     * <code>(new {@link #MessageFormat(String) MessageFormat}(pattern)).{@link #format(java.lang.Object[], java.lang.StringBuffer, java.text.FieldPosition) format}(arguments, new StringBuffer(), null).toString()</code>
      * </blockquote>
      *
-     * @param pattern   the pattern string
-     * @param arguments object(s) to format
+     * @param pattern
+     *         the pattern string
+     * @param arguments
+     *         object(s) to format
+     *
      * @return the formatted string
-     * @exception IllegalArgumentException if the pattern is invalid,
-     *            or if an argument in the <code>arguments</code> array
-     *            is not of the type expected by the format element(s)
-     *            that use it.
+     *
+     * @throws IllegalArgumentException
+     *         if the pattern is invalid,
+     *         or if an argument in the <code>arguments</code> array
+     *         is not of the type expected by the format element(s)
+     *         that use it.
      */
-    public static String format(String pattern, Object ... arguments) {
+    public static String format(String pattern, Object... arguments) {
         MessageFormat temp = new MessageFormat(pattern);
         return temp.format(arguments);
     }
 
     // Overrides
+
     /**
      * Formats an array of objects and appends the <code>MessageFormat</code>'s
      * pattern, with format elements replaced by the formatted objects, to the
      * provided <code>StringBuffer</code>.
      * This is equivalent to
      * <blockquote>
-     *     <code>{@link #format(java.lang.Object[], java.lang.StringBuffer, java.text.FieldPosition) format}((Object[]) arguments, result, pos)</code>
+     * <code>{@link #format(java.lang.Object[], java.lang.StringBuffer, java.text.FieldPosition) format}((Object[]) arguments, result, pos)</code>
      * </blockquote>
      *
-     * @param arguments an array of objects to be formatted and substituted.
-     * @param result where text is appended.
-     * @param pos On input: an alignment field, if desired.
-     *            On output: the offsets of the alignment field.
-     * @exception IllegalArgumentException if an argument in the
-     *            <code>arguments</code> array is not of the type
-     *            expected by the format element(s) that use it.
+     * @param arguments
+     *         an array of objects to be formatted and substituted.
+     * @param result
+     *         where text is appended.
+     * @param pos
+     *         On input: an alignment field, if desired.
+     *         On output: the offsets of the alignment field.
+     *
+     * @throws IllegalArgumentException
+     *         if an argument in the
+     *         <code>arguments</code> array is not of the type
+     *         expected by the format element(s) that use it.
      */
-    public final StringBuffer format(Object arguments, StringBuffer result,
-                                     FieldPosition pos)
-    {
+    public final StringBuffer format(Object arguments, StringBuffer result, FieldPosition pos) {
         return subformat((Object[]) arguments, result, pos, null);
     }
 
@@ -876,7 +906,7 @@ public class MessageFormat extends Format {
      * The text of the returned <code>AttributedCharacterIterator</code> is
      * the same that would be returned by
      * <blockquote>
-     *     <code>{@link #format(java.lang.Object[], java.lang.StringBuffer, java.text.FieldPosition) format}(arguments, new StringBuffer(), null).toString()</code>
+     * <code>{@link #format(java.lang.Object[], java.lang.StringBuffer, java.text.FieldPosition) format}(arguments, new StringBuffer(), null).toString()</code>
      * </blockquote>
      * <p>
      * In addition, the <code>AttributedCharacterIterator</code> contains at
@@ -892,12 +922,17 @@ public class MessageFormat extends Format {
      * This allows you to not only find where an argument is placed in the
      * resulting String, but also which fields it contains in turn.
      *
-     * @param arguments an array of objects to be formatted and substituted.
+     * @param arguments
+     *         an array of objects to be formatted and substituted.
+     *
      * @return AttributedCharacterIterator describing the formatted value.
-     * @exception NullPointerException if <code>arguments</code> is null.
-     * @exception IllegalArgumentException if an argument in the
-     *            <code>arguments</code> array is not of the type
-     *            expected by the format element(s) that use it.
+     *
+     * @throws NullPointerException
+     *         if <code>arguments</code> is null.
+     * @throws IllegalArgumentException
+     *         if an argument in the
+     *         <code>arguments</code> array is not of the type
+     *         expected by the format element(s) that use it.
      * @since 1.4
      */
     public AttributedCharacterIterator formatToCharacterIterator(Object arguments) {
@@ -905,16 +940,13 @@ public class MessageFormat extends Format {
         ArrayList<AttributedCharacterIterator> iterators = new ArrayList<>();
 
         if (arguments == null) {
-            throw new NullPointerException(
-                   "formatToCharacterIterator must be passed non-null object");
+            throw new NullPointerException("formatToCharacterIterator must be passed non-null object");
         }
         subformat((Object[]) arguments, result, null, iterators);
         if (iterators.size() == 0) {
             return createAttributedCharacterIterator("");
         }
-        return createAttributedCharacterIterator(
-                     iterators.toArray(
-                     new AttributedCharacterIterator[iterators.size()]));
+        return createAttributedCharacterIterator(iterators.toArray(new AttributedCharacterIterator[iterators.size()]));
     }
 
     /**
@@ -925,16 +957,16 @@ public class MessageFormat extends Format {
      * <ul>
      * <li>If one of the arguments does not occur in the pattern.
      * <li>If the format of an argument loses information, such as
-     *     with a choice format where a large number formats to "many".
+     * with a choice format where a large number formats to "many".
      * <li>Does not yet handle recursion (where
-     *     the substituted strings contain {n} references.)
+     * the substituted strings contain {n} references.)
      * <li>Will not always find a match (or the correct match)
-     *     if some part of the parse is ambiguous.
-     *     For example, if the pattern "{1},{2}" is used with the
-     *     string arguments {"a,b", "c"}, it will format as "a,b,c".
-     *     When the result is parsed, it will return {"a", "b,c"}.
+     * if some part of the parse is ambiguous.
+     * For example, if the pattern "{1},{2}" is used with the
+     * string arguments {"a,b", "c"}, it will format as "a,b,c".
+     * When the result is parsed, it will return {"a", "b,c"}.
      * <li>If a single argument is parsed more than once in the string,
-     *     then the later parse wins.
+     * then the later parse wins.
      * </ul>
      * When the parse fails, use ParsePosition.getErrorIndex() to find out
      * where in the string the parsing failed.  The returned error
@@ -944,8 +976,11 @@ public class MessageFormat extends Format {
      * 0. When an error occurs, the call to this method will return null.
      * If the source is null, return an empty array.
      *
-     * @param source the string to parse
-     * @param pos    the parse position
+     * @param source
+     *         the string to parse
+     * @param pos
+     *         the parse position
+     *
      * @return an array of parsed objects
      */
     public Object[] parse(String source, ParsePosition pos) {
@@ -968,8 +1003,7 @@ public class MessageFormat extends Format {
         for (int i = 0; i <= maxOffset; ++i) {
             // match up to format
             int len = offsets[i] - patternOffset;
-            if (len == 0 || pattern.regionMatches(patternOffset,
-                                                  source, sourceOffset, len)) {
+            if (len == 0 || pattern.regionMatches(patternOffset, source, sourceOffset, len)) {
                 sourceOffset += len;
                 patternOffset += len;
             } else {
@@ -982,30 +1016,28 @@ public class MessageFormat extends Format {
                 // if at end, use longest possible match
                 // otherwise uses first match to intervening string
                 // does NOT recursively try all possibilities
-                int tempLength = (i != maxOffset) ? offsets[i+1] : pattern.length();
+                int tempLength = (i != maxOffset) ? offsets[i + 1] : pattern.length();
 
                 int next;
                 if (patternOffset >= tempLength) {
                     next = source.length();
-                }else{
-                    next = source.indexOf(pattern.substring(patternOffset, tempLength),
-                                          sourceOffset);
+                } else {
+                    next = source.indexOf(pattern.substring(patternOffset, tempLength), sourceOffset);
                 }
 
                 if (next < 0) {
                     pos.errorIndex = sourceOffset;
                     return null; // leave index as is to signal error
                 } else {
-                    String strValue= source.substring(sourceOffset,next);
-                    if (!strValue.equals("{"+argumentNumbers[i]+"}"))
-                        resultArray[argumentNumbers[i]]
-                            = source.substring(sourceOffset,next);
+                    String strValue = source.substring(sourceOffset, next);
+                    if (!strValue.equals("{" + argumentNumbers[i] + "}")) {
+                        resultArray[argumentNumbers[i]] = source.substring(sourceOffset, next);
+                    }
                     sourceOffset = next;
                 }
             } else {
                 tempStatus.index = sourceOffset;
-                resultArray[argumentNumbers[i]]
-                    = formats[i].parseObject(source,tempStatus);
+                resultArray[argumentNumbers[i]] = formats[i].parseObject(source, tempStatus);
                 if (tempStatus.index == sourceOffset) {
                     pos.errorIndex = sourceOffset;
                     return null; // leave index as is to signal error
@@ -1014,8 +1046,7 @@ public class MessageFormat extends Format {
             }
         }
         int len = pattern.length() - patternOffset;
-        if (len == 0 || pattern.regionMatches(patternOffset,
-                                              source, sourceOffset, len)) {
+        if (len == 0 || pattern.regionMatches(patternOffset, source, sourceOffset, len)) {
             pos.index = sourceOffset + len;
         } else {
             pos.errorIndex = sourceOffset;
@@ -1032,16 +1063,22 @@ public class MessageFormat extends Format {
      * See the {@link #parse(String, ParsePosition)} method for more information
      * on message parsing.
      *
-     * @param source A <code>String</code> whose beginning should be parsed.
+     * @param source
+     *         A <code>String</code> whose beginning should be parsed.
+     *
      * @return An <code>Object</code> array parsed from the string.
-     * @exception ParseException if the beginning of the specified string
-     *            cannot be parsed.
+     *
+     * @throws ParseException
+     *         if the beginning of the specified string
+     *         cannot be parsed.
      */
     public Object[] parse(String source) throws ParseException {
-        ParsePosition pos  = new ParsePosition(0);
+        ParsePosition pos = new ParsePosition(0);
         Object[] result = parse(source, pos);
         if (pos.index == 0)  // unchanged, returned object is null
+        {
             throw new ParseException("MessageFormat parse error!", pos.errorIndex);
+        }
 
         return result;
     }
@@ -1063,12 +1100,17 @@ public class MessageFormat extends Format {
      * See the {@link #parse(String, ParsePosition)} method for more information
      * on message parsing.
      *
-     * @param source A <code>String</code>, part of which should be parsed.
-     * @param pos A <code>ParsePosition</code> object with index and error
-     *            index information as described above.
+     * @param source
+     *         A <code>String</code>, part of which should be parsed.
+     * @param pos
+     *         A <code>ParsePosition</code> object with index and error
+     *         index information as described above.
+     *
      * @return An <code>Object</code> array parsed from the string. In case of
-     *         error, returns null.
-     * @exception NullPointerException if <code>pos</code> is null.
+     * error, returns null.
+     *
+     * @throws NullPointerException
+     *         if <code>pos</code> is null.
      */
     public Object parseObject(String source, ParsePosition pos) {
         return parse(source, pos);
@@ -1085,8 +1127,9 @@ public class MessageFormat extends Format {
         // clone arrays. Can't do with utility because of bug in Cloneable
         other.formats = formats.clone(); // shallow clone
         for (int i = 0; i < formats.length; ++i) {
-            if (formats[i] != null)
-                other.formats[i] = (Format)formats[i].clone();
+            if (formats[i] != null) {
+                other.formats[i] = (Format) formats[i].clone();
+            }
         }
         // for primitives or immutables, shallow clone is enough
         other.offsets = offsets.clone();
@@ -1100,17 +1143,16 @@ public class MessageFormat extends Format {
      */
     public boolean equals(Object obj) {
         if (this == obj)                      // quick check
+        {
             return true;
-        if (obj == null || getClass() != obj.getClass())
+        }
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
+        }
         MessageFormat other = (MessageFormat) obj;
-        return (maxOffset == other.maxOffset
-                && pattern.equals(other.pattern)
-                && ((locale != null && locale.equals(other.locale))
-                 || (locale == null && other.locale == null))
-                && Arrays.equals(offsets,other.offsets)
-                && Arrays.equals(argumentNumbers,other.argumentNumbers)
-                && Arrays.equals(formats,other.formats));
+        return (maxOffset == other.maxOffset && pattern.equals(other.pattern) && ((locale != null && locale.equals(other.locale)) || (locale == null
+                && other.locale == null)) && Arrays.equals(offsets, other.offsets) && Arrays.equals(argumentNumbers, other.argumentNumbers) && Arrays
+                .equals(formats, other.formats));
     }
 
     /**
@@ -1119,7 +1161,6 @@ public class MessageFormat extends Format {
     public int hashCode() {
         return pattern.hashCode(); // enough for reasonable distribution
     }
-
 
     /**
      * Defines constants that are used as attribute keys in the
@@ -1136,7 +1177,8 @@ public class MessageFormat extends Format {
         /**
          * Creates a Field with the specified name.
          *
-         * @param name Name of the attribute
+         * @param name
+         *         Name of the attribute
          */
         protected Field(String name) {
             super(name);
@@ -1145,9 +1187,11 @@ public class MessageFormat extends Format {
         /**
          * Resolves instances being deserialized to the predefined constants.
          *
-         * @throws InvalidObjectException if the constant could not be
-         *         resolved.
          * @return resolved MessageFormat.Field constant
+         *
+         * @throws InvalidObjectException
+         *         if the constant could not be
+         *         resolved.
          */
         protected Object readResolve() throws InvalidObjectException {
             if (this.getClass() != MessageFormat.Field.class) {
@@ -1168,22 +1212,19 @@ public class MessageFormat extends Format {
          * indicating the index in the <code>arguments</code> array of the
          * argument from which the text was generated.
          */
-        public final static Field ARGUMENT =
-                           new Field("message argument field");
+        public final static Field ARGUMENT = new Field("message argument field");
     }
 
     // ===========================privates============================
 
     /**
      * The locale to use for formatting numbers and dates.
-     * @serial
      */
     private Locale locale;
 
     /**
      * The string that the formatted values are to be plugged into.  In other words, this
      * is the pattern supplied on construction with all of the {} expressions taken out.
-     * @serial
      */
     private String pattern = "";
 
@@ -1192,14 +1233,12 @@ public class MessageFormat extends Format {
 
     /**
      * An array of formatters, which are used to format the arguments.
-     * @serial
      */
     private Format[] formats = new Format[INITIAL_FORMATS];
 
     /**
      * The positions where the results of formatting each argument are to be inserted
      * into the pattern.
-     * @serial
      */
     private int[] offsets = new int[INITIAL_FORMATS];
 
@@ -1207,7 +1246,6 @@ public class MessageFormat extends Format {
      * The argument numbers corresponding to each formatter.  (The formatters are stored
      * in the order they occur in the pattern, not in the order in which the arguments
      * are specified.)
-     * @serial
      */
     private int[] argumentNumbers = new int[INITIAL_FORMATS];
 
@@ -1216,7 +1254,6 @@ public class MessageFormat extends Format {
      * as the index of the highest-numbered element in <code>offsets</code> that is being used.
      * All of these arrays should have the same number of elements being used as <code>offsets</code>
      * does, and so this variable suffices to tell us how many entries are in all of them.
-     * @serial
      */
     private int maxOffset = -1;
 
@@ -1228,12 +1265,12 @@ public class MessageFormat extends Format {
      * <code>Field.MESSAGE_ARGUMENT</code>, the location of
      * the first replaced argument will be set in it.
      *
-     * @exception IllegalArgumentException if an argument in the
-     *            <code>arguments</code> array is not of the type
-     *            expected by the format element(s) that use it.
+     * @throws IllegalArgumentException
+     *         if an argument in the
+     *         <code>arguments</code> array is not of the type
+     *         expected by the format element(s) that use it.
      */
-    private StringBuffer subformat(Object[] arguments, StringBuffer result,
-                                   FieldPosition fp, List<AttributedCharacterIterator> characterIterators) {
+    private StringBuffer subformat(Object[] arguments, StringBuffer result, FieldPosition fp, List<AttributedCharacterIterator> characterIterators) {
         // note: this implementation assumes a fast substring & index.
         // if this is not true, would be better to append chars one by one.
         int lastOffset = 0;
@@ -1271,14 +1308,15 @@ public class MessageFormat extends Format {
                     subFormatter = NumberFormat.getInstance(locale);
                 } else if (obj instanceof Date) {
                     // format a Date if can
-                    subFormatter = DateFormat.getDateTimeInstance(
-                             DateFormat.SHORT, DateFormat.SHORT, locale);//fix
+                    subFormatter = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);//fix
                 } else if (obj instanceof String) {
                     arg = (String) obj;
 
                 } else {
                     arg = obj.toString();
-                    if (arg == null) arg = "null";
+                    if (arg == null) {
+                        arg = "null";
+                    }
                 }
 
                 // At this point we are in two states, either subFormatter
@@ -1289,42 +1327,31 @@ public class MessageFormat extends Format {
                     // If characterIterators is non-null, it indicates we need
                     // to get the CharacterIterator from the child formatter.
                     if (last != result.length()) {
-                        characterIterators.add(
-                            createAttributedCharacterIterator(result.substring
-                                                              (last)));
+                        characterIterators.add(createAttributedCharacterIterator(result.substring(last)));
                         last = result.length();
                     }
                     if (subFormatter != null) {
-                        AttributedCharacterIterator subIterator =
-                                   subFormatter.formatToCharacterIterator(obj);
+                        AttributedCharacterIterator subIterator = subFormatter.formatToCharacterIterator(obj);
 
                         append(result, subIterator);
                         if (last != result.length()) {
-                            characterIterators.add(
-                                         createAttributedCharacterIterator(
-                                         subIterator, Field.ARGUMENT,
-                                         Integer.valueOf(argumentNumber)));
+                            characterIterators.add(createAttributedCharacterIterator(subIterator, Field.ARGUMENT, Integer.valueOf(argumentNumber)));
                             last = result.length();
                         }
                         arg = null;
                     }
                     if (arg != null && arg.length() > 0) {
                         result.append(arg);
-                        characterIterators.add(
-                                 createAttributedCharacterIterator(
-                                 arg, Field.ARGUMENT,
-                                 Integer.valueOf(argumentNumber)));
+                        characterIterators.add(createAttributedCharacterIterator(arg, Field.ARGUMENT, Integer.valueOf(argumentNumber)));
                         last = result.length();
                     }
-                }
-                else {
+                } else {
                     if (subFormatter != null) {
                         arg = subFormatter.format(obj);
                     }
                     last = result.length();
                     result.append(arg);
-                    if (i == 0 && fp != null && Field.ARGUMENT.equals(
-                                  fp.getFieldAttribute())) {
+                    if (i == 0 && fp != null && Field.ARGUMENT.equals(fp.getFieldAttribute())) {
                         fp.setBeginIndex(last);
                         fp.setEndIndex(result.length());
                     }
@@ -1334,8 +1361,7 @@ public class MessageFormat extends Format {
         }
         result.append(pattern.substring(lastOffset, pattern.length()));
         if (characterIterators != null && last != result.length()) {
-            characterIterators.add(createAttributedCharacterIterator(
-                                   result.substring(last)));
+            characterIterators.add(createAttributedCharacterIterator(result.substring(last)));
         }
         return result;
     }
@@ -1356,65 +1382,40 @@ public class MessageFormat extends Format {
     }
 
     // Indices for segments
-    private static final int SEG_RAW      = 0;
-    private static final int SEG_INDEX    = 1;
-    private static final int SEG_TYPE     = 2;
+    private static final int SEG_RAW = 0;
+    private static final int SEG_INDEX = 1;
+    private static final int SEG_TYPE = 2;
     private static final int SEG_MODIFIER = 3; // modifier or subformat
 
     // Indices for type keywords
-    private static final int TYPE_NULL    = 0;
-    private static final int TYPE_NUMBER  = 1;
-    private static final int TYPE_DATE    = 2;
-    private static final int TYPE_TIME    = 3;
-    private static final int TYPE_CHOICE  = 4;
+    private static final int TYPE_NULL = 0;
+    private static final int TYPE_NUMBER = 1;
+    private static final int TYPE_DATE = 2;
+    private static final int TYPE_TIME = 3;
+    private static final int TYPE_CHOICE = 4;
 
-    private static final String[] TYPE_KEYWORDS = {
-        "",
-        "number",
-        "date",
-        "time",
-        "choice"
-    };
+    private static final String[] TYPE_KEYWORDS = { "", "number", "date", "time", "choice" };
 
     // Indices for number modifiers
-    private static final int MODIFIER_DEFAULT  = 0; // common in number and date-time
+    private static final int MODIFIER_DEFAULT = 0; // common in number and date-time
     private static final int MODIFIER_CURRENCY = 1;
-    private static final int MODIFIER_PERCENT  = 2;
-    private static final int MODIFIER_INTEGER  = 3;
+    private static final int MODIFIER_PERCENT = 2;
+    private static final int MODIFIER_INTEGER = 3;
 
-    private static final String[] NUMBER_MODIFIER_KEYWORDS = {
-        "",
-        "currency",
-        "percent",
-        "integer"
-    };
+    private static final String[] NUMBER_MODIFIER_KEYWORDS = { "", "currency", "percent", "integer" };
 
     // Indices for date-time modifiers
-    private static final int MODIFIER_SHORT   = 1;
-    private static final int MODIFIER_MEDIUM  = 2;
-    private static final int MODIFIER_LONG    = 3;
-    private static final int MODIFIER_FULL    = 4;
+    private static final int MODIFIER_SHORT = 1;
+    private static final int MODIFIER_MEDIUM = 2;
+    private static final int MODIFIER_LONG = 3;
+    private static final int MODIFIER_FULL = 4;
 
-    private static final String[] DATE_TIME_MODIFIER_KEYWORDS = {
-        "",
-        "short",
-        "medium",
-        "long",
-        "full"
-    };
+    private static final String[] DATE_TIME_MODIFIER_KEYWORDS = { "", "short", "medium", "long", "full" };
 
     // Date-time style values corresponding to the date-time modifiers.
-    private static final int[] DATE_TIME_MODIFIERS = {
-        DateFormat.DEFAULT,
-        DateFormat.SHORT,
-        DateFormat.MEDIUM,
-        DateFormat.LONG,
-        DateFormat.FULL,
-    };
+    private static final int[] DATE_TIME_MODIFIERS = { DateFormat.DEFAULT, DateFormat.SHORT, DateFormat.MEDIUM, DateFormat.LONG, DateFormat.FULL, };
 
-    private void makeFormat(int position, int offsetNumber,
-                            StringBuilder[] textSegments)
-    {
+    private void makeFormat(int position, int offsetNumber, StringBuilder[] textSegments) {
         String[] segments = new String[textSegments.length];
         for (int i = 0; i < textSegments.length; i++) {
             StringBuilder oneseg = textSegments[i];
@@ -1426,12 +1427,10 @@ public class MessageFormat extends Format {
         try {
             argumentNumber = Integer.parseInt(segments[SEG_INDEX]); // always unlocalized!
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("can't parse argument number: "
-                                               + segments[SEG_INDEX], e);
+            throw new IllegalArgumentException("can't parse argument number: " + segments[SEG_INDEX], e);
         }
         if (argumentNumber < 0) {
-            throw new IllegalArgumentException("negative argument number: "
-                                               + argumentNumber);
+            throw new IllegalArgumentException("negative argument number: " + argumentNumber);
         }
 
         // resize format information arrays if necessary
@@ -1478,8 +1477,7 @@ public class MessageFormat extends Format {
                     break;
                 default: // DecimalFormat pattern
                     try {
-                        newFormat = new DecimalFormat(segments[SEG_MODIFIER],
-                                                      DecimalFormatSymbols.getInstance(locale));
+                        newFormat = new DecimalFormat(segments[SEG_MODIFIER], DecimalFormatSymbols.getInstance(locale));
                     } catch (IllegalArgumentException e) {
                         maxOffset = oldMaxOffset;
                         throw e;
@@ -1493,11 +1491,9 @@ public class MessageFormat extends Format {
                 int mod = findKeyword(segments[SEG_MODIFIER], DATE_TIME_MODIFIER_KEYWORDS);
                 if (mod >= 0 && mod < DATE_TIME_MODIFIER_KEYWORDS.length) {
                     if (type == TYPE_DATE) {
-                        newFormat = DateFormat.getDateInstance(DATE_TIME_MODIFIERS[mod],
-                                                               locale);
+                        newFormat = DateFormat.getDateInstance(DATE_TIME_MODIFIERS[mod], locale);
                     } else {
-                        newFormat = DateFormat.getTimeInstance(DATE_TIME_MODIFIERS[mod],
-                                                               locale);
+                        newFormat = DateFormat.getTimeInstance(DATE_TIME_MODIFIERS[mod], locale);
                     }
                 } else {
                     // SimpleDateFormat pattern
@@ -1516,15 +1512,13 @@ public class MessageFormat extends Format {
                     newFormat = new ChoiceFormat(segments[SEG_MODIFIER]);
                 } catch (Exception e) {
                     maxOffset = oldMaxOffset;
-                    throw new IllegalArgumentException("Choice Pattern incorrect: "
-                                                       + segments[SEG_MODIFIER], e);
+                    throw new IllegalArgumentException("Choice Pattern incorrect: " + segments[SEG_MODIFIER], e);
                 }
                 break;
 
             default:
                 maxOffset = oldMaxOffset;
-                throw new IllegalArgumentException("unknown format type: " +
-                                                   segments[SEG_TYPE]);
+                throw new IllegalArgumentException("unknown format type: " + segments[SEG_TYPE]);
             }
         }
         formats[offsetNumber] = newFormat;
@@ -1532,23 +1526,24 @@ public class MessageFormat extends Format {
 
     private static final int findKeyword(String s, String[] list) {
         for (int i = 0; i < list.length; ++i) {
-            if (s.equals(list[i]))
+            if (s.equals(list[i])) {
                 return i;
+            }
         }
 
         // Try trimmed lowercase.
         String ls = s.trim().toLowerCase(Locale.ROOT);
         if (ls != s) {
             for (int i = 0; i < list.length; ++i) {
-                if (ls.equals(list[i]))
+                if (ls.equals(list[i])) {
                     return i;
+                }
             }
         }
         return -1;
     }
 
-    private static final void copyAndFixQuotes(String source, int start, int end,
-                                               StringBuilder target) {
+    private static final void copyAndFixQuotes(String source, int start, int end, StringBuilder target) {
         boolean quoted = false;
 
         for (int i = start; i < end; ++i) {
@@ -1577,14 +1572,13 @@ public class MessageFormat extends Format {
     /**
      * After reading an object from the input stream, do a simple verification
      * to maintain class invariants.
-     * @throws InvalidObjectException if the objects read from the stream is invalid.
+     *
+     * @throws InvalidObjectException
+     *         if the objects read from the stream is invalid.
      */
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        boolean isValid = maxOffset >= -1
-                && formats.length > maxOffset
-                && offsets.length > maxOffset
-                && argumentNumbers.length > maxOffset;
+        boolean isValid = maxOffset >= -1 && formats.length > maxOffset && offsets.length > maxOffset && argumentNumbers.length > maxOffset;
         if (isValid) {
             int lastOffset = pattern.length() + 1;
             for (int i = maxOffset; i >= 0; --i) {

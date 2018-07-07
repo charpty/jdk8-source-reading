@@ -47,113 +47,113 @@ import java.util.Map;
  * supported for each calendar system.
  *
  * <table style="border-bottom:1px solid" border="1" cellpadding="3" cellspacing="0" summary="Field values">
- *   <tr>
- *     <th>Field</th>
- *     <th>Value</th>
- *     <th>Description</th>
- *   </tr>
- *   <tr>
- *     <td valign="top">{@link Calendar#MONTH}</td>
- *     <td valign="top">{@link Calendar#JANUARY} to {@link Calendar#UNDECIMBER}</td>
- *     <td>Month numbering is 0-based (e.g., 0 - January, ..., 11 -
- *         December). Some calendar systems have 13 months. Month
- *         names need to be supported in both the formatting and
- *         stand-alone forms if required by the supported locales. If there's
- *         no distinction in the two forms, the same names should be returned
- *         in both of the forms.</td>
- *   </tr>
- *   <tr>
- *     <td valign="top">{@link Calendar#DAY_OF_WEEK}</td>
- *     <td valign="top">{@link Calendar#SUNDAY} to {@link Calendar#SATURDAY}</td>
- *     <td>Day-of-week numbering is 1-based starting from Sunday (i.e., 1 - Sunday,
- *         ..., 7 - Saturday).</td>
- *   </tr>
- *   <tr>
- *     <td valign="top">{@link Calendar#AM_PM}</td>
- *     <td valign="top">{@link Calendar#AM} to {@link Calendar#PM}</td>
- *     <td>0 - AM, 1 - PM</td>
- *   </tr>
+ * <tr>
+ * <th>Field</th>
+ * <th>Value</th>
+ * <th>Description</th>
+ * </tr>
+ * <tr>
+ * <td valign="top">{@link Calendar#MONTH}</td>
+ * <td valign="top">{@link Calendar#JANUARY} to {@link Calendar#UNDECIMBER}</td>
+ * <td>Month numbering is 0-based (e.g., 0 - January, ..., 11 -
+ * December). Some calendar systems have 13 months. Month
+ * names need to be supported in both the formatting and
+ * stand-alone forms if required by the supported locales. If there's
+ * no distinction in the two forms, the same names should be returned
+ * in both of the forms.</td>
+ * </tr>
+ * <tr>
+ * <td valign="top">{@link Calendar#DAY_OF_WEEK}</td>
+ * <td valign="top">{@link Calendar#SUNDAY} to {@link Calendar#SATURDAY}</td>
+ * <td>Day-of-week numbering is 1-based starting from Sunday (i.e., 1 - Sunday,
+ * ..., 7 - Saturday).</td>
+ * </tr>
+ * <tr>
+ * <td valign="top">{@link Calendar#AM_PM}</td>
+ * <td valign="top">{@link Calendar#AM} to {@link Calendar#PM}</td>
+ * <td>0 - AM, 1 - PM</td>
+ * </tr>
  * </table>
  *
  * <p style="margin-top:20px">The following are calendar-specific fields and their values to be supported.
  *
  * <table style="border-bottom:1px solid" border="1" cellpadding="3" cellspacing="0" summary="Calendar type and field values">
- *   <tr>
- *     <th>Calendar Type</th>
- *     <th>Field</th>
- *     <th>Value</th>
- *     <th>Description</th>
- *   </tr>
- *   <tr>
- *     <td rowspan="2" valign="top">{@code "gregory"}</td>
- *     <td rowspan="2" valign="top">{@link Calendar#ERA}</td>
- *     <td>0</td>
- *     <td>{@link java.util.GregorianCalendar#BC} (BCE)</td>
- *   </tr>
- *   <tr>
- *     <td>1</td>
- *     <td>{@link java.util.GregorianCalendar#AD} (CE)</td>
- *   </tr>
- *   <tr>
- *     <td rowspan="2" valign="top">{@code "buddhist"}</td>
- *     <td rowspan="2" valign="top">{@link Calendar#ERA}</td>
- *     <td>0</td>
- *     <td>BC (BCE)</td>
- *   </tr>
- *   <tr>
- *     <td>1</td>
- *     <td>B.E. (Buddhist Era)</td>
- *   </tr>
- *   <tr>
- *     <td rowspan="6" valign="top">{@code "japanese"}</td>
- *     <td rowspan="5" valign="top">{@link Calendar#ERA}</td>
- *     <td>0</td>
- *     <td>Seireki (Before Meiji)</td>
- *   </tr>
- *   <tr>
- *     <td>1</td>
- *     <td>Meiji</td>
- *   </tr>
- *   <tr>
- *     <td>2</td>
- *     <td>Taisho</td>
- *   </tr>
- *   <tr>
- *     <td>3</td>
- *     <td>Showa</td>
- *   </tr>
- *   <tr>
- *     <td>4</td>
- *     <td >Heisei</td>
- *   </tr>
- *   <tr>
- *     <td>{@link Calendar#YEAR}</td>
- *     <td>1</td>
- *     <td>the first year in each era. It should be returned when a long
- *     style ({@link Calendar#LONG_FORMAT} or {@link Calendar#LONG_STANDALONE}) is
- *     specified. See also the <a href="../../text/SimpleDateFormat.html#year">
- *     Year representation in {@code SimpleDateFormat}</a>.</td>
- *   </tr>
- *   <tr>
- *     <td rowspan="2" valign="top">{@code "roc"}</td>
- *     <td rowspan="2" valign="top">{@link Calendar#ERA}</td>
- *     <td>0</td>
- *     <td>Before R.O.C.</td>
- *   </tr>
- *   <tr>
- *     <td>1</td>
- *     <td>R.O.C.</td>
- *   </tr>
- *   <tr>
- *     <td rowspan="2" valign="top">{@code "islamic"}</td>
- *     <td rowspan="2" valign="top">{@link Calendar#ERA}</td>
- *     <td>0</td>
- *     <td>Before AH</td>
- *   </tr>
- *   <tr>
- *     <td>1</td>
- *     <td>Anno Hijrah (AH)</td>
- *   </tr>
+ * <tr>
+ * <th>Calendar Type</th>
+ * <th>Field</th>
+ * <th>Value</th>
+ * <th>Description</th>
+ * </tr>
+ * <tr>
+ * <td rowspan="2" valign="top">{@code "gregory"}</td>
+ * <td rowspan="2" valign="top">{@link Calendar#ERA}</td>
+ * <td>0</td>
+ * <td>{@link java.util.GregorianCalendar#BC} (BCE)</td>
+ * </tr>
+ * <tr>
+ * <td>1</td>
+ * <td>{@link java.util.GregorianCalendar#AD} (CE)</td>
+ * </tr>
+ * <tr>
+ * <td rowspan="2" valign="top">{@code "buddhist"}</td>
+ * <td rowspan="2" valign="top">{@link Calendar#ERA}</td>
+ * <td>0</td>
+ * <td>BC (BCE)</td>
+ * </tr>
+ * <tr>
+ * <td>1</td>
+ * <td>B.E. (Buddhist Era)</td>
+ * </tr>
+ * <tr>
+ * <td rowspan="6" valign="top">{@code "japanese"}</td>
+ * <td rowspan="5" valign="top">{@link Calendar#ERA}</td>
+ * <td>0</td>
+ * <td>Seireki (Before Meiji)</td>
+ * </tr>
+ * <tr>
+ * <td>1</td>
+ * <td>Meiji</td>
+ * </tr>
+ * <tr>
+ * <td>2</td>
+ * <td>Taisho</td>
+ * </tr>
+ * <tr>
+ * <td>3</td>
+ * <td>Showa</td>
+ * </tr>
+ * <tr>
+ * <td>4</td>
+ * <td >Heisei</td>
+ * </tr>
+ * <tr>
+ * <td>{@link Calendar#YEAR}</td>
+ * <td>1</td>
+ * <td>the first year in each era. It should be returned when a long
+ * style ({@link Calendar#LONG_FORMAT} or {@link Calendar#LONG_STANDALONE}) is
+ * specified. See also the <a href="../../text/SimpleDateFormat.html#year">
+ * Year representation in {@code SimpleDateFormat}</a>.</td>
+ * </tr>
+ * <tr>
+ * <td rowspan="2" valign="top">{@code "roc"}</td>
+ * <td rowspan="2" valign="top">{@link Calendar#ERA}</td>
+ * <td>0</td>
+ * <td>Before R.O.C.</td>
+ * </tr>
+ * <tr>
+ * <td>1</td>
+ * <td>R.O.C.</td>
+ * </tr>
+ * <tr>
+ * <td rowspan="2" valign="top">{@code "islamic"}</td>
+ * <td rowspan="2" valign="top">{@link Calendar#ERA}</td>
+ * <td>0</td>
+ * <td>Before AH</td>
+ * </tr>
+ * <tr>
+ * <td>1</td>
+ * <td>Anno Hijrah (AH)</td>
+ * </tr>
  * </table>
  *
  * <p>Calendar field value names for {@code "gregory"} must be consistent with
@@ -162,9 +162,9 @@ import java.util.Map;
  * <p>Time zone names are supported by {@link TimeZoneNameProvider}.
  *
  * @author Masayoshi Okutsu
- * @since 1.8
  * @see CalendarDataProvider
  * @see Locale#getUnicodeLocaleType(String)
+ * @since 1.8
  */
 public abstract class CalendarNameProvider extends LocaleServiceProvider {
     /**
@@ -204,37 +204,38 @@ public abstract class CalendarNameProvider extends LocaleServiceProvider {
      * </pre>
      *
      * @param calendarType
-     *              the calendar type. (Any calendar type given by {@code locale}
-     *              is ignored.)
+     *         the calendar type. (Any calendar type given by {@code locale}
+     *         is ignored.)
      * @param field
-     *              the {@code Calendar} field index,
-     *              such as {@link Calendar#DAY_OF_WEEK}
+     *         the {@code Calendar} field index,
+     *         such as {@link Calendar#DAY_OF_WEEK}
      * @param value
-     *              the value of the {@code Calendar field},
-     *              such as {@link Calendar#MONDAY}
+     *         the value of the {@code Calendar field},
+     *         such as {@link Calendar#MONDAY}
      * @param style
-     *              the string representation style: one of {@link
-     *              Calendar#SHORT_FORMAT} ({@link Calendar#SHORT SHORT}),
-     *              {@link Calendar#SHORT_STANDALONE}, {@link
-     *              Calendar#LONG_FORMAT} ({@link Calendar#LONG LONG}),
-     *              {@link Calendar#LONG_STANDALONE},
-     *              {@link Calendar#NARROW_FORMAT},
-     *              or {@link Calendar#NARROW_STANDALONE}
+     *         the string representation style: one of {@link
+     *         Calendar#SHORT_FORMAT} ({@link Calendar#SHORT SHORT}),
+     *         {@link Calendar#SHORT_STANDALONE}, {@link
+     *         Calendar#LONG_FORMAT} ({@link Calendar#LONG LONG}),
+     *         {@link Calendar#LONG_STANDALONE},
+     *         {@link Calendar#NARROW_FORMAT},
+     *         or {@link Calendar#NARROW_STANDALONE}
      * @param locale
-     *              the desired locale
+     *         the desired locale
+     *
      * @return the string representation of the {@code field value}, or {@code
-     *         null} if the string representation is not applicable or
-     *         the given calendar type is unknown
+     * null} if the string representation is not applicable or
+     * the given calendar type is unknown
+     *
      * @throws IllegalArgumentException
      *         if {@code field} or {@code style} is invalid
-     * @throws NullPointerException if {@code locale} is {@code null}
+     * @throws NullPointerException
+     *         if {@code locale} is {@code null}
      * @see TimeZoneNameProvider
      * @see java.util.Calendar#get(int)
      * @see java.util.Calendar#getDisplayName(int, int, Locale)
      */
-    public abstract String getDisplayName(String calendarType,
-                                          int field, int value,
-                                          int style, Locale locale);
+    public abstract String getDisplayName(String calendarType, int field, int value, int style, Locale locale);
 
     /**
      * Returns a {@code Map} containing all string representations (display
@@ -264,28 +265,28 @@ public abstract class CalendarNameProvider extends LocaleServiceProvider {
      * </pre>
      *
      * @param calendarType
-     *              the calendar type. (Any calendar type given by {@code locale}
-     *              is ignored.)
+     *         the calendar type. (Any calendar type given by {@code locale}
+     *         is ignored.)
      * @param field
-     *              the calendar field for which the display names are returned
+     *         the calendar field for which the display names are returned
      * @param style
-     *              the style applied to the display names; one of
-     *              {@link Calendar#ALL_STYLES}, {@link Calendar#SHORT_FORMAT}
-     *              ({@link Calendar#SHORT SHORT}), {@link
-     *              Calendar#SHORT_STANDALONE}, {@link Calendar#LONG_FORMAT}
-     *              ({@link Calendar#LONG LONG}), {@link Calendar#LONG_STANDALONE},
-     *              {@link Calendar#NARROW_FORMAT},
-     *              or {@link Calendar#NARROW_STANDALONE}
+     *         the style applied to the display names; one of
+     *         {@link Calendar#ALL_STYLES}, {@link Calendar#SHORT_FORMAT}
+     *         ({@link Calendar#SHORT SHORT}), {@link
+     *         Calendar#SHORT_STANDALONE}, {@link Calendar#LONG_FORMAT}
+     *         ({@link Calendar#LONG LONG}), {@link Calendar#LONG_STANDALONE},
+     *         {@link Calendar#NARROW_FORMAT},
+     *         or {@link Calendar#NARROW_STANDALONE}
      * @param locale
-     *              the desired locale
+     *         the desired locale
+     *
      * @return a {@code Map} containing all display names of {@code field} in
-     *         {@code style} and {@code locale} and their {@code field} values,
-     *         or {@code null} if no display names are defined for {@code field}
+     * {@code style} and {@code locale} and their {@code field} values,
+     * or {@code null} if no display names are defined for {@code field}
+     *
      * @throws NullPointerException
      *         if {@code locale} is {@code null}
      * @see Calendar#getDisplayNames(int, int, Locale)
      */
-    public abstract Map<String, Integer> getDisplayNames(String calendarType,
-                                                         int field, int style,
-                                                         Locale locale);
+    public abstract Map<String, Integer> getDisplayNames(String calendarType, int field, int style, Locale locale);
 }

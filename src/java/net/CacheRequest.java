@@ -25,8 +25,8 @@
 
 package java.net;
 
-import java.io.OutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Represents channels for storing resources in the
@@ -48,8 +48,10 @@ public abstract class CacheRequest {
      * written.
      *
      * @return an OutputStream to which the response body can
-     *         be written
-     * @throws IOException if an I/O error occurs while
+     * be written
+     *
+     * @throws IOException
+     *         if an I/O error occurs while
      *         writing the response body
      */
     public abstract OutputStream getBody() throws IOException;

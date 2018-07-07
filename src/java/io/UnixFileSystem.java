@@ -28,7 +28,6 @@ package java.io;
 import java.security.AccessController;
 import sun.security.action.GetPropertyAction;
 
-
 class UnixFileSystem extends FileSystem {
 
     private final char slash;
@@ -36,12 +35,9 @@ class UnixFileSystem extends FileSystem {
     private final String javaHome;
 
     public UnixFileSystem() {
-        slash = AccessController.doPrivileged(
-            new GetPropertyAction("file.separator")).charAt(0);
-        colon = AccessController.doPrivileged(
-            new GetPropertyAction("path.separator")).charAt(0);
-        javaHome = AccessController.doPrivileged(
-            new GetPropertyAction("java.home"));
+        slash = AccessController.doPrivileged(new GetPropertyAction("file.separator")).charAt(0);
+        colon = AccessController.doPrivileged(new GetPropertyAction("path.separator")).charAt(0);
+        javaHome = AccessController.doPrivileged(new GetPropertyAction("java.home"));
     }
 
 
@@ -61,16 +57,26 @@ class UnixFileSystem extends FileSystem {
     /* Normalize the given pathname, whose length is len, starting at the given
        offset; everything before this offset is already normal. */
     private String normalize(String pathname, int len, int off) {
-        if (len == 0) return pathname;
+        if (len == 0) {
+            return pathname;
+        }
         int n = len;
-        while ((n > 0) && (pathname.charAt(n - 1) == '/')) n--;
-        if (n == 0) return "/";
+        while ((n > 0) && (pathname.charAt(n - 1) == '/')) {
+            n--;
+        }
+        if (n == 0) {
+            return "/";
+        }
         StringBuffer sb = new StringBuffer(pathname.length());
-        if (off > 0) sb.append(pathname.substring(0, off));
+        if (off > 0) {
+            sb.append(pathname.substring(0, off));
+        }
         char prevChar = 0;
         for (int i = off; i < n; i++) {
             char c = pathname.charAt(i);
-            if ((prevChar == '/') && (c == '/')) continue;
+            if ((prevChar == '/') && (c == '/')) {
+                continue;
+            }
             sb.append(c);
             prevChar = c;
         }
@@ -85,26 +91,37 @@ class UnixFileSystem extends FileSystem {
         char prevChar = 0;
         for (int i = 0; i < n; i++) {
             char c = pathname.charAt(i);
-            if ((prevChar == '/') && (c == '/'))
+            if ((prevChar == '/') && (c == '/')) {
                 return normalize(pathname, n, i - 1);
+            }
             prevChar = c;
         }
-        if (prevChar == '/') return normalize(pathname, n, n - 1);
+        if (prevChar == '/') {
+            return normalize(pathname, n, n - 1);
+        }
         return pathname;
     }
 
     public int prefixLength(String pathname) {
-        if (pathname.length() == 0) return 0;
+        if (pathname.length() == 0) {
+            return 0;
+        }
         return (pathname.charAt(0) == '/') ? 1 : 0;
     }
 
     public String resolve(String parent, String child) {
-        if (child.equals("")) return parent;
+        if (child.equals("")) {
+            return parent;
+        }
         if (child.charAt(0) == '/') {
-            if (parent.equals("/")) return child;
+            if (parent.equals("/")) {
+                return child;
+            }
             return parent + child;
         }
-        if (parent.equals("/")) return parent + child;
+        if (parent.equals("/")) {
+            return parent + child;
+        }
         return parent + '/' + child;
     }
 
@@ -129,7 +146,9 @@ class UnixFileSystem extends FileSystem {
     }
 
     public String resolve(File f) {
-        if (isAbsolute(f)) return f.getPath();
+        if (isAbsolute(f)) {
+            return f.getPath();
+        }
         return resolve(System.getProperty("user.dir"), f.getPath());
     }
 
@@ -171,8 +190,7 @@ class UnixFileSystem extends FileSystem {
                 if (res == null) {
                     res = canonicalize0(path);
                     cache.put(path, res);
-                    if (useCanonPrefixCache &&
-                        dir != null && dir.startsWith(javaHome)) {
+                    if (useCanonPrefixCache && dir != null && dir.startsWith(javaHome)) {
                         resDir = parentOrNull(res);
                         // Note that we don't allow a resolved symlink
                         // to elsewhere in java.home to pollute the
@@ -190,7 +208,9 @@ class UnixFileSystem extends FileSystem {
             return res;
         }
     }
+
     private native String canonicalize0(String path) throws IOException;
+
     // Best-effort attempt to get parent of this path; used for
     // optimization of filename canonicalization. This must return null for
     // any cases where the code in canonicalize_md.c would throw an
@@ -199,7 +219,9 @@ class UnixFileSystem extends FileSystem {
     // situations as well. Returning null will cause the underlying
     // (expensive) canonicalization routine to be called.
     static String parentOrNull(String path) {
-        if (path == null) return null;
+        if (path == null) {
+            return null;
+        }
         char sep = File.separatorChar;
         int last = path.length() - 1;
         int idx = last;
@@ -217,9 +239,7 @@ class UnixFileSystem extends FileSystem {
                     // Punt on pathnames containing . and ..
                     return null;
                 }
-                if (idx == 0 ||
-                    idx >= last - 1 ||
-                    path.charAt(idx - 1) == sep) {
+                if (idx == 0 || idx >= last - 1 || path.charAt(idx - 1) == sep) {
                     // Punt on pathnames containing adjacent slashes
                     // toward the end
                     return null;
@@ -246,14 +266,17 @@ class UnixFileSystem extends FileSystem {
     }
 
     public native boolean checkAccess(File f, int access);
+
     public native long getLastModifiedTime(File f);
+
     public native long getLength(File f);
+
     public native boolean setPermission(File f, int access, boolean enable, boolean owneronly);
 
     /* -- File operations -- */
 
-    public native boolean createFileExclusively(String path)
-        throws IOException;
+    public native boolean createFileExclusively(String path) throws IOException;
+
     public boolean delete(File f) {
         // Keep canonicalization caches in sync after file deletion
         // and renaming operations. Could be more clever than this
@@ -264,9 +287,13 @@ class UnixFileSystem extends FileSystem {
         javaHomePrefixCache.clear();
         return delete0(f);
     }
+
     private native boolean delete0(File f);
+
     public native String[] list(File f);
+
     public native boolean createDirectory(File f);
+
     public boolean rename(File f1, File f2) {
         // Keep canonicalization caches in sync after file deletion
         // and renaming operations. Could be more clever than this
@@ -277,8 +304,11 @@ class UnixFileSystem extends FileSystem {
         javaHomePrefixCache.clear();
         return rename0(f1, f2);
     }
+
     private native boolean rename0(File f1, File f2);
+
     public native boolean setLastModifiedTime(File f, long time);
+
     public native boolean setReadOnly(File f);
 
 
@@ -308,7 +338,6 @@ class UnixFileSystem extends FileSystem {
     public int hashCode(File f) {
         return f.getPath().hashCode() ^ 1234321;
     }
-
 
     private static native void initIDs();
 

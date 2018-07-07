@@ -25,19 +25,13 @@
 
 package java.net;
 
-import java.io.ByteArrayOutputStream;
-import java.io.BufferedWriter;
-import java.io.OutputStreamWriter;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.io.CharArrayWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
-import java.nio.charset.UnsupportedCharsetException ;
-import java.util.BitSet;
+import java.nio.charset.UnsupportedCharsetException;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
-import sun.security.action.GetBooleanAction;
+import java.util.BitSet;
 import sun.security.action.GetPropertyAction;
 
 /**
@@ -51,22 +45,22 @@ import sun.security.action.GetPropertyAction;
  *
  * <ul>
  * <li>The alphanumeric characters &quot;{@code a}&quot; through
- *     &quot;{@code z}&quot;, &quot;{@code A}&quot; through
- *     &quot;{@code Z}&quot; and &quot;{@code 0}&quot;
- *     through &quot;{@code 9}&quot; remain the same.
+ * &quot;{@code z}&quot;, &quot;{@code A}&quot; through
+ * &quot;{@code Z}&quot; and &quot;{@code 0}&quot;
+ * through &quot;{@code 9}&quot; remain the same.
  * <li>The special characters &quot;{@code .}&quot;,
- *     &quot;{@code -}&quot;, &quot;{@code *}&quot;, and
- *     &quot;{@code _}&quot; remain the same.
+ * &quot;{@code -}&quot;, &quot;{@code *}&quot;, and
+ * &quot;{@code _}&quot; remain the same.
  * <li>The space character &quot; &nbsp; &quot; is
- *     converted into a plus sign &quot;{@code +}&quot;.
+ * converted into a plus sign &quot;{@code +}&quot;.
  * <li>All other characters are unsafe and are first converted into
- *     one or more bytes using some encoding scheme. Then each byte is
- *     represented by the 3-character string
- *     &quot;<i>{@code %xy}</i>&quot;, where <i>xy</i> is the
- *     two-digit hexadecimal representation of the byte.
- *     The recommended encoding scheme to use is UTF-8. However,
- *     for compatibility reasons, if an encoding is not specified,
- *     then the default encoding of the platform is used.
+ * one or more bytes using some encoding scheme. Then each byte is
+ * represented by the 3-character string
+ * &quot;<i>{@code %xy}</i>&quot;, where <i>xy</i> is the
+ * two-digit hexadecimal representation of the byte.
+ * The recommended encoding scheme to use is UTF-8. However,
+ * for compatibility reasons, if an encoding is not specified,
+ * then the default encoding of the platform is used.
  * </ul>
  *
  * <p>
@@ -76,8 +70,8 @@ import sun.security.action.GetPropertyAction;
  * &#252; is encoded as two bytes C3 (hex) and BC (hex), and the
  * character @ is encoded as one byte 40 (hex).
  *
- * @author  Herb Jellinek
- * @since   JDK1.0
+ * @author Herb Jellinek
+ * @since JDK1.0
  */
 public class URLEncoder {
     static BitSet dontNeedEncoding;
@@ -134,32 +128,34 @@ public class URLEncoder {
             dontNeedEncoding.set(i);
         }
         dontNeedEncoding.set(' '); /* encoding a space to a + is done
-                                    * in the encode() method */
+         * in the encode() method */
         dontNeedEncoding.set('-');
         dontNeedEncoding.set('_');
         dontNeedEncoding.set('.');
         dontNeedEncoding.set('*');
 
-        dfltEncName = AccessController.doPrivileged(
-            new GetPropertyAction("file.encoding")
-        );
+        dfltEncName = AccessController.doPrivileged(new GetPropertyAction("file.encoding"));
     }
 
     /**
      * You can't call the constructor.
      */
-    private URLEncoder() { }
+    private URLEncoder() {
+    }
 
     /**
      * Translates a string into {@code x-www-form-urlencoded}
      * format. This method uses the platform's default encoding
      * as the encoding scheme to obtain the bytes for unsafe characters.
      *
-     * @param   s   {@code String} to be translated.
+     * @param s
+     *         {@code String} to be translated.
+     *
+     * @return the translated {@code String}.
+     *
      * @deprecated The resulting string may vary depending on the platform's
-     *             default encoding. Instead, use the encode(String,String)
-     *             method to specify the encoding.
-     * @return  the translated {@code String}.
+     * default encoding. Instead, use the encode(String,String)
+     * method to specify the encoding.
      */
     @Deprecated
     public static String encode(String s) {
@@ -187,26 +183,30 @@ public class URLEncoder {
      * UTF-8 should be used. Not doing so may introduce
      * incompatibilities.</em>
      *
-     * @param   s   {@code String} to be translated.
-     * @param   enc   The name of a supported
-     *    <a href="../lang/package-summary.html#charenc">character
-     *    encoding</a>.
-     * @return  the translated {@code String}.
-     * @exception  UnsupportedEncodingException
-     *             If the named encoding is not supported
+     * @param s
+     *         {@code String} to be translated.
+     * @param enc
+     *         The name of a supported
+     *         <a href="../lang/package-summary.html#charenc">character
+     *         encoding</a>.
+     *
+     * @return the translated {@code String}.
+     *
+     * @throws UnsupportedEncodingException
+     *         If the named encoding is not supported
      * @see URLDecoder#decode(java.lang.String, java.lang.String)
      * @since 1.4
      */
-    public static String encode(String s, String enc)
-        throws UnsupportedEncodingException {
+    public static String encode(String s, String enc) throws UnsupportedEncodingException {
 
         boolean needToChange = false;
         StringBuffer out = new StringBuffer(s.length());
         Charset charset;
         CharArrayWriter charArrayWriter = new CharArrayWriter();
 
-        if (enc == null)
+        if (enc == null) {
             throw new NullPointerException("charsetName");
+        }
 
         try {
             charset = Charset.forName(enc);
@@ -216,7 +216,7 @@ public class URLEncoder {
             throw new UnsupportedEncodingException(enc);
         }
 
-        for (int i = 0; i < s.length();) {
+        for (int i = 0; i < s.length(); ) {
             int c = (int) s.charAt(i);
             //System.out.println("Examining character: " + c);
             if (dontNeedEncoding.get(c)) {
@@ -225,7 +225,7 @@ public class URLEncoder {
                     needToChange = true;
                 }
                 //System.out.println("Storing: " + c);
-                out.append((char)c);
+                out.append((char) c);
                 i++;
             } else {
                 // convert to external encoding before hex conversion
@@ -244,8 +244,8 @@ public class URLEncoder {
                           System.out.println(Integer.toHexString(c)
                           + " is high surrogate");
                         */
-                        if ( (i+1) < s.length()) {
-                            int d = (int) s.charAt(i+1);
+                        if ((i + 1) < s.length()) {
+                            int d = (int) s.charAt(i + 1);
                             /*
                               System.out.println("\tExamining "
                               + Integer.toHexString(d));
@@ -287,6 +287,6 @@ public class URLEncoder {
             }
         }
 
-        return (needToChange? out.toString() : s);
+        return (needToChange ? out.toString() : s);
     }
 }

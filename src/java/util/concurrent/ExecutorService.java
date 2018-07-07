@@ -35,8 +35,8 @@
 
 package java.util.concurrent;
 
-import java.util.List;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * An {@link Executor} that provides methods to manage termination and

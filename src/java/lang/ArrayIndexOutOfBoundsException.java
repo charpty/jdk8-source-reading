@@ -30,11 +30,10 @@ package java.lang;
  * illegal index. The index is either negative or greater than or
  * equal to the size of the array.
  *
- * @author  unascribed
- * @since   JDK1.0
+ * @author unascribed
+ * @since JDK1.0
  */
-public
-class ArrayIndexOutOfBoundsException extends IndexOutOfBoundsException {
+public class ArrayIndexOutOfBoundsException extends IndexOutOfBoundsException {
     private static final long serialVersionUID = -5116101128118950844L;
 
     /**
@@ -49,7 +48,8 @@ class ArrayIndexOutOfBoundsException extends IndexOutOfBoundsException {
      * Constructs a new <code>ArrayIndexOutOfBoundsException</code>
      * class with an argument indicating the illegal index.
      *
-     * @param   index   the illegal index.
+     * @param index
+     *         the illegal index.
      */
     public ArrayIndexOutOfBoundsException(int index) {
         super("Array index out of range: " + index);
@@ -59,7 +59,8 @@ class ArrayIndexOutOfBoundsException extends IndexOutOfBoundsException {
      * Constructs an <code>ArrayIndexOutOfBoundsException</code> class
      * with the specified detail message.
      *
-     * @param   s   the detail message.
+     * @param s
+     *         the detail message.
      */
     public ArrayIndexOutOfBoundsException(String s) {
         super(s);

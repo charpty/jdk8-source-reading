@@ -31,7 +31,6 @@ package java.util;
  *
  * @author Josh Bloch
  * @since 1.5
- * @serial exclude
  */
 class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
     private static final long serialVersionUID = 334349849919042784L;
@@ -46,7 +45,7 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
     // Redundant - maintained for performance
     private int size = 0;
 
-    JumboEnumSet(Class<E>elementType, Enum<?>[] universe) {
+    JumboEnumSet(Class<E> elementType, Enum<?>[] universe) {
         super(elementType, universe);
         elements = new long[(universe.length + 63) >>> 6];
     }
@@ -56,27 +55,29 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
         int toIndex = to.ordinal() >>> 6;
 
         if (fromIndex == toIndex) {
-            elements[fromIndex] = (-1L >>>  (from.ordinal() - to.ordinal() - 1))
-                            << from.ordinal();
+            elements[fromIndex] = (-1L >>> (from.ordinal() - to.ordinal() - 1)) << from.ordinal();
         } else {
             elements[fromIndex] = (-1L << from.ordinal());
-            for (int i = fromIndex + 1; i < toIndex; i++)
+            for (int i = fromIndex + 1; i < toIndex; i++) {
                 elements[i] = -1;
+            }
             elements[toIndex] = -1L >>> (63 - to.ordinal());
         }
         size = to.ordinal() - from.ordinal() + 1;
     }
 
     void addAll() {
-        for (int i = 0; i < elements.length; i++)
+        for (int i = 0; i < elements.length; i++) {
             elements[i] = -1;
+        }
         elements[elements.length - 1] >>>= -universe.length;
         size = universe.length;
     }
 
     void complement() {
-        for (int i = 0; i < elements.length; i++)
+        for (int i = 0; i < elements.length; i++) {
             elements[i] = ~elements[i];
+        }
         elements[elements.length - 1] &= (-1L >>> -universe.length);
         size = universe.length - size;
     }
@@ -123,27 +124,29 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
 
         @Override
         public boolean hasNext() {
-            while (unseen == 0 && unseenIndex < elements.length - 1)
+            while (unseen == 0 && unseenIndex < elements.length - 1) {
                 unseen = elements[++unseenIndex];
+            }
             return unseen != 0;
         }
 
         @Override
         @SuppressWarnings("unchecked")
         public E next() {
-            if (!hasNext())
+            if (!hasNext()) {
                 throw new NoSuchElementException();
+            }
             lastReturned = unseen & -unseen;
             lastReturnedIndex = unseenIndex;
             unseen -= lastReturned;
-            return (E) universe[(lastReturnedIndex << 6)
-                                + Long.numberOfTrailingZeros(lastReturned)];
+            return (E) universe[(lastReturnedIndex << 6) + Long.numberOfTrailingZeros(lastReturned)];
         }
 
         @Override
         public void remove() {
-            if (lastReturned == 0)
+            if (lastReturned == 0) {
                 throw new IllegalStateException();
+            }
             final long oldElements = elements[lastReturnedIndex];
             elements[lastReturnedIndex] &= ~lastReturned;
             if (oldElements != elements[lastReturnedIndex]) {
@@ -174,17 +177,21 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
     /**
      * Returns <tt>true</tt> if this set contains the specified element.
      *
-     * @param e element to be checked for containment in this collection
+     * @param e
+     *         element to be checked for containment in this collection
+     *
      * @return <tt>true</tt> if this set contains the specified element
      */
     public boolean contains(Object e) {
-        if (e == null)
+        if (e == null) {
             return false;
+        }
         Class<?> eClass = e.getClass();
-        if (eClass != elementType && eClass.getSuperclass() != elementType)
+        if (eClass != elementType && eClass.getSuperclass() != elementType) {
             return false;
+        }
 
-        int eOrdinal = ((Enum<?>)e).ordinal();
+        int eOrdinal = ((Enum<?>) e).ordinal();
         return (elements[eOrdinal >>> 6] & (1L << eOrdinal)) != 0;
     }
 
@@ -193,10 +200,13 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
     /**
      * Adds the specified element to this set if it is not already present.
      *
-     * @param e element to be added to this set
+     * @param e
+     *         element to be added to this set
+     *
      * @return <tt>true</tt> if the set changed as a result of the call
      *
-     * @throws NullPointerException if <tt>e</tt> is null
+     * @throws NullPointerException
+     *         if <tt>e</tt> is null
      */
     public boolean add(E e) {
         typeCheck(e);
@@ -207,31 +217,37 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
         long oldElements = elements[eWordNum];
         elements[eWordNum] |= (1L << eOrdinal);
         boolean result = (elements[eWordNum] != oldElements);
-        if (result)
+        if (result) {
             size++;
+        }
         return result;
     }
 
     /**
      * Removes the specified element from this set if it is present.
      *
-     * @param e element to be removed from this set, if present
+     * @param e
+     *         element to be removed from this set, if present
+     *
      * @return <tt>true</tt> if the set contained the specified element
      */
     public boolean remove(Object e) {
-        if (e == null)
+        if (e == null) {
             return false;
+        }
         Class<?> eClass = e.getClass();
-        if (eClass != elementType && eClass.getSuperclass() != elementType)
+        if (eClass != elementType && eClass.getSuperclass() != elementType) {
             return false;
-        int eOrdinal = ((Enum<?>)e).ordinal();
+        }
+        int eOrdinal = ((Enum<?>) e).ordinal();
         int eWordNum = eOrdinal >>> 6;
 
         long oldElements = elements[eWordNum];
         elements[eWordNum] &= ~(1L << eOrdinal);
         boolean result = (elements[eWordNum] != oldElements);
-        if (result)
+        if (result) {
             size--;
+        }
         return result;
     }
 
@@ -241,48 +257,62 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
      * Returns <tt>true</tt> if this set contains all of the elements
      * in the specified collection.
      *
-     * @param c collection to be checked for containment in this set
+     * @param c
+     *         collection to be checked for containment in this set
+     *
      * @return <tt>true</tt> if this set contains all of the elements
-     *        in the specified collection
-     * @throws NullPointerException if the specified collection is null
+     * in the specified collection
+     *
+     * @throws NullPointerException
+     *         if the specified collection is null
      */
     public boolean containsAll(Collection<?> c) {
-        if (!(c instanceof JumboEnumSet))
+        if (!(c instanceof JumboEnumSet)) {
             return super.containsAll(c);
+        }
 
-        JumboEnumSet<?> es = (JumboEnumSet<?>)c;
-        if (es.elementType != elementType)
+        JumboEnumSet<?> es = (JumboEnumSet<?>) c;
+        if (es.elementType != elementType) {
             return es.isEmpty();
+        }
 
-        for (int i = 0; i < elements.length; i++)
-            if ((es.elements[i] & ~elements[i]) != 0)
+        for (int i = 0; i < elements.length; i++) {
+            if ((es.elements[i] & ~elements[i]) != 0) {
                 return false;
+            }
+        }
         return true;
     }
 
     /**
      * Adds all of the elements in the specified collection to this set.
      *
-     * @param c collection whose elements are to be added to this set
+     * @param c
+     *         collection whose elements are to be added to this set
+     *
      * @return <tt>true</tt> if this set changed as a result of the call
-     * @throws NullPointerException if the specified collection or any of
-     *     its elements are null
+     *
+     * @throws NullPointerException
+     *         if the specified collection or any of
+     *         its elements are null
      */
     public boolean addAll(Collection<? extends E> c) {
-        if (!(c instanceof JumboEnumSet))
+        if (!(c instanceof JumboEnumSet)) {
             return super.addAll(c);
-
-        JumboEnumSet<?> es = (JumboEnumSet<?>)c;
-        if (es.elementType != elementType) {
-            if (es.isEmpty())
-                return false;
-            else
-                throw new ClassCastException(
-                    es.elementType + " != " + elementType);
         }
 
-        for (int i = 0; i < elements.length; i++)
+        JumboEnumSet<?> es = (JumboEnumSet<?>) c;
+        if (es.elementType != elementType) {
+            if (es.isEmpty()) {
+                return false;
+            } else {
+                throw new ClassCastException(es.elementType + " != " + elementType);
+            }
+        }
+
+        for (int i = 0; i < elements.length; i++) {
             elements[i] |= es.elements[i];
+        }
         return recalculateSize();
     }
 
@@ -290,20 +320,27 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
      * Removes from this set all of its elements that are contained in
      * the specified collection.
      *
-     * @param c elements to be removed from this set
+     * @param c
+     *         elements to be removed from this set
+     *
      * @return <tt>true</tt> if this set changed as a result of the call
-     * @throws NullPointerException if the specified collection is null
+     *
+     * @throws NullPointerException
+     *         if the specified collection is null
      */
     public boolean removeAll(Collection<?> c) {
-        if (!(c instanceof JumboEnumSet))
+        if (!(c instanceof JumboEnumSet)) {
             return super.removeAll(c);
+        }
 
-        JumboEnumSet<?> es = (JumboEnumSet<?>)c;
-        if (es.elementType != elementType)
+        JumboEnumSet<?> es = (JumboEnumSet<?>) c;
+        if (es.elementType != elementType) {
             return false;
+        }
 
-        for (int i = 0; i < elements.length; i++)
+        for (int i = 0; i < elements.length; i++) {
             elements[i] &= ~es.elements[i];
+        }
         return recalculateSize();
     }
 
@@ -311,23 +348,29 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
      * Retains only the elements in this set that are contained in the
      * specified collection.
      *
-     * @param c elements to be retained in this set
+     * @param c
+     *         elements to be retained in this set
+     *
      * @return <tt>true</tt> if this set changed as a result of the call
-     * @throws NullPointerException if the specified collection is null
+     *
+     * @throws NullPointerException
+     *         if the specified collection is null
      */
     public boolean retainAll(Collection<?> c) {
-        if (!(c instanceof JumboEnumSet))
+        if (!(c instanceof JumboEnumSet)) {
             return super.retainAll(c);
+        }
 
-        JumboEnumSet<?> es = (JumboEnumSet<?>)c;
+        JumboEnumSet<?> es = (JumboEnumSet<?>) c;
         if (es.elementType != elementType) {
             boolean changed = (size != 0);
             clear();
             return changed;
         }
 
-        for (int i = 0; i < elements.length; i++)
+        for (int i = 0; i < elements.length; i++) {
             elements[i] &= es.elements[i];
+        }
         return recalculateSize();
     }
 
@@ -345,16 +388,20 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
      * the same size, and every member of the given set is contained in
      * this set.
      *
-     * @param o object to be compared for equality with this set
+     * @param o
+     *         object to be compared for equality with this set
+     *
      * @return <tt>true</tt> if the specified object is equal to this set
      */
     public boolean equals(Object o) {
-        if (!(o instanceof JumboEnumSet))
+        if (!(o instanceof JumboEnumSet)) {
             return super.equals(o);
+        }
 
-        JumboEnumSet<?> es = (JumboEnumSet<?>)o;
-        if (es.elementType != elementType)
+        JumboEnumSet<?> es = (JumboEnumSet<?>) o;
+        if (es.elementType != elementType) {
             return size == 0 && es.size == 0;
+        }
 
         return Arrays.equals(es.elements, elements);
     }
@@ -365,8 +412,9 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
     private boolean recalculateSize() {
         int oldSize = size;
         size = 0;
-        for (long elt : elements)
+        for (long elt : elements) {
             size += Long.bitCount(elt);
+        }
 
         return size != oldSize;
     }

@@ -25,30 +25,31 @@
 
 package java.security;
 
-import java.util.*;
-import java.io.ObjectStreamField;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamField;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 
 /**
  * A UnresolvedPermissionCollection stores a collection
  * of UnresolvedPermission permissions.
  *
+ * @author Roland Schemers
  * @see java.security.Permission
  * @see java.security.Permissions
  * @see java.security.UnresolvedPermission
- *
- *
- * @author Roland Schemers
- *
- * @serial include
  */
 
-final class UnresolvedPermissionCollection
-extends PermissionCollection
-implements java.io.Serializable
-{
+final class UnresolvedPermissionCollection extends PermissionCollection implements java.io.Serializable {
     /**
      * Key is permission type, value is a list of the UnresolvedPermissions
      * of the same type.
@@ -58,7 +59,6 @@ implements java.io.Serializable
 
     /**
      * Create an empty UnresolvedPermissionCollection object.
-     *
      */
     public UnresolvedPermissionCollection() {
         perms = new HashMap<String, List<UnresolvedPermission>>(11);
@@ -68,14 +68,14 @@ implements java.io.Serializable
      * Adds a permission to this UnresolvedPermissionCollection.
      * The key for the hash is the unresolved permission's type (class) name.
      *
-     * @param permission the Permission object to add.
+     * @param permission
+     *         the Permission object to add.
      */
 
-    public void add(Permission permission)
-    {
-        if (! (permission instanceof UnresolvedPermission))
-            throw new IllegalArgumentException("invalid permission: "+
-                                               permission);
+    public void add(Permission permission) {
+        if (!(permission instanceof UnresolvedPermission)) {
+            throw new IllegalArgumentException("invalid permission: " + permission);
+        }
         UnresolvedPermission up = (UnresolvedPermission) permission;
 
         List<UnresolvedPermission> v;
@@ -103,10 +103,8 @@ implements java.io.Serializable
 
     /**
      * always returns false for unresolved permissions
-     *
      */
-    public boolean implies(Permission permission)
-    {
+    public boolean implies(Permission permission) {
         return false;
     }
 
@@ -118,8 +116,7 @@ implements java.io.Serializable
      */
 
     public Enumeration<Permission> elements() {
-        List<Permission> results =
-            new ArrayList<>(); // where results are stored
+        List<Permission> results = new ArrayList<>(); // where results are stored
 
         // Get iterator of Map values (which are lists of permissions)
         synchronized (this) {
@@ -144,9 +141,7 @@ implements java.io.Serializable
      *     A table of the UnresolvedPermissions keyed on type, value is Vector
      *     of permissions
      */
-    private static final ObjectStreamField[] serialPersistentFields = {
-        new ObjectStreamField("permissions", Hashtable.class),
-    };
+    private static final ObjectStreamField[] serialPersistentFields = { new ObjectStreamField("permissions", Hashtable.class), };
 
     /**
      * @serialData Default field.
@@ -160,8 +155,7 @@ implements java.io.Serializable
         // Don't call out.defaultWriteObject()
 
         // Copy perms into a Hashtable
-        Hashtable<String, Vector<UnresolvedPermission>> permissions =
-            new Hashtable<>(perms.size()*2);
+        Hashtable<String, Vector<UnresolvedPermission>> permissions = new Hashtable<>(perms.size() * 2);
 
         // Convert each entry (List) into a Vector
         synchronized (this) {
@@ -189,8 +183,7 @@ implements java.io.Serializable
      * Reads in a Hashtable in which the values are Vectors of
      * UnresolvedPermissions and saves them in the perms field.
      */
-    private void readObject(ObjectInputStream in) throws IOException,
-    ClassNotFoundException {
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         // Don't call defaultReadObject()
 
         // Read in serialized fields
@@ -199,11 +192,10 @@ implements java.io.Serializable
         // Get permissions
         @SuppressWarnings("unchecked")
         // writeObject writes a Hashtable<String, Vector<UnresolvedPermission>>
-        // for the permissions key, so this cast is safe, unless the data is corrupt.
-        Hashtable<String, Vector<UnresolvedPermission>> permissions =
-                (Hashtable<String, Vector<UnresolvedPermission>>)
-                gfields.get("permissions", null);
-        perms = new HashMap<String, List<UnresolvedPermission>>(permissions.size()*2);
+                // for the permissions key, so this cast is safe, unless the data is corrupt.
+                Hashtable<String, Vector<UnresolvedPermission>> permissions = (Hashtable<String, Vector<UnresolvedPermission>>) gfields
+                .get("permissions", null);
+        perms = new HashMap<String, List<UnresolvedPermission>>(permissions.size() * 2);
 
         // Convert each entry (Vector) into a List
         Set<Map.Entry<String, Vector<UnresolvedPermission>>> set = permissions.entrySet();

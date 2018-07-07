@@ -38,11 +38,11 @@ package java.rmi;
  * <code>java.rmi.server.UnicastRemoteObject</code> and
  * <code>java.rmi.activation.Activatable</code> and
  *
- * @author  Ann Wollrath
- * @since   JDK1.1
- * @see     java.rmi.server.RemoteObject#toStub(Remote)
- * @see     java.rmi.server.UnicastRemoteObject#unexportObject(Remote,boolean)
- * @see     java.rmi.activation.Activatable#unexportObject(Remote,boolean)
+ * @author Ann Wollrath
+ * @see java.rmi.server.RemoteObject#toStub(Remote)
+ * @see java.rmi.server.UnicastRemoteObject#unexportObject(Remote, boolean)
+ * @see java.rmi.activation.Activatable#unexportObject(Remote, boolean)
+ * @since JDK1.1
  */
 public class NoSuchObjectException extends RemoteException {
 
@@ -53,8 +53,10 @@ public class NoSuchObjectException extends RemoteException {
      * Constructs a <code>NoSuchObjectException</code> with the specified
      * detail message.
      *
-     * @param s the detail message
-     * @since   JDK1.1
+     * @param s
+     *         the detail message
+     *
+     * @since JDK1.1
      */
     public NoSuchObjectException(String s) {
         super(s);

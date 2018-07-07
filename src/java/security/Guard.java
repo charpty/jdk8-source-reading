@@ -34,10 +34,9 @@ package java.security;
  * invoked (by the GuardedObject {@code getObject} method)
  * to determine whether or not to allow access to the object.
  *
- * @see GuardedObject
- *
  * @author Roland Schemers
  * @author Li Gong
+ * @see GuardedObject
  */
 
 public interface Guard {
@@ -47,10 +46,11 @@ public interface Guard {
      * {@code object}. Returns silently if access is allowed.
      * Otherwise, throws a SecurityException.
      *
-     * @param object the object being protected by the guard.
+     * @param object
+     *         the object being protected by the guard.
      *
-     * @exception SecurityException if access is denied.
-     *
+     * @throws SecurityException
+     *         if access is denied.
      */
     void checkGuard(Object object) throws SecurityException;
 }

@@ -28,21 +28,20 @@
 
 package java.io;
 
-import java.util.Iterator;
-import java.util.Map;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 class ExpiringCache {
     private long millisUntilExpiration;
-    private Map<String,Entry> map;
+    private Map<String, Entry> map;
     // Clear out old entries every few queries
     private int queryCount;
     private int queryOverflow = 300;
     private int MAX_ENTRIES = 200;
 
     static class Entry {
-        private long   timestamp;
+        private long timestamp;
         private String val;
 
         Entry(long timestamp, String val) {
@@ -50,11 +49,21 @@ class ExpiringCache {
             this.val = val;
         }
 
-        long   timestamp()                  { return timestamp;           }
-        void   setTimestamp(long timestamp) { this.timestamp = timestamp; }
+        long timestamp() {
+            return timestamp;
+        }
 
-        String val()                        { return val;                 }
-        void   setVal(String val)           { this.val = val;             }
+        void setTimestamp(long timestamp) {
+            this.timestamp = timestamp;
+        }
+
+        String val() {
+            return val;
+        }
+
+        void setVal(String val) {
+            this.val = val;
+        }
     }
 
     ExpiringCache() {
@@ -64,11 +73,11 @@ class ExpiringCache {
     @SuppressWarnings("serial")
     ExpiringCache(long millisUntilExpiration) {
         this.millisUntilExpiration = millisUntilExpiration;
-        map = new LinkedHashMap<String,Entry>() {
-            protected boolean removeEldestEntry(Map.Entry<String,Entry> eldest) {
-              return size() > MAX_ENTRIES;
+        map = new LinkedHashMap<String, Entry>() {
+            protected boolean removeEldestEntry(Map.Entry<String, Entry> eldest) {
+                return size() > MAX_ENTRIES;
             }
-          };
+        };
     }
 
     synchronized String get(String key) {
@@ -116,7 +125,7 @@ class ExpiringCache {
         // Avoid ConcurrentModificationExceptions
         String[] keys = new String[keySet.size()];
         int i = 0;
-        for (String key: keySet) {
+        for (String key : keySet) {
             keys[i++] = key;
         }
         for (int j = 0; j < keys.length; j++) {

@@ -24,11 +24,11 @@
  */
 
 package java.rmi.server;
-import java.rmi.*;
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
-import java.io.StreamCorruptedException;
+
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.StreamCorruptedException;
 
 /**
  * <code>RemoteCall</code> is an abstraction used solely by the RMI runtime
@@ -37,10 +37,10 @@ import java.io.IOException;
  * deprecated because it is only used by deprecated methods of
  * <code>java.rmi.server.RemoteRef</code>.
  *
- * @since   JDK1.1
- * @author  Ann Wollrath
- * @author  Roger Riggs
- * @see     java.rmi.server.RemoteRef
+ * @author Ann Wollrath
+ * @author Roger Riggs
+ * @see java.rmi.server.RemoteRef
+ * @since JDK1.1
  * @deprecated no replacement.
  */
 @Deprecated
@@ -51,42 +51,47 @@ public interface RemoteCall {
      * into.
      *
      * @return output stream for arguments/results
-     * @exception java.io.IOException if an I/O error occurs.
+     *
+     * @throws java.io.IOException
+     *         if an I/O error occurs.
      * @since JDK1.1
      * @deprecated no replacement
      */
     @Deprecated
-    ObjectOutput getOutputStream()  throws IOException;
+    ObjectOutput getOutputStream() throws IOException;
 
     /**
      * Release the output stream; in some transports this would release
      * the stream.
      *
-     * @exception java.io.IOException if an I/O error occurs.
+     * @throws java.io.IOException
+     *         if an I/O error occurs.
      * @since JDK1.1
      * @deprecated no replacement
      */
     @Deprecated
-    void releaseOutputStream()  throws IOException;
+    void releaseOutputStream() throws IOException;
 
     /**
      * Get the InputStream that the stub/skeleton should get
      * results/arguments from.
      *
      * @return input stream for reading arguments/results
-     * @exception java.io.IOException if an I/O error occurs.
+     *
+     * @throws java.io.IOException
+     *         if an I/O error occurs.
      * @since JDK1.1
      * @deprecated no replacement
      */
     @Deprecated
-    ObjectInput getInputStream()  throws IOException;
-
+    ObjectInput getInputStream() throws IOException;
 
     /**
      * Release the input stream. This would allow some transports to release
      * the channel early.
      *
-     * @exception java.io.IOException if an I/O error occurs.
+     * @throws java.io.IOException
+     *         if an I/O error occurs.
      * @since JDK1.1
      * @deprecated no replacement
      */
@@ -98,22 +103,27 @@ public interface RemoteCall {
      * relating to the success of the call). Should only succeed
      * once per remote call.
      *
-     * @param success If true, indicates normal return, else indicates
-     * exceptional return.
+     * @param success
+     *         If true, indicates normal return, else indicates
+     *         exceptional return.
+     *
      * @return output stream for writing call result
-     * @exception java.io.IOException              if an I/O error occurs.
-     * @exception java.io.StreamCorruptedException If already been called.
+     *
+     * @throws java.io.IOException
+     *         if an I/O error occurs.
+     * @throws java.io.StreamCorruptedException
+     *         If already been called.
      * @since JDK1.1
      * @deprecated no replacement
      */
     @Deprecated
-    ObjectOutput getResultStream(boolean success) throws IOException,
-        StreamCorruptedException;
+    ObjectOutput getResultStream(boolean success) throws IOException, StreamCorruptedException;
 
     /**
      * Do whatever it takes to execute the call.
      *
-     * @exception java.lang.Exception if a general exception occurs.
+     * @throws java.lang.Exception
+     *         if a general exception occurs.
      * @since JDK1.1
      * @deprecated no replacement
      */
@@ -123,7 +133,8 @@ public interface RemoteCall {
     /**
      * Allow cleanup after the remote call has completed.
      *
-     * @exception java.io.IOException if an I/O error occurs.
+     * @throws java.io.IOException
+     *         if an I/O error occurs.
      * @since JDK1.1
      * @deprecated no replacement
      */

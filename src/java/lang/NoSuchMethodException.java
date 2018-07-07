@@ -28,11 +28,10 @@ package java.lang;
 /**
  * Thrown when a particular method cannot be found.
  *
- * @author     unascribed
- * @since      JDK1.0
+ * @author unascribed
+ * @since JDK1.0
  */
-public
-class NoSuchMethodException extends ReflectiveOperationException {
+public class NoSuchMethodException extends ReflectiveOperationException {
     private static final long serialVersionUID = 5034388446362600923L;
 
     /**
@@ -45,7 +44,8 @@ class NoSuchMethodException extends ReflectiveOperationException {
     /**
      * Constructs a <code>NoSuchMethodException</code> with a detail message.
      *
-     * @param      s   the detail message.
+     * @param s
+     *         the detail message.
      */
     public NoSuchMethodException(String s) {
         super(s);

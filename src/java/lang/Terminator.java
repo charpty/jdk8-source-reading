@@ -28,13 +28,12 @@ package java.lang;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
-
 /**
  * Package-private utility class for setting up and tearing down
  * platform-specific support for termination-triggered shutdowns.
  *
- * @author   Mark Reinhold
- * @since    1.3
+ * @author Mark Reinhold
+ * @since 1.3
  */
 
 class Terminator {
@@ -46,7 +45,9 @@ class Terminator {
      */
 
     static void setup() {
-        if (handler != null) return;
+        if (handler != null) {
+            return;
+        }
         SignalHandler sh = new SignalHandler() {
             public void handle(Signal sig) {
                 Shutdown.exit(sig.getNumber() + 0200);

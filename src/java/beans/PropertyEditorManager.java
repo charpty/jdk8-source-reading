@@ -63,12 +63,15 @@ public class PropertyEditorManager {
      * If there is a security manager, its {@code checkPropertiesAccess}
      * method is called. This could result in a {@linkplain SecurityException}.
      *
-     * @param targetType   the class object of the type to be edited
-     * @param editorClass  the class object of the editor class
-     * @throws SecurityException  if a security manager exists and
-     *                            its {@code checkPropertiesAccess} method
-     *                            doesn't allow setting of system properties
+     * @param targetType
+     *         the class object of the type to be edited
+     * @param editorClass
+     *         the class object of the editor class
      *
+     * @throws SecurityException
+     *         if a security manager exists and
+     *         its {@code checkPropertiesAccess} method
+     *         doesn't allow setting of system properties
      * @see SecurityManager#checkPropertiesAccess
      */
     public static void registerEditor(Class<?> targetType, Class<?> editorClass) {
@@ -82,7 +85,9 @@ public class PropertyEditorManager {
     /**
      * Locate a value editor for a given target type.
      *
-     * @param targetType  The Class object for the type to be edited
+     * @param targetType
+     *         The Class object for the type to be edited
+     *
      * @return An editor object for the given target class.
      * The result is null if no suitable editor can be found.
      */
@@ -93,10 +98,10 @@ public class PropertyEditorManager {
     /**
      * Gets the package names that will be searched for property editors.
      *
-     * @return  The array of package names that will be searched in
-     *          order to find property editors.
+     * @return The array of package names that will be searched in
+     * order to find property editors.
      * <p>     The default value for this array is implementation-dependent,
-     *         e.g. Sun implementation initially sets to  {"sun.beans.editors"}.
+     * e.g. Sun implementation initially sets to  {"sun.beans.editors"}.
      */
     public static String[] getEditorSearchPath() {
         return ThreadGroupContext.getContext().getPropertyEditorFinder().getPackages();
@@ -104,15 +109,18 @@ public class PropertyEditorManager {
 
     /**
      * Change the list of package names that will be used for
-     *          finding property editors.
+     * finding property editors.
      *
      * <p>First, if there is a security manager, its <code>checkPropertiesAccess</code>
      * method is called. This could result in a SecurityException.
      *
-     * @param path  Array of package names.
-     * @exception  SecurityException  if a security manager exists and its
-     *             <code>checkPropertiesAccess</code> method doesn't allow setting
-     *              of system properties.
+     * @param path
+     *         Array of package names.
+     *
+     * @throws SecurityException
+     *         if a security manager exists and its
+     *         <code>checkPropertiesAccess</code> method doesn't allow setting
+     *         of system properties.
      * @see SecurityManager#checkPropertiesAccess
      */
     public static void setEditorSearchPath(String[] path) {

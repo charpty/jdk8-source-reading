@@ -39,8 +39,8 @@
 package java.text;
 
 import java.util.Vector;
-import sun.text.UCompactIntArray;
 import sun.text.IntHashtable;
+import sun.text.UCompactIntArray;
 
 /**
  * This class contains the static state of a RuleBasedCollator: The various
@@ -81,7 +81,7 @@ final class RBCollationTables {
 
         RBTableBuilder builder = new RBTableBuilder(new BuildAPI());
         builder.build(rules, decmp); // this object is filled in through
-                                            // the BuildAPI object
+        // the BuildAPI object
     }
 
     final class BuildAPI {
@@ -99,24 +99,27 @@ final class RBCollationTables {
          * copies of all these variables until the end of the build process and then
          * copies them en masse into the actual tables object once all the construction
          * logic is complete.  This function does that "copying en masse".
-         * @param f2ary The value for frenchSec (the French-secondary flag)
-         * @param swap The value for SE Asian swapping rule
-         * @param map The collator's character-mapping table (the value for mapping)
-         * @param cTbl The collator's contracting-character table (the value for contractTable)
-         * @param eTbl The collator's expanding-character table (the value for expandTable)
-         * @param cFlgs The hash table of characters that participate in contracting-
-         *              character sequences (the value for contractFlags)
-         * @param mso The value for maxSecOrder
-         * @param mto The value for maxTerOrder
+         *
+         * @param f2ary
+         *         The value for frenchSec (the French-secondary flag)
+         * @param swap
+         *         The value for SE Asian swapping rule
+         * @param map
+         *         The collator's character-mapping table (the value for mapping)
+         * @param cTbl
+         *         The collator's contracting-character table (the value for contractTable)
+         * @param eTbl
+         *         The collator's expanding-character table (the value for expandTable)
+         * @param cFlgs
+         *         The hash table of characters that participate in contracting-
+         *         character sequences (the value for contractFlags)
+         * @param mso
+         *         The value for maxSecOrder
+         * @param mto
+         *         The value for maxTerOrder
          */
-        void fillInTables(boolean f2ary,
-                          boolean swap,
-                          UCompactIntArray map,
-                          Vector<Vector<EntryPair>> cTbl,
-                          Vector<int[]> eTbl,
-                          IntHashtable cFlgs,
-                          short mso,
-                          short mto) {
+        void fillInTables(boolean f2ary, boolean swap, UCompactIntArray map, Vector<Vector<EntryPair>> cTbl, Vector<int[]> eTbl, IntHashtable cFlgs, short mso,
+                short mto) {
             frenchSec = f2ary;
             seAsianSwapping = swap;
             mapping = map;
@@ -130,11 +133,11 @@ final class RBCollationTables {
 
     /**
      * Gets the table-based rules for the collation object.
+     *
      * @return returns the collation rules that the table collation object
      * was created from.
      */
-    public String getRules()
-    {
+    public String getRules() {
         return rules;
     }
 
@@ -151,24 +154,22 @@ final class RBCollationTables {
     // ==============================================================
 
     /**
-     *  Get the entry of hash table of the contracting string in the collation
-     *  table.
-     *  @param ch the starting character of the contracting string
+     * Get the entry of hash table of the contracting string in the collation
+     * table.
+     *
+     * @param ch
+     *         the starting character of the contracting string
      */
-    Vector<EntryPair> getContractValues(int ch)
-    {
+    Vector<EntryPair> getContractValues(int ch) {
         int index = mapping.elementAt(ch);
         return getContractValuesImpl(index - CONTRACTCHARINDEX);
     }
 
     //get contract values from contractTable by index
-    private Vector<EntryPair> getContractValuesImpl(int index)
-    {
-        if (index >= 0)
-        {
+    private Vector<EntryPair> getContractValuesImpl(int index) {
+        if (index >= 0) {
             return contractTable.elementAt(index);
-        }
-        else // not found
+        } else // not found
         {
             return null;
         }
@@ -183,15 +184,17 @@ final class RBCollationTables {
     }
 
     /**
-      * Return the maximum length of any expansion sequences that end
-      * with the specified comparison order.
-      *
-      * @param order a collation order returned by previous or next.
-      * @return the maximum length of any expansion seuences ending
-      *         with the specified order.
-      *
-      * @see CollationElementIterator#getMaxExpansion
-      */
+     * Return the maximum length of any expansion sequences that end
+     * with the specified comparison order.
+     *
+     * @param order
+     *         a collation order returned by previous or next.
+     *
+     * @return the maximum length of any expansion seuences ending
+     * with the specified order.
+     *
+     * @see CollationElementIterator#getMaxExpansion
+     */
     int getMaxExpansion(int order) {
         int result = 1;
 
@@ -204,7 +207,7 @@ final class RBCollationTables {
                 int[] valueList = expandTable.elementAt(i);
                 int length = valueList.length;
 
-                if (length > result && valueList[length-1] == order) {
+                if (length > result && valueList[length - 1] == order) {
                     result = length;
                 }
             }
@@ -216,7 +219,9 @@ final class RBCollationTables {
     /**
      * Get the entry of hash table of the expanding string in the collation
      * table.
-     * @param idx the index of the expanding string value list
+     *
+     * @param idx
+     *         the index of the expanding string value list
      */
     final int[] getExpandValueList(int idx) {
         return expandTable.elementAt(idx - EXPANDCHARINDEX);
@@ -224,6 +229,7 @@ final class RBCollationTables {
 
     /**
      * Get the comarison order of a character from the collation table.
+     *
      * @return the comparison order of a character.
      */
     int getUnicodeOrder(int ch) {
@@ -243,14 +249,13 @@ final class RBCollationTables {
      */
     //shemran/Note: this is used for secondary order value reverse, no
     //              need to consider supplementary pair.
-    static void reverse (StringBuffer result, int from, int to)
-    {
+    static void reverse(StringBuffer result, int from, int to) {
         int i = from;
         char swap;
 
         int j = to - 1;
         while (i < j) {
-            swap =  result.charAt(i);
+            swap = result.charAt(i);
             result.setCharAt(i, result.charAt(j));
             result.setCharAt(j, swap);
             i++;

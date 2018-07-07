@@ -25,8 +25,8 @@
 
 package java.nio.file;
 
-import java.nio.file.spi.FileSystemProvider;
 import java.net.URI;
+import java.nio.file.spi.FileSystemProvider;
 
 /**
  * This class consists exclusively of static methods that return a {@link Path}
@@ -36,7 +36,8 @@ import java.net.URI;
  */
 
 public final class Paths {
-    private Paths() { }
+    private Paths() {
+    }
 
     /**
      * Converts a path string, or a sequence of strings that when joined form
@@ -68,16 +69,15 @@ public final class Paths {
      *     Path path = dir.resolve("file");
      * </pre>
      *
-     * @param   first
-     *          the path string or initial part of the path string
-     * @param   more
-     *          additional strings to be joined to form the path string
+     * @param first
+     *         the path string or initial part of the path string
+     * @param more
+     *         additional strings to be joined to form the path string
      *
-     * @return  the resulting {@code Path}
+     * @return the resulting {@code Path}
      *
-     * @throws  InvalidPathException
-     *          if the path string cannot be converted to a {@code Path}
-     *
+     * @throws InvalidPathException
+     *         if the path string cannot be converted to a {@code Path}
      * @see FileSystem#getPath
      */
     public static Path get(String first, String... more) {
@@ -112,33 +112,35 @@ public final class Paths {
      * Java virtual machine. Whether other providers make any guarantees is
      * provider specific and therefore unspecified.
      *
-     * @param   uri
-     *          the URI to convert
+     * @param uri
+     *         the URI to convert
      *
-     * @return  the resulting {@code Path}
+     * @return the resulting {@code Path}
      *
-     * @throws  IllegalArgumentException
-     *          if preconditions on the {@code uri} parameter do not hold. The
-     *          format of the URI is provider specific.
-     * @throws  FileSystemNotFoundException
-     *          The file system, identified by the URI, does not exist and
-     *          cannot be created automatically, or the provider identified by
-     *          the URI's scheme component is not installed
-     * @throws  SecurityException
-     *          if a security manager is installed and it denies an unspecified
-     *          permission to access the file system
+     * @throws IllegalArgumentException
+     *         if preconditions on the {@code uri} parameter do not hold. The
+     *         format of the URI is provider specific.
+     * @throws FileSystemNotFoundException
+     *         The file system, identified by the URI, does not exist and
+     *         cannot be created automatically, or the provider identified by
+     *         the URI's scheme component is not installed
+     * @throws SecurityException
+     *         if a security manager is installed and it denies an unspecified
+     *         permission to access the file system
      */
     public static Path get(URI uri) {
-        String scheme =  uri.getScheme();
-        if (scheme == null)
+        String scheme = uri.getScheme();
+        if (scheme == null) {
             throw new IllegalArgumentException("Missing scheme");
+        }
 
         // check for default provider to avoid loading of installed providers
-        if (scheme.equalsIgnoreCase("file"))
+        if (scheme.equalsIgnoreCase("file")) {
             return FileSystems.getDefault().provider().getPath(uri);
+        }
 
         // try to find provider
-        for (FileSystemProvider provider: FileSystemProvider.installedProviders()) {
+        for (FileSystemProvider provider : FileSystemProvider.installedProviders()) {
             if (provider.getScheme().equalsIgnoreCase(scheme)) {
                 return provider.getPath(uri);
             }

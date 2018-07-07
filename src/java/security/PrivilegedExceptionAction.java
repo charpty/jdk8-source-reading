@@ -25,7 +25,6 @@
 
 package java.security;
 
-
 /**
  * A computation to be performed with privileges enabled, that throws one or
  * more checked exceptions.  The computation is performed by invoking
@@ -37,8 +36,7 @@ package java.security;
  *
  * @see AccessController
  * @see AccessController#doPrivileged(PrivilegedExceptionAction)
- * @see AccessController#doPrivileged(PrivilegedExceptionAction,
- *                                              AccessControlContext)
+ * @see AccessController#doPrivileged(PrivilegedExceptionAction, * AccessControlContext)
  * @see PrivilegedAction
  */
 
@@ -48,14 +46,16 @@ public interface PrivilegedExceptionAction<T> {
      * {@code AccessController.doPrivileged} after enabling privileges.
      *
      * @return a class-dependent value that may represent the results of the
-     *         computation.  Each class that implements
-     *         {@code PrivilegedExceptionAction} should document what
-     *         (if anything) this value represents.
-     * @throws Exception an exceptional condition has occurred.  Each class
+     * computation.  Each class that implements
+     * {@code PrivilegedExceptionAction} should document what
+     * (if anything) this value represents.
+     *
+     * @throws Exception
+     *         an exceptional condition has occurred.  Each class
      *         that implements {@code PrivilegedExceptionAction} should
      *         document the exceptions that its run method can throw.
      * @see AccessController#doPrivileged(PrivilegedExceptionAction)
-     * @see AccessController#doPrivileged(PrivilegedExceptionAction,AccessControlContext)
+     * @see AccessController#doPrivileged(PrivilegedExceptionAction, AccessControlContext)
      */
 
     T run() throws Exception;

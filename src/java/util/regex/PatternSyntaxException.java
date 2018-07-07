@@ -27,19 +27,15 @@ package java.util.regex;
 
 import sun.security.action.GetPropertyAction;
 
-
 /**
  * Unchecked exception thrown to indicate a syntax error in a
  * regular-expression pattern.
  *
- * @author  unascribed
+ * @author unascribed
  * @since 1.4
- * @spec JSR-51
  */
 
-public class PatternSyntaxException
-    extends IllegalArgumentException
-{
+public class PatternSyntaxException extends IllegalArgumentException {
     private static final long serialVersionUID = -3864639126226059218L;
 
     private final String desc;
@@ -49,13 +45,11 @@ public class PatternSyntaxException
     /**
      * Constructs a new instance of this class.
      *
-     * @param  desc
+     * @param desc
      *         A description of the error
-     *
-     * @param  regex
+     * @param regex
      *         The erroneous pattern
-     *
-     * @param  index
+     * @param index
      *         The approximate index in the pattern of the error,
      *         or <tt>-1</tt> if the index is not known
      */
@@ -68,8 +62,8 @@ public class PatternSyntaxException
     /**
      * Retrieves the error index.
      *
-     * @return  The approximate index in the pattern of the error,
-     *         or <tt>-1</tt> if the index is not known
+     * @return The approximate index in the pattern of the error,
+     * or <tt>-1</tt> if the index is not known
      */
     public int getIndex() {
         return index;
@@ -78,7 +72,7 @@ public class PatternSyntaxException
     /**
      * Retrieves the description of the error.
      *
-     * @return  The description of the error
+     * @return The description of the error
      */
     public String getDescription() {
         return desc;
@@ -87,22 +81,20 @@ public class PatternSyntaxException
     /**
      * Retrieves the erroneous regular-expression pattern.
      *
-     * @return  The erroneous pattern
+     * @return The erroneous pattern
      */
     public String getPattern() {
         return pattern;
     }
 
-    private static final String nl =
-        java.security.AccessController
-            .doPrivileged(new GetPropertyAction("line.separator"));
+    private static final String nl = java.security.AccessController.doPrivileged(new GetPropertyAction("line.separator"));
 
     /**
      * Returns a multi-line string containing the description of the syntax
      * error and its index, the erroneous regular-expression pattern, and a
      * visual indication of the error index within the pattern.
      *
-     * @return  The full detail message
+     * @return The full detail message
      */
     public String getMessage() {
         StringBuffer sb = new StringBuffer();
@@ -115,7 +107,9 @@ public class PatternSyntaxException
         sb.append(pattern);
         if (index >= 0) {
             sb.append(nl);
-            for (int i = 0; i < index; i++) sb.append(' ');
+            for (int i = 0; i < index; i++) {
+                sb.append(' ');
+            }
             sb.append('^');
         }
         return sb.toString();

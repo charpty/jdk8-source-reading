@@ -36,7 +36,7 @@ import java.util.Locale;
  * {@link java.text.DateFormatSymbols#getZoneStrings()
  * DateFormatSymbols.getZoneStrings()} method.
  *
- * @since        1.6
+ * @since 1.6
  */
 public abstract class TimeZoneNameProvider extends LocaleServiceProvider {
 
@@ -61,19 +61,27 @@ public abstract class TimeZoneNameProvider extends LocaleServiceProvider {
      * appropriate for daylight saving time even if the specified time zone
      * has not observed daylight saving time in the past.
      *
-     * @param ID a time zone ID string
-     * @param daylight if true, return the daylight saving name.
-     * @param style either {@link java.util.TimeZone#LONG TimeZone.LONG} or
-     *    {@link java.util.TimeZone#SHORT TimeZone.SHORT}
-     * @param locale the desired locale
+     * @param ID
+     *         a time zone ID string
+     * @param daylight
+     *         if true, return the daylight saving name.
+     * @param style
+     *         either {@link java.util.TimeZone#LONG TimeZone.LONG} or
+     *         {@link java.util.TimeZone#SHORT TimeZone.SHORT}
+     * @param locale
+     *         the desired locale
+     *
      * @return the human-readable name of the given time zone in the
-     *     given locale, or null if it's not available.
-     * @exception IllegalArgumentException if <code>style</code> is invalid,
-     *     or <code>locale</code> isn't one of the locales returned from
-     *     {@link java.util.spi.LocaleServiceProvider#getAvailableLocales()
-     *     getAvailableLocales()}.
-     * @exception NullPointerException if <code>ID</code> or <code>locale</code>
-     *     is null
+     * given locale, or null if it's not available.
+     *
+     * @throws IllegalArgumentException
+     *         if <code>style</code> is invalid,
+     *         or <code>locale</code> isn't one of the locales returned from
+     *         {@link java.util.spi.LocaleServiceProvider#getAvailableLocales()
+     *         getAvailableLocales()}.
+     * @throws NullPointerException
+     *         if <code>ID</code> or <code>locale</code>
+     *         is null
      * @see java.util.TimeZone#getDisplayName(boolean, int, java.util.Locale)
      */
     public abstract String getDisplayName(String ID, boolean daylight, int style, Locale locale);
@@ -90,18 +98,25 @@ public abstract class TimeZoneNameProvider extends LocaleServiceProvider {
      *
      * <p>The default implementation of this method returns {@code null}.
      *
-     * @param ID a time zone ID string
-     * @param style either {@link java.util.TimeZone#LONG TimeZone.LONG} or
-     *    {@link java.util.TimeZone#SHORT TimeZone.SHORT}
-     * @param locale the desired locale
+     * @param ID
+     *         a time zone ID string
+     * @param style
+     *         either {@link java.util.TimeZone#LONG TimeZone.LONG} or
+     *         {@link java.util.TimeZone#SHORT TimeZone.SHORT}
+     * @param locale
+     *         the desired locale
+     *
      * @return the human-readable generic name of the given time zone in the
-     *     given locale, or {@code null} if it's not available.
-     * @exception IllegalArgumentException if <code>style</code> is invalid,
-     *     or <code>locale</code> isn't one of the locales returned from
-     *     {@link LocaleServiceProvider#getAvailableLocales()
-     *     getAvailableLocales()}.
-     * @exception NullPointerException if <code>ID</code> or <code>locale</code>
-     *     is {@code null}
+     * given locale, or {@code null} if it's not available.
+     *
+     * @throws IllegalArgumentException
+     *         if <code>style</code> is invalid,
+     *         or <code>locale</code> isn't one of the locales returned from
+     *         {@link LocaleServiceProvider#getAvailableLocales()
+     *         getAvailableLocales()}.
+     * @throws NullPointerException
+     *         if <code>ID</code> or <code>locale</code>
+     *         is {@code null}
      * @since 1.8
      */
     public String getGenericDisplayName(String ID, int style, Locale locale) {

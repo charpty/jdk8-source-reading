@@ -39,14 +39,14 @@ package java.math;
  * Note that SignedMutableBigIntegers only support signed addition and
  * subtraction. All other operations occur as with MutableBigIntegers.
  *
- * @see     BigInteger
- * @author  Michael McCloskey
- * @since   1.3
+ * @author Michael McCloskey
+ * @see BigInteger
+ * @since 1.3
  */
 
 class SignedMutableBigInteger extends MutableBigInteger {
 
-   /**
+    /**
      * The sign of this MutableBigInteger.
      */
     int sign = 1;
@@ -77,51 +77,56 @@ class SignedMutableBigInteger extends MutableBigInteger {
         super(val);
     }
 
-   // Arithmetic Operations
+    // Arithmetic Operations
 
-   /**
+    /**
      * Signed addition built upon unsigned add and subtract.
      */
     void signedAdd(SignedMutableBigInteger addend) {
-        if (sign == addend.sign)
+        if (sign == addend.sign) {
             add(addend);
-        else
+        } else {
             sign = sign * subtract(addend);
+        }
 
     }
 
-   /**
+    /**
      * Signed addition built upon unsigned add and subtract.
      */
     void signedAdd(MutableBigInteger addend) {
-        if (sign == 1)
+        if (sign == 1) {
             add(addend);
-        else
+        } else {
             sign = sign * subtract(addend);
+        }
 
     }
 
-   /**
+    /**
      * Signed subtraction built upon unsigned add and subtract.
      */
     void signedSubtract(SignedMutableBigInteger addend) {
-        if (sign == addend.sign)
+        if (sign == addend.sign) {
             sign = sign * subtract(addend);
-        else
+        } else {
             add(addend);
+        }
 
     }
 
-   /**
+    /**
      * Signed subtraction built upon unsigned add and subtract.
      */
     void signedSubtract(MutableBigInteger addend) {
-        if (sign == 1)
+        if (sign == 1) {
             sign = sign * subtract(addend);
-        else
+        } else {
             add(addend);
-        if (intLen == 0)
-             sign = 1;
+        }
+        if (intLen == 0) {
+            sign = 1;
+        }
     }
 
     /**

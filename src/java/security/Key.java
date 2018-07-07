@@ -86,6 +86,7 @@ package java.security;
  * Security Appendix</a>
  * of the Serialization Specification for more information.
  *
+ * @author Benjamin Renaud
  * @see PublicKey
  * @see PrivateKey
  * @see KeyPair
@@ -95,19 +96,17 @@ package java.security;
  * @see java.security.spec.KeySpec
  * @see Identity
  * @see Signer
- *
- * @author Benjamin Renaud
  */
 
 public interface Key extends java.io.Serializable {
 
     // Declare serialVersionUID to be compatible with JDK1.1
 
-   /**
-    * The class fingerprint that is set to indicate
-    * serialization compatibility with a previous
-    * version of the class.
-    */
+    /**
+     * The class fingerprint that is set to indicate
+     * serialization compatibility with a previous
+     * version of the class.
+     */
     static final long serialVersionUID = 6603384152749567654L;
 
     /**

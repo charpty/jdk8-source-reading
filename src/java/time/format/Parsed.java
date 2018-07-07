@@ -61,24 +61,6 @@
  */
 package java.time.format;
 
-import static java.time.temporal.ChronoField.AMPM_OF_DAY;
-import static java.time.temporal.ChronoField.CLOCK_HOUR_OF_AMPM;
-import static java.time.temporal.ChronoField.CLOCK_HOUR_OF_DAY;
-import static java.time.temporal.ChronoField.HOUR_OF_AMPM;
-import static java.time.temporal.ChronoField.HOUR_OF_DAY;
-import static java.time.temporal.ChronoField.INSTANT_SECONDS;
-import static java.time.temporal.ChronoField.MICRO_OF_DAY;
-import static java.time.temporal.ChronoField.MICRO_OF_SECOND;
-import static java.time.temporal.ChronoField.MILLI_OF_DAY;
-import static java.time.temporal.ChronoField.MILLI_OF_SECOND;
-import static java.time.temporal.ChronoField.MINUTE_OF_DAY;
-import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
-import static java.time.temporal.ChronoField.NANO_OF_DAY;
-import static java.time.temporal.ChronoField.NANO_OF_SECOND;
-import static java.time.temporal.ChronoField.OFFSET_SECONDS;
-import static java.time.temporal.ChronoField.SECOND_OF_DAY;
-import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
-
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -103,6 +85,9 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
+
+import static java.time.temporal.ChronoField.*;
+
 /**
  * A store of parsed data.
  * <p>
@@ -112,11 +97,6 @@ import java.util.Set;
  * <p>
  * Once parsing is completed, this class can be used as the resultant {@code TemporalAccessor}.
  * In most cases, it is only exposed once the fields have been resolved.
- *
- * @implSpec
- * This class is a mutable context intended for use from a single thread.
- * Usage of the class is thread-safe within standard parsing as a new instance of this class
- * is automatically created for each parse and parsing is single-threaded
  *
  * @since 1.8
  */
@@ -178,9 +158,7 @@ final class Parsed implements TemporalAccessor {
     //-----------------------------------------------------------------------
     @Override
     public boolean isSupported(TemporalField field) {
-        if (fieldValues.containsKey(field) ||
-                (date != null && date.isSupported(field)) ||
-                (time != null && time.isSupported(field))) {
+        if (fieldValues.containsKey(field) || (date != null && date.isSupported(field)) || (time != null && time.isSupported(field))) {
             return true;
         }
         return field != null && (field instanceof ChronoField == false) && field.isSupportedBy(this);
@@ -227,14 +205,20 @@ final class Parsed implements TemporalAccessor {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Resolves the fields in this context.
      *
-     * @param resolverStyle  the resolver style, not null
-     * @param resolverFields  the fields to use for resolving, null for all fields
+     * @param resolverStyle
+     *         the resolver style, not null
+     * @param resolverFields
+     *         the fields to use for resolving, null for all fields
+     *
      * @return this, for method chaining
-     * @throws DateTimeException if resolving one field results in a value for
-     *  another field that is in conflict
+     *
+     * @throws DateTimeException
+     *         if resolving one field results in a value for
+     *         another field that is in conflict
      */
     TemporalAccessor resolve(ResolverStyle resolverStyle, Set<TemporalField> resolverFields) {
         if (resolverFields != null) {
@@ -293,8 +277,8 @@ final class Parsed implements TemporalAccessor {
                             changedCount++;
                             continue outer;  // have to restart to avoid concurrent modification
                         }
-                        throw new DateTimeException("Method resolve() can only return ChronoZonedDateTime, " +
-                                "ChronoLocalDateTime, ChronoLocalDate or LocalTime");
+                        throw new DateTimeException(
+                                "Method resolve() can only return ChronoZonedDateTime, " + "ChronoLocalDateTime, ChronoLocalDate or LocalTime");
                     } else if (fieldValues.containsKey(targetField) == false) {
                         changedCount++;
                         continue outer;  // have to restart to avoid concurrent modification
@@ -317,9 +301,8 @@ final class Parsed implements TemporalAccessor {
     private void updateCheckConflict(TemporalField targetField, TemporalField changeField, Long changeValue) {
         Long old = fieldValues.put(changeField, changeValue);
         if (old != null && old.longValue() != changeValue.longValue()) {
-            throw new DateTimeException("Conflict found: " + changeField + " " + old +
-                    " differs from " + changeField + " " + changeValue +
-                    " while resolving  " + targetField);
+            throw new DateTimeException(
+                    "Conflict found: " + changeField + " " + old + " differs from " + changeField + " " + changeValue + " while resolving  " + targetField);
         }
     }
 
@@ -462,8 +445,8 @@ final class Parsed implements TemporalAccessor {
         }
 
         // convert to time if all four fields available (optimization)
-        if (fieldValues.containsKey(HOUR_OF_DAY) && fieldValues.containsKey(MINUTE_OF_HOUR) &&
-                fieldValues.containsKey(SECOND_OF_MINUTE) && fieldValues.containsKey(NANO_OF_SECOND)) {
+        if (fieldValues.containsKey(HOUR_OF_DAY) && fieldValues.containsKey(MINUTE_OF_HOUR) && fieldValues.containsKey(SECOND_OF_MINUTE) && fieldValues
+                .containsKey(NANO_OF_SECOND)) {
             long hod = fieldValues.remove(HOUR_OF_DAY);
             long moh = fieldValues.remove(MINUTE_OF_HOUR);
             long som = fieldValues.remove(SECOND_OF_MINUTE);
@@ -505,8 +488,7 @@ final class Parsed implements TemporalAccessor {
                 Long nos = fieldValues.get(NANO_OF_SECOND);
 
                 // check for invalid combinations that cannot be defaulted
-                if ((moh == null && (som != null || nos != null)) ||
-                        (moh != null && som == null && nos != null)) {
+                if ((moh == null && (som != null || nos != null)) || (moh != null && som == null && nos != null)) {
                     return;
                 }
 
@@ -567,10 +549,7 @@ final class Parsed implements TemporalAccessor {
     private void resolveFractional() {
         // ensure fractional seconds available as ChronoField requires
         // resolveTimeLenient() will have merged MICRO_OF_SECOND/MILLI_OF_SECOND to NANO_OF_SECOND
-        if (time == null &&
-                (fieldValues.containsKey(INSTANT_SECONDS) ||
-                    fieldValues.containsKey(SECOND_OF_DAY) ||
-                    fieldValues.containsKey(SECOND_OF_MINUTE))) {
+        if (time == null && (fieldValues.containsKey(INSTANT_SECONDS) || fieldValues.containsKey(SECOND_OF_DAY) || fieldValues.containsKey(SECOND_OF_MINUTE))) {
             if (fieldValues.containsKey(NANO_OF_SECOND)) {
                 long nos = fieldValues.get(NANO_OF_SECOND);
                 fieldValues.put(MICRO_OF_SECOND, nos / 1000);
@@ -644,8 +623,8 @@ final class Parsed implements TemporalAccessor {
                 }
                 long val2 = entry.getValue();
                 if (val1 != val2) {
-                    throw new DateTimeException("Conflict found: Field " + field + " " + val1 +
-                            " differs from " + field + " " + val2 + " derived from " + target);
+                    throw new DateTimeException(
+                            "Conflict found: Field " + field + " " + val1 + " differs from " + field + " " + val2 + " derived from " + target);
                 }
                 it.remove();
             }

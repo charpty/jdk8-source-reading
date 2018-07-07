@@ -67,10 +67,11 @@ package java.util;
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
- * @param <E> the type of elements maintained by this set
+ * @param <E>
+ *         the type of elements maintained by this set
  *
- * @author  Josh Bloch
- * @author  Neal Gafter
+ * @author Josh Bloch
+ * @author Neal Gafter
  * @see Collection
  * @see List
  * @see SortedSet
@@ -107,14 +108,19 @@ public interface Set<E> extends Collection<E> {
      * contains an element <tt>e</tt> such that
      * <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>.
      *
-     * @param o element whose presence in this set is to be tested
+     * @param o
+     *         element whose presence in this set is to be tested
+     *
      * @return <tt>true</tt> if this set contains the specified element
-     * @throws ClassCastException if the type of the specified element
+     *
+     * @throws ClassCastException
+     *         if the type of the specified element
      *         is incompatible with this set
-     * (<a href="Collection.html#optional-restrictions">optional</a>)
-     * @throws NullPointerException if the specified element is null and this
+     *         (<a href="Collection.html#optional-restrictions">optional</a>)
+     * @throws NullPointerException
+     *         if the specified element is null and this
      *         set does not permit null elements
-     * (<a href="Collection.html#optional-restrictions">optional</a>)
+     *         (<a href="Collection.html#optional-restrictions">optional</a>)
      */
     boolean contains(Object o);
 
@@ -178,17 +184,21 @@ public interface Set<E> extends Collection<E> {
      * Note that <tt>toArray(new Object[0])</tt> is identical in function to
      * <tt>toArray()</tt>.
      *
-     * @param a the array into which the elements of this set are to be
-     *        stored, if it is big enough; otherwise, a new array of the same
-     *        runtime type is allocated for this purpose.
+     * @param a
+     *         the array into which the elements of this set are to be
+     *         stored, if it is big enough; otherwise, a new array of the same
+     *         runtime type is allocated for this purpose.
+     *
      * @return an array containing all the elements in this set
-     * @throws ArrayStoreException if the runtime type of the specified array
+     *
+     * @throws ArrayStoreException
+     *         if the runtime type of the specified array
      *         is not a supertype of the runtime type of every element in this
      *         set
-     * @throws NullPointerException if the specified array is null
+     * @throws NullPointerException
+     *         if the specified array is null
      */
     <T> T[] toArray(T[] a);
-
 
     // Modification Operations
 
@@ -210,20 +220,26 @@ public interface Set<E> extends Collection<E> {
      * Individual set implementations should clearly document any
      * restrictions on the elements that they may contain.
      *
-     * @param e element to be added to this set
+     * @param e
+     *         element to be added to this set
+     *
      * @return <tt>true</tt> if this set did not already contain the specified
-     *         element
-     * @throws UnsupportedOperationException if the <tt>add</tt> operation
+     * element
+     *
+     * @throws UnsupportedOperationException
+     *         if the <tt>add</tt> operation
      *         is not supported by this set
-     * @throws ClassCastException if the class of the specified element
+     * @throws ClassCastException
+     *         if the class of the specified element
      *         prevents it from being added to this set
-     * @throws NullPointerException if the specified element is null and this
+     * @throws NullPointerException
+     *         if the specified element is null and this
      *         set does not permit null elements
-     * @throws IllegalArgumentException if some property of the specified element
+     * @throws IllegalArgumentException
+     *         if some property of the specified element
      *         prevents it from being added to this set
      */
     boolean add(E e);
-
 
     /**
      * Removes the specified element from this set if it is present
@@ -235,19 +251,24 @@ public interface Set<E> extends Collection<E> {
      * result of the call).  (This set will not contain the element once the
      * call returns.)
      *
-     * @param o object to be removed from this set, if present
+     * @param o
+     *         object to be removed from this set, if present
+     *
      * @return <tt>true</tt> if this set contained the specified element
-     * @throws ClassCastException if the type of the specified element
+     *
+     * @throws ClassCastException
+     *         if the type of the specified element
      *         is incompatible with this set
-     * (<a href="Collection.html#optional-restrictions">optional</a>)
-     * @throws NullPointerException if the specified element is null and this
+     *         (<a href="Collection.html#optional-restrictions">optional</a>)
+     * @throws NullPointerException
+     *         if the specified element is null and this
      *         set does not permit null elements
-     * (<a href="Collection.html#optional-restrictions">optional</a>)
-     * @throws UnsupportedOperationException if the <tt>remove</tt> operation
+     *         (<a href="Collection.html#optional-restrictions">optional</a>)
+     * @throws UnsupportedOperationException
+     *         if the <tt>remove</tt> operation
      *         is not supported by this set
      */
     boolean remove(Object o);
-
 
     // Bulk Operations
 
@@ -256,19 +277,24 @@ public interface Set<E> extends Collection<E> {
      * specified collection.  If the specified collection is also a set, this
      * method returns <tt>true</tt> if it is a <i>subset</i> of this set.
      *
-     * @param  c collection to be checked for containment in this set
+     * @param c
+     *         collection to be checked for containment in this set
+     *
      * @return <tt>true</tt> if this set contains all of the elements of the
-     *         specified collection
-     * @throws ClassCastException if the types of one or more elements
+     * specified collection
+     *
+     * @throws ClassCastException
+     *         if the types of one or more elements
      *         in the specified collection are incompatible with this
      *         set
-     * (<a href="Collection.html#optional-restrictions">optional</a>)
-     * @throws NullPointerException if the specified collection contains one
+     *         (<a href="Collection.html#optional-restrictions">optional</a>)
+     * @throws NullPointerException
+     *         if the specified collection contains one
      *         or more null elements and this set does not permit null
      *         elements
-     * (<a href="Collection.html#optional-restrictions">optional</a>),
+     *         (<a href="Collection.html#optional-restrictions">optional</a>),
      *         or if the specified collection is null
-     * @see    #contains(Object)
+     * @see #contains(Object)
      */
     boolean containsAll(Collection<?> c);
 
@@ -280,17 +306,23 @@ public interface Set<E> extends Collection<E> {
      * sets.  The behavior of this operation is undefined if the specified
      * collection is modified while the operation is in progress.
      *
-     * @param  c collection containing elements to be added to this set
+     * @param c
+     *         collection containing elements to be added to this set
+     *
      * @return <tt>true</tt> if this set changed as a result of the call
      *
-     * @throws UnsupportedOperationException if the <tt>addAll</tt> operation
+     * @throws UnsupportedOperationException
+     *         if the <tt>addAll</tt> operation
      *         is not supported by this set
-     * @throws ClassCastException if the class of an element of the
+     * @throws ClassCastException
+     *         if the class of an element of the
      *         specified collection prevents it from being added to this set
-     * @throws NullPointerException if the specified collection contains one
+     * @throws NullPointerException
+     *         if the specified collection contains one
      *         or more null elements and this set does not permit null
      *         elements, or if the specified collection is null
-     * @throws IllegalArgumentException if some property of an element of the
+     * @throws IllegalArgumentException
+     *         if some property of an element of the
      *         specified collection prevents it from being added to this set
      * @see #add(Object)
      */
@@ -304,14 +336,20 @@ public interface Set<E> extends Collection<E> {
      * operation effectively modifies this set so that its value is the
      * <i>intersection</i> of the two sets.
      *
-     * @param  c collection containing elements to be retained in this set
+     * @param c
+     *         collection containing elements to be retained in this set
+     *
      * @return <tt>true</tt> if this set changed as a result of the call
-     * @throws UnsupportedOperationException if the <tt>retainAll</tt> operation
+     *
+     * @throws UnsupportedOperationException
+     *         if the <tt>retainAll</tt> operation
      *         is not supported by this set
-     * @throws ClassCastException if the class of an element of this set
+     * @throws ClassCastException
+     *         if the class of an element of this set
      *         is incompatible with the specified collection
-     * (<a href="Collection.html#optional-restrictions">optional</a>)
-     * @throws NullPointerException if this set contains a null element and the
+     *         (<a href="Collection.html#optional-restrictions">optional</a>)
+     * @throws NullPointerException
+     *         if this set contains a null element and the
      *         specified collection does not permit null elements
      *         (<a href="Collection.html#optional-restrictions">optional</a>),
      *         or if the specified collection is null
@@ -326,14 +364,20 @@ public interface Set<E> extends Collection<E> {
      * set so that its value is the <i>asymmetric set difference</i> of
      * the two sets.
      *
-     * @param  c collection containing elements to be removed from this set
+     * @param c
+     *         collection containing elements to be removed from this set
+     *
      * @return <tt>true</tt> if this set changed as a result of the call
-     * @throws UnsupportedOperationException if the <tt>removeAll</tt> operation
+     *
+     * @throws UnsupportedOperationException
+     *         if the <tt>removeAll</tt> operation
      *         is not supported by this set
-     * @throws ClassCastException if the class of an element of this set
+     * @throws ClassCastException
+     *         if the class of an element of this set
      *         is incompatible with the specified collection
-     * (<a href="Collection.html#optional-restrictions">optional</a>)
-     * @throws NullPointerException if this set contains a null element and the
+     *         (<a href="Collection.html#optional-restrictions">optional</a>)
+     * @throws NullPointerException
+     *         if this set contains a null element and the
      *         specified collection does not permit null elements
      *         (<a href="Collection.html#optional-restrictions">optional</a>),
      *         or if the specified collection is null
@@ -346,11 +390,11 @@ public interface Set<E> extends Collection<E> {
      * Removes all of the elements from this set (optional operation).
      * The set will be empty after this call returns.
      *
-     * @throws UnsupportedOperationException if the <tt>clear</tt> method
+     * @throws UnsupportedOperationException
+     *         if the <tt>clear</tt> method
      *         is not supported by this set
      */
     void clear();
-
 
     // Comparison and hashing
 
@@ -363,7 +407,9 @@ public interface Set<E> extends Collection<E> {
      * equals method works properly across different implementations of the
      * set interface.
      *
-     * @param o object to be compared for equality with this set
+     * @param o
+     *         object to be compared for equality with this set
+     *
      * @return <tt>true</tt> if the specified object is equal to this set
      */
     boolean equals(Object o);
@@ -378,6 +424,7 @@ public interface Set<E> extends Collection<E> {
      * {@link Object#hashCode}.
      *
      * @return the hash code value for this set
+     *
      * @see Object#equals(Object)
      * @see Set#equals(Object)
      */
@@ -390,20 +437,8 @@ public interface Set<E> extends Collection<E> {
      * Implementations should document the reporting of additional
      * characteristic values.
      *
-     * @implSpec
-     * The default implementation creates a
-     * <em><a href="Spliterator.html#binding">late-binding</a></em> spliterator
-     * from the set's {@code Iterator}.  The spliterator inherits the
-     * <em>fail-fast</em> properties of the set's iterator.
-     * <p>
-     * The created {@code Spliterator} additionally reports
-     * {@link Spliterator#SIZED}.
-     *
-     * @implNote
-     * The created {@code Spliterator} additionally reports
-     * {@link Spliterator#SUBSIZED}.
-     *
      * @return a {@code Spliterator} over the elements in this set
+     *
      * @since 1.8
      */
     @Override

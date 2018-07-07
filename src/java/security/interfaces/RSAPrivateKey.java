@@ -31,13 +31,10 @@ import java.math.BigInteger;
  * The interface to an RSA private key.
  *
  * @author Jan Luehe
- *
- *
  * @see RSAPrivateCrtKey
  */
 
-public interface RSAPrivateKey extends java.security.PrivateKey, RSAKey
-{
+public interface RSAPrivateKey extends java.security.PrivateKey, RSAKey {
 
     /**
      * The type fingerprint that is set to indicate

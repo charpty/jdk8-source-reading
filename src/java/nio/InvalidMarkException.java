@@ -29,7 +29,6 @@
 
 package java.nio;
 
-
 /**
  * Unchecked exception thrown when an attempt is made to reset a buffer
  * when its mark is not defined.
@@ -37,15 +36,14 @@ package java.nio;
  * @since 1.4
  */
 
-public class InvalidMarkException
-    extends IllegalStateException
-{
+public class InvalidMarkException extends IllegalStateException {
 
     private static final long serialVersionUID = 1698329710438510774L;
 
     /**
      * Constructs an instance of this class.
      */
-    public InvalidMarkException() { }
+    public InvalidMarkException() {
+    }
 
 }

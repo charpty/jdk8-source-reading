@@ -31,10 +31,7 @@ import java.security.GeneralSecurityException;
  * This is the exception for invalid key specifications.
  *
  * @author Jan Luehe
- *
- *
  * @see KeySpec
- *
  * @since 1.2
  */
 
@@ -56,7 +53,8 @@ public class InvalidKeySpecException extends GeneralSecurityException {
      * message. A detail message is a String that describes this
      * particular exception.
      *
-     * @param msg the detail message.
+     * @param msg
+     *         the detail message.
      */
     public InvalidKeySpecException(String msg) {
         super(msg);
@@ -66,11 +64,14 @@ public class InvalidKeySpecException extends GeneralSecurityException {
      * Creates a {@code InvalidKeySpecException} with the specified
      * detail message and cause.
      *
-     * @param message the detail message (which is saved for later retrieval
-     *        by the {@link #getMessage()} method).
-     * @param cause the cause (which is saved for later retrieval by the
-     *        {@link #getCause()} method).  (A {@code null} value is permitted,
-     *        and indicates that the cause is nonexistent or unknown.)
+     * @param message
+     *         the detail message (which is saved for later retrieval
+     *         by the {@link #getMessage()} method).
+     * @param cause
+     *         the cause (which is saved for later retrieval by the
+     *         {@link #getCause()} method).  (A {@code null} value is permitted,
+     *         and indicates that the cause is nonexistent or unknown.)
+     *
      * @since 1.5
      */
     public InvalidKeySpecException(String message, Throwable cause) {
@@ -83,9 +84,11 @@ public class InvalidKeySpecException extends GeneralSecurityException {
      * (which typically contains the class and detail message of
      * {@code cause}).
      *
-     * @param cause the cause (which is saved for later retrieval by the
-     *        {@link #getCause()} method).  (A {@code null} value is permitted,
-     *        and indicates that the cause is nonexistent or unknown.)
+     * @param cause
+     *         the cause (which is saved for later retrieval by the
+     *         {@link #getCause()} method).  (A {@code null} value is permitted,
+     *         and indicates that the cause is nonexistent or unknown.)
+     *
      * @since 1.5
      */
     public InvalidKeySpecException(Throwable cause) {

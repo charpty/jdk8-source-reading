@@ -24,10 +24,12 @@
  */
 package java.nio.file;
 
-import java.nio.file.attribute.*;
-import java.nio.channels.SeekableByteChannel;
-import java.util.Set;
 import java.io.IOException;
+import java.nio.channels.SeekableByteChannel;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.FileAttributeView;
+import java.util.Set;
 
 /**
  * A {@code DirectoryStream} that defines operations on files that are located
@@ -53,12 +55,10 @@ import java.io.IOException;
  * against the <i>original path</i> of the directory (irrespective of if the
  * directory is moved since it was opened).
  *
- * @since   1.7
+ * @since 1.7
  */
 
-public interface SecureDirectoryStream<T>
-    extends DirectoryStream<T>
-{
+public interface SecureDirectoryStream<T> extends DirectoryStream<T> {
     /**
      * Opens the directory identified by the given path, returning a {@code
      * SecureDirectoryStream} to iterate over the entries in the directory.
@@ -75,27 +75,26 @@ public interface SecureDirectoryStream<T>
      * directory stream used to create it. Closing this directory stream has no
      * effect upon newly created directory stream.
      *
-     * @param   path
-     *          the path to the directory to open
-     * @param   options
-     *          options indicating how symbolic links are handled
+     * @param path
+     *         the path to the directory to open
+     * @param options
+     *         options indicating how symbolic links are handled
      *
-     * @return  a new and open {@code SecureDirectoryStream} object
+     * @return a new and open {@code SecureDirectoryStream} object
      *
-     * @throws  ClosedDirectoryStreamException
-     *          if the directory stream is closed
-     * @throws  NotDirectoryException
-     *          if the file could not otherwise be opened because it is not
-     *          a directory <i>(optional specific exception)</i>
-     * @throws  IOException
-     *          if an I/O error occurs
-     * @throws  SecurityException
-     *          In the case of the default provider, and a security manager is
-     *          installed, the {@link SecurityManager#checkRead(String) checkRead}
-     *          method is invoked to check read access to the directory.
+     * @throws ClosedDirectoryStreamException
+     *         if the directory stream is closed
+     * @throws NotDirectoryException
+     *         if the file could not otherwise be opened because it is not
+     *         a directory <i>(optional specific exception)</i>
+     * @throws IOException
+     *         if an I/O error occurs
+     * @throws SecurityException
+     *         In the case of the default provider, and a security manager is
+     *         installed, the {@link SecurityManager#checkRead(String) checkRead}
+     *         method is invoked to check read access to the directory.
      */
-    SecureDirectoryStream<T> newDirectoryStream(T path, LinkOption... options)
-        throws IOException;
+    SecureDirectoryStream<T> newDirectoryStream(T path, LinkOption... options) throws IOException;
 
     /**
      * Opens or creates a file in this directory, returning a seekable byte
@@ -114,41 +113,38 @@ public interface SecureDirectoryStream<T>
      * used to create it. Closing this directory stream has no effect upon the
      * channel.
      *
-     * @param   path
-     *          the path of the file to open open or create
-     * @param   options
-     *          options specifying how the file is opened
-     * @param   attrs
-     *          an optional list of attributes to set atomically when creating
-     *          the file
+     * @param path
+     *         the path of the file to open open or create
+     * @param options
+     *         options specifying how the file is opened
+     * @param attrs
+     *         an optional list of attributes to set atomically when creating
+     *         the file
      *
-     * @return  the seekable byte channel
+     * @return the seekable byte channel
      *
-     * @throws  ClosedDirectoryStreamException
-     *          if the directory stream is closed
-     * @throws  IllegalArgumentException
-     *          if the set contains an invalid combination of options
-     * @throws  UnsupportedOperationException
-     *          if an unsupported open option is specified or the array contains
-     *          attributes that cannot be set atomically when creating the file
-     * @throws  FileAlreadyExistsException
-     *          if a file of that name already exists and the {@link
-     *          StandardOpenOption#CREATE_NEW CREATE_NEW} option is specified
-     *          <i>(optional specific exception)</i>
-     * @throws  IOException
-     *          if an I/O error occurs
-     * @throws  SecurityException
-     *          In the case of the default provider, and a security manager is
-     *          installed, the {@link SecurityManager#checkRead(String) checkRead}
-     *          method is invoked to check read access to the path if the file
-     *          is opened for reading. The {@link SecurityManager#checkWrite(String)
-     *          checkWrite} method is invoked to check write access to the path
-     *          if the file is opened for writing.
+     * @throws ClosedDirectoryStreamException
+     *         if the directory stream is closed
+     * @throws IllegalArgumentException
+     *         if the set contains an invalid combination of options
+     * @throws UnsupportedOperationException
+     *         if an unsupported open option is specified or the array contains
+     *         attributes that cannot be set atomically when creating the file
+     * @throws FileAlreadyExistsException
+     *         if a file of that name already exists and the {@link
+     *         StandardOpenOption#CREATE_NEW CREATE_NEW} option is specified
+     *         <i>(optional specific exception)</i>
+     * @throws IOException
+     *         if an I/O error occurs
+     * @throws SecurityException
+     *         In the case of the default provider, and a security manager is
+     *         installed, the {@link SecurityManager#checkRead(String) checkRead}
+     *         method is invoked to check read access to the path if the file
+     *         is opened for reading. The {@link SecurityManager#checkWrite(String)
+     *         checkWrite} method is invoked to check write access to the path
+     *         if the file is opened for writing.
      */
-    SeekableByteChannel newByteChannel(T path,
-                                       Set<? extends OpenOption> options,
-                                       FileAttribute<?>... attrs)
-        throws IOException;
+    SeekableByteChannel newByteChannel(T path, Set<? extends OpenOption> options, FileAttribute<?>... attrs) throws IOException;
 
     /**
      * Deletes a file.
@@ -161,19 +157,19 @@ public interface SecureDirectoryStream<T>
      * parameter is a relative path then the file to delete is relative to
      * this open directory.
      *
-     * @param   path
-     *          the path of the file to delete
+     * @param path
+     *         the path of the file to delete
      *
-     * @throws  ClosedDirectoryStreamException
-     *          if the directory stream is closed
-     * @throws  NoSuchFileException
-     *          if the file does not exist <i>(optional specific exception)</i>
-     * @throws  IOException
-     *          if an I/O error occurs
-     * @throws  SecurityException
-     *          In the case of the default provider, and a security manager is
-     *          installed, the {@link SecurityManager#checkDelete(String) checkDelete}
-     *          method is invoked to check delete access to the file
+     * @throws ClosedDirectoryStreamException
+     *         if the directory stream is closed
+     * @throws NoSuchFileException
+     *         if the file does not exist <i>(optional specific exception)</i>
+     * @throws IOException
+     *         if an I/O error occurs
+     * @throws SecurityException
+     *         In the case of the default provider, and a security manager is
+     *         installed, the {@link SecurityManager#checkDelete(String) checkDelete}
+     *         method is invoked to check delete access to the file
      */
     void deleteFile(T path) throws IOException;
 
@@ -186,22 +182,22 @@ public interface SecureDirectoryStream<T>
      * therefore not specified. When the parameter is a relative path then the
      * directory to delete is relative to this open directory.
      *
-     * @param   path
-     *          the path of the directory to delete
+     * @param path
+     *         the path of the directory to delete
      *
-     * @throws  ClosedDirectoryStreamException
-     *          if the directory stream is closed
-     * @throws  NoSuchFileException
-     *          if the directory does not exist <i>(optional specific exception)</i>
-     * @throws  DirectoryNotEmptyException
-     *          if the directory could not otherwise be deleted because it is
-     *          not empty <i>(optional specific exception)</i>
-     * @throws  IOException
-     *          if an I/O error occurs
-     * @throws  SecurityException
-     *          In the case of the default provider, and a security manager is
-     *          installed, the {@link SecurityManager#checkDelete(String) checkDelete}
-     *          method is invoked to check delete access to the directory
+     * @throws ClosedDirectoryStreamException
+     *         if the directory stream is closed
+     * @throws NoSuchFileException
+     *         if the directory does not exist <i>(optional specific exception)</i>
+     * @throws DirectoryNotEmptyException
+     *         if the directory could not otherwise be deleted because it is
+     *         not empty <i>(optional specific exception)</i>
+     * @throws IOException
+     *         if an I/O error occurs
+     * @throws SecurityException
+     *         In the case of the default provider, and a security manager is
+     *         installed, the {@link SecurityManager#checkDelete(String) checkDelete}
+     *         method is invoked to check delete access to the directory
      */
     void deleteDirectory(T path) throws IOException;
 
@@ -221,30 +217,29 @@ public interface SecureDirectoryStream<T>
      * exists then it is implementation specific if it is replaced or this
      * method fails.
      *
-     * @param   srcpath
-     *          the name of the file to move
-     * @param   targetdir
-     *          the destination directory
-     * @param   targetpath
-     *          the name to give the file in the destination directory
+     * @param srcpath
+     *         the name of the file to move
+     * @param targetdir
+     *         the destination directory
+     * @param targetpath
+     *         the name to give the file in the destination directory
      *
-     * @throws  ClosedDirectoryStreamException
-     *          if this or the target directory stream is closed
-     * @throws  FileAlreadyExistsException
-     *          if the file already exists in the target directory and cannot
-     *          be replaced <i>(optional specific exception)</i>
-     * @throws  AtomicMoveNotSupportedException
-     *          if the file cannot be moved as an atomic file system operation
-     * @throws  IOException
-     *          if an I/O error occurs
-     * @throws  SecurityException
-     *          In the case of the default provider, and a security manager is
-     *          installed, the {@link SecurityManager#checkWrite(String) checkWrite}
-     *          method is invoked to check write access to both the source and
-     *          target file.
+     * @throws ClosedDirectoryStreamException
+     *         if this or the target directory stream is closed
+     * @throws FileAlreadyExistsException
+     *         if the file already exists in the target directory and cannot
+     *         be replaced <i>(optional specific exception)</i>
+     * @throws AtomicMoveNotSupportedException
+     *         if the file cannot be moved as an atomic file system operation
+     * @throws IOException
+     *         if an I/O error occurs
+     * @throws SecurityException
+     *         In the case of the default provider, and a security manager is
+     *         installed, the {@link SecurityManager#checkWrite(String) checkWrite}
+     *         method is invoked to check write access to both the source and
+     *         target file.
      */
-    void move(T srcpath, SecureDirectoryStream<T> targetdir, T targetpath)
-        throws IOException;
+    void move(T srcpath, SecureDirectoryStream<T> targetdir, T targetpath) throws IOException;
 
     /**
      * Returns a new file attribute view to access the file attributes of this
@@ -262,14 +257,14 @@ public interface SecureDirectoryStream<T>
      * then all methods to read or update attributes will throw {@link
      * ClosedDirectoryStreamException ClosedDirectoryStreamException}.
      *
-     * @param   <V>
-     *          The {@code FileAttributeView} type
-     * @param   type
-     *          the {@code Class} object corresponding to the file attribute view
+     * @param <V>
+     *         The {@code FileAttributeView} type
+     * @param type
+     *         the {@code Class} object corresponding to the file attribute view
      *
-     * @return  a new file attribute view of the specified type bound to
-     *          this directory stream, or {@code null} if the attribute view
-     *          type is not available
+     * @return a new file attribute view of the specified type bound to
+     * this directory stream, or {@code null} if the attribute view
+     * type is not available
      */
     <V extends FileAttributeView> V getFileAttributeView(Class<V> type);
 
@@ -292,21 +287,18 @@ public interface SecureDirectoryStream<T>
      * is created but methods to read or update attributes of the file will
      * fail when invoked and the file does not exist.
      *
-     * @param   <V>
-     *          The {@code FileAttributeView} type
-     * @param   path
-     *          the path of the file
-     * @param   type
-     *          the {@code Class} object corresponding to the file attribute view
-     * @param   options
-     *          options indicating how symbolic links are handled
+     * @param <V>
+     *         The {@code FileAttributeView} type
+     * @param path
+     *         the path of the file
+     * @param type
+     *         the {@code Class} object corresponding to the file attribute view
+     * @param options
+     *         options indicating how symbolic links are handled
      *
-     * @return  a new file attribute view of the specified type bound to a
-     *          this directory stream, or {@code null} if the attribute view
-     *          type is not available
-     *
+     * @return a new file attribute view of the specified type bound to a
+     * this directory stream, or {@code null} if the attribute view
+     * type is not available
      */
-    <V extends FileAttributeView> V getFileAttributeView(T path,
-                                                         Class<V> type,
-                                                         LinkOption... options);
+    <V extends FileAttributeView> V getFileAttributeView(T path, Class<V> type, LinkOption... options);
 }

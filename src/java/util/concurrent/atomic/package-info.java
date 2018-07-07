@@ -40,7 +40,7 @@
  * array elements to those that also provide an atomic conditional update
  * operation of the form:
  *
- *  <pre> {@code boolean compareAndSet(expectedValue, updateValue);}</pre>
+ * <pre> {@code boolean compareAndSet(expectedValue, updateValue);}</pre>
  *
  * <p>This method (which varies in argument types across different
  * classes) atomically sets a variable to the {@code updateValue} if it
@@ -67,7 +67,7 @@
  * {@code AtomicInteger} provide atomic increment methods.  One
  * application is to generate sequence numbers, as in:
  *
- *  <pre> {@code
+ * <pre> {@code
  * class Sequencer {
  *   private final AtomicLong sequenceNumber
  *     = new AtomicLong(0);
@@ -82,7 +82,7 @@
  * <pre> {@code long transform(long input)}</pre>
  *
  * write your utility method as follows:
- *  <pre> {@code
+ * <pre> {@code
  * long getAndTransform(AtomicLong var) {
  *   long prev, next;
  *   do {
@@ -99,30 +99,30 @@
  *
  * <ul>
  *
- *   <li> {@code get} has the memory effects of reading a
+ * <li> {@code get} has the memory effects of reading a
  * {@code volatile} variable.
  *
- *   <li> {@code set} has the memory effects of writing (assigning) a
+ * <li> {@code set} has the memory effects of writing (assigning) a
  * {@code volatile} variable.
  *
- *   <li> {@code lazySet} has the memory effects of writing (assigning)
- *   a {@code volatile} variable except that it permits reorderings with
- *   subsequent (but not previous) memory actions that do not themselves
- *   impose reordering constraints with ordinary non-{@code volatile}
- *   writes.  Among other usage contexts, {@code lazySet} may apply when
- *   nulling out, for the sake of garbage collection, a reference that is
- *   never accessed again.
+ * <li> {@code lazySet} has the memory effects of writing (assigning)
+ * a {@code volatile} variable except that it permits reorderings with
+ * subsequent (but not previous) memory actions that do not themselves
+ * impose reordering constraints with ordinary non-{@code volatile}
+ * writes.  Among other usage contexts, {@code lazySet} may apply when
+ * nulling out, for the sake of garbage collection, a reference that is
+ * never accessed again.
  *
- *   <li>{@code weakCompareAndSet} atomically reads and conditionally
- *   writes a variable but does <em>not</em>
- *   create any happens-before orderings, so provides no guarantees
- *   with respect to previous or subsequent reads and writes of any
- *   variables other than the target of the {@code weakCompareAndSet}.
+ * <li>{@code weakCompareAndSet} atomically reads and conditionally
+ * writes a variable but does <em>not</em>
+ * create any happens-before orderings, so provides no guarantees
+ * with respect to previous or subsequent reads and writes of any
+ * variables other than the target of the {@code weakCompareAndSet}.
  *
- *   <li> {@code compareAndSet}
- *   and all other read-and-update operations such as {@code getAndIncrement}
- *   have the memory effects of both reading and
- *   writing {@code volatile} variables.
+ * <li> {@code compareAndSet}
+ * and all other read-and-update operations such as {@code getAndIncrement}
+ * have the memory effects of both reading and
+ * writing {@code volatile} variables.
  * </ul>
  *
  * <p>In addition to classes representing single values, this package

@@ -31,11 +31,10 @@ package java.io;
  * output stream without necessarily causing a call to the underlying
  * system for each byte written.
  *
- * @author  Arthur van Hoff
- * @since   JDK1.0
+ * @author Arthur van Hoff
+ * @since JDK1.0
  */
-public
-class BufferedOutputStream extends FilterOutputStream {
+public class BufferedOutputStream extends FilterOutputStream {
     /**
      * The internal buffer where data is stored.
      */
@@ -53,7 +52,8 @@ class BufferedOutputStream extends FilterOutputStream {
      * Creates a new buffered output stream to write data to the
      * specified underlying output stream.
      *
-     * @param   out   the underlying output stream.
+     * @param out
+     *         the underlying output stream.
      */
     public BufferedOutputStream(OutputStream out) {
         this(out, 8192);
@@ -64,9 +64,13 @@ class BufferedOutputStream extends FilterOutputStream {
      * specified underlying output stream with the specified buffer
      * size.
      *
-     * @param   out    the underlying output stream.
-     * @param   size   the buffer size.
-     * @exception IllegalArgumentException if size &lt;= 0.
+     * @param out
+     *         the underlying output stream.
+     * @param size
+     *         the buffer size.
+     *
+     * @throws IllegalArgumentException
+     *         if size &lt;= 0.
      */
     public BufferedOutputStream(OutputStream out, int size) {
         super(out);
@@ -87,14 +91,17 @@ class BufferedOutputStream extends FilterOutputStream {
     /**
      * Writes the specified byte to this buffered output stream.
      *
-     * @param      b   the byte to be written.
-     * @exception  IOException  if an I/O error occurs.
+     * @param b
+     *         the byte to be written.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     public synchronized void write(int b) throws IOException {
         if (count >= buf.length) {
             flushBuffer();
         }
-        buf[count++] = (byte)b;
+        buf[count++] = (byte) b;
     }
 
     /**
@@ -108,10 +115,15 @@ class BufferedOutputStream extends FilterOutputStream {
      * bytes directly to the underlying output stream.  Thus redundant
      * <code>BufferedOutputStream</code>s will not copy data unnecessarily.
      *
-     * @param      b     the data.
-     * @param      off   the start offset in the data.
-     * @param      len   the number of bytes to write.
-     * @exception  IOException  if an I/O error occurs.
+     * @param b
+     *         the data.
+     * @param off
+     *         the start offset in the data.
+     * @param len
+     *         the number of bytes to write.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     public synchronized void write(byte b[], int off, int len) throws IOException {
         if (len >= buf.length) {
@@ -133,8 +145,9 @@ class BufferedOutputStream extends FilterOutputStream {
      * Flushes this buffered output stream. This forces any buffered
      * output bytes to be written out to the underlying output stream.
      *
-     * @exception  IOException  if an I/O error occurs.
-     * @see        java.io.FilterOutputStream#out
+     * @throws IOException
+     *         if an I/O error occurs.
+     * @see java.io.FilterOutputStream#out
      */
     public synchronized void flush() throws IOException {
         flushBuffer();

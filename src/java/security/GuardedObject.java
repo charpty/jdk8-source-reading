@@ -39,11 +39,10 @@ package java.security;
  * guarding access. If access is not allowed,
  * an exception is thrown.
  *
- * @see Guard
- * @see Permission
- *
  * @author Roland Schemers
  * @author Li Gong
+ * @see Guard
+ * @see Permission
  */
 
 public class GuardedObject implements java.io.Serializable {
@@ -58,13 +57,13 @@ public class GuardedObject implements java.io.Serializable {
      * If the Guard object is null, then no restrictions will
      * be placed on who can access the object.
      *
-     * @param object the object to be guarded.
-     *
-     * @param guard the Guard object that guards access to the object.
+     * @param object
+     *         the object to be guarded.
+     * @param guard
+     *         the Guard object that guards access to the object.
      */
 
-    public GuardedObject(Object object, Guard guard)
-    {
+    public GuardedObject(Object object, Guard guard) {
         this.guard = guard;
         this.object = object;
     }
@@ -75,14 +74,14 @@ public class GuardedObject implements java.io.Serializable {
      *
      * @return the guarded object.
      *
-     * @exception SecurityException if access to the guarded object is
-     * denied.
+     * @throws SecurityException
+     *         if access to the guarded object is
+     *         denied.
      */
-    public Object getObject()
-        throws SecurityException
-    {
-        if (guard != null)
+    public Object getObject() throws SecurityException {
+        if (guard != null) {
             guard.checkGuard(object);
+        }
 
         return object;
     }
@@ -91,11 +90,10 @@ public class GuardedObject implements java.io.Serializable {
      * Writes this object out to a stream (i.e., serializes it).
      * We check the guard if there is one.
      */
-    private void writeObject(java.io.ObjectOutputStream oos)
-        throws java.io.IOException
-    {
-        if (guard != null)
+    private void writeObject(java.io.ObjectOutputStream oos) throws java.io.IOException {
+        if (guard != null) {
             guard.checkGuard(object);
+        }
 
         oos.defaultWriteObject();
     }

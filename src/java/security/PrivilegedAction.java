@@ -25,7 +25,6 @@
 
 package java.security;
 
-
 /**
  * A computation to be performed with privileges enabled.  The computation is
  * performed by invoking {@code AccessController.doPrivileged} on the
@@ -45,12 +44,12 @@ public interface PrivilegedAction<T> {
      * {@code AccessController.doPrivileged} after enabling privileges.
      *
      * @return a class-dependent value that may represent the results of the
-     *         computation. Each class that implements
-     *         {@code PrivilegedAction}
-     *         should document what (if anything) this value represents.
+     * computation. Each class that implements
+     * {@code PrivilegedAction}
+     * should document what (if anything) this value represents.
+     *
      * @see AccessController#doPrivileged(PrivilegedAction)
-     * @see AccessController#doPrivileged(PrivilegedAction,
-     *                                     AccessControlContext)
+     * @see AccessController#doPrivileged(PrivilegedAction, * AccessControlContext)
      */
     T run();
 }

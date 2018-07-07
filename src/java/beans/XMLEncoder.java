@@ -24,13 +24,20 @@
  */
 package java.beans;
 
-import java.io.*;
-import java.util.*;
-import java.lang.reflect.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.ArrayList;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The <code>XMLEncoder</code> class is a complementary alternative to
@@ -156,7 +163,7 @@ import java.nio.charset.UnsupportedCharsetException;
  * The default method name is "new".
  * <li>
  * A reference to a java class is written in the form
- *  &lt;class&gt;javax.swing.JButton&lt;/class&gt;.
+ * &lt;class&gt;javax.swing.JButton&lt;/class&gt;.
  * <li>
  * Instances of the wrapper classes for Java's primitive types are written
  * using the name of the primitive type as the tag. For example, an
@@ -192,17 +199,16 @@ import java.nio.charset.UnsupportedCharsetException;
  * sub-type of the array and its length respectively.
  * </ul>
  *
- *<p>
+ * <p>
  * For more information you might also want to check out
  * <a
- href="http://java.sun.com/products/jfc/tsc/articles/persistence4">Using XMLEncoder</a>,
+ * href="http://java.sun.com/products/jfc/tsc/articles/persistence4">Using XMLEncoder</a>,
  * an article in <em>The Swing Connection.</em>
- * @see XMLDecoder
- * @see java.io.ObjectOutputStream
- *
- * @since 1.4
  *
  * @author Philip Milne
+ * @see XMLDecoder
+ * @see java.io.ObjectOutputStream
+ * @since 1.4
  */
 public class XMLEncoder extends Encoder implements AutoCloseable {
 
@@ -230,12 +236,12 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
      * Creates a new XML encoder to write out <em>JavaBeans</em>
      * to the stream <code>out</code> using an XML encoding.
      *
-     * @param out  the stream to which the XML representation of
-     *             the objects will be written
+     * @param out
+     *         the stream to which the XML representation of
+     *         the objects will be written
      *
-     * @throws  IllegalArgumentException
-     *          if <code>out</code> is <code>null</code>
-     *
+     * @throws IllegalArgumentException
+     *         if <code>out</code> is <code>null</code>
      * @see XMLDecoder#XMLDecoder(InputStream)
      */
     public XMLEncoder(OutputStream out) {
@@ -247,31 +253,30 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
      * to the stream <code>out</code> using the given <code>charset</code>
      * starting from the given <code>indentation</code>.
      *
-     * @param out          the stream to which the XML representation of
-     *                     the objects will be written
-     * @param charset      the name of the requested charset;
-     *                     may be either a canonical name or an alias
-     * @param declaration  whether the XML declaration should be generated;
-     *                     set this to <code>false</code>
-     *                     when embedding the contents in another XML document
-     * @param indentation  the number of space characters to indent the entire XML document by
+     * @param out
+     *         the stream to which the XML representation of
+     *         the objects will be written
+     * @param charset
+     *         the name of the requested charset;
+     *         may be either a canonical name or an alias
+     * @param declaration
+     *         whether the XML declaration should be generated;
+     *         set this to <code>false</code>
+     *         when embedding the contents in another XML document
+     * @param indentation
+     *         the number of space characters to indent the entire XML document by
      *
-     * @throws  IllegalArgumentException
-     *          if <code>out</code> or <code>charset</code> is <code>null</code>,
-     *          or if <code>indentation</code> is less than 0
-     *
-     * @throws  IllegalCharsetNameException
-     *          if <code>charset</code> name is illegal
-     *
-     * @throws  UnsupportedCharsetException
-     *          if no support for the named charset is available
-     *          in this instance of the Java virtual machine
-     *
-     * @throws  UnsupportedOperationException
-     *          if loaded charset does not support encoding
-     *
+     * @throws IllegalArgumentException
+     *         if <code>out</code> or <code>charset</code> is <code>null</code>,
+     *         or if <code>indentation</code> is less than 0
+     * @throws IllegalCharsetNameException
+     *         if <code>charset</code> name is illegal
+     * @throws UnsupportedCharsetException
+     *         if no support for the named charset is available
+     *         in this instance of the Java virtual machine
+     * @throws UnsupportedOperationException
+     *         if loaded charset does not support encoding
      * @see Charset#forName(String)
-     *
      * @since 1.7
      */
     public XMLEncoder(OutputStream out, String charset, boolean declaration, int indentation) {
@@ -295,7 +300,8 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
     /**
      * Sets the owner of this encoder to <code>owner</code>.
      *
-     * @param owner The owner of this encoder.
+     * @param owner
+     *         The owner of this encoder.
      *
      * @see #getOwner
      */
@@ -318,16 +324,16 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
     /**
      * Write an XML representation of the specified object to the output.
      *
-     * @param o The object to be written to the stream.
+     * @param o
+     *         The object to be written to the stream.
      *
      * @see XMLDecoder#readObject
      */
     public void writeObject(Object o) {
         if (internal) {
             super.writeObject(o);
-        }
-        else {
-            writeStatement(new Statement(this, "writeObject", new Object[]{o}));
+        } else {
+            writeStatement(new Statement(this, "writeObject", new Object[] { o }));
         }
     }
 
@@ -339,7 +345,6 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
         }
         return list;
     }
-
 
     private void mark(Object o, boolean isArgument) {
         if (o == null || o == this) {
@@ -380,7 +385,6 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
         mark(stm.getTarget(), stm instanceof Expression);
     }
 
-
     /**
      * Records the Statement so that the Encoder will
      * produce the actual output when the stream is flushed.
@@ -388,8 +392,10 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
      * This method should only be invoked within the context
      * of initializing a persistence delegate.
      *
-     * @param oldStm The statement that will be written
-     *               to the stream.
+     * @param oldStm
+     *         The statement that will be written
+     *         to the stream.
+     *
      * @see java.beans.PersistenceDelegate#initialize
      */
     public void writeStatement(Statement oldStm) {
@@ -412,22 +418,18 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
                 String method = oldStm.getMethodName();
                 Object[] args = oldStm.getArguments();
                 if ((method == null) || (args == null)) {
-                }
-                else if (method.equals("get") && (args.length == 1)) {
+                } else if (method.equals("get") && (args.length == 1)) {
                     target = args[0];
-                }
-                else if (method.equals("set") && (args.length == 2)) {
+                } else if (method.equals("set") && (args.length == 2)) {
                     target = args[0];
                 }
             }
             statementList(target).add(oldStm);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             getExceptionListener().exceptionThrown(new Exception("XMLEncoder: discarding statement " + oldStm, e));
         }
         this.internal = internal;
     }
-
 
     /**
      * Records the Expression so that the Encoder will
@@ -441,8 +443,10 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
      * XMLEncoder, see
      * http://java.sun.com/products/jfc/tsc/articles/persistence4/#i18n
      *
-     * @param oldExp The expression that will be written
-     *               to the stream.
+     * @param oldExp
+     *         The expression that will be written
+     *         to the stream.
+     *
      * @see java.beans.PersistenceDelegate#initialize
      */
     public void writeExpression(Expression oldExp) {
@@ -467,11 +471,9 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
     public void flush() {
         if (!preambleWritten) { // Don't do this in constructor - it throws ... pending.
             if (this.declaration) {
-                writeln("<?xml version=" + quote("1.0") +
-                            " encoding=" + quote(this.charset) + "?>");
+                writeln("<?xml version=" + quote("1.0") + " encoding=" + quote(this.charset) + "?>");
             }
-            writeln("<java version=" + quote(System.getProperty("java.version")) +
-                           " class=" + quote(XMLDecoder.class.getName()) + ">");
+            writeln("<java version=" + quote(System.getProperty("java.version")) + " class=" + quote(XMLDecoder.class.getName()) + ">");
             preambleWritten = true;
         }
         indentation++;
@@ -480,8 +482,7 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
             Statement s = statements.remove(0);
             if ("writeObject".equals(s.getMethodName())) {
                 outputValue(s.getArguments()[0], this, true);
-            }
-            else {
+            } else {
                 outputStatement(s, this, false);
             }
         }
@@ -495,8 +496,7 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
 
         try {
             out.flush();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             getExceptionListener().exceptionThrown(e);
         }
         clear();
@@ -520,7 +520,6 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
         return null;
     }
 
-
     /**
      * This method calls <code>flush</code>, writes the closing
      * postamble and then closes the output stream associated
@@ -531,8 +530,7 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
         writeln("</java>");
         try {
             out.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             getExceptionListener().exceptionThrown(e);
         }
     }
@@ -560,35 +558,32 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
      * represents Unicode characters, including unpaired surrogates.)
      * <par>
      * [2] Char ::= #x0009 | #x000A | #x000D
-     *            | [#x0020-#xD7FF]
-     *            | [#xE000-#xFFFD]
-     *            | [#x10000-#x10ffff]
+     * | [#x0020-#xD7FF]
+     * | [#xE000-#xFFFD]
+     * | [#x10000-#x10ffff]
      * </par>
      *
-     * @param code  the 32-bit Unicode code point being tested
-     * @return  <code>true</code> if the Unicode code point is valid,
-     *          <code>false</code> otherwise
+     * @param code
+     *         the 32-bit Unicode code point being tested
+     *
+     * @return <code>true</code> if the Unicode code point is valid,
+     * <code>false</code> otherwise
      */
     private static boolean isValidCharCode(int code) {
-        return (0x0020 <= code && code <= 0xD7FF)
-            || (0x000A == code)
-            || (0x0009 == code)
-            || (0x000D == code)
-            || (0xE000 <= code && code <= 0xFFFD)
-            || (0x10000 <= code && code <= 0x10ffff);
+        return (0x0020 <= code && code <= 0xD7FF) || (0x000A == code) || (0x0009 == code) || (0x000D == code) || (0xE000 <= code && code <= 0xFFFD) || (
+                0x10000 <= code && code <= 0x10ffff);
     }
 
     private void writeln(String exp) {
         try {
             StringBuilder sb = new StringBuilder();
-            for(int i = 0; i < indentation; i++) {
+            for (int i = 0; i < indentation; i++) {
                 sb.append(' ');
             }
             sb.append(exp);
             sb.append('\n');
             this.out.write(sb.toString());
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             getExceptionListener().exceptionThrown(e);
         }
     }
@@ -600,7 +595,7 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
         }
 
         if (value instanceof Class) {
-            writeln("<class>" + ((Class)value).getName() + "</class>");
+            writeln("<class>" + ((Class) value).getName() + "</class>");
             return;
         }
 
@@ -610,20 +605,17 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
             String methodName = d.exp.getMethodName();
 
             if (target == null || methodName == null) {
-                throw new NullPointerException((target == null ? "target" :
-                                                "methodName") + " should not be null");
+                throw new NullPointerException((target == null ? "target" : "methodName") + " should not be null");
             }
 
             if (isArgument && target instanceof Field && methodName.equals("get")) {
-                Field f = (Field)target;
-                writeln("<object class=" + quote(f.getDeclaringClass().getName()) +
-                        " field=" + quote(f.getName()) + "/>");
+                Field f = (Field) target;
+                writeln("<object class=" + quote(f.getDeclaringClass().getName()) + " field=" + quote(f.getName()) + "/>");
                 return;
             }
 
             Class<?> primitiveType = primitiveTypeFor(value.getClass());
-            if (primitiveType != null && target == value.getClass() &&
-                methodName.equals("new")) {
+            if (primitiveType != null && target == value.getClass() && methodName.equals("new")) {
                 String primitiveTypeName = primitiveType.getName();
                 // Make sure that character types are quoted correctly.
                 if (primitiveType == Character.TYPE) {
@@ -637,8 +629,7 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
                         value = Character.valueOf(code);
                     }
                 }
-                writeln("<" + primitiveTypeName + ">" + value + "</" +
-                        primitiveTypeName + ">");
+                writeln("<" + primitiveTypeName + ">" + value + "</" + primitiveTypeName + ">");
                 return;
             }
 
@@ -650,25 +641,30 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
         if (d.name != null) {
             if (isArgument) {
                 writeln("<object idref=" + quote(d.name) + "/>");
-            }
-            else {
+            } else {
                 outputXML("void", " idref=" + quote(d.name), value);
             }
-        }
-        else if (d.exp != null) {
+        } else if (d.exp != null) {
             outputStatement(d.exp, outer, isArgument);
         }
     }
 
     private static String quoteCharCode(int code) {
-        switch(code) {
-          case '&':  return "&amp;";
-          case '<':  return "&lt;";
-          case '>':  return "&gt;";
-          case '"':  return "&quot;";
-          case '\'': return "&apos;";
-          case '\r': return "&#13;";
-          default:   return null;
+        switch (code) {
+        case '&':
+            return "&amp;";
+        case '<':
+            return "&lt;";
+        case '>':
+            return "&gt;";
+        case '"':
+            return "&quot;";
+        case '\'':
+            return "&apos;";
+        case '\r':
+            return "&#13;";
+        default:
+            return null;
         }
     }
 
@@ -706,13 +702,12 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
         String methodName = exp.getMethodName();
 
         if (target == null || methodName == null) {
-            throw new NullPointerException((target == null ? "target" :
-                                            "methodName") + " should not be null");
+            throw new NullPointerException((target == null ? "target" : "methodName") + " should not be null");
         }
 
         Object[] args = exp.getArguments();
         boolean expression = exp.getClass() == Expression.class;
-        Object value = (expression) ? getValue((Expression)exp) : null;
+        Object value = (expression) ? getValue((Expression) exp) : null;
 
         String tag = (expression && isArgument) ? "object" : "void";
         String attributes = "";
@@ -720,17 +715,14 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
 
         // Special cases for targets.
         if (target == outer) {
-        }
-        else if (target == Array.class && methodName.equals("newInstance")) {
+        } else if (target == Array.class && methodName.equals("newInstance")) {
             tag = "array";
-            attributes = attributes + " class=" + quote(((Class)args[0]).getName());
+            attributes = attributes + " class=" + quote(((Class) args[0]).getName());
             attributes = attributes + " length=" + quote(args[1].toString());
-            args = new Object[]{};
-        }
-        else if (target.getClass() == Class.class) {
-            attributes = attributes + " class=" + quote(((Class)target).getName());
-        }
-        else {
+            args = new Object[] {};
+        } else if (target.getClass() == Class.class) {
+            attributes = attributes + " class=" + quote(((Class) target).getName());
+        } else {
             d.refs = 2;
             if (d.name == null) {
                 getValueData(target).refs++;
@@ -752,21 +744,15 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
         }
 
         // Special cases for methods.
-        if ((!expression && methodName.equals("set") && args.length == 2 &&
-             args[0] instanceof Integer) ||
-             (expression && methodName.equals("get") && args.length == 1 &&
-              args[0] instanceof Integer)) {
+        if ((!expression && methodName.equals("set") && args.length == 2 && args[0] instanceof Integer) || (expression && methodName.equals("get")
+                && args.length == 1 && args[0] instanceof Integer)) {
             attributes = attributes + " index=" + quote(args[0].toString());
-            args = (args.length == 1) ? new Object[]{} : new Object[]{args[1]};
-        }
-        else if ((!expression && methodName.startsWith("set") && args.length == 1) ||
-                 (expression && methodName.startsWith("get") && args.length == 0)) {
+            args = (args.length == 1) ? new Object[] {} : new Object[] { args[1] };
+        } else if ((!expression && methodName.startsWith("set") && args.length == 1) || (expression && methodName.startsWith("get") && args.length == 0)) {
             if (3 < methodName.length()) {
-                attributes = attributes + " property=" +
-                    quote(Introspector.decapitalize(methodName.substring(3)));
+                attributes = attributes + " property=" + quote(Introspector.decapitalize(methodName.substring(3)));
             }
-        }
-        else if (!methodName.equals("new") && !methodName.equals("newInstance")) {
+        } else if (!methodName.equals("new") && !methodName.equals("newInstance")) {
             attributes = attributes + " method=" + quote(methodName);
         }
         outputXML(tag, attributes, value, args);
@@ -783,7 +769,7 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
         writeln("<" + tag + attributes + ">");
         indentation++;
 
-        for(int i = 0; i < args.length; i++) {
+        for (int i = 0; i < args.length; i++) {
             outputValue(args[i], null, true);
         }
 
@@ -798,15 +784,33 @@ public class XMLEncoder extends Encoder implements AutoCloseable {
 
     @SuppressWarnings("rawtypes")
     static Class primitiveTypeFor(Class wrapper) {
-        if (wrapper == Boolean.class) return Boolean.TYPE;
-        if (wrapper == Byte.class) return Byte.TYPE;
-        if (wrapper == Character.class) return Character.TYPE;
-        if (wrapper == Short.class) return Short.TYPE;
-        if (wrapper == Integer.class) return Integer.TYPE;
-        if (wrapper == Long.class) return Long.TYPE;
-        if (wrapper == Float.class) return Float.TYPE;
-        if (wrapper == Double.class) return Double.TYPE;
-        if (wrapper == Void.class) return Void.TYPE;
+        if (wrapper == Boolean.class) {
+            return Boolean.TYPE;
+        }
+        if (wrapper == Byte.class) {
+            return Byte.TYPE;
+        }
+        if (wrapper == Character.class) {
+            return Character.TYPE;
+        }
+        if (wrapper == Short.class) {
+            return Short.TYPE;
+        }
+        if (wrapper == Integer.class) {
+            return Integer.TYPE;
+        }
+        if (wrapper == Long.class) {
+            return Long.TYPE;
+        }
+        if (wrapper == Float.class) {
+            return Float.TYPE;
+        }
+        if (wrapper == Double.class) {
+            return Double.TYPE;
+        }
+        if (wrapper == Void.class) {
+            return Void.TYPE;
+        }
         return null;
     }
 }

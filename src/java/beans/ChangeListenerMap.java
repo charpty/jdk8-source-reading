@@ -27,7 +27,6 @@ package java.beans;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EventListener;
-import java.util.EventListenerProxy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,10 +38,9 @@ import java.util.Set;
  * for the {@link PropertyChangeSupport PropertyChangeSupport} class
  * and the {@link VetoableChangeSupport VetoableChangeSupport} class.
  *
+ * @author Sergey A. Malenkov
  * @see PropertyChangeListenerMap
  * @see VetoableChangeListenerMap
- *
- * @author Sergey A. Malenkov
  */
 abstract class ChangeListenerMap<L extends EventListener> {
     private Map<String, L[]> map;
@@ -53,17 +51,22 @@ abstract class ChangeListenerMap<L extends EventListener> {
      * the same instance of the empty array
      * when {@code length} is equal to {@code 0}.
      *
-     * @param length  the array length
-     * @return        an array with specified length
+     * @param length
+     *         the array length
+     *
+     * @return an array with specified length
      */
     protected abstract L[] newArray(int length);
 
     /**
      * Creates a proxy listener for the specified property.
      *
-     * @param name      the name of the property to listen on
-     * @param listener  the listener to process events
-     * @return          a proxy listener
+     * @param name
+     *         the name of the property to listen on
+     * @param listener
+     *         the listener to process events
+     *
+     * @return a proxy listener
      */
     protected abstract L newProxy(String name, L listener);
 
@@ -71,17 +74,17 @@ abstract class ChangeListenerMap<L extends EventListener> {
      * Adds a listener to the list of listeners for the specified property.
      * This listener is called as many times as it was added.
      *
-     * @param name      the name of the property to listen on
-     * @param listener  the listener to process events
+     * @param name
+     *         the name of the property to listen on
+     * @param listener
+     *         the listener to process events
      */
     public final synchronized void add(String name, L listener) {
         if (this.map == null) {
             this.map = new HashMap<>();
         }
         L[] array = this.map.get(name);
-        int size = (array != null)
-                ? array.length
-                : 0;
+        int size = (array != null) ? array.length : 0;
 
         L[] clone = newArray(size + 1);
         clone[size] = listener;
@@ -96,8 +99,10 @@ abstract class ChangeListenerMap<L extends EventListener> {
      * If the listener was added more than once to the same event source,
      * this listener will be notified one less time after being removed.
      *
-     * @param name      the name of the property to listen on
-     * @param listener  the listener to process events
+     * @param name
+     *         the name of the property to listen on
+     * @param listener
+     *         the listener to process events
      */
     public final synchronized void remove(String name, L listener) {
         if (this.map != null) {
@@ -111,8 +116,7 @@ abstract class ChangeListenerMap<L extends EventListener> {
                             System.arraycopy(array, 0, clone, 0, i);
                             System.arraycopy(array, i + 1, clone, i, size - i);
                             this.map.put(name, clone);
-                        }
-                        else {
+                        } else {
                             this.map.remove(name);
                             if (this.map.isEmpty()) {
                                 this.map = null;
@@ -128,20 +132,22 @@ abstract class ChangeListenerMap<L extends EventListener> {
     /**
      * Returns the list of listeners for the specified property.
      *
-     * @param name  the name of the property
-     * @return      the corresponding list of listeners
+     * @param name
+     *         the name of the property
+     *
+     * @return the corresponding list of listeners
      */
     public final synchronized L[] get(String name) {
-        return (this.map != null)
-                ? this.map.get(name)
-                : null;
+        return (this.map != null) ? this.map.get(name) : null;
     }
 
     /**
      * Sets new list of listeners for the specified property.
      *
-     * @param name       the name of the property
-     * @param listeners  new list of listeners
+     * @param name
+     *         the name of the property
+     * @param listeners
+     *         new list of listeners
      */
     public final void set(String name, L[] listeners) {
         if (listeners != null) {
@@ -149,8 +155,7 @@ abstract class ChangeListenerMap<L extends EventListener> {
                 this.map = new HashMap<>();
             }
             this.map.put(name, listeners);
-        }
-        else if (this.map != null) {
+        } else if (this.map != null) {
             this.map.remove(name);
             if (this.map.isEmpty()) {
                 this.map = null;
@@ -189,7 +194,9 @@ abstract class ChangeListenerMap<L extends EventListener> {
     /**
      * Returns listeners that have been associated with the named property.
      *
-     * @param name  the name of the property
+     * @param name
+     *         the name of the property
+     *
      * @return an array of listeners for the named property
      */
     public final L[] getListeners(String name) {
@@ -206,9 +213,11 @@ abstract class ChangeListenerMap<L extends EventListener> {
      * Indicates whether the map contains
      * at least one listener to be notified.
      *
-     * @param name  the name of the property
-     * @return      {@code true} if at least one listener exists or
-     *              {@code false} otherwise
+     * @param name
+     *         the name of the property
+     *
+     * @return {@code true} if at least one listener exists or
+     * {@code false} otherwise
      */
     public final synchronized boolean hasListeners(String name) {
         if (this.map == null) {
@@ -226,9 +235,7 @@ abstract class ChangeListenerMap<L extends EventListener> {
      * @return a set of entries from the map
      */
     public final Set<Entry<String, L[]>> getEntries() {
-        return (this.map != null)
-                ? this.map.entrySet()
-                : Collections.<Entry<String, L[]>>emptySet();
+        return (this.map != null) ? this.map.entrySet() : Collections.<Entry<String, L[]>>emptySet();
     }
 
     /**

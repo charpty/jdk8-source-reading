@@ -29,8 +29,8 @@ package java.io;
  * Thrown when control information that was read from an object stream
  * violates internal consistency checks.
  *
- * @author  unascribed
- * @since   JDK1.1
+ * @author unascribed
+ * @since JDK1.1
  */
 public class StreamCorruptedException extends ObjectStreamException {
 
@@ -39,7 +39,8 @@ public class StreamCorruptedException extends ObjectStreamException {
     /**
      * Create a StreamCorruptedException and list a reason why thrown.
      *
-     * @param reason  String describing the reason for the exception.
+     * @param reason
+     *         String describing the reason for the exception.
      */
     public StreamCorruptedException(String reason) {
         super(reason);

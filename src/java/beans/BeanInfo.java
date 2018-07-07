@@ -25,7 +25,7 @@
 
 package java.beans;
 
-import java.awt.Image;
+import java.awt.*;
 
 /**
  * Use the {@code BeanInfo} interface
@@ -56,9 +56,9 @@ public interface BeanInfo {
      * that provides overall information about the bean,
      * such as its display name or its customizer.
      *
-     * @return  a {@link BeanDescriptor} object,
-     *          or {@code null} if the information is to
-     *          be obtained through the automatic analysis
+     * @return a {@link BeanDescriptor} object,
+     * or {@code null} if the information is to
+     * be obtained through the automatic analysis
      */
     BeanDescriptor getBeanDescriptor();
 
@@ -66,18 +66,18 @@ public interface BeanInfo {
      * Returns the event descriptors of the bean
      * that define the types of events fired by this bean.
      *
-     * @return  an array of {@link EventSetDescriptor} objects,
-     *          or {@code null} if the information is to
-     *          be obtained through the automatic analysis
+     * @return an array of {@link EventSetDescriptor} objects,
+     * or {@code null} if the information is to
+     * be obtained through the automatic analysis
      */
     EventSetDescriptor[] getEventSetDescriptors();
 
     /**
      * A bean may have a default event typically applied when this bean is used.
      *
-     * @return  index of the default event in the {@code EventSetDescriptor} array
-     *          returned by the {@code getEventSetDescriptors} method,
-     *          or -1 if there is no default event
+     * @return index of the default event in the {@code EventSetDescriptor} array
+     * returned by the {@code getEventSetDescriptors} method,
+     * or -1 if there is no default event
      */
     int getDefaultEventIndex();
 
@@ -92,18 +92,18 @@ public interface BeanInfo {
      * whether a given {@code PropertyDescriptor}
      * is an {@code IndexedPropertyDescriptor}.
      *
-     * @return  an array of {@code PropertyDescriptor} objects,
-     *          or {@code null} if the information is to
-     *          be obtained through the automatic analysis
+     * @return an array of {@code PropertyDescriptor} objects,
+     * or {@code null} if the information is to
+     * be obtained through the automatic analysis
      */
     PropertyDescriptor[] getPropertyDescriptors();
 
     /**
      * A bean may have a default property commonly updated when this bean is customized.
      *
-     * @return  index of the default property in the {@code PropertyDescriptor} array
-     *          returned by the {@code getPropertyDescriptors} method,
-     *          or -1 if there is no default property
+     * @return index of the default property in the {@code PropertyDescriptor} array
+     * returned by the {@code getPropertyDescriptors} method,
+     * or -1 if there is no default property
      */
     int getDefaultPropertyIndex();
 
@@ -111,9 +111,9 @@ public interface BeanInfo {
      * Returns the method descriptors of the bean
      * that define the externally visible methods supported by this bean.
      *
-     * @return  an array of {@link MethodDescriptor} objects,
-     *          or {@code null} if the information is to
-     *          be obtained through the automatic analysis
+     * @return an array of {@link MethodDescriptor} objects,
+     * or {@code null} if the information is to
+     * be obtained through the automatic analysis
      */
     MethodDescriptor[] getMethodDescriptors();
 
@@ -129,8 +129,8 @@ public interface BeanInfo {
      * Array elements with higher indices take priority
      * over the elements with lower indices.
      *
-     * @return  an array of {@code BeanInfo} objects,
-     *          or {@code null} if there are no additional {@code BeanInfo} objects
+     * @return an array of {@code BeanInfo} objects,
+     * or {@code null} if there are no additional {@code BeanInfo} objects
      */
     BeanInfo[] getAdditionalBeanInfo();
 
@@ -143,9 +143,11 @@ public interface BeanInfo {
      * it is recommended to use 16 x 16 color.
      * Another recommendation is to set a transparent background for the icons.
      *
-     * @param  iconKind  the kind of icon requested
-     * @return           an image object representing the requested icon,
-     *                   or {@code null} if no suitable icon is available
+     * @param iconKind
+     *         the kind of icon requested
+     *
+     * @return an image object representing the requested icon,
+     * or {@code null} if no suitable icon is available
      *
      * @see #ICON_COLOR_16x16
      * @see #ICON_COLOR_32x32

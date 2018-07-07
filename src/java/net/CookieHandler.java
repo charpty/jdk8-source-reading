@@ -25,9 +25,9 @@
 
 package java.net;
 
-import java.util.Map;
-import java.util.List;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import sun.security.util.SecurityConstants;
 
 /**
@@ -63,10 +63,11 @@ public abstract class CookieHandler {
      * Gets the system-wide cookie handler.
      *
      * @return the system-wide cookie handler; A null return means
-     *        there is no system-wide cookie handler currently set.
+     * there is no system-wide cookie handler currently set.
+     *
      * @throws SecurityException
-     *       If a security manager has been installed and it denies
-     * {@link NetPermission}{@code ("getCookieHandler")}
+     *         If a security manager has been installed and it denies
+     *         {@link NetPermission}{@code ("getCookieHandler")}
      * @see #setDefault(CookieHandler)
      */
     public synchronized static CookieHandler getDefault() {
@@ -82,11 +83,13 @@ public abstract class CookieHandler {
      *
      * Note: non-standard http protocol handlers may ignore this setting.
      *
-     * @param cHandler The HTTP cookie handler, or
-     *       {@code null} to unset.
+     * @param cHandler
+     *         The HTTP cookie handler, or
+     *         {@code null} to unset.
+     *
      * @throws SecurityException
-     *       If a security manager has been installed and it denies
-     * {@link NetPermission}{@code ("setCookieHandler")}
+     *         If a security manager has been installed and it denies
+     *         {@link NetPermission}{@code ("setCookieHandler")}
      * @see #getDefault()
      */
     public synchronized static void setDefault(CookieHandler cHandler) {
@@ -114,37 +117,43 @@ public abstract class CookieHandler {
      * called after all request headers related to choosing cookies
      * are added, and before the request is sent.</P>
      *
-     * @param uri a {@code URI} representing the intended use for the
-     *            cookies
-     * @param requestHeaders - a Map from request header
-     *            field names to lists of field values representing
-     *            the current request headers
-     * @return an immutable map from state management headers, with
-     *            field names "Cookie" or "Cookie2" to a list of
-     *            cookies containing state information
+     * @param uri
+     *         a {@code URI} representing the intended use for the
+     *         cookies
+     * @param requestHeaders
+     *         - a Map from request header
+     *         field names to lists of field values representing
+     *         the current request headers
      *
-     * @throws IOException if an I/O error occurs
-     * @throws IllegalArgumentException if either argument is null
+     * @return an immutable map from state management headers, with
+     * field names "Cookie" or "Cookie2" to a list of
+     * cookies containing state information
+     *
+     * @throws IOException
+     *         if an I/O error occurs
+     * @throws IllegalArgumentException
+     *         if either argument is null
      * @see #put(URI, Map)
      */
-    public abstract Map<String, List<String>>
-        get(URI uri, Map<String, List<String>> requestHeaders)
-        throws IOException;
+    public abstract Map<String, List<String>> get(URI uri, Map<String, List<String>> requestHeaders) throws IOException;
 
     /**
      * Sets all the applicable cookies, examples are response header
      * fields that are named Set-Cookie2, present in the response
      * headers into a cookie cache.
      *
-     * @param uri a {@code URI} where the cookies come from
-     * @param responseHeaders an immutable map from field names to
-     *            lists of field values representing the response
-     *            header fields returned
-     * @throws  IOException if an I/O error occurs
-     * @throws  IllegalArgumentException if either argument is null
+     * @param uri
+     *         a {@code URI} where the cookies come from
+     * @param responseHeaders
+     *         an immutable map from field names to
+     *         lists of field values representing the response
+     *         header fields returned
+     *
+     * @throws IOException
+     *         if an I/O error occurs
+     * @throws IllegalArgumentException
+     *         if either argument is null
      * @see #get(URI, Map)
      */
-    public abstract void
-        put(URI uri, Map<String, List<String>> responseHeaders)
-        throws IOException;
+    public abstract void put(URI uri, Map<String, List<String>> responseHeaders) throws IOException;
 }

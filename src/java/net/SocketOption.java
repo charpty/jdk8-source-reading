@@ -30,15 +30,15 @@ package java.net;
  *
  * <p> In the {@link java.nio.channels channels} package, the {@link
  * java.nio.channels.NetworkChannel} interface defines the {@link
- * java.nio.channels.NetworkChannel#setOption(SocketOption,Object) setOption}
+ * java.nio.channels.NetworkChannel#setOption(SocketOption, Object) setOption}
  * and {@link java.nio.channels.NetworkChannel#getOption(SocketOption) getOption}
  * methods to set and query the channel's socket options.
  *
- * @param   <T>     The type of the socket option value.
- *
- * @since 1.7
+ * @param <T>
+ *         The type of the socket option value.
  *
  * @see StandardSocketOptions
+ * @since 1.7
  */
 
 public interface SocketOption<T> {

@@ -28,7 +28,6 @@ package java.rmi.activation;
 import java.rmi.MarshalledObject;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.rmi.activation.UnknownObjectException;
 
 /**
  * The <code>Activator</code> facilitates remote object activation. A
@@ -55,11 +54,11 @@ import java.rmi.activation.UnknownObjectException;
  * activation groups fail so that it can remove stale remote references
  * to groups and active object's within those groups.<p>
  *
- * @author      Ann Wollrath
- * @see         ActivationInstantiator
- * @see         ActivationGroupDesc
- * @see         ActivationGroupID
- * @since       1.2
+ * @author Ann Wollrath
+ * @see ActivationInstantiator
+ * @see ActivationGroupDesc
+ * @see ActivationGroupID
+ * @since 1.2
  */
 public interface Activator extends Remote {
     /**
@@ -97,18 +96,23 @@ public interface Activator extends Remote {
      * prevent the object from being garbage collected under the
      * normal distributed garbage collection mechanism. <p>
      *
-     * @param id the activation identifier for the object being activated
-     * @param force if true, the activator contacts the group to obtain
-     * the remote object's reference; if false, returning the cached value
-     * is allowed.
+     * @param id
+     *         the activation identifier for the object being activated
+     * @param force
+     *         if true, the activator contacts the group to obtain
+     *         the remote object's reference; if false, returning the cached value
+     *         is allowed.
+     *
      * @return the remote object (a stub) in a marshalled form
-     * @exception ActivationException if object activation fails
-     * @exception UnknownObjectException if object is unknown (not registered)
-     * @exception RemoteException if remote call fails
+     *
+     * @throws ActivationException
+     *         if object activation fails
+     * @throws UnknownObjectException
+     *         if object is unknown (not registered)
+     * @throws RemoteException
+     *         if remote call fails
      * @since 1.2
      */
-    public MarshalledObject<? extends Remote> activate(ActivationID id,
-                                                       boolean force)
-        throws ActivationException, UnknownObjectException, RemoteException;
+    public MarshalledObject<? extends Remote> activate(ActivationID id, boolean force) throws ActivationException, UnknownObjectException, RemoteException;
 
 }

@@ -56,14 +56,6 @@
  */
 package java.time.chrono;
 
-import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
-import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
-import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_MONTH;
-import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
-import static java.time.temporal.ChronoField.DAY_OF_MONTH;
-import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
-import static java.time.temporal.ChronoField.YEAR;
-
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInput;
@@ -84,6 +76,9 @@ import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
+
+
+import static java.time.temporal.ChronoField.*;
 
 /**
  * A date in the Hijrah calendar system.
@@ -111,14 +106,9 @@ import java.time.temporal.ValueRange;
  * {@code HijrahDate} may have unpredictable results and should be avoided.
  * The {@code equals} method should be used for comparisons.
  *
- * @implSpec
- * This class is immutable and thread-safe.
- *
  * @since 1.8
  */
-public final class HijrahDate
-        extends ChronoLocalDateImpl<HijrahDate>
-        implements ChronoLocalDate, Serializable {
+public final class HijrahDate extends ChronoLocalDateImpl<HijrahDate> implements ChronoLocalDate, Serializable {
 
     /**
      * Serialization version.
@@ -142,15 +132,22 @@ public final class HijrahDate
     private final transient int dayOfMonth;
 
     //-------------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code HijrahDate} from the Hijrah proleptic year,
      * month-of-year and day-of-month.
      *
-     * @param prolepticYear  the proleptic year to represent in the Hijrah calendar
-     * @param monthOfYear  the month-of-year to represent, from 1 to 12
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 30
+     * @param prolepticYear
+     *         the proleptic year to represent in the Hijrah calendar
+     * @param monthOfYear
+     *         the month-of-year to represent, from 1 to 12
+     * @param dayOfMonth
+     *         the day-of-month to represent, from 1 to 30
+     *
      * @return the Hijrah date, never null
-     * @throws DateTimeException if the value of any field is out of range
+     *
+     * @throws DateTimeException
+     *         if the value of any field is out of range
      */
     static HijrahDate of(HijrahChronology chrono, int prolepticYear, int monthOfYear, int dayOfMonth) {
         return new HijrahDate(chrono, prolepticYear, monthOfYear, dayOfMonth);
@@ -158,8 +155,12 @@ public final class HijrahDate
 
     /**
      * Returns a HijrahDate for the chronology and epochDay.
-     * @param chrono The Hijrah chronology
-     * @param epochDay the epoch day
+     *
+     * @param chrono
+     *         The Hijrah chronology
+     * @param epochDay
+     *         the epoch day
+     *
      * @return a HijrahDate for the epoch day; non-null
      */
     static HijrahDate ofEpochDay(HijrahChronology chrono, long epochDay) {
@@ -167,6 +168,7 @@ public final class HijrahDate
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains the current {@code HijrahDate} of the Islamic Umm Al-Qura calendar
      * in the default time-zone.
@@ -193,7 +195,9 @@ public final class HijrahDate
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
-     * @param zone  the zone ID to use, not null
+     * @param zone
+     *         the zone ID to use, not null
+     *
      * @return the current date using the system clock, not null
      */
     public static HijrahDate now(ZoneId zone) {
@@ -208,9 +212,13 @@ public final class HijrahDate
      * Using this method allows the use of an alternate clock for testing.
      * The alternate clock may be introduced using {@linkplain Clock dependency injection}.
      *
-     * @param clock  the clock to use, not null
+     * @param clock
+     *         the clock to use, not null
+     *
      * @return the current date, not null
-     * @throws DateTimeException if the current date cannot be obtained
+     *
+     * @throws DateTimeException
+     *         if the current date cannot be obtained
      */
     public static HijrahDate now(Clock clock) {
         return HijrahDate.ofEpochDay(HijrahChronology.INSTANCE, LocalDate.now(clock).toEpochDay());
@@ -223,12 +231,18 @@ public final class HijrahDate
      * This returns a {@code HijrahDate} with the specified fields.
      * The day must be valid for the year and month, otherwise an exception will be thrown.
      *
-     * @param prolepticYear  the Hijrah proleptic-year
-     * @param month  the Hijrah month-of-year, from 1 to 12
-     * @param dayOfMonth  the Hijrah day-of-month, from 1 to 30
+     * @param prolepticYear
+     *         the Hijrah proleptic-year
+     * @param month
+     *         the Hijrah month-of-year, from 1 to 12
+     * @param dayOfMonth
+     *         the Hijrah day-of-month, from 1 to 30
+     *
      * @return the date in Hijrah calendar system, not null
-     * @throws DateTimeException if the value of any field is out of range,
-     *  or if the day-of-month is invalid for the month-year
+     *
+     * @throws DateTimeException
+     *         if the value of any field is out of range,
+     *         or if the day-of-month is invalid for the month-year
      */
     public static HijrahDate of(int prolepticYear, int month, int dayOfMonth) {
         return HijrahChronology.INSTANCE.date(prolepticYear, month, dayOfMonth);
@@ -247,23 +261,32 @@ public final class HijrahDate
      * This method matches the signature of the functional interface {@link TemporalQuery}
      * allowing it to be used as a query via method reference, {@code HijrahDate::from}.
      *
-     * @param temporal  the temporal object to convert, not null
+     * @param temporal
+     *         the temporal object to convert, not null
+     *
      * @return the date in Hijrah calendar system, not null
-     * @throws DateTimeException if unable to convert to a {@code HijrahDate}
+     *
+     * @throws DateTimeException
+     *         if unable to convert to a {@code HijrahDate}
      */
     public static HijrahDate from(TemporalAccessor temporal) {
         return HijrahChronology.INSTANCE.date(temporal);
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Constructs an {@code HijrahDate} with the proleptic-year, month-of-year and
      * day-of-month fields.
      *
-     * @param chrono The chronology to create the date with
-     * @param prolepticYear the proleptic year
-     * @param monthOfYear the month of year
-     * @param dayOfMonth the day of month
+     * @param chrono
+     *         The chronology to create the date with
+     * @param prolepticYear
+     *         the proleptic year
+     * @param monthOfYear
+     *         the month of year
+     * @param dayOfMonth
+     *         the day of month
      */
     private HijrahDate(HijrahChronology chrono, int prolepticYear, int monthOfYear, int dayOfMonth) {
         // Computing the Gregorian day checks the valid ranges
@@ -278,10 +301,11 @@ public final class HijrahDate
     /**
      * Constructs an instance with the Epoch Day.
      *
-     * @param epochDay  the epochDay
+     * @param epochDay
+     *         the epochDay
      */
     private HijrahDate(HijrahChronology chrono, long epochDay) {
-        int[] dateInfo = chrono.getHijrahDateInfo((int)epochDay);
+        int[] dateInfo = chrono.getHijrahDateInfo((int) epochDay);
 
         this.chrono = chrono;
         this.prolepticYear = dateInfo[0];
@@ -290,6 +314,7 @@ public final class HijrahDate
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the chronology of this date, which is the Hijrah calendar system.
      * <p>
@@ -350,11 +375,14 @@ public final class HijrahDate
             if (isSupported(field)) {
                 ChronoField f = (ChronoField) field;
                 switch (f) {
-                    case DAY_OF_MONTH: return ValueRange.of(1, lengthOfMonth());
-                    case DAY_OF_YEAR: return ValueRange.of(1, lengthOfYear());
-                    case ALIGNED_WEEK_OF_MONTH: return ValueRange.of(1, 5);  // TODO
-                    // TODO does the limited range of valid years cause years to
-                    // start/end part way through? that would affect range
+                case DAY_OF_MONTH:
+                    return ValueRange.of(1, lengthOfMonth());
+                case DAY_OF_YEAR:
+                    return ValueRange.of(1, lengthOfYear());
+                case ALIGNED_WEEK_OF_MONTH:
+                    return ValueRange.of(1, 5);  // TODO
+                // TODO does the limited range of valid years cause years to
+                // start/end part way through? that would affect range
                 }
                 return getChronology().range(f);
             }
@@ -367,19 +395,32 @@ public final class HijrahDate
     public long getLong(TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
-                case DAY_OF_WEEK: return getDayOfWeek();
-                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return ((getDayOfWeek() - 1) % 7) + 1;
-                case ALIGNED_DAY_OF_WEEK_IN_YEAR: return ((getDayOfYear() - 1) % 7) + 1;
-                case DAY_OF_MONTH: return this.dayOfMonth;
-                case DAY_OF_YEAR: return this.getDayOfYear();
-                case EPOCH_DAY: return toEpochDay();
-                case ALIGNED_WEEK_OF_MONTH: return ((dayOfMonth - 1) / 7) + 1;
-                case ALIGNED_WEEK_OF_YEAR: return ((getDayOfYear() - 1) / 7) + 1;
-                case MONTH_OF_YEAR: return monthOfYear;
-                case PROLEPTIC_MONTH: return getProlepticMonth();
-                case YEAR_OF_ERA: return prolepticYear;
-                case YEAR: return prolepticYear;
-                case ERA: return getEraValue();
+            case DAY_OF_WEEK:
+                return getDayOfWeek();
+            case ALIGNED_DAY_OF_WEEK_IN_MONTH:
+                return ((getDayOfWeek() - 1) % 7) + 1;
+            case ALIGNED_DAY_OF_WEEK_IN_YEAR:
+                return ((getDayOfYear() - 1) % 7) + 1;
+            case DAY_OF_MONTH:
+                return this.dayOfMonth;
+            case DAY_OF_YEAR:
+                return this.getDayOfYear();
+            case EPOCH_DAY:
+                return toEpochDay();
+            case ALIGNED_WEEK_OF_MONTH:
+                return ((dayOfMonth - 1) / 7) + 1;
+            case ALIGNED_WEEK_OF_YEAR:
+                return ((getDayOfYear() - 1) / 7) + 1;
+            case MONTH_OF_YEAR:
+                return monthOfYear;
+            case PROLEPTIC_MONTH:
+                return getProlepticMonth();
+            case YEAR_OF_ERA:
+                return prolepticYear;
+            case YEAR:
+                return prolepticYear;
+            case ERA:
+                return getEraValue();
             }
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
@@ -398,19 +439,32 @@ public final class HijrahDate
             chrono.range(f).checkValidValue(newValue, f);    // TODO: validate value
             int nvalue = (int) newValue;
             switch (f) {
-                case DAY_OF_WEEK: return plusDays(newValue - getDayOfWeek());
-                case ALIGNED_DAY_OF_WEEK_IN_MONTH: return plusDays(newValue - getLong(ALIGNED_DAY_OF_WEEK_IN_MONTH));
-                case ALIGNED_DAY_OF_WEEK_IN_YEAR: return plusDays(newValue - getLong(ALIGNED_DAY_OF_WEEK_IN_YEAR));
-                case DAY_OF_MONTH: return resolvePreviousValid(prolepticYear, monthOfYear, nvalue);
-                case DAY_OF_YEAR: return plusDays(Math.min(nvalue, lengthOfYear()) - getDayOfYear());
-                case EPOCH_DAY: return new HijrahDate(chrono, newValue);
-                case ALIGNED_WEEK_OF_MONTH: return plusDays((newValue - getLong(ALIGNED_WEEK_OF_MONTH)) * 7);
-                case ALIGNED_WEEK_OF_YEAR: return plusDays((newValue - getLong(ALIGNED_WEEK_OF_YEAR)) * 7);
-                case MONTH_OF_YEAR: return resolvePreviousValid(prolepticYear, nvalue, dayOfMonth);
-                case PROLEPTIC_MONTH: return plusMonths(newValue - getProlepticMonth());
-                case YEAR_OF_ERA: return resolvePreviousValid(prolepticYear >= 1 ? nvalue : 1 - nvalue, monthOfYear, dayOfMonth);
-                case YEAR: return resolvePreviousValid(nvalue, monthOfYear, dayOfMonth);
-                case ERA: return resolvePreviousValid(1 - prolepticYear, monthOfYear, dayOfMonth);
+            case DAY_OF_WEEK:
+                return plusDays(newValue - getDayOfWeek());
+            case ALIGNED_DAY_OF_WEEK_IN_MONTH:
+                return plusDays(newValue - getLong(ALIGNED_DAY_OF_WEEK_IN_MONTH));
+            case ALIGNED_DAY_OF_WEEK_IN_YEAR:
+                return plusDays(newValue - getLong(ALIGNED_DAY_OF_WEEK_IN_YEAR));
+            case DAY_OF_MONTH:
+                return resolvePreviousValid(prolepticYear, monthOfYear, nvalue);
+            case DAY_OF_YEAR:
+                return plusDays(Math.min(nvalue, lengthOfYear()) - getDayOfYear());
+            case EPOCH_DAY:
+                return new HijrahDate(chrono, newValue);
+            case ALIGNED_WEEK_OF_MONTH:
+                return plusDays((newValue - getLong(ALIGNED_WEEK_OF_MONTH)) * 7);
+            case ALIGNED_WEEK_OF_YEAR:
+                return plusDays((newValue - getLong(ALIGNED_WEEK_OF_YEAR)) * 7);
+            case MONTH_OF_YEAR:
+                return resolvePreviousValid(prolepticYear, nvalue, dayOfMonth);
+            case PROLEPTIC_MONTH:
+                return plusMonths(newValue - getProlepticMonth());
+            case YEAR_OF_ERA:
+                return resolvePreviousValid(prolepticYear >= 1 ? nvalue : 1 - nvalue, monthOfYear, dayOfMonth);
+            case YEAR:
+                return resolvePreviousValid(nvalue, monthOfYear, dayOfMonth);
+            case ERA:
+                return resolvePreviousValid(1 - prolepticYear, monthOfYear, dayOfMonth);
             }
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
@@ -427,12 +481,15 @@ public final class HijrahDate
 
     /**
      * {@inheritDoc}
-     * @throws DateTimeException if unable to make the adjustment.
-     *     For example, if the adjuster requires an ISO chronology
-     * @throws ArithmeticException {@inheritDoc}
+     *
+     * @throws DateTimeException
+     *         if unable to make the adjustment.
+     *         For example, if the adjuster requires an ISO chronology
+     * @throws ArithmeticException
+     *         {@inheritDoc}
      */
     @Override
-    public  HijrahDate with(TemporalAdjuster adjuster) {
+    public HijrahDate with(TemporalAdjuster adjuster) {
         return super.with(adjuster);
     }
 
@@ -443,7 +500,9 @@ public final class HijrahDate
      * HijrahChronology.  If the chronology has a shorter month length
      * for the month, the day is reduced to be the last day of the month.
      *
-     * @param chronology the new HijrahChonology, non-null
+     * @param chronology
+     *         the new HijrahChonology, non-null
+     *
      * @return a HijrahDate with the requested HijrahChronology, non-null
      */
     public HijrahDate withVariant(HijrahChronology chronology) {
@@ -452,13 +511,16 @@ public final class HijrahDate
         }
         // Like resolvePreviousValid the day is constrained to stay in the same month
         int monthDays = chronology.getDayOfYear(prolepticYear, monthOfYear);
-        return HijrahDate.of(chronology, prolepticYear, monthOfYear,(dayOfMonth > monthDays) ? monthDays : dayOfMonth );
+        return HijrahDate.of(chronology, prolepticYear, monthOfYear, (dayOfMonth > monthDays) ? monthDays : dayOfMonth);
     }
 
     /**
      * {@inheritDoc}
-     * @throws DateTimeException {@inheritDoc}
-     * @throws ArithmeticException {@inheritDoc}
+     *
+     * @throws DateTimeException
+     *         {@inheritDoc}
+     * @throws ArithmeticException
+     *         {@inheritDoc}
      */
     @Override
     public HijrahDate plus(TemporalAmount amount) {
@@ -467,8 +529,11 @@ public final class HijrahDate
 
     /**
      * {@inheritDoc}
-     * @throws DateTimeException {@inheritDoc}
-     * @throws ArithmeticException {@inheritDoc}
+     *
+     * @throws DateTimeException
+     *         {@inheritDoc}
+     * @throws ArithmeticException
+     *         {@inheritDoc}
      */
     @Override
     public HijrahDate minus(TemporalAmount amount) {
@@ -497,7 +562,7 @@ public final class HijrahDate
      * @return the day-of-week; computed from the epochday
      */
     private int getDayOfWeek() {
-        int dow0 = (int)Math.floorMod(toEpochDay() + 3, 7);
+        int dow0 = (int) Math.floorMod(toEpochDay() + 3, 7);
         return dow0 + 1;
     }
 
@@ -511,6 +576,7 @@ public final class HijrahDate
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks if the year is a leap year, according to the Hijrah calendar system rules.
      *
@@ -527,7 +593,7 @@ public final class HijrahDate
         if (years == 0) {
             return this;
         }
-        int newYear = Math.addExact(this.prolepticYear, (int)years);
+        int newYear = Math.addExact(this.prolepticYear, (int) years);
         return resolvePreviousValid(newYear, monthOfYear, dayOfMonth);
     }
 
@@ -539,7 +605,7 @@ public final class HijrahDate
         long monthCount = prolepticYear * 12L + (monthOfYear - 1);
         long calcMonths = monthCount + monthsToAdd;  // safe overflow
         int newYear = chrono.checkValidYear(Math.floorDiv(calcMonths, 12L));
-        int newMonth = (int)Math.floorMod(calcMonths, 12L) + 1;
+        int newMonth = (int) Math.floorMod(calcMonths, 12L) + 1;
         return resolvePreviousValid(newYear, newMonth, dayOfMonth);
     }
 
@@ -586,7 +652,7 @@ public final class HijrahDate
     @Override        // for javadoc and covariant return type
     @SuppressWarnings("unchecked")
     public final ChronoLocalDateTime<HijrahDate> atTime(LocalTime localTime) {
-        return (ChronoLocalDateTime<HijrahDate>)super.atTime(localTime);
+        return (ChronoLocalDateTime<HijrahDate>) super.atTime(localTime);
     }
 
     @Override
@@ -609,6 +675,7 @@ public final class HijrahDate
     }
 
     //-------------------------------------------------------------------------
+
     /**
      * Compares this date to another date, including the chronology.
      * <p>
@@ -618,7 +685,9 @@ public final class HijrahDate
      * To compare the dates of two {@code TemporalAccessor} instances, including dates
      * in two different chronologies, use {@link ChronoField#EPOCH_DAY} as a comparator.
      *
-     * @param obj  the object to check, null returns false
+     * @param obj
+     *         the object to check, null returns false
+     *
      * @return true if this is equal to the other date and the Chronologies are equal
      */
     @Override  // override for performance
@@ -628,10 +697,8 @@ public final class HijrahDate
         }
         if (obj instanceof HijrahDate) {
             HijrahDate otherDate = (HijrahDate) obj;
-            return prolepticYear == otherDate.prolepticYear
-                && this.monthOfYear == otherDate.monthOfYear
-                && this.dayOfMonth == otherDate.dayOfMonth
-                && getChronology().equals(otherDate.getChronology());
+            return prolepticYear == otherDate.prolepticYear && this.monthOfYear == otherDate.monthOfYear && this.dayOfMonth == otherDate.dayOfMonth
+                    && getChronology().equals(otherDate.getChronology());
         }
         return false;
     }
@@ -646,16 +713,19 @@ public final class HijrahDate
         int yearValue = prolepticYear;
         int monthValue = monthOfYear;
         int dayValue = dayOfMonth;
-        return getChronology().getId().hashCode() ^ (yearValue & 0xFFFFF800)
-                ^ ((yearValue << 11) + (monthValue << 6) + (dayValue));
+        return getChronology().getId().hashCode() ^ (yearValue & 0xFFFFF800) ^ ((yearValue << 11) + (monthValue << 6) + (dayValue));
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Defend against malicious streams.
      *
-     * @param s the stream to read
-     * @throws InvalidObjectException always
+     * @param s
+     *         the stream to read
+     *
+     * @throws InvalidObjectException
+     *         always
      */
     private void readObject(ObjectInputStream s) throws InvalidObjectException {
         throw new InvalidObjectException("Deserialization via serialization delegate");
@@ -664,14 +734,6 @@ public final class HijrahDate
     /**
      * Writes the object using a
      * <a href="../../../serialized-form.html#java.time.chrono.Ser">dedicated serialized form</a>.
-     * @serialData
-     * <pre>
-     *  out.writeByte(6);                 // identifies a HijrahDate
-     *  out.writeObject(chrono);          // the HijrahChronology variant
-     *  out.writeInt(get(YEAR));
-     *  out.writeByte(get(MONTH_OF_YEAR));
-     *  out.writeByte(get(DAY_OF_MONTH));
-     * </pre>
      *
      * @return the instance of {@code Ser}, not null
      */

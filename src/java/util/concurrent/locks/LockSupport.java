@@ -34,7 +34,6 @@
  */
 
 package java.util.concurrent.locks;
-import sun.misc.Unsafe;
 
 /**
  * Basic thread blocking primitives for creating locks and other
@@ -77,7 +76,7 @@ import sun.misc.Unsafe;
  * useful for most concurrency control applications.  The {@code park}
  * method is designed for use only in constructions of the form:
  *
- *  <pre> {@code
+ * <pre> {@code
  * while (!canProceed()) { ... LockSupport.park(this); }}</pre>
  *
  * where neither {@code canProceed} nor any other actions prior to the
@@ -87,7 +86,7 @@ import sun.misc.Unsafe;
  *
  * <p><b>Sample Usage.</b> Here is a sketch of a first-in-first-out
  * non-reentrant lock class:
- *  <pre> {@code
+ * <pre> {@code
  * class FIFOMutex {
  *   private final AtomicBoolean locked = new AtomicBoolean(false);
  *   private final Queue<Thread> waiters
@@ -118,7 +117,8 @@ import sun.misc.Unsafe;
  * }}</pre>
  */
 public class LockSupport {
-    private LockSupport() {} // Cannot be instantiated.
+    private LockSupport() {
+    } // Cannot be instantiated.
 
     private static void setBlocker(Thread t, Object arg) {
         // Even though volatile, hotspot doesn't need a write barrier here.
@@ -133,12 +133,14 @@ public class LockSupport {
      * is not guaranteed to have any effect at all if the given
      * thread has not been started.
      *
-     * @param thread the thread to unpark, or {@code null}, in which case
-     *        this operation has no effect
+     * @param thread
+     *         the thread to unpark, or {@code null}, in which case
+     *         this operation has no effect
      */
     public static void unpark(Thread thread) {
-        if (thread != null)
+        if (thread != null) {
             UNSAFE.unpark(thread);
+        }
     }
 
     /**
@@ -165,8 +167,10 @@ public class LockSupport {
      * the thread to park in the first place. Callers may also determine,
      * for example, the interrupt status of the thread upon return.
      *
-     * @param blocker the synchronization object responsible for this
-     *        thread parking
+     * @param blocker
+     *         the synchronization object responsible for this
+     *         thread parking
+     *
      * @since 1.6
      */
     public static void park(Object blocker) {
@@ -203,9 +207,12 @@ public class LockSupport {
      * for example, the interrupt status of the thread, or the elapsed time
      * upon return.
      *
-     * @param blocker the synchronization object responsible for this
-     *        thread parking
-     * @param nanos the maximum number of nanoseconds to wait
+     * @param blocker
+     *         the synchronization object responsible for this
+     *         thread parking
+     * @param nanos
+     *         the maximum number of nanoseconds to wait
+     *
      * @since 1.6
      */
     public static void parkNanos(Object blocker, long nanos) {
@@ -244,10 +251,13 @@ public class LockSupport {
      * for example, the interrupt status of the thread, or the current time
      * upon return.
      *
-     * @param blocker the synchronization object responsible for this
-     *        thread parking
-     * @param deadline the absolute time, in milliseconds from the Epoch,
-     *        to wait until
+     * @param blocker
+     *         the synchronization object responsible for this
+     *         thread parking
+     * @param deadline
+     *         the absolute time, in milliseconds from the Epoch,
+     *         to wait until
+     *
      * @since 1.6
      */
     public static void parkUntil(Object blocker, long deadline) {
@@ -264,14 +274,19 @@ public class LockSupport {
      * snapshot -- the thread may have since unblocked or blocked on a
      * different blocker object.
      *
-     * @param t the thread
+     * @param t
+     *         the thread
+     *
      * @return the blocker
-     * @throws NullPointerException if argument is null
+     *
+     * @throws NullPointerException
+     *         if argument is null
      * @since 1.6
      */
     public static Object getBlocker(Thread t) {
-        if (t == null)
+        if (t == null) {
             throw new NullPointerException();
+        }
         return UNSAFE.getObjectVolatile(t, parkBlockerOffset);
     }
 
@@ -331,11 +346,13 @@ public class LockSupport {
      * for example, the interrupt status of the thread, or the elapsed time
      * upon return.
      *
-     * @param nanos the maximum number of nanoseconds to wait
+     * @param nanos
+     *         the maximum number of nanoseconds to wait
      */
     public static void parkNanos(long nanos) {
-        if (nanos > 0)
+        if (nanos > 0) {
             UNSAFE.park(false, nanos);
+        }
     }
 
     /**
@@ -365,8 +382,9 @@ public class LockSupport {
      * for example, the interrupt status of the thread, or the current time
      * upon return.
      *
-     * @param deadline the absolute time, in milliseconds from the Epoch,
-     *        to wait until
+     * @param deadline
+     *         the absolute time, in milliseconds from the Epoch,
+     *         to wait until
      */
     public static void parkUntil(long deadline) {
         UNSAFE.park(true, deadline);
@@ -383,9 +401,9 @@ public class LockSupport {
             r ^= r << 13;   // xorshift
             r ^= r >>> 17;
             r ^= r << 5;
-        }
-        else if ((r = java.util.concurrent.ThreadLocalRandom.current().nextInt()) == 0)
+        } else if ((r = java.util.concurrent.ThreadLocalRandom.current().nextInt()) == 0) {
             r = 1; // avoid zero
+        }
         UNSAFE.putInt(t, SECONDARY, r);
         return r;
     }
@@ -396,19 +414,18 @@ public class LockSupport {
     private static final long SEED;
     private static final long PROBE;
     private static final long SECONDARY;
+
     static {
         try {
             UNSAFE = sun.misc.Unsafe.getUnsafe();
             Class<?> tk = Thread.class;
-            parkBlockerOffset = UNSAFE.objectFieldOffset
-                (tk.getDeclaredField("parkBlocker"));
-            SEED = UNSAFE.objectFieldOffset
-                (tk.getDeclaredField("threadLocalRandomSeed"));
-            PROBE = UNSAFE.objectFieldOffset
-                (tk.getDeclaredField("threadLocalRandomProbe"));
-            SECONDARY = UNSAFE.objectFieldOffset
-                (tk.getDeclaredField("threadLocalRandomSecondarySeed"));
-        } catch (Exception ex) { throw new Error(ex); }
+            parkBlockerOffset = UNSAFE.objectFieldOffset(tk.getDeclaredField("parkBlocker"));
+            SEED = UNSAFE.objectFieldOffset(tk.getDeclaredField("threadLocalRandomSeed"));
+            PROBE = UNSAFE.objectFieldOffset(tk.getDeclaredField("threadLocalRandomProbe"));
+            SECONDARY = UNSAFE.objectFieldOffset(tk.getDeclaredField("threadLocalRandomSecondarySeed"));
+        } catch (Exception ex) {
+            throw new Error(ex);
+        }
     }
 
 }

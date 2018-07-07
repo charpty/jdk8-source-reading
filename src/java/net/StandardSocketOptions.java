@@ -39,7 +39,8 @@ package java.net;
  */
 
 public final class StandardSocketOptions {
-    private StandardSocketOptions() { }
+    private StandardSocketOptions() {
+    }
 
     // -- SOL_SOCKET --
 
@@ -61,8 +62,7 @@ public final class StandardSocketOptions {
      * Broadcasting Internet Datagrams</a>
      * @see DatagramSocket#setBroadcast
      */
-    public static final SocketOption<Boolean> SO_BROADCAST =
-        new StdSocketOption<Boolean>("SO_BROADCAST", Boolean.class);
+    public static final SocketOption<Boolean> SO_BROADCAST = new StdSocketOption<Boolean>("SO_BROADCAST", Boolean.class);
 
     /**
      * Keep connection alive.
@@ -81,8 +81,7 @@ public final class StandardSocketOptions {
      * Requirements for Internet Hosts -- Communication Layers</a>
      * @see Socket#setKeepAlive
      */
-    public static final SocketOption<Boolean> SO_KEEPALIVE =
-        new StdSocketOption<Boolean>("SO_KEEPALIVE", Boolean.class);
+    public static final SocketOption<Boolean> SO_KEEPALIVE = new StdSocketOption<Boolean>("SO_KEEPALIVE", Boolean.class);
 
     /**
      * The size of the socket send buffer.
@@ -112,9 +111,7 @@ public final class StandardSocketOptions {
      *
      * @see Socket#setSendBufferSize
      */
-    public static final SocketOption<Integer> SO_SNDBUF =
-        new StdSocketOption<Integer>("SO_SNDBUF", Integer.class);
-
+    public static final SocketOption<Integer> SO_SNDBUF = new StdSocketOption<Integer>("SO_SNDBUF", Integer.class);
 
     /**
      * The size of the socket receive buffer.
@@ -152,8 +149,7 @@ public final class StandardSocketOptions {
      * @see Socket#setReceiveBufferSize
      * @see ServerSocket#setReceiveBufferSize
      */
-    public static final SocketOption<Integer> SO_RCVBUF =
-        new StdSocketOption<Integer>("SO_RCVBUF", Integer.class);
+    public static final SocketOption<Integer> SO_RCVBUF = new StdSocketOption<Integer>("SO_RCVBUF", Integer.class);
 
     /**
      * Re-use address.
@@ -183,8 +179,7 @@ public final class StandardSocketOptions {
      * Control Protocol</a>
      * @see ServerSocket#setReuseAddress
      */
-    public static final SocketOption<Boolean> SO_REUSEADDR =
-        new StdSocketOption<Boolean>("SO_REUSEADDR", Boolean.class);
+    public static final SocketOption<Boolean> SO_REUSEADDR = new StdSocketOption<Boolean>("SO_REUSEADDR", Boolean.class);
 
     /**
      * Linger on close if data is present.
@@ -215,9 +210,7 @@ public final class StandardSocketOptions {
      *
      * @see Socket#setSoLinger
      */
-    public static final SocketOption<Integer> SO_LINGER =
-        new StdSocketOption<Integer>("SO_LINGER", Integer.class);
-
+    public static final SocketOption<Integer> SO_LINGER = new StdSocketOption<Integer>("SO_LINGER", Integer.class);
 
     // -- IPPROTO_IP --
 
@@ -247,8 +240,7 @@ public final class StandardSocketOptions {
      *
      * @see DatagramSocket#setTrafficClass
      */
-    public static final SocketOption<Integer> IP_TOS =
-        new StdSocketOption<Integer>("IP_TOS", Integer.class);
+    public static final SocketOption<Integer> IP_TOS = new StdSocketOption<Integer>("IP_TOS", Integer.class);
 
     /**
      * The network interface for Internet Protocol (IP) multicast datagrams.
@@ -270,8 +262,7 @@ public final class StandardSocketOptions {
      * @see java.nio.channels.MulticastChannel
      * @see MulticastSocket#setInterface
      */
-    public static final SocketOption<NetworkInterface> IP_MULTICAST_IF =
-        new StdSocketOption<NetworkInterface>("IP_MULTICAST_IF", NetworkInterface.class);
+    public static final SocketOption<NetworkInterface> IP_MULTICAST_IF = new StdSocketOption<NetworkInterface>("IP_MULTICAST_IF", NetworkInterface.class);
 
     /**
      * The <em>time-to-live</em> for Internet Protocol (IP) multicast datagrams.
@@ -297,8 +288,7 @@ public final class StandardSocketOptions {
      * @see java.nio.channels.MulticastChannel
      * @see MulticastSocket#setTimeToLive
      */
-    public static final SocketOption<Integer> IP_MULTICAST_TTL =
-        new StdSocketOption<Integer>("IP_MULTICAST_TTL", Integer.class);
+    public static final SocketOption<Integer> IP_MULTICAST_TTL = new StdSocketOption<Integer>("IP_MULTICAST_TTL", Integer.class);
 
     /**
      * Loopback for Internet Protocol (IP) multicast datagrams.
@@ -320,11 +310,9 @@ public final class StandardSocketOptions {
      * binding the socket is system dependent.
      *
      * @see java.nio.channels.MulticastChannel
-     *  @see MulticastSocket#setLoopbackMode
+     * @see MulticastSocket#setLoopbackMode
      */
-    public static final SocketOption<Boolean> IP_MULTICAST_LOOP =
-        new StdSocketOption<Boolean>("IP_MULTICAST_LOOP", Boolean.class);
-
+    public static final SocketOption<Boolean> IP_MULTICAST_LOOP = new StdSocketOption<Boolean>("IP_MULTICAST_LOOP", Boolean.class);
 
     // -- IPPROTO_TCP --
 
@@ -349,19 +337,30 @@ public final class StandardSocketOptions {
      * Requirements for Internet Hosts -- Communication Layers</a>
      * @see Socket#setTcpNoDelay
      */
-    public static final SocketOption<Boolean> TCP_NODELAY =
-        new StdSocketOption<Boolean>("TCP_NODELAY", Boolean.class);
-
+    public static final SocketOption<Boolean> TCP_NODELAY = new StdSocketOption<Boolean>("TCP_NODELAY", Boolean.class);
 
     private static class StdSocketOption<T> implements SocketOption<T> {
         private final String name;
         private final Class<T> type;
+
         StdSocketOption(String name, Class<T> type) {
             this.name = name;
             this.type = type;
         }
-        @Override public String name() { return name; }
-        @Override public Class<T> type() { return type; }
-        @Override public String toString() { return name; }
+
+        @Override
+        public String name() {
+            return name;
+        }
+
+        @Override
+        public Class<T> type() {
+            return type;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 }

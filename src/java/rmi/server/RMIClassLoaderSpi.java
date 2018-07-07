@@ -38,10 +38,10 @@ import java.net.URL;
  *
  * <ul>
  *
- * <li>{@link RMIClassLoader#loadClass(URL,String)}
- * <li>{@link RMIClassLoader#loadClass(String,String)}
- * <li>{@link RMIClassLoader#loadClass(String,String,ClassLoader)}
- * <li>{@link RMIClassLoader#loadProxyClass(String,String[],ClassLoader)}
+ * <li>{@link RMIClassLoader#loadClass(URL, String)}
+ * <li>{@link RMIClassLoader#loadClass(String, String)}
+ * <li>{@link RMIClassLoader#loadClass(String, String, ClassLoader)}
+ * <li>{@link RMIClassLoader#loadProxyClass(String, String[], ClassLoader)}
  * <li>{@link RMIClassLoader#getClassLoader(String)}
  * <li>{@link RMIClassLoader#getClassAnnotation(Class)}
  *
@@ -54,18 +54,18 @@ import java.net.URL;
  * See the documentation for {@link RMIClassLoader} for a description
  * of how a provider instance is chosen.
  *
- * @author      Peter Jones
- * @author      Laird Dornin
- * @see         RMIClassLoader
- * @since       1.4
+ * @author Peter Jones
+ * @author Laird Dornin
+ * @see RMIClassLoader
+ * @since 1.4
  */
 public abstract class RMIClassLoaderSpi {
 
     /**
      * Provides the implementation for
-     * {@link RMIClassLoader#loadClass(URL,String)},
-     * {@link RMIClassLoader#loadClass(String,String)}, and
-     * {@link RMIClassLoader#loadClass(String,String,ClassLoader)}.
+     * {@link RMIClassLoader#loadClass(URL, String)},
+     * {@link RMIClassLoader#loadClass(String, String)}, and
+     * {@link RMIClassLoader#loadClass(String, String, ClassLoader)}.
      *
      * Loads a class from a codebase URL path, optionally using the
      * supplied loader.
@@ -78,31 +78,31 @@ public abstract class RMIClassLoaderSpi {
      * <p>An implementation of this method must either return a class
      * with the given name or throw an exception.
      *
-     * @param   codebase the list of URLs (separated by spaces) to load
-     * the class from, or <code>null</code>
+     * @param codebase
+     *         the list of URLs (separated by spaces) to load
+     *         the class from, or <code>null</code>
+     * @param name
+     *         the name of the class to load
+     * @param defaultLoader
+     *         additional contextual class loader
+     *         to use, or <code>null</code>
      *
-     * @param   name the name of the class to load
+     * @return the <code>Class</code> object representing the loaded class
      *
-     * @param   defaultLoader additional contextual class loader
-     * to use, or <code>null</code>
-     *
-     * @return  the <code>Class</code> object representing the loaded class
-     *
-     * @throws  MalformedURLException if <code>codebase</code> is
-     * non-<code>null</code> and contains an invalid URL, or
-     * if <code>codebase</code> is <code>null</code> and a provider-specific
-     * URL used to load classes is invalid
-     *
-     * @throws  ClassNotFoundException if a definition for the class
-     * could not be found at the specified location
+     * @throws MalformedURLException
+     *         if <code>codebase</code> is
+     *         non-<code>null</code> and contains an invalid URL, or
+     *         if <code>codebase</code> is <code>null</code> and a provider-specific
+     *         URL used to load classes is invalid
+     * @throws ClassNotFoundException
+     *         if a definition for the class
+     *         could not be found at the specified location
      */
-    public abstract Class<?> loadClass(String codebase, String name,
-                                       ClassLoader defaultLoader)
-        throws MalformedURLException, ClassNotFoundException;
+    public abstract Class<?> loadClass(String codebase, String name, ClassLoader defaultLoader) throws MalformedURLException, ClassNotFoundException;
 
     /**
      * Provides the implementation for
-     * {@link RMIClassLoader#loadProxyClass(String,String[],ClassLoader)}.
+     * {@link RMIClassLoader#loadProxyClass(String, String[], ClassLoader)}.
      *
      * Loads a dynamic proxy class (see {@link java.lang.reflect.Proxy}
      * that implements a set of interfaces with the given names
@@ -111,33 +111,33 @@ public abstract class RMIClassLoaderSpi {
      * <p>An implementation of this method must either return a proxy
      * class that implements the named interfaces or throw an exception.
      *
-     * @param   codebase the list of URLs (space-separated) to load
-     * classes from, or <code>null</code>
+     * @param codebase
+     *         the list of URLs (space-separated) to load
+     *         classes from, or <code>null</code>
+     * @param interfaces
+     *         the names of the interfaces for the proxy class
+     *         to implement
+     * @param defaultLoader
+     *         additional contextual class loader
+     *         to use, or <code>null</code>
      *
-     * @param   interfaces the names of the interfaces for the proxy class
-     * to implement
+     * @return a dynamic proxy class that implements the named interfaces
      *
-     * @return  a dynamic proxy class that implements the named interfaces
-     *
-     * @param   defaultLoader additional contextual class loader
-     * to use, or <code>null</code>
-     *
-     * @throws  MalformedURLException if <code>codebase</code> is
-     * non-<code>null</code> and contains an invalid URL, or
-     * if <code>codebase</code> is <code>null</code> and a provider-specific
-     * URL used to load classes is invalid
-     *
-     * @throws  ClassNotFoundException if a definition for one of
-     * the named interfaces could not be found at the specified location,
-     * or if creation of the dynamic proxy class failed (such as if
-     * {@link java.lang.reflect.Proxy#getProxyClass(ClassLoader,Class[])}
-     * would throw an <code>IllegalArgumentException</code> for the given
-     * interface list)
+     * @throws MalformedURLException
+     *         if <code>codebase</code> is
+     *         non-<code>null</code> and contains an invalid URL, or
+     *         if <code>codebase</code> is <code>null</code> and a provider-specific
+     *         URL used to load classes is invalid
+     * @throws ClassNotFoundException
+     *         if a definition for one of
+     *         the named interfaces could not be found at the specified location,
+     *         or if creation of the dynamic proxy class failed (such as if
+     *         {@link java.lang.reflect.Proxy#getProxyClass(ClassLoader, Class[])}
+     *         would throw an <code>IllegalArgumentException</code> for the given
+     *         interface list)
      */
-    public abstract Class<?> loadProxyClass(String codebase,
-                                            String[] interfaces,
-                                            ClassLoader defaultLoader)
-        throws MalformedURLException, ClassNotFoundException;
+    public abstract Class<?> loadProxyClass(String codebase, String[] interfaces, ClassLoader defaultLoader)
+            throws MalformedURLException, ClassNotFoundException;
 
     /**
      * Provides the implementation for
@@ -154,24 +154,25 @@ public abstract class RMIClassLoaderSpi {
      * checks to verify that the calling context has permission to connect
      * to all of the URLs in the codebase URL path.
      *
-     * @param   codebase the list of URLs (space-separated) from which
-     * the returned class loader will load classes from, or <code>null</code>
+     * @param codebase
+     *         the list of URLs (space-separated) from which
+     *         the returned class loader will load classes from, or <code>null</code>
      *
      * @return a class loader that loads classes from the given codebase URL
      * path
      *
-     * @throws  MalformedURLException if <code>codebase</code> is
-     * non-<code>null</code> and contains an invalid URL, or
-     * if <code>codebase</code> is <code>null</code> and a provider-specific
-     * URL used to identify the class loader is invalid
-     *
-     * @throws  SecurityException if there is a security manager and the
-     * invocation of its <code>checkPermission</code> method fails, or
-     * if the caller does not have permission to connect to all of the
-     * URLs in the codebase URL path
+     * @throws MalformedURLException
+     *         if <code>codebase</code> is
+     *         non-<code>null</code> and contains an invalid URL, or
+     *         if <code>codebase</code> is <code>null</code> and a provider-specific
+     *         URL used to identify the class loader is invalid
+     * @throws SecurityException
+     *         if there is a security manager and the
+     *         invocation of its <code>checkPermission</code> method fails, or
+     *         if the caller does not have permission to connect to all of the
+     *         URLs in the codebase URL path
      */
-    public abstract ClassLoader getClassLoader(String codebase)
-        throws MalformedURLException; // SecurityException
+    public abstract ClassLoader getClassLoader(String codebase) throws MalformedURLException; // SecurityException
 
     /**
      * Provides the implementation for
@@ -181,12 +182,14 @@ public abstract class RMIClassLoaderSpi {
      * the class definition) that RMI will use to annotate the class
      * descriptor when marshalling objects of the given class.
      *
-     * @param   cl the class to obtain the annotation for
+     * @param cl
+     *         the class to obtain the annotation for
      *
-     * @return  a string to be used to annotate the given class when
+     * @return a string to be used to annotate the given class when
      * it gets marshalled, or <code>null</code>
      *
-     * @throws  NullPointerException if <code>cl</code> is <code>null</code>
+     * @throws NullPointerException
+     *         if <code>cl</code> is <code>null</code>
      */
     public abstract String getClassAnnotation(Class<?> cl);
 }

@@ -35,14 +35,14 @@ package java.rmi.activation;
  * An <code>ActivationID</code> is also obtained during the
  * <code>Activatable.register</code> call.
  *
- * @author  Ann Wollrath
- * @since   1.2
- * @see     java.rmi.activation.Activatable
- * @see     java.rmi.activation.ActivationGroup
- * @see     java.rmi.activation.ActivationID
- * @see     java.rmi.activation.ActivationMonitor
- * @see     java.rmi.activation.ActivationSystem
- * @see     java.rmi.activation.Activator
+ * @author Ann Wollrath
+ * @see java.rmi.activation.Activatable
+ * @see java.rmi.activation.ActivationGroup
+ * @see java.rmi.activation.ActivationID
+ * @see java.rmi.activation.ActivationMonitor
+ * @see java.rmi.activation.ActivationSystem
+ * @see java.rmi.activation.Activator
+ * @since 1.2
  */
 public class UnknownObjectException extends ActivationException {
 
@@ -53,7 +53,9 @@ public class UnknownObjectException extends ActivationException {
      * Constructs an <code>UnknownObjectException</code> with the specified
      * detail message.
      *
-     * @param s the detail message
+     * @param s
+     *         the detail message
+     *
      * @since 1.2
      */
     public UnknownObjectException(String s) {

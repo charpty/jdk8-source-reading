@@ -25,7 +25,8 @@
 
 package java.security;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.NoSuchElementException;
 
 /**
  * Abstract class representing a collection of Permission objects.
@@ -34,7 +35,7 @@ import java.util.*;
  * <UL>
  * <LI> add a permission to the collection using the {@code add} method.
  * <LI> check to see if a particular permission is implied in the
- *      collection, using the {@code implies} method.
+ * collection, using the {@code implies} method.
  * <LI> enumerate all the permissions, using the {@code elements} method.
  * </UL>
  *
@@ -84,11 +85,9 @@ import java.util.*;
  * not <em>fail-fast</em>.  Modifications to a collection should not be
  * performed while enumerating over that collection.
  *
+ * @author Roland Schemers
  * @see Permission
  * @see Permissions
- *
- *
- * @author Roland Schemers
  */
 
 public abstract class PermissionCollection implements java.io.Serializable {
@@ -101,13 +100,16 @@ public abstract class PermissionCollection implements java.io.Serializable {
     /**
      * Adds a permission object to the current collection of permission objects.
      *
-     * @param permission the Permission object to add.
+     * @param permission
+     *         the Permission object to add.
      *
-     * @exception SecurityException -  if this PermissionCollection object
-     *                                 has been marked readonly
-     * @exception IllegalArgumentException - if this PermissionCollection
-     *                object is a homogeneous collection and the permission
-     *                is not of the correct type.
+     * @throws SecurityException
+     *         -  if this PermissionCollection object
+     *         has been marked readonly
+     * @throws IllegalArgumentException
+     *         - if this PermissionCollection
+     *         object is a homogeneous collection and the permission
+     *         is not of the correct type.
      */
     public abstract void add(Permission permission);
 
@@ -115,7 +117,8 @@ public abstract class PermissionCollection implements java.io.Serializable {
      * Checks to see if the specified permission is implied by
      * the collection of Permission objects held in this PermissionCollection.
      *
-     * @param permission the Permission object to compare.
+     * @param permission
+     *         the Permission object to compare.
      *
      * @return true if "permission" is implied by the  permissions in
      * the collection, false if not.
@@ -173,19 +176,18 @@ public abstract class PermissionCollection implements java.io.Serializable {
      * PermissionCollections object, even if they contain the same permissions.
      *
      * @return information about this PermissionCollection object,
-     *         as described above.
-     *
+     * as described above.
      */
     public String toString() {
         Enumeration<Permission> enum_ = elements();
         StringBuilder sb = new StringBuilder();
-        sb.append(super.toString()+" (\n");
+        sb.append(super.toString() + " (\n");
         while (enum_.hasMoreElements()) {
             try {
                 sb.append(" ");
                 sb.append(enum_.nextElement().toString());
                 sb.append("\n");
-            } catch (NoSuchElementException e){
+            } catch (NoSuchElementException e) {
                 // ignore
             }
         }

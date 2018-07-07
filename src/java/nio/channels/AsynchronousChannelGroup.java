@@ -25,8 +25,8 @@
 
 package java.nio.channels;
 
-import java.nio.channels.spi.AsynchronousChannelProvider;
 import java.io.IOException;
+import java.nio.channels.spi.AsynchronousChannelProvider;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
@@ -61,31 +61,31 @@ import java.util.concurrent.TimeUnit;
  * are {@link Thread#isDaemon daemon} threads.
  *
  * <table border summary="System properties">
- *   <tr>
- *     <th>System property</th>
- *     <th>Description</th>
- *   </tr>
- *   <tr>
- *     <td> {@code java.nio.channels.DefaultThreadPool.threadFactory} </td>
- *     <td> The value of this property is taken to be the fully-qualified name
- *     of a concrete {@link java.util.concurrent.ThreadFactory ThreadFactory}
- *     class. The class is loaded using the system class loader and instantiated.
- *     The factory's {@link java.util.concurrent.ThreadFactory#newThread
- *     newThread} method is invoked to create each thread for the default
- *     group's thread pool. If the process to load and instantiate the value
- *     of the property fails then an unspecified error is thrown during the
- *     construction of the default group. </td>
- *   </tr>
- *   <tr>
- *     <td> {@code java.nio.channels.DefaultThreadPool.initialSize} </td>
- *     <td> The value of the {@code initialSize} parameter for the default
- *     group (see {@link #withCachedThreadPool withCachedThreadPool}).
- *     The value of the property is taken to be the {@code String}
- *     representation of an {@code Integer} that is the initial size parameter.
- *     If the value cannot be parsed as an {@code Integer} it causes an
- *     unspecified error to be thrown during the construction of the default
- *     group. </td>
- *   </tr>
+ * <tr>
+ * <th>System property</th>
+ * <th>Description</th>
+ * </tr>
+ * <tr>
+ * <td> {@code java.nio.channels.DefaultThreadPool.threadFactory} </td>
+ * <td> The value of this property is taken to be the fully-qualified name
+ * of a concrete {@link java.util.concurrent.ThreadFactory ThreadFactory}
+ * class. The class is loaded using the system class loader and instantiated.
+ * The factory's {@link java.util.concurrent.ThreadFactory#newThread
+ * newThread} method is invoked to create each thread for the default
+ * group's thread pool. If the process to load and instantiate the value
+ * of the property fails then an unspecified error is thrown during the
+ * construction of the default group. </td>
+ * </tr>
+ * <tr>
+ * <td> {@code java.nio.channels.DefaultThreadPool.initialSize} </td>
+ * <td> The value of the {@code initialSize} parameter for the default
+ * group (see {@link #withCachedThreadPool withCachedThreadPool}).
+ * The value of the property is taken to be the {@code String}
+ * representation of an {@code Integer} that is the initial size parameter.
+ * If the value cannot be parsed as an {@code Integer} it causes an
+ * unspecified error to be thrown during the construction of the default
+ * group. </td>
+ * </tr>
  * </table>
  *
  * <a name="threading"></a><h2>Threading</h2>
@@ -101,7 +101,7 @@ import java.util.concurrent.TimeUnit;
  * implementation may impose a limit as to the number of activations on the
  * thread stack. Some I/O operations may prohibit invoking the completion
  * handler directly by the initiating thread (see {@link
- * AsynchronousServerSocketChannel#accept(Object,CompletionHandler) accept}).
+ * AsynchronousServerSocketChannel#accept(Object, CompletionHandler) accept}).
  *
  * <a name="shutdown"></a><h2>Shutdown and Termination</h2>
  *
@@ -124,10 +124,9 @@ import java.util.concurrent.TimeUnit;
  * in the group as if by invoking the {@link AsynchronousChannel#close close}
  * method.
  *
- * @since 1.7
- *
  * @see AsynchronousSocketChannel#open(AsynchronousChannelGroup)
  * @see AsynchronousServerSocketChannel#open(AsynchronousChannelGroup)
+ * @since 1.7
  */
 
 public abstract class AsynchronousChannelGroup {
@@ -136,8 +135,8 @@ public abstract class AsynchronousChannelGroup {
     /**
      * Initialize a new instance of this class.
      *
-     * @param   provider
-     *          The asynchronous channel provider for this group
+     * @param provider
+     *         The asynchronous channel provider for this group
      */
     protected AsynchronousChannelGroup(AsynchronousChannelProvider provider) {
         this.provider = provider;
@@ -146,7 +145,7 @@ public abstract class AsynchronousChannelGroup {
     /**
      * Returns the provider that created this channel group.
      *
-     * @return  The provider that created this channel group
+     * @return The provider that created this channel group
      */
     public final AsynchronousChannelProvider provider() {
         return provider;
@@ -162,28 +161,24 @@ public abstract class AsynchronousChannelGroup {
      * the group.
      *
      * <p> The group is created by invoking the {@link
-     * AsynchronousChannelProvider#openAsynchronousChannelGroup(int,ThreadFactory)
+     * AsynchronousChannelProvider#openAsynchronousChannelGroup(int, ThreadFactory)
      * openAsynchronousChannelGroup(int,ThreadFactory)} method of the system-wide
      * default {@link AsynchronousChannelProvider} object.
      *
-     * @param   nThreads
-     *          The number of threads in the pool
-     * @param   threadFactory
-     *          The factory to use when creating new threads
+     * @param nThreads
+     *         The number of threads in the pool
+     * @param threadFactory
+     *         The factory to use when creating new threads
      *
-     * @return  A new asynchronous channel group
+     * @return A new asynchronous channel group
      *
-     * @throws  IllegalArgumentException
-     *          If {@code nThreads <= 0}
-     * @throws  IOException
-     *          If an I/O error occurs
+     * @throws IllegalArgumentException
+     *         If {@code nThreads <= 0}
+     * @throws IOException
+     *         If an I/O error occurs
      */
-    public static AsynchronousChannelGroup withFixedThreadPool(int nThreads,
-                                                               ThreadFactory threadFactory)
-        throws IOException
-    {
-        return AsynchronousChannelProvider.provider()
-            .openAsynchronousChannelGroup(nThreads, threadFactory);
+    public static AsynchronousChannelGroup withFixedThreadPool(int nThreads, ThreadFactory threadFactory) throws IOException {
+        return AsynchronousChannelProvider.provider().openAsynchronousChannelGroup(nThreads, threadFactory);
     }
 
     /**
@@ -208,29 +203,24 @@ public abstract class AsynchronousChannelGroup {
      * unspecified behavior.
      *
      * <p> The group is created by invoking the {@link
-     * AsynchronousChannelProvider#openAsynchronousChannelGroup(ExecutorService,int)
+     * AsynchronousChannelProvider#openAsynchronousChannelGroup(ExecutorService, int)
      * openAsynchronousChannelGroup(ExecutorService,int)} method of the system-wide
      * default {@link AsynchronousChannelProvider} object.
      *
-     * @param   executor
-     *          The thread pool for the resulting group
-     * @param   initialSize
-     *          A value {@code >=0} or a negative value for implementation
-     *          specific default
+     * @param executor
+     *         The thread pool for the resulting group
+     * @param initialSize
+     *         A value {@code >=0} or a negative value for implementation
+     *         specific default
      *
-     * @return  A new asynchronous channel group
+     * @return A new asynchronous channel group
      *
-     * @throws  IOException
-     *          If an I/O error occurs
-     *
+     * @throws IOException
+     *         If an I/O error occurs
      * @see java.util.concurrent.Executors#newCachedThreadPool
      */
-    public static AsynchronousChannelGroup withCachedThreadPool(ExecutorService executor,
-                                                                int initialSize)
-        throws IOException
-    {
-        return AsynchronousChannelProvider.provider()
-            .openAsynchronousChannelGroup(executor, initialSize);
+    public static AsynchronousChannelGroup withCachedThreadPool(ExecutorService executor, int initialSize) throws IOException {
+        return AsynchronousChannelProvider.provider().openAsynchronousChannelGroup(executor, initialSize);
     }
 
     /**
@@ -253,31 +243,28 @@ public abstract class AsynchronousChannelGroup {
      * unspecified behavior.
      *
      * <p> The group is created by invoking the {@link
-     * AsynchronousChannelProvider#openAsynchronousChannelGroup(ExecutorService,int)
+     * AsynchronousChannelProvider#openAsynchronousChannelGroup(ExecutorService, int)
      * openAsynchronousChannelGroup(ExecutorService,int)} method of the system-wide
      * default {@link AsynchronousChannelProvider} object with an {@code
      * initialSize} of {@code 0}.
      *
-     * @param   executor
-     *          The thread pool for the resulting group
+     * @param executor
+     *         The thread pool for the resulting group
      *
-     * @return  A new asynchronous channel group
+     * @return A new asynchronous channel group
      *
-     * @throws  IOException
-     *          If an I/O error occurs
+     * @throws IOException
+     *         If an I/O error occurs
      */
-    public static AsynchronousChannelGroup withThreadPool(ExecutorService executor)
-        throws IOException
-    {
-        return AsynchronousChannelProvider.provider()
-            .openAsynchronousChannelGroup(executor, 0);
+    public static AsynchronousChannelGroup withThreadPool(ExecutorService executor) throws IOException {
+        return AsynchronousChannelProvider.provider().openAsynchronousChannelGroup(executor, 0);
     }
 
     /**
      * Tells whether or not this asynchronous channel group is shutdown.
      *
-     * @return  {@code true} if this asynchronous channel group is shutdown or
-     *          has been marked for shutdown.
+     * @return {@code true} if this asynchronous channel group is shutdown or
+     * has been marked for shutdown.
      */
     public abstract boolean isShutdown();
 
@@ -287,7 +274,7 @@ public abstract class AsynchronousChannelGroup {
      * <p> Where this method returns {@code true}, then the associated thread
      * pool has also {@link ExecutorService#isTerminated terminated}.
      *
-     * @return  {@code true} if this group has terminated
+     * @return {@code true} if this group has terminated
      */
     public abstract boolean isTerminated();
 
@@ -316,28 +303,27 @@ public abstract class AsynchronousChannelGroup {
      * another invocation will block until the first invocation is complete,
      * after which it will return without effect.
      *
-     * @throws  IOException
-     *          If an I/O error occurs
+     * @throws IOException
+     *         If an I/O error occurs
      */
     public abstract void shutdownNow() throws IOException;
 
     /**
      * Awaits termination of the group.
-
+     *
      * <p> This method blocks until the group has terminated, or the timeout
      * occurs, or the current thread is interrupted, whichever happens first.
      *
-     * @param   timeout
-     *          The maximum time to wait, or zero or less to not wait
-     * @param   unit
-     *          The time unit of the timeout argument
+     * @param timeout
+     *         The maximum time to wait, or zero or less to not wait
+     * @param unit
+     *         The time unit of the timeout argument
      *
-     * @return  {@code true} if the group has terminated; {@code false} if the
-     *          timeout elapsed before termination
+     * @return {@code true} if the group has terminated; {@code false} if the
+     * timeout elapsed before termination
      *
-     * @throws  InterruptedException
-     *          If interrupted while waiting
+     * @throws InterruptedException
+     *         If interrupted while waiting
      */
-    public abstract boolean awaitTermination(long timeout, TimeUnit unit)
-        throws InterruptedException;
+    public abstract boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException;
 }

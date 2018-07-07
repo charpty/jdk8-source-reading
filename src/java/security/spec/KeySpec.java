@@ -46,8 +46,6 @@ package java.security.spec;
  * All key specifications must implement this interface.
  *
  * @author Jan Luehe
- *
- *
  * @see java.security.Key
  * @see java.security.KeyFactory
  * @see EncodedKeySpec
@@ -55,8 +53,8 @@ package java.security.spec;
  * @see PKCS8EncodedKeySpec
  * @see DSAPrivateKeySpec
  * @see DSAPublicKeySpec
- *
  * @since 1.2
  */
 
-public interface KeySpec { }
+public interface KeySpec {
+}

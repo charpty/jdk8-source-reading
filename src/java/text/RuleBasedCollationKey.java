@@ -48,19 +48,23 @@ final class RuleBasedCollationKey extends CollationKey {
      * Compare this RuleBasedCollationKey to target. The collation rules of the
      * Collator object which created these keys are applied. <strong>Note:</strong>
      * RuleBasedCollationKeys created by different Collators can not be compared.
-     * @param target target RuleBasedCollationKey
+     *
+     * @param target
+     *         target RuleBasedCollationKey
+     *
      * @return Returns an integer value. Value is less than zero if this is less
      * than target, value is zero if this and target are equal and value is greater than
      * zero if this is greater than target.
+     *
      * @see java.text.Collator#compare
      */
-    public int compareTo(CollationKey target)
-    {
-        int result = key.compareTo(((RuleBasedCollationKey)(target)).key);
-        if (result <= Collator.LESS)
+    public int compareTo(CollationKey target) {
+        int result = key.compareTo(((RuleBasedCollationKey) (target)).key);
+        if (result <= Collator.LESS) {
             return Collator.LESS;
-        else if (result >= Collator.GREATER)
+        } else if (result >= Collator.GREATER) {
             return Collator.GREATER;
+        }
         return Collator.EQUAL;
     }
 
@@ -69,15 +73,20 @@ final class RuleBasedCollationKey extends CollationKey {
      * The collation rules of the Collator object which created these keys are applied.
      * <strong>Note:</strong> RuleBasedCollationKeys created by different Collators can not be
      * compared.
-     * @param target the RuleBasedCollationKey to compare to.
+     *
+     * @param target
+     *         the RuleBasedCollationKey to compare to.
+     *
      * @return Returns true if two objects are equal, false otherwise.
      */
     public boolean equals(Object target) {
-        if (this == target) return true;
+        if (this == target) {
+            return true;
+        }
         if (target == null || !getClass().equals(target.getClass())) {
             return false;
         }
-        RuleBasedCollationKey other = (RuleBasedCollationKey)target;
+        RuleBasedCollationKey other = (RuleBasedCollationKey) target;
         return key.equals(other.key);
     }
 
@@ -87,6 +96,7 @@ final class RuleBasedCollationKey extends CollationKey {
      * if x and y are RuleBasedCollationKeys, then x.hashCode(x) == y.hashCode() if
      * x.equals(y) is true.  This allows language-sensitive comparison in a hash table.
      * See the CollatinKey class description for an example.
+     *
      * @return the hash value based on the string's collation order.
      */
     public int hashCode() {
@@ -102,11 +112,11 @@ final class RuleBasedCollationKey extends CollationKey {
     public byte[] toByteArray() {
 
         char[] src = key.toCharArray();
-        byte[] dest = new byte[ 2*src.length ];
+        byte[] dest = new byte[2 * src.length];
         int j = 0;
-        for( int i=0; i<src.length; i++ ) {
-            dest[j++] = (byte)(src[i] >>> 8);
-            dest[j++] = (byte)(src[i] & 0x00ff);
+        for (int i = 0; i < src.length; i++) {
+            dest[j++] = (byte) (src[i] >>> 8);
+            dest[j++] = (byte) (src[i] & 0x00ff);
         }
         return dest;
     }
@@ -118,6 +128,7 @@ final class RuleBasedCollationKey extends CollationKey {
         super(source);
         this.key = key;
     }
+
     private String key = null;
 
 }

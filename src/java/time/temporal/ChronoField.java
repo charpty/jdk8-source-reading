@@ -56,20 +56,6 @@
  */
 package java.time.temporal;
 
-import static java.time.temporal.ChronoUnit.DAYS;
-import static java.time.temporal.ChronoUnit.ERAS;
-import static java.time.temporal.ChronoUnit.FOREVER;
-import static java.time.temporal.ChronoUnit.HALF_DAYS;
-import static java.time.temporal.ChronoUnit.HOURS;
-import static java.time.temporal.ChronoUnit.MICROS;
-import static java.time.temporal.ChronoUnit.MILLIS;
-import static java.time.temporal.ChronoUnit.MINUTES;
-import static java.time.temporal.ChronoUnit.MONTHS;
-import static java.time.temporal.ChronoUnit.NANOS;
-import static java.time.temporal.ChronoUnit.SECONDS;
-import static java.time.temporal.ChronoUnit.WEEKS;
-import static java.time.temporal.ChronoUnit.YEARS;
-
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.Year;
@@ -82,6 +68,9 @@ import java.util.ResourceBundle;
 import sun.util.locale.provider.LocaleProviderAdapter;
 import sun.util.locale.provider.LocaleResources;
 
+
+import static java.time.temporal.ChronoUnit.*;
+
 /**
  * A standard set of fields.
  * <p>
@@ -92,9 +81,6 @@ import sun.util.locale.provider.LocaleResources;
  * For example, most non-ISO calendar systems define dates as a year, month and day,
  * just with slightly different rules.
  * The documentation of each field explains how it operates.
- *
- * @implSpec
- * This is a final, immutable and thread-safe enum.
  *
  * @since 1.8
  */
@@ -120,8 +106,7 @@ public enum ChronoField implements TemporalField {
      * The value is validated in strict and smart mode but not in lenient mode.
      * The field is resolved in combination with {@code MILLI_OF_SECOND} and {@code MICRO_OF_SECOND}.
      */
-    NANO_OF_SECOND("NanoOfSecond", NANOS, SECONDS, ValueRange.of(0, 999_999_999)),
-    /**
+    NANO_OF_SECOND("NanoOfSecond", NANOS, SECONDS, ValueRange.of(0, 999_999_999)), /**
      * The nano-of-day.
      * <p>
      * This counts the nanosecond within the day, from 0 to (24 * 60 * 60 * 1,000,000,000) - 1.
@@ -136,8 +121,7 @@ public enum ChronoField implements TemporalField {
      * The value is split to form {@code NANO_OF_SECOND}, {@code SECOND_OF_MINUTE},
      * {@code MINUTE_OF_HOUR} and {@code HOUR_OF_DAY} fields.
      */
-    NANO_OF_DAY("NanoOfDay", NANOS, DAYS, ValueRange.of(0, 86400L * 1000_000_000L - 1)),
-    /**
+    NANO_OF_DAY("NanoOfDay", NANOS, DAYS, ValueRange.of(0, 86400L * 1000_000_000L - 1)), /**
      * The micro-of-second.
      * <p>
      * This counts the microsecond within the second, from 0 to 999,999.
@@ -156,8 +140,7 @@ public enum ChronoField implements TemporalField {
      * The field is resolved in combination with {@code MILLI_OF_SECOND} to produce
      * {@code NANO_OF_SECOND}.
      */
-    MICRO_OF_SECOND("MicroOfSecond", MICROS, SECONDS, ValueRange.of(0, 999_999)),
-    /**
+    MICRO_OF_SECOND("MicroOfSecond", MICROS, SECONDS, ValueRange.of(0, 999_999)), /**
      * The micro-of-day.
      * <p>
      * This counts the microsecond within the day, from 0 to (24 * 60 * 60 * 1,000,000) - 1.
@@ -175,8 +158,7 @@ public enum ChronoField implements TemporalField {
      * The value is split to form {@code MICRO_OF_SECOND}, {@code SECOND_OF_MINUTE},
      * {@code MINUTE_OF_HOUR} and {@code HOUR_OF_DAY} fields.
      */
-    MICRO_OF_DAY("MicroOfDay", MICROS, DAYS, ValueRange.of(0, 86400L * 1000_000L - 1)),
-    /**
+    MICRO_OF_DAY("MicroOfDay", MICROS, DAYS, ValueRange.of(0, 86400L * 1000_000L - 1)), /**
      * The milli-of-second.
      * <p>
      * This counts the millisecond within the second, from 0 to 999.
@@ -195,8 +177,7 @@ public enum ChronoField implements TemporalField {
      * The field is resolved in combination with {@code MICRO_OF_SECOND} to produce
      * {@code NANO_OF_SECOND}.
      */
-    MILLI_OF_SECOND("MilliOfSecond", MILLIS, SECONDS, ValueRange.of(0, 999)),
-    /**
+    MILLI_OF_SECOND("MilliOfSecond", MILLIS, SECONDS, ValueRange.of(0, 999)), /**
      * The milli-of-day.
      * <p>
      * This counts the millisecond within the day, from 0 to (24 * 60 * 60 * 1,000) - 1.
@@ -214,8 +195,7 @@ public enum ChronoField implements TemporalField {
      * The value is split to form {@code MILLI_OF_SECOND}, {@code SECOND_OF_MINUTE},
      * {@code MINUTE_OF_HOUR} and {@code HOUR_OF_DAY} fields.
      */
-    MILLI_OF_DAY("MilliOfDay", MILLIS, DAYS, ValueRange.of(0, 86400L * 1000L - 1)),
-    /**
+    MILLI_OF_DAY("MilliOfDay", MILLIS, DAYS, ValueRange.of(0, 86400L * 1000L - 1)), /**
      * The second-of-minute.
      * <p>
      * This counts the second within the minute, from 0 to 59.
@@ -224,8 +204,7 @@ public enum ChronoField implements TemporalField {
      * When parsing this field it behaves equivalent to the following:
      * The value is validated in strict and smart mode but not in lenient mode.
      */
-    SECOND_OF_MINUTE("SecondOfMinute", SECONDS, MINUTES, ValueRange.of(0, 59), "second"),
-    /**
+    SECOND_OF_MINUTE("SecondOfMinute", SECONDS, MINUTES, ValueRange.of(0, 59), "second"), /**
      * The second-of-day.
      * <p>
      * This counts the second within the day, from 0 to (24 * 60 * 60) - 1.
@@ -236,8 +215,7 @@ public enum ChronoField implements TemporalField {
      * The value is split to form {@code SECOND_OF_MINUTE}, {@code MINUTE_OF_HOUR}
      * and {@code HOUR_OF_DAY} fields.
      */
-    SECOND_OF_DAY("SecondOfDay", SECONDS, DAYS, ValueRange.of(0, 86400L - 1)),
-    /**
+    SECOND_OF_DAY("SecondOfDay", SECONDS, DAYS, ValueRange.of(0, 86400L - 1)), /**
      * The minute-of-hour.
      * <p>
      * This counts the minute within the hour, from 0 to 59.
@@ -246,8 +224,7 @@ public enum ChronoField implements TemporalField {
      * When parsing this field it behaves equivalent to the following:
      * The value is validated in strict and smart mode but not in lenient mode.
      */
-    MINUTE_OF_HOUR("MinuteOfHour", MINUTES, HOURS, ValueRange.of(0, 59), "minute"),
-    /**
+    MINUTE_OF_HOUR("MinuteOfHour", MINUTES, HOURS, ValueRange.of(0, 59), "minute"), /**
      * The minute-of-day.
      * <p>
      * This counts the minute within the day, from 0 to (24 * 60) - 1.
@@ -257,8 +234,7 @@ public enum ChronoField implements TemporalField {
      * The value is validated in strict and smart mode but not in lenient mode.
      * The value is split to form {@code MINUTE_OF_HOUR} and {@code HOUR_OF_DAY} fields.
      */
-    MINUTE_OF_DAY("MinuteOfDay", MINUTES, DAYS, ValueRange.of(0, (24 * 60) - 1)),
-    /**
+    MINUTE_OF_DAY("MinuteOfDay", MINUTES, DAYS, ValueRange.of(0, (24 * 60) - 1)), /**
      * The hour-of-am-pm.
      * <p>
      * This counts the hour within the AM/PM, from 0 to 11.
@@ -271,8 +247,7 @@ public enum ChronoField implements TemporalField {
      * {@code AMPM_OF_DAY} to form {@code HOUR_OF_DAY} by multiplying
      * the {AMPM_OF_DAY} value by 12.
      */
-    HOUR_OF_AMPM("HourOfAmPm", HOURS, HALF_DAYS, ValueRange.of(0, 11)),
-    /**
+    HOUR_OF_AMPM("HourOfAmPm", HOURS, HALF_DAYS, ValueRange.of(0, 11)), /**
      * The clock-hour-of-am-pm.
      * <p>
      * This counts the hour within the AM/PM, from 1 to 12.
@@ -285,8 +260,7 @@ public enum ChronoField implements TemporalField {
      * The field is converted to an {@code HOUR_OF_AMPM} with the same value,
      * unless the value is 12, in which case it is converted to 0.
      */
-    CLOCK_HOUR_OF_AMPM("ClockHourOfAmPm", HOURS, HALF_DAYS, ValueRange.of(1, 12)),
-    /**
+    CLOCK_HOUR_OF_AMPM("ClockHourOfAmPm", HOURS, HALF_DAYS, ValueRange.of(1, 12)), /**
      * The hour-of-day.
      * <p>
      * This counts the hour within the day, from 0 to 23.
@@ -300,8 +274,7 @@ public enum ChronoField implements TemporalField {
      * In lenient mode, any excess days are added to the parsed date, or
      * made available via {@link java.time.format.DateTimeFormatter#parsedExcessDays()}.
      */
-    HOUR_OF_DAY("HourOfDay", HOURS, DAYS, ValueRange.of(0, 23), "hour"),
-    /**
+    HOUR_OF_DAY("HourOfDay", HOURS, DAYS, ValueRange.of(0, 23), "hour"), /**
      * The clock-hour-of-day.
      * <p>
      * This counts the hour within the AM/PM, from 1 to 24.
@@ -314,8 +287,7 @@ public enum ChronoField implements TemporalField {
      * The field is converted to an {@code HOUR_OF_DAY} with the same value,
      * unless the value is 24, in which case it is converted to 0.
      */
-    CLOCK_HOUR_OF_DAY("ClockHourOfDay", HOURS, DAYS, ValueRange.of(1, 24)),
-    /**
+    CLOCK_HOUR_OF_DAY("ClockHourOfDay", HOURS, DAYS, ValueRange.of(1, 24)), /**
      * The am-pm-of-day.
      * <p>
      * This counts the AM/PM within the day, from 0 (AM) to 1 (PM).
@@ -327,8 +299,7 @@ public enum ChronoField implements TemporalField {
      * {@code HOUR_OF_AMPM} to form {@code HOUR_OF_DAY} by multiplying
      * the {AMPM_OF_DAY} value by 12.
      */
-    AMPM_OF_DAY("AmPmOfDay", HALF_DAYS, DAYS, ValueRange.of(0, 1), "dayperiod"),
-    /**
+    AMPM_OF_DAY("AmPmOfDay", HALF_DAYS, DAYS, ValueRange.of(0, 1), "dayperiod"), /**
      * The day-of-week, such as Tuesday.
      * <p>
      * This represents the standard concept of the day of the week.
@@ -343,8 +314,7 @@ public enum ChronoField implements TemporalField {
      * if they have a similar concept of named or numbered days within a period similar
      * to a week. It is recommended that the numbering starts from 1.
      */
-    DAY_OF_WEEK("DayOfWeek", DAYS, WEEKS, ValueRange.of(1, 7), "weekday"),
-    /**
+    DAY_OF_WEEK("DayOfWeek", DAYS, WEEKS, ValueRange.of(1, 7), "weekday"), /**
      * The aligned day-of-week within a month.
      * <p>
      * This represents concept of the count of days within the period of a week
@@ -361,8 +331,7 @@ public enum ChronoField implements TemporalField {
      * Calendar systems that do not have a seven day week should typically implement this
      * field in the same way, but using the alternate week length.
      */
-    ALIGNED_DAY_OF_WEEK_IN_MONTH("AlignedDayOfWeekInMonth", DAYS, WEEKS, ValueRange.of(1, 7)),
-    /**
+    ALIGNED_DAY_OF_WEEK_IN_MONTH("AlignedDayOfWeekInMonth", DAYS, WEEKS, ValueRange.of(1, 7)), /**
      * The aligned day-of-week within a year.
      * <p>
      * This represents concept of the count of days within the period of a week
@@ -379,8 +348,7 @@ public enum ChronoField implements TemporalField {
      * Calendar systems that do not have a seven day week should typically implement this
      * field in the same way, but using the alternate week length.
      */
-    ALIGNED_DAY_OF_WEEK_IN_YEAR("AlignedDayOfWeekInYear", DAYS, WEEKS, ValueRange.of(1, 7)),
-    /**
+    ALIGNED_DAY_OF_WEEK_IN_YEAR("AlignedDayOfWeekInYear", DAYS, WEEKS, ValueRange.of(1, 7)), /**
      * The day-of-month.
      * <p>
      * This represents the concept of the day within the month.
@@ -392,8 +360,7 @@ public enum ChronoField implements TemporalField {
      * day-of-month values for users of the calendar system.
      * Normally, this is a count of days from 1 to the length of the month.
      */
-    DAY_OF_MONTH("DayOfMonth", DAYS, MONTHS, ValueRange.of(1, 28, 31), "day"),
-    /**
+    DAY_OF_MONTH("DayOfMonth", DAYS, MONTHS, ValueRange.of(1, 28, 31), "day"), /**
      * The day-of-year.
      * <p>
      * This represents the concept of the day within the year.
@@ -410,8 +377,7 @@ public enum ChronoField implements TemporalField {
      * the year number to 1, can happen on any date. The era and year reset also cause
      * the day-of-year to be reset to 1, but not the month-of-year or day-of-month.
      */
-    DAY_OF_YEAR("DayOfYear", DAYS, YEARS, ValueRange.of(1, 365, 366)),
-    /**
+    DAY_OF_YEAR("DayOfYear", DAYS, YEARS, ValueRange.of(1, 365, 366)), /**
      * The epoch-day, based on the Java epoch of 1970-01-01 (ISO).
      * <p>
      * This field is the sequential count of days where 1970-01-01 (ISO) is zero.
@@ -420,8 +386,7 @@ public enum ChronoField implements TemporalField {
      * This field is strictly defined to have the same meaning in all calendar systems.
      * This is necessary to ensure interoperation between calendars.
      */
-    EPOCH_DAY("EpochDay", DAYS, FOREVER, ValueRange.of((long) (Year.MIN_VALUE * 365.25), (long) (Year.MAX_VALUE * 365.25))),
-    /**
+    EPOCH_DAY("EpochDay", DAYS, FOREVER, ValueRange.of((long) (Year.MIN_VALUE * 365.25), (long) (Year.MAX_VALUE * 365.25))), /**
      * The aligned week within a month.
      * <p>
      * This represents concept of the count of weeks within the period of a month
@@ -436,8 +401,7 @@ public enum ChronoField implements TemporalField {
      * Calendar systems that do not have a seven day week should typically implement this
      * field in the same way, but using the alternate week length.
      */
-    ALIGNED_WEEK_OF_MONTH("AlignedWeekOfMonth", WEEKS, MONTHS, ValueRange.of(1, 4, 5)),
-    /**
+    ALIGNED_WEEK_OF_MONTH("AlignedWeekOfMonth", WEEKS, MONTHS, ValueRange.of(1, 4, 5)), /**
      * The aligned week within a year.
      * <p>
      * This represents concept of the count of weeks within the period of a year
@@ -452,8 +416,7 @@ public enum ChronoField implements TemporalField {
      * Calendar systems that do not have a seven day week should typically implement this
      * field in the same way, but using the alternate week length.
      */
-    ALIGNED_WEEK_OF_YEAR("AlignedWeekOfYear", WEEKS, YEARS, ValueRange.of(1, 53)),
-    /**
+    ALIGNED_WEEK_OF_YEAR("AlignedWeekOfYear", WEEKS, YEARS, ValueRange.of(1, 53)), /**
      * The month-of-year, such as March.
      * <p>
      * This represents the concept of the month within the year.
@@ -463,8 +426,7 @@ public enum ChronoField implements TemporalField {
      * month-of-year values for users of the calendar system.
      * Normally, this is a count of months starting from 1.
      */
-    MONTH_OF_YEAR("MonthOfYear", MONTHS, YEARS, ValueRange.of(1, 12), "month"),
-    /**
+    MONTH_OF_YEAR("MonthOfYear", MONTHS, YEARS, ValueRange.of(1, 12), "month"), /**
      * The proleptic-month based, counting months sequentially from year 0.
      * <p>
      * This field is the sequential count of months where the first month
@@ -483,8 +445,7 @@ public enum ChronoField implements TemporalField {
      * If the calendar system has a minimum year that excludes year zero, then one must
      * be extrapolated in order for this method to be defined.
      */
-    PROLEPTIC_MONTH("ProlepticMonth", MONTHS, FOREVER, ValueRange.of(Year.MIN_VALUE * 12L, Year.MAX_VALUE * 12L + 11)),
-    /**
+    PROLEPTIC_MONTH("ProlepticMonth", MONTHS, FOREVER, ValueRange.of(Year.MIN_VALUE * 12L, Year.MAX_VALUE * 12L + 11)), /**
      * The year within the era.
      * <p>
      * This represents the concept of the year within the era.
@@ -518,8 +479,7 @@ public enum ChronoField implements TemporalField {
      * will typically be the same as that used by the ISO calendar system.
      * The year-of-era value should typically always be positive, however this is not required.
      */
-    YEAR_OF_ERA("YearOfEra", YEARS, FOREVER, ValueRange.of(1, Year.MAX_VALUE, Year.MAX_VALUE + 1)),
-    /**
+    YEAR_OF_ERA("YearOfEra", YEARS, FOREVER, ValueRange.of(1, Year.MAX_VALUE, Year.MAX_VALUE + 1)), /**
      * The proleptic year, such as 2012.
      * <p>
      * This represents the concept of the year, counting sequentially and using negative numbers.
@@ -542,8 +502,7 @@ public enum ChronoField implements TemporalField {
      * defined with any appropriate value, although defining it to be the same as ISO may be
      * the best option.
      */
-    YEAR("Year", YEARS, FOREVER, ValueRange.of(Year.MIN_VALUE, Year.MAX_VALUE), "year"),
-    /**
+    YEAR("Year", YEARS, FOREVER, ValueRange.of(Year.MIN_VALUE, Year.MAX_VALUE), "year"), /**
      * The era.
      * <p>
      * This represents the concept of the era, which is the largest division of the time-line.
@@ -559,8 +518,7 @@ public enum ChronoField implements TemporalField {
      * Earlier eras must have sequentially smaller values.
      * Later eras must have sequentially larger values,
      */
-    ERA("Era", ERAS, FOREVER, ValueRange.of(0, 1), "era"),
-    /**
+    ERA("Era", ERAS, FOREVER, ValueRange.of(0, 1), "era"), /**
      * The instant epoch-seconds.
      * <p>
      * This represents the concept of the sequential count of seconds where
@@ -574,8 +532,7 @@ public enum ChronoField implements TemporalField {
      * This field is strictly defined to have the same meaning in all calendar systems.
      * This is necessary to ensure interoperation between calendars.
      */
-    INSTANT_SECONDS("InstantSeconds", SECONDS, FOREVER, ValueRange.of(Long.MIN_VALUE, Long.MAX_VALUE)),
-    /**
+    INSTANT_SECONDS("InstantSeconds", SECONDS, FOREVER, ValueRange.of(Long.MIN_VALUE, Long.MAX_VALUE)), /**
      * The offset from UTC/Greenwich.
      * <p>
      * This represents the concept of the offset in seconds of local time from UTC/Greenwich.
@@ -604,8 +561,7 @@ public enum ChronoField implements TemporalField {
         this.displayNameKey = null;
     }
 
-    private ChronoField(String name, TemporalUnit baseUnit, TemporalUnit rangeUnit,
-            ValueRange range, String displayNameKey) {
+    private ChronoField(String name, TemporalUnit baseUnit, TemporalUnit rangeUnit, ValueRange range, String displayNameKey) {
         this.name = name;
         this.baseUnit = baseUnit;
         this.rangeUnit = rangeUnit;
@@ -620,8 +576,7 @@ public enum ChronoField implements TemporalField {
             return name;
         }
 
-        LocaleResources lr = LocaleProviderAdapter.getResourceBundleBased()
-                                    .getLocaleResources(locale);
+        LocaleResources lr = LocaleProviderAdapter.getResourceBundleBased().getLocaleResources(locale);
         ResourceBundle rb = lr.getJavaTimeFormatData();
         String key = "field." + displayNameKey;
         return rb.containsKey(key) ? rb.getString(key) : name;
@@ -660,6 +615,7 @@ public enum ChronoField implements TemporalField {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks if this field represents a component of a date.
      * <p>
@@ -685,6 +641,7 @@ public enum ChronoField implements TemporalField {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks that the specified value is valid for this field.
      * <p>
@@ -696,7 +653,9 @@ public enum ChronoField implements TemporalField {
      * Use {@link Chronology#range(ChronoField)} to access the correct range
      * for a different calendar system.
      *
-     * @param value  the value to check
+     * @param value
+     *         the value to check
+     *
      * @return the value that was passed in
      */
     public long checkValidValue(long value) {
@@ -715,7 +674,9 @@ public enum ChronoField implements TemporalField {
      * Use {@link Chronology#range(ChronoField)} to access the correct range
      * for a different calendar system.
      *
-     * @param value  the value to check
+     * @param value
+     *         the value to check
+     *
      * @return the value that was passed in
      */
     public int checkValidIntValue(long value) {

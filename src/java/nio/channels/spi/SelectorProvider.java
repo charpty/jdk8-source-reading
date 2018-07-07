@@ -27,14 +27,16 @@ package java.nio.channels.spi;
 
 import java.io.IOException;
 import java.net.ProtocolFamily;
-import java.nio.channels.*;
+import java.nio.channels.Channel;
+import java.nio.channels.DatagramChannel;
+import java.nio.channels.Pipe;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Iterator;
-import java.util.ServiceLoader;
 import java.util.ServiceConfigurationError;
-import sun.security.action.GetPropertyAction;
-
+import java.util.ServiceLoader;
 
 /**
  * Service-provider class for selectors and selectable channels.
@@ -60,7 +62,6 @@ import sun.security.action.GetPropertyAction;
  * <p> All of the methods in this class are safe for use by multiple concurrent
  * threads.  </p>
  *
- *
  * @author Mark Reinhold
  * @author JSR-51 Expert Group
  * @since 1.4
@@ -74,24 +75,25 @@ public abstract class SelectorProvider {
     /**
      * Initializes a new instance of this class.
      *
-     * @throws  SecurityException
-     *          If a security manager has been installed and it denies
-     *          {@link RuntimePermission}<tt>("selectorProvider")</tt>
+     * @throws SecurityException
+     *         If a security manager has been installed and it denies
+     *         {@link RuntimePermission}<tt>("selectorProvider")</tt>
      */
     protected SelectorProvider() {
         SecurityManager sm = System.getSecurityManager();
-        if (sm != null)
+        if (sm != null) {
             sm.checkPermission(new RuntimePermission("selectorProvider"));
+        }
     }
 
     private static boolean loadProviderFromProperty() {
         String cn = System.getProperty("java.nio.channels.spi.SelectorProvider");
-        if (cn == null)
+        if (cn == null) {
             return false;
+        }
         try {
-            Class<?> c = Class.forName(cn, true,
-                                       ClassLoader.getSystemClassLoader());
-            provider = (SelectorProvider)c.newInstance();
+            Class<?> c = Class.forName(cn, true, ClassLoader.getSystemClassLoader());
+            provider = (SelectorProvider) c.newInstance();
             return true;
         } catch (ClassNotFoundException x) {
             throw new ServiceConfigurationError(null, x);
@@ -106,14 +108,13 @@ public abstract class SelectorProvider {
 
     private static boolean loadProviderAsService() {
 
-        ServiceLoader<SelectorProvider> sl =
-            ServiceLoader.load(SelectorProvider.class,
-                               ClassLoader.getSystemClassLoader());
+        ServiceLoader<SelectorProvider> sl = ServiceLoader.load(SelectorProvider.class, ClassLoader.getSystemClassLoader());
         Iterator<SelectorProvider> i = sl.iterator();
-        for (;;) {
+        for (; ; ) {
             try {
-                if (!i.hasNext())
+                if (!i.hasNext()) {
                     return false;
+                }
                 provider = i.next();
                 return true;
             } catch (ServiceConfigurationError sce) {
@@ -135,122 +136,117 @@ public abstract class SelectorProvider {
      *
      * <ol>
      *
-     *   <li><p> If the system property
-     *   <tt>java.nio.channels.spi.SelectorProvider</tt> is defined then it is
-     *   taken to be the fully-qualified name of a concrete provider class.
-     *   The class is loaded and instantiated; if this process fails then an
-     *   unspecified error is thrown.  </p></li>
+     * <li><p> If the system property
+     * <tt>java.nio.channels.spi.SelectorProvider</tt> is defined then it is
+     * taken to be the fully-qualified name of a concrete provider class.
+     * The class is loaded and instantiated; if this process fails then an
+     * unspecified error is thrown.  </p></li>
      *
-     *   <li><p> If a provider class has been installed in a jar file that is
-     *   visible to the system class loader, and that jar file contains a
-     *   provider-configuration file named
-     *   <tt>java.nio.channels.spi.SelectorProvider</tt> in the resource
-     *   directory <tt>META-INF/services</tt>, then the first class name
-     *   specified in that file is taken.  The class is loaded and
-     *   instantiated; if this process fails then an unspecified error is
-     *   thrown.  </p></li>
+     * <li><p> If a provider class has been installed in a jar file that is
+     * visible to the system class loader, and that jar file contains a
+     * provider-configuration file named
+     * <tt>java.nio.channels.spi.SelectorProvider</tt> in the resource
+     * directory <tt>META-INF/services</tt>, then the first class name
+     * specified in that file is taken.  The class is loaded and
+     * instantiated; if this process fails then an unspecified error is
+     * thrown.  </p></li>
      *
-     *   <li><p> Finally, if no provider has been specified by any of the above
-     *   means then the system-default provider class is instantiated and the
-     *   result is returned.  </p></li>
+     * <li><p> Finally, if no provider has been specified by any of the above
+     * means then the system-default provider class is instantiated and the
+     * result is returned.  </p></li>
      *
      * </ol>
      *
      * <p> Subsequent invocations of this method return the provider that was
      * returned by the first invocation.  </p>
      *
-     * @return  The system-wide default selector provider
+     * @return The system-wide default selector provider
      */
     public static SelectorProvider provider() {
         synchronized (lock) {
-            if (provider != null)
+            if (provider != null) {
                 return provider;
-            return AccessController.doPrivileged(
-                new PrivilegedAction<SelectorProvider>() {
-                    public SelectorProvider run() {
-                            if (loadProviderFromProperty())
-                                return provider;
-                            if (loadProviderAsService())
-                                return provider;
-                            provider = sun.nio.ch.DefaultSelectorProvider.create();
-                            return provider;
-                        }
-                    });
+            }
+            return AccessController.doPrivileged(new PrivilegedAction<SelectorProvider>() {
+                public SelectorProvider run() {
+                    if (loadProviderFromProperty()) {
+                        return provider;
+                    }
+                    if (loadProviderAsService()) {
+                        return provider;
+                    }
+                    provider = sun.nio.ch.DefaultSelectorProvider.create();
+                    return provider;
+                }
+            });
         }
     }
 
     /**
      * Opens a datagram channel.
      *
-     * @return  The new channel
+     * @return The new channel
      *
-     * @throws  IOException
-     *          If an I/O error occurs
+     * @throws IOException
+     *         If an I/O error occurs
      */
-    public abstract DatagramChannel openDatagramChannel()
-        throws IOException;
+    public abstract DatagramChannel openDatagramChannel() throws IOException;
 
     /**
      * Opens a datagram channel.
      *
-     * @param   family
-     *          The protocol family
+     * @param family
+     *         The protocol family
      *
-     * @return  A new datagram channel
+     * @return A new datagram channel
      *
-     * @throws  UnsupportedOperationException
-     *          If the specified protocol family is not supported
-     * @throws  IOException
-     *          If an I/O error occurs
-     *
+     * @throws UnsupportedOperationException
+     *         If the specified protocol family is not supported
+     * @throws IOException
+     *         If an I/O error occurs
      * @since 1.7
      */
-    public abstract DatagramChannel openDatagramChannel(ProtocolFamily family)
-        throws IOException;
+    public abstract DatagramChannel openDatagramChannel(ProtocolFamily family) throws IOException;
 
     /**
      * Opens a pipe.
      *
-     * @return  The new pipe
+     * @return The new pipe
      *
-     * @throws  IOException
-     *          If an I/O error occurs
+     * @throws IOException
+     *         If an I/O error occurs
      */
-    public abstract Pipe openPipe()
-        throws IOException;
+    public abstract Pipe openPipe() throws IOException;
 
     /**
      * Opens a selector.
      *
-     * @return  The new selector
+     * @return The new selector
      *
-     * @throws  IOException
-     *          If an I/O error occurs
+     * @throws IOException
+     *         If an I/O error occurs
      */
-    public abstract AbstractSelector openSelector()
-        throws IOException;
+    public abstract AbstractSelector openSelector() throws IOException;
 
     /**
      * Opens a server-socket channel.
      *
-     * @return  The new channel
+     * @return The new channel
      *
-     * @throws  IOException
-     *          If an I/O error occurs
+     * @throws IOException
+     *         If an I/O error occurs
      */
-    public abstract ServerSocketChannel openServerSocketChannel()
-        throws IOException;
+    public abstract ServerSocketChannel openServerSocketChannel() throws IOException;
 
     /**
      * Opens a socket channel.
      *
-     * @return  The new channel
+     * @return The new channel
      *
-     * @throws  IOException
-     *          If an I/O error occurs
+     * @throws IOException
+     *         If an I/O error occurs
      */
-    public abstract SocketChannel openSocketChannel()
-        throws IOException;
+    public abstract SocketChannel openSocketChannel() throws IOException;
 
     /**
      * Returns the channel inherited from the entity that created this
@@ -272,23 +268,23 @@ public abstract class SelectorProvider {
      *
      * <ul>
      *
-     *  <li><p> If the inherited channel represents a stream-oriented connected
-     *  socket then a {@link java.nio.channels.SocketChannel SocketChannel} is
-     *  returned. The socket channel is, at least initially, in blocking
-     *  mode, bound to a socket address, and connected to a peer.
-     *  </p></li>
+     * <li><p> If the inherited channel represents a stream-oriented connected
+     * socket then a {@link java.nio.channels.SocketChannel SocketChannel} is
+     * returned. The socket channel is, at least initially, in blocking
+     * mode, bound to a socket address, and connected to a peer.
+     * </p></li>
      *
-     *  <li><p> If the inherited channel represents a stream-oriented listening
-     *  socket then a {@link java.nio.channels.ServerSocketChannel
-     *  ServerSocketChannel} is returned. The server-socket channel is, at
-     *  least initially, in blocking mode, and bound to a socket address.
-     *  </p></li>
+     * <li><p> If the inherited channel represents a stream-oriented listening
+     * socket then a {@link java.nio.channels.ServerSocketChannel
+     * ServerSocketChannel} is returned. The server-socket channel is, at
+     * least initially, in blocking mode, and bound to a socket address.
+     * </p></li>
      *
-     *  <li><p> If the inherited channel is a datagram-oriented socket
-     *  then a {@link java.nio.channels.DatagramChannel DatagramChannel} is
-     *  returned. The datagram channel is, at least initially, in blocking
-     *  mode, and bound to a socket address.
-     *  </p></li>
+     * <li><p> If the inherited channel is a datagram-oriented socket
+     * then a {@link java.nio.channels.DatagramChannel DatagramChannel} is
+     * returned. The datagram channel is, at least initially, in blocking
+     * mode, and bound to a socket address.
+     * </p></li>
      *
      * </ul>
      *
@@ -299,19 +295,17 @@ public abstract class SelectorProvider {
      * returned. Subsequent invocations of this method return the same
      * channel. </p>
      *
-     * @return  The inherited channel, if any, otherwise <tt>null</tt>.
+     * @return The inherited channel, if any, otherwise <tt>null</tt>.
      *
-     * @throws  IOException
-     *          If an I/O error occurs
-     *
-     * @throws  SecurityException
-     *          If a security manager has been installed and it denies
-     *          {@link RuntimePermission}<tt>("inheritedChannel")</tt>
-     *
+     * @throws IOException
+     *         If an I/O error occurs
+     * @throws SecurityException
+     *         If a security manager has been installed and it denies
+     *         {@link RuntimePermission}<tt>("inheritedChannel")</tt>
      * @since 1.5
      */
-   public Channel inheritedChannel() throws IOException {
+    public Channel inheritedChannel() throws IOException {
         return null;
-   }
+    }
 
 }

@@ -45,7 +45,7 @@ import java.util.Arrays;
  * In addition, an instance has four flags. These flags indicate:
  * <ul>
  * <li>Whether line terminators are to be returned as tokens or treated
- *     as white space that merely separates tokens.
+ * as white space that merely separates tokens.
  * <li>Whether C-style comments are to be recognized and skipped.
  * <li>Whether C++-style comments are to be recognized and skipped.
  * <li>Whether the characters of identifiers are converted to lowercase.
@@ -56,10 +56,10 @@ import java.util.Arrays;
  * {@code nextToken} method in each iteration of the loop until
  * it returns the value {@code TT_EOF}.
  *
- * @author  James Gosling
- * @see     java.io.StreamTokenizer#nextToken()
- * @see     java.io.StreamTokenizer#TT_EOF
- * @since   JDK1.0
+ * @author James Gosling
+ * @see java.io.StreamTokenizer#nextToken()
+ * @see java.io.StreamTokenizer#TT_EOF
+ * @since JDK1.0
  */
 
 public class StreamTokenizer {
@@ -108,22 +108,22 @@ public class StreamTokenizer {
      * <li>{@code TT_WORD} indicates that the token is a word.
      * <li>{@code TT_NUMBER} indicates that the token is a number.
      * <li>{@code TT_EOL} indicates that the end of line has been read.
-     *     The field can only have this value if the
-     *     {@code eolIsSignificant} method has been called with the
-     *     argument {@code true}.
+     * The field can only have this value if the
+     * {@code eolIsSignificant} method has been called with the
+     * argument {@code true}.
      * <li>{@code TT_EOF} indicates that the end of the input stream
-     *     has been reached.
+     * has been reached.
      * </ul>
      * <p>
      * The initial value of this field is -4.
      *
-     * @see     java.io.StreamTokenizer#eolIsSignificant(boolean)
-     * @see     java.io.StreamTokenizer#nextToken()
-     * @see     java.io.StreamTokenizer#quoteChar(int)
-     * @see     java.io.StreamTokenizer#TT_EOF
-     * @see     java.io.StreamTokenizer#TT_EOL
-     * @see     java.io.StreamTokenizer#TT_NUMBER
-     * @see     java.io.StreamTokenizer#TT_WORD
+     * @see java.io.StreamTokenizer#eolIsSignificant(boolean)
+     * @see java.io.StreamTokenizer#nextToken()
+     * @see java.io.StreamTokenizer#quoteChar(int)
+     * @see java.io.StreamTokenizer#TT_EOF
+     * @see java.io.StreamTokenizer#TT_EOL
+     * @see java.io.StreamTokenizer#TT_NUMBER
+     * @see java.io.StreamTokenizer#TT_WORD
      */
     public int ttype = TT_NOTHING;
 
@@ -166,9 +166,9 @@ public class StreamTokenizer {
      * <p>
      * The initial value of this field is null.
      *
-     * @see     java.io.StreamTokenizer#quoteChar(int)
-     * @see     java.io.StreamTokenizer#TT_WORD
-     * @see     java.io.StreamTokenizer#ttype
+     * @see java.io.StreamTokenizer#quoteChar(int)
+     * @see java.io.StreamTokenizer#TT_WORD
+     * @see java.io.StreamTokenizer#ttype
      */
     public String sval;
 
@@ -179,8 +179,8 @@ public class StreamTokenizer {
      * <p>
      * The initial value of this field is 0.0.
      *
-     * @see     java.io.StreamTokenizer#TT_NUMBER
-     * @see     java.io.StreamTokenizer#ttype
+     * @see java.io.StreamTokenizer#TT_NUMBER
+     * @see java.io.StreamTokenizer#ttype
      */
     public double nval;
 
@@ -202,30 +202,31 @@ public class StreamTokenizer {
      * default state:
      * <ul>
      * <li>All byte values {@code 'A'} through {@code 'Z'},
-     *     {@code 'a'} through {@code 'z'}, and
-     *     {@code '\u005Cu00A0'} through {@code '\u005Cu00FF'} are
-     *     considered to be alphabetic.
+     * {@code 'a'} through {@code 'z'}, and
+     * {@code '\u005Cu00A0'} through {@code '\u005Cu00FF'} are
+     * considered to be alphabetic.
      * <li>All byte values {@code '\u005Cu0000'} through
-     *     {@code '\u005Cu0020'} are considered to be white space.
+     * {@code '\u005Cu0020'} are considered to be white space.
      * <li>{@code '/'} is a comment character.
      * <li>Single quote {@code '\u005C''} and double quote {@code '"'}
-     *     are string quote characters.
+     * are string quote characters.
      * <li>Numbers are parsed.
      * <li>Ends of lines are treated as white space, not as separate tokens.
      * <li>C-style and C++-style comments are not recognized.
      * </ul>
      *
+     * @param is
+     *         an input stream.
+     *
+     * @see java.io.BufferedReader
+     * @see java.io.InputStreamReader
+     * @see java.io.StreamTokenizer#StreamTokenizer(java.io.Reader)
      * @deprecated As of JDK version 1.1, the preferred way to tokenize an
      * input stream is to convert it into a character stream, for example:
      * <blockquote><pre>
      *   Reader r = new BufferedReader(new InputStreamReader(is));
      *   StreamTokenizer st = new StreamTokenizer(r);
      * </pre></blockquote>
-     *
-     * @param      is        an input stream.
-     * @see        java.io.BufferedReader
-     * @see        java.io.InputStreamReader
-     * @see        java.io.StreamTokenizer#StreamTokenizer(java.io.Reader)
      */
     @Deprecated
     public StreamTokenizer(InputStream is) {
@@ -239,8 +240,10 @@ public class StreamTokenizer {
     /**
      * Create a tokenizer that parses the given character stream.
      *
-     * @param r  a Reader object providing the input stream.
-     * @since   JDK1.1
+     * @param r
+     *         a Reader object providing the input stream.
+     *
+     * @since JDK1.1
      */
     public StreamTokenizer(Reader r) {
         this();
@@ -255,11 +258,12 @@ public class StreamTokenizer {
      * "ordinary." See the {@code ordinaryChar} method
      * for more information on a character being ordinary.
      *
-     * @see     java.io.StreamTokenizer#ordinaryChar(int)
+     * @see java.io.StreamTokenizer#ordinaryChar(int)
      */
     public void resetSyntax() {
-        for (int i = ctype.length; --i >= 0;)
+        for (int i = ctype.length; --i >= 0; ) {
             ctype[i] = 0;
+        }
     }
 
     /**
@@ -268,16 +272,21 @@ public class StreamTokenizer {
      * are word constituents. A word token consists of a word constituent
      * followed by zero or more word constituents or number constituents.
      *
-     * @param   low   the low end of the range.
-     * @param   hi    the high end of the range.
+     * @param low
+     *         the low end of the range.
+     * @param hi
+     *         the high end of the range.
      */
     public void wordChars(int low, int hi) {
-        if (low < 0)
+        if (low < 0) {
             low = 0;
-        if (hi >= ctype.length)
+        }
+        if (hi >= ctype.length) {
             hi = ctype.length - 1;
-        while (low <= hi)
+        }
+        while (low <= hi) {
             ctype[low++] |= CT_ALPHA;
+        }
     }
 
     /**
@@ -289,16 +298,21 @@ public class StreamTokenizer {
      * <p>Any other attribute settings for the characters in the specified
      * range are cleared.
      *
-     * @param   low   the low end of the range.
-     * @param   hi    the high end of the range.
+     * @param low
+     *         the low end of the range.
+     * @param hi
+     *         the high end of the range.
      */
     public void whitespaceChars(int low, int hi) {
-        if (low < 0)
+        if (low < 0) {
             low = 0;
-        if (hi >= ctype.length)
+        }
+        if (hi >= ctype.length) {
             hi = ctype.length - 1;
-        while (low <= hi)
+        }
+        while (low <= hi) {
             ctype[low++] = CT_WHITESPACE;
+        }
     }
 
     /**
@@ -308,17 +322,23 @@ public class StreamTokenizer {
      * {@code ordinaryChar} method for more information on a
      * character being ordinary.
      *
-     * @param   low   the low end of the range.
-     * @param   hi    the high end of the range.
-     * @see     java.io.StreamTokenizer#ordinaryChar(int)
+     * @param low
+     *         the low end of the range.
+     * @param hi
+     *         the high end of the range.
+     *
+     * @see java.io.StreamTokenizer#ordinaryChar(int)
      */
     public void ordinaryChars(int low, int hi) {
-        if (low < 0)
+        if (low < 0) {
             low = 0;
-        if (hi >= ctype.length)
+        }
+        if (hi >= ctype.length) {
             hi = ctype.length - 1;
-        while (low <= hi)
+        }
+        while (low <= hi) {
             ctype[low++] = 0;
+        }
     }
 
     /**
@@ -335,12 +355,15 @@ public class StreamTokenizer {
      * lines. The {@code lineno} method may no longer reflect
      * the presence of such terminator characters in its line count.
      *
-     * @param   ch   the character.
-     * @see     java.io.StreamTokenizer#ttype
+     * @param ch
+     *         the character.
+     *
+     * @see java.io.StreamTokenizer#ttype
      */
     public void ordinaryChar(int ch) {
-        if (ch >= 0 && ch < ctype.length)
+        if (ch >= 0 && ch < ctype.length) {
             ctype[ch] = 0;
+        }
     }
 
     /**
@@ -350,11 +373,13 @@ public class StreamTokenizer {
      *
      * <p>Any other attribute settings for the specified character are cleared.
      *
-     * @param   ch   the character.
+     * @param ch
+     *         the character.
      */
     public void commentChar(int ch) {
-        if (ch >= 0 && ch < ctype.length)
+        if (ch >= 0 && ch < ctype.length) {
             ctype[ch] = CT_COMMENT;
+        }
     }
 
     /**
@@ -376,14 +401,17 @@ public class StreamTokenizer {
      *
      * <p>Any other attribute settings for the specified character are cleared.
      *
-     * @param   ch   the character.
-     * @see     java.io.StreamTokenizer#nextToken()
-     * @see     java.io.StreamTokenizer#sval
-     * @see     java.io.StreamTokenizer#ttype
+     * @param ch
+     *         the character.
+     *
+     * @see java.io.StreamTokenizer#nextToken()
+     * @see java.io.StreamTokenizer#sval
+     * @see java.io.StreamTokenizer#ttype
      */
     public void quoteChar(int ch) {
-        if (ch >= 0 && ch < ctype.length)
+        if (ch >= 0 && ch < ctype.length) {
             ctype[ch] = CT_QUOTE;
+        }
     }
 
     /**
@@ -402,13 +430,14 @@ public class StreamTokenizer {
      * field to the value {@code TT_NUMBER} and putting the numeric
      * value of the token into the {@code nval} field.
      *
-     * @see     java.io.StreamTokenizer#nval
-     * @see     java.io.StreamTokenizer#TT_NUMBER
-     * @see     java.io.StreamTokenizer#ttype
+     * @see java.io.StreamTokenizer#nval
+     * @see java.io.StreamTokenizer#TT_NUMBER
+     * @see java.io.StreamTokenizer#ttype
      */
     public void parseNumbers() {
-        for (int i = '0'; i <= '9'; i++)
+        for (int i = '0'; i <= '9'; i++) {
             ctype[i] |= CT_DIGIT;
+        }
         ctype['.'] |= CT_DIGIT;
         ctype['-'] |= CT_DIGIT;
     }
@@ -429,12 +458,14 @@ public class StreamTokenizer {
      * If the {@code flag} is false, end-of-line characters are
      * treated as white space and serve only to separate tokens.
      *
-     * @param   flag   {@code true} indicates that end-of-line characters
-     *                 are separate tokens; {@code false} indicates that
-     *                 end-of-line characters are white space.
-     * @see     java.io.StreamTokenizer#nextToken()
-     * @see     java.io.StreamTokenizer#ttype
-     * @see     java.io.StreamTokenizer#TT_EOL
+     * @param flag
+     *         {@code true} indicates that end-of-line characters
+     *         are separate tokens; {@code false} indicates that
+     *         end-of-line characters are white space.
+     *
+     * @see java.io.StreamTokenizer#nextToken()
+     * @see java.io.StreamTokenizer#ttype
+     * @see java.io.StreamTokenizer#TT_EOL
      */
     public void eolIsSignificant(boolean flag) {
         eolIsSignificantP = flag;
@@ -449,8 +480,9 @@ public class StreamTokenizer {
      * If the flag argument is {@code false}, then C-style comments
      * are not treated specially.
      *
-     * @param   flag   {@code true} indicates to recognize and ignore
-     *                 C-style comments.
+     * @param flag
+     *         {@code true} indicates to recognize and ignore
+     *         C-style comments.
      */
     public void slashStarComments(boolean flag) {
         slashStarCommentsP = flag;
@@ -466,8 +498,9 @@ public class StreamTokenizer {
      * If the flag argument is {@code false}, then C++-style
      * comments are not treated specially.
      *
-     * @param   flag   {@code true} indicates to recognize and ignore
-     *                 C++-style comments.
+     * @param flag
+     *         {@code true} indicates to recognize and ignore
+     *         C++-style comments.
      */
     public void slashSlashComments(boolean flag) {
         slashSlashCommentsP = flag;
@@ -484,11 +517,13 @@ public class StreamTokenizer {
      * If the flag argument is {@code false}, then the
      * {@code sval} field is not modified.
      *
-     * @param   fl   {@code true} indicates that all word tokens should
-     *               be lowercased.
-     * @see     java.io.StreamTokenizer#nextToken()
-     * @see     java.io.StreamTokenizer#ttype
-     * @see     java.io.StreamTokenizer#TT_WORD
+     * @param fl
+     *         {@code true} indicates that all word tokens should
+     *         be lowercased.
+     *
+     * @see java.io.StreamTokenizer#nextToken()
+     * @see java.io.StreamTokenizer#ttype
+     * @see java.io.StreamTokenizer#TT_WORD
      */
     public void lowerCaseMode(boolean fl) {
         forceLower = fl;
@@ -496,12 +531,13 @@ public class StreamTokenizer {
 
     /** Read the next character */
     private int read() throws IOException {
-        if (reader != null)
+        if (reader != null) {
             return reader.read();
-        else if (input != null)
+        } else if (input != null) {
             return input.read();
-        else
+        } else {
             throw new IllegalStateException();
+        }
     }
 
     /**
@@ -516,11 +552,13 @@ public class StreamTokenizer {
      * calling nextToken to parse successive tokens until TT_EOF
      * is returned.
      *
-     * @return     the value of the {@code ttype} field.
-     * @exception  IOException  if an I/O error occurs.
-     * @see        java.io.StreamTokenizer#nval
-     * @see        java.io.StreamTokenizer#sval
-     * @see        java.io.StreamTokenizer#ttype
+     * @return the value of the {@code ttype} field.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
+     * @see java.io.StreamTokenizer#nval
+     * @see java.io.StreamTokenizer#sval
+     * @see java.io.StreamTokenizer#ttype
      */
     public int nextToken() throws IOException {
         if (pushedBack) {
@@ -531,19 +569,23 @@ public class StreamTokenizer {
         sval = null;
 
         int c = peekc;
-        if (c < 0)
+        if (c < 0) {
             c = NEED_CHAR;
+        }
         if (c == SKIP_LF) {
             c = read();
-            if (c < 0)
+            if (c < 0) {
                 return ttype = TT_EOF;
-            if (c == '\n')
+            }
+            if (c == '\n') {
                 c = NEED_CHAR;
+            }
         }
         if (c == NEED_CHAR) {
             c = read();
-            if (c < 0)
+            if (c < 0) {
                 return ttype = TT_EOF;
+            }
         }
         ttype = c;              /* Just to be safe */
 
@@ -561,8 +603,9 @@ public class StreamTokenizer {
                     return ttype = TT_EOL;
                 }
                 c = read();
-                if (c == '\n')
+                if (c == '\n') {
                     c = read();
+                }
             } else {
                 if (c == '\n') {
                     LINENO++;
@@ -572,8 +615,9 @@ public class StreamTokenizer {
                 }
                 c = read();
             }
-            if (c < 0)
+            if (c < 0) {
                 return ttype = TT_EOF;
+            }
             ctype = c < 256 ? ct[c] : CT_ALPHA;
         }
 
@@ -591,13 +635,14 @@ public class StreamTokenizer {
             int decexp = 0;
             int seendot = 0;
             while (true) {
-                if (c == '.' && seendot == 0)
+                if (c == '.' && seendot == 0) {
                     seendot = 1;
-                else if ('0' <= c && c <= '9') {
+                } else if ('0' <= c && c <= '9') {
                     v = v * 10 + (c - '0');
                     decexp += seendot;
-                } else
+                } else {
                     break;
+                }
                 c = read();
             }
             peekc = c;
@@ -627,8 +672,9 @@ public class StreamTokenizer {
             } while ((ctype & (CT_ALPHA | CT_DIGIT)) != 0);
             peekc = c;
             sval = String.copyValueOf(buf, 0, i);
-            if (forceLower)
+            if (forceLower) {
                 sval = sval.toLowerCase();
+            }
             return ttype = TT_WORD;
         }
 
@@ -653,10 +699,12 @@ public class StreamTokenizer {
                             if ('0' <= c2 && c2 <= '7' && first <= '3') {
                                 c = (c << 3) + (c2 - '0');
                                 d = read();
-                            } else
+                            } else {
                                 d = c2;
-                        } else
-                          d = c2;
+                            }
+                        } else {
+                            d = c2;
+                        }
                     } else {
                         switch (c) {
                         case 'a':
@@ -690,7 +738,7 @@ public class StreamTokenizer {
                 if (i >= buf.length) {
                     buf = Arrays.copyOf(buf, buf.length * 2);
                 }
-                buf[i++] = (char)c;
+                buf[i++] = (char) c;
             }
 
             /* If we broke out of the loop because we found a matching quote
@@ -720,19 +768,24 @@ public class StreamTokenizer {
                             c = read();
                         }
                     }
-                    if (c < 0)
+                    if (c < 0) {
                         return ttype = TT_EOF;
+                    }
                     prevc = c;
                 }
                 return nextToken();
             } else if (c == '/' && slashSlashCommentsP) {
-                while ((c = read()) != '\n' && c != '\r' && c >= 0);
+                while ((c = read()) != '\n' && c != '\r' && c >= 0) {
+                    ;
+                }
                 peekc = c;
                 return nextToken();
             } else {
                 /* Now see if it is still a single line comment */
                 if ((ct['/'] & CT_COMMENT) != 0) {
-                    while ((c = read()) != '\n' && c != '\r' && c >= 0);
+                    while ((c = read()) != '\n' && c != '\r' && c >= 0) {
+                        ;
+                    }
                     peekc = c;
                     return nextToken();
                 } else {
@@ -743,7 +796,9 @@ public class StreamTokenizer {
         }
 
         if ((ctype & CT_COMMENT) != 0) {
-            while ((c = read()) != '\n' && c != '\r' && c >= 0);
+            while ((c = read()) != '\n' && c != '\r' && c >= 0) {
+                ;
+            }
             peekc = c;
             return nextToken();
         }
@@ -757,20 +812,21 @@ public class StreamTokenizer {
      * field, and not to modify the value in the {@code nval} or
      * {@code sval} field.
      *
-     * @see     java.io.StreamTokenizer#nextToken()
-     * @see     java.io.StreamTokenizer#nval
-     * @see     java.io.StreamTokenizer#sval
-     * @see     java.io.StreamTokenizer#ttype
+     * @see java.io.StreamTokenizer#nextToken()
+     * @see java.io.StreamTokenizer#nval
+     * @see java.io.StreamTokenizer#sval
+     * @see java.io.StreamTokenizer#ttype
      */
     public void pushBack() {
-        if (ttype != TT_NOTHING)   /* No-op if nextToken() not called */
+        if (ttype != TT_NOTHING)   /* No-op if nextToken() not called */ {
             pushedBack = true;
+        }
     }
 
     /**
      * Return the current line number.
      *
-     * @return  the current line number of this stream tokenizer.
+     * @return the current line number of this stream tokenizer.
      */
     public int lineno() {
         return LINENO;
@@ -785,48 +841,48 @@ public class StreamTokenizer {
      *
      * <blockquote><pre>Token['a'], line 10</pre></blockquote>
      *
-     * @return  a string representation of the token
-     * @see     java.io.StreamTokenizer#nval
-     * @see     java.io.StreamTokenizer#sval
-     * @see     java.io.StreamTokenizer#ttype
+     * @return a string representation of the token
+     *
+     * @see java.io.StreamTokenizer#nval
+     * @see java.io.StreamTokenizer#sval
+     * @see java.io.StreamTokenizer#ttype
      */
     public String toString() {
         String ret;
         switch (ttype) {
-          case TT_EOF:
+        case TT_EOF:
             ret = "EOF";
             break;
-          case TT_EOL:
+        case TT_EOL:
             ret = "EOL";
             break;
-          case TT_WORD:
+        case TT_WORD:
             ret = sval;
             break;
-          case TT_NUMBER:
+        case TT_NUMBER:
             ret = "n=" + nval;
             break;
-          case TT_NOTHING:
+        case TT_NOTHING:
             ret = "NOTHING";
             break;
-          default: {
-                /*
-                 * ttype is the first character of either a quoted string or
-                 * is an ordinary character. ttype can definitely not be less
-                 * than 0, since those are reserved values used in the previous
-                 * case statements
-                 */
-                if (ttype < 256 &&
-                    ((ctype[ttype] & CT_QUOTE) != 0)) {
-                    ret = sval;
-                    break;
-                }
-
-                char s[] = new char[3];
-                s[0] = s[2] = '\'';
-                s[1] = (char) ttype;
-                ret = new String(s);
+        default: {
+            /*
+             * ttype is the first character of either a quoted string or
+             * is an ordinary character. ttype can definitely not be less
+             * than 0, since those are reserved values used in the previous
+             * case statements
+             */
+            if (ttype < 256 && ((ctype[ttype] & CT_QUOTE) != 0)) {
+                ret = sval;
                 break;
             }
+
+            char s[] = new char[3];
+            s[0] = s[2] = '\'';
+            s[1] = (char) ttype;
+            ret = new String(s);
+            break;
+        }
         }
         return "Token[" + ret + "], line " + LINENO;
     }

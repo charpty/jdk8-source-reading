@@ -43,8 +43,7 @@ package java.text;
  * is the contracting character name and value is its collation
  * order.
  */
-final class EntryPair
-{
+final class EntryPair {
     public String entryName;
     public int value;
     public boolean fwd;
@@ -52,6 +51,7 @@ final class EntryPair
     public EntryPair(String name, int value) {
         this(name, value, true);
     }
+
     public EntryPair(String name, int value, boolean fwd) {
         this.entryName = name;
         this.value = value;

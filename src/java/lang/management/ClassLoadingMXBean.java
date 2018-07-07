@@ -41,20 +41,19 @@ package java.lang.management;
  * the class loading system within an <tt>MBeanServer</tt> is:
  * <blockquote>
  * {@link ManagementFactory#CLASS_LOADING_MXBEAN_NAME
- *        <tt>java.lang:type=ClassLoading</tt>}
+ * <tt>java.lang:type=ClassLoading</tt>}
  * </blockquote>
  *
  * It can be obtained by calling the
  * {@link PlatformManagedObject#getObjectName} method.
  *
+ * @author Mandy Chung
  * @see ManagementFactory#getPlatformMXBeans(Class)
  * @see <a href="../../../javax/management/package-summary.html">
- *      JMX Specification.</a>
+ * JMX Specification.</a>
  * @see <a href="package-summary.html#examples">
- *      Ways to Access MXBeans</a>
- *
- * @author  Mandy Chung
- * @since   1.5
+ * Ways to Access MXBeans</a>
+ * @since 1.5
  */
 public interface ClassLoadingMXBean extends PlatformManagedObject {
 
@@ -63,7 +62,6 @@ public interface ClassLoadingMXBean extends PlatformManagedObject {
      * the Java virtual machine has started execution.
      *
      * @return the total number of classes loaded.
-     *
      */
     public long getTotalLoadedClassCount();
 
@@ -102,12 +100,14 @@ public interface ClassLoadingMXBean extends PlatformManagedObject {
      * Each invocation of this method enables or disables the verbose
      * output globally.
      *
-     * @param value <tt>true</tt> to enable the verbose output;
-     *              <tt>false</tt> to disable.
+     * @param value
+     *         <tt>true</tt> to enable the verbose output;
+     *         <tt>false</tt> to disable.
      *
-     * @exception  java.lang.SecurityException if a security manager
-     *             exists and the caller does not have
-     *             ManagementPermission("control").
+     * @throws java.lang.SecurityException
+     *         if a security manager
+     *         exists and the caller does not have
+     *         ManagementPermission("control").
      */
     public void setVerbose(boolean value);
 

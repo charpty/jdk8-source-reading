@@ -42,9 +42,9 @@ import java.util.spi.LocaleServiceProvider;
  * Latin digits and symbols. Refer to the <em>Unicode Locale Data Markup
  * Language (LDML)</em> specification for numbering systems.
  *
- * @since        1.6
  * @see Locale#forLanguageTag(String)
  * @see Locale#getExtension(char)
+ * @since 1.6
  */
 public abstract class DecimalFormatSymbolsProvider extends LocaleServiceProvider {
 
@@ -59,13 +59,18 @@ public abstract class DecimalFormatSymbolsProvider extends LocaleServiceProvider
      * Returns a new <code>DecimalFormatSymbols</code> instance for the
      * specified locale.
      *
-     * @param locale the desired locale
-     * @exception NullPointerException if <code>locale</code> is null
-     * @exception IllegalArgumentException if <code>locale</code> isn't
-     *     one of the locales returned from
-     *     {@link java.util.spi.LocaleServiceProvider#getAvailableLocales()
-     *     getAvailableLocales()}.
+     * @param locale
+     *         the desired locale
+     *
      * @return a <code>DecimalFormatSymbols</code> instance.
+     *
+     * @throws NullPointerException
+     *         if <code>locale</code> is null
+     * @throws IllegalArgumentException
+     *         if <code>locale</code> isn't
+     *         one of the locales returned from
+     *         {@link java.util.spi.LocaleServiceProvider#getAvailableLocales()
+     *         getAvailableLocales()}.
      * @see java.text.DecimalFormatSymbols#getInstance(java.util.Locale)
      */
     public abstract DecimalFormatSymbols getInstance(Locale locale);

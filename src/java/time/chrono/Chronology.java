@@ -148,11 +148,6 @@ import java.util.Set;
  * CLDR specification then the calendar type is the concatenation of the
  * CLDR type and, if applicable, the CLDR variant,
  *
- * @implSpec
- * This interface must be implemented with care to ensure other classes operate correctly.
- * All implementations that can be instantiated must be final, immutable and thread-safe.
- * Subclasses should be Serializable wherever possible.
- *
  * @since 1.8
  */
 public interface Chronology extends Comparable<Chronology> {
@@ -170,9 +165,13 @@ public interface Chronology extends Comparable<Chronology> {
      * This method matches the signature of the functional interface {@link TemporalQuery}
      * allowing it to be used as a query via method reference, {@code Chronology::from}.
      *
-     * @param temporal  the temporal to convert, not null
+     * @param temporal
+     *         the temporal to convert, not null
+     *
      * @return the chronology, not null
-     * @throws DateTimeException if unable to convert to an {@code Chronology}
+     *
+     * @throws DateTimeException
+     *         if unable to convert to an {@code Chronology}
      */
     static Chronology from(TemporalAccessor temporal) {
         Objects.requireNonNull(temporal, "temporal");
@@ -181,6 +180,7 @@ public interface Chronology extends Comparable<Chronology> {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code Chronology} from a locale.
      * <p>
@@ -217,15 +217,20 @@ public interface Chronology extends Comparable<Chronology> {
      * Thus, there is no difference in behavior between this method and
      * {@code Calendar#getInstance(Locale)}.
      *
-     * @param locale  the locale to use to obtain the calendar system, not null
+     * @param locale
+     *         the locale to use to obtain the calendar system, not null
+     *
      * @return the calendar system associated with the locale, not null
-     * @throws DateTimeException if the locale-specified calendar cannot be found
+     *
+     * @throws DateTimeException
+     *         if the locale-specified calendar cannot be found
      */
     static Chronology ofLocale(Locale locale) {
         return AbstractChronology.ofLocale(locale);
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code Chronology} from a chronology ID or
      * calendar system type.
@@ -242,9 +247,13 @@ public interface Chronology extends Comparable<Chronology> {
      * to the default customization. For example, the Gregorian calendar can have multiple
      * cutover dates from the Julian, but the lookup only provides the default cutover date.
      *
-     * @param id  the chronology ID or calendar system type, not null
+     * @param id
+     *         the chronology ID or calendar system type, not null
+     *
      * @return the chronology with the identifier requested, not null
-     * @throws DateTimeException if the chronology cannot be found
+     *
+     * @throws DateTimeException
+     *         if the chronology cannot be found
      */
     static Chronology of(String id) {
         return AbstractChronology.of(id);
@@ -265,6 +274,7 @@ public interface Chronology extends Comparable<Chronology> {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the ID of the chronology.
      * <p>
@@ -272,6 +282,7 @@ public interface Chronology extends Comparable<Chronology> {
      * It can be used to lookup the {@code Chronology} using {@link #of(String)}.
      *
      * @return the chronology ID, not null
+     *
      * @see #getCalendarType()
      */
     String getId();
@@ -287,26 +298,32 @@ public interface Chronology extends Comparable<Chronology> {
      * The calendar type is used to lookup the {@code Chronology} using {@link #of(String)}.
      *
      * @return the calendar system type, null if the calendar is not defined by CLDR/LDML
+     *
      * @see #getId()
      */
     String getCalendarType();
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains a local date in this chronology from the era, year-of-era,
      * month-of-year and day-of-month fields.
      *
-     * @implSpec
-     * The default implementation combines the era and year-of-era into a proleptic
-     * year before calling {@link #date(int, int, int)}.
+     * @param era
+     *         the era of the correct type for the chronology, not null
+     * @param yearOfEra
+     *         the chronology year-of-era
+     * @param month
+     *         the chronology month-of-year
+     * @param dayOfMonth
+     *         the chronology day-of-month
      *
-     * @param era  the era of the correct type for the chronology, not null
-     * @param yearOfEra  the chronology year-of-era
-     * @param month  the chronology month-of-year
-     * @param dayOfMonth  the chronology day-of-month
      * @return the local date in this chronology, not null
-     * @throws DateTimeException if unable to create the date
-     * @throws ClassCastException if the {@code era} is not of the correct type for the chronology
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
+     * @throws ClassCastException
+     *         if the {@code era} is not of the correct type for the chronology
      */
     default ChronoLocalDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
         return date(prolepticYear(era, yearOfEra), month, dayOfMonth);
@@ -316,11 +333,17 @@ public interface Chronology extends Comparable<Chronology> {
      * Obtains a local date in this chronology from the proleptic-year,
      * month-of-year and day-of-month fields.
      *
-     * @param prolepticYear  the chronology proleptic-year
-     * @param month  the chronology month-of-year
-     * @param dayOfMonth  the chronology day-of-month
+     * @param prolepticYear
+     *         the chronology proleptic-year
+     * @param month
+     *         the chronology month-of-year
+     * @param dayOfMonth
+     *         the chronology day-of-month
+     *
      * @return the local date in this chronology, not null
-     * @throws DateTimeException if unable to create the date
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
      */
     ChronoLocalDate date(int prolepticYear, int month, int dayOfMonth);
 
@@ -328,16 +351,19 @@ public interface Chronology extends Comparable<Chronology> {
      * Obtains a local date in this chronology from the era, year-of-era and
      * day-of-year fields.
      *
-     * @implSpec
-     * The default implementation combines the era and year-of-era into a proleptic
-     * year before calling {@link #dateYearDay(int, int)}.
+     * @param era
+     *         the era of the correct type for the chronology, not null
+     * @param yearOfEra
+     *         the chronology year-of-era
+     * @param dayOfYear
+     *         the chronology day-of-year
      *
-     * @param era  the era of the correct type for the chronology, not null
-     * @param yearOfEra  the chronology year-of-era
-     * @param dayOfYear  the chronology day-of-year
      * @return the local date in this chronology, not null
-     * @throws DateTimeException if unable to create the date
-     * @throws ClassCastException if the {@code era} is not of the correct type for the chronology
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
+     * @throws ClassCastException
+     *         if the {@code era} is not of the correct type for the chronology
      */
     default ChronoLocalDate dateYearDay(Era era, int yearOfEra, int dayOfYear) {
         return dateYearDay(prolepticYear(era, yearOfEra), dayOfYear);
@@ -347,10 +373,15 @@ public interface Chronology extends Comparable<Chronology> {
      * Obtains a local date in this chronology from the proleptic-year and
      * day-of-year fields.
      *
-     * @param prolepticYear  the chronology proleptic-year
-     * @param dayOfYear  the chronology day-of-year
+     * @param prolepticYear
+     *         the chronology proleptic-year
+     * @param dayOfYear
+     *         the chronology day-of-year
+     *
      * @return the local date in this chronology, not null
-     * @throws DateTimeException if unable to create the date
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
      */
     ChronoLocalDate dateYearDay(int prolepticYear, int dayOfYear);
 
@@ -360,13 +391,18 @@ public interface Chronology extends Comparable<Chronology> {
      * The definition of {@link ChronoField#EPOCH_DAY EPOCH_DAY} is the same
      * for all calendar systems, thus it can be used for conversion.
      *
-     * @param epochDay  the epoch day
+     * @param epochDay
+     *         the epoch day
+     *
      * @return the local date in this chronology, not null
-     * @throws DateTimeException if unable to create the date
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
      */
     ChronoLocalDate dateEpochDay(long epochDay);
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains the current local date in this chronology from the system clock in the default time-zone.
      * <p>
@@ -376,11 +412,10 @@ public interface Chronology extends Comparable<Chronology> {
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
-     * @implSpec
-     * The default implementation invokes {@link #dateNow(Clock)}.
-     *
      * @return the current local date using the system clock and default time-zone, not null
-     * @throws DateTimeException if unable to create the date
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
      */
     default ChronoLocalDate dateNow() {
         return dateNow(Clock.systemDefaultZone());
@@ -395,12 +430,13 @@ public interface Chronology extends Comparable<Chronology> {
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
-     * @implSpec
-     * The default implementation invokes {@link #dateNow(Clock)}.
+     * @param zone
+     *         the zone ID to use, not null
      *
-     * @param zone  the zone ID to use, not null
      * @return the current local date using the system clock, not null
-     * @throws DateTimeException if unable to create the date
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
      */
     default ChronoLocalDate dateNow(ZoneId zone) {
         return dateNow(Clock.system(zone));
@@ -413,12 +449,13 @@ public interface Chronology extends Comparable<Chronology> {
      * Using this method allows the use of an alternate clock for testing.
      * The alternate clock may be introduced using {@link Clock dependency injection}.
      *
-     * @implSpec
-     * The default implementation invokes {@link #date(TemporalAccessor)}.
+     * @param clock
+     *         the clock to use, not null
      *
-     * @param clock  the clock to use, not null
      * @return the current local date, not null
-     * @throws DateTimeException if unable to create the date
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
      */
     default ChronoLocalDate dateNow(Clock clock) {
         Objects.requireNonNull(clock, "clock");
@@ -426,6 +463,7 @@ public interface Chronology extends Comparable<Chronology> {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains a local date in this chronology from another temporal object.
      * <p>
@@ -439,9 +477,13 @@ public interface Chronology extends Comparable<Chronology> {
      * This method matches the signature of the functional interface {@link TemporalQuery}
      * allowing it to be used as a query via method reference, {@code aChronology::date}.
      *
-     * @param temporal  the temporal object to convert, not null
+     * @param temporal
+     *         the temporal object to convert, not null
+     *
      * @return the local date in this chronology, not null
-     * @throws DateTimeException if unable to create the date
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
      * @see ChronoLocalDate#from(TemporalAccessor)
      */
     ChronoLocalDate date(TemporalAccessor temporal);
@@ -462,9 +504,13 @@ public interface Chronology extends Comparable<Chronology> {
      * This method matches the signature of the functional interface {@link TemporalQuery}
      * allowing it to be used as a query via method reference, {@code aChronology::localDateTime}.
      *
-     * @param temporal  the temporal object to convert, not null
+     * @param temporal
+     *         the temporal object to convert, not null
+     *
      * @return the local date-time in this chronology, not null
-     * @throws DateTimeException if unable to create the date-time
+     *
+     * @throws DateTimeException
+     *         if unable to create the date-time
      * @see ChronoLocalDateTime#from(TemporalAccessor)
      */
     default ChronoLocalDateTime<? extends ChronoLocalDate> localDateTime(TemporalAccessor temporal) {
@@ -494,9 +540,13 @@ public interface Chronology extends Comparable<Chronology> {
      * This method matches the signature of the functional interface {@link TemporalQuery}
      * allowing it to be used as a query via method reference, {@code aChronology::zonedDateTime}.
      *
-     * @param temporal  the temporal object to convert, not null
+     * @param temporal
+     *         the temporal object to convert, not null
+     *
      * @return the zoned date-time in this chronology, not null
-     * @throws DateTimeException if unable to create the date-time
+     *
+     * @throws DateTimeException
+     *         if unable to create the date-time
      * @see ChronoZonedDateTime#from(TemporalAccessor)
      */
     default ChronoZonedDateTime<? extends ChronoLocalDate> zonedDateTime(TemporalAccessor temporal) {
@@ -520,16 +570,22 @@ public interface Chronology extends Comparable<Chronology> {
      * <p>
      * This obtains a zoned date-time with the same instant as that specified.
      *
-     * @param instant  the instant to create the date-time from, not null
-     * @param zone  the time-zone, not null
+     * @param instant
+     *         the instant to create the date-time from, not null
+     * @param zone
+     *         the time-zone, not null
+     *
      * @return the zoned date-time, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported range
      */
     default ChronoZonedDateTime<? extends ChronoLocalDate> zonedDateTime(Instant instant, ZoneId zone) {
         return ChronoZonedDateTimeImpl.ofInstant(this, instant, zone);
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks if the specified year is a leap year.
      * <p>
@@ -540,7 +596,9 @@ public interface Chronology extends Comparable<Chronology> {
      * <li>a chronology that does not support the concept of a year must return false.
      * </ul>
      *
-     * @param prolepticYear  the proleptic-year to check, not validated for range
+     * @param prolepticYear
+     *         the proleptic-year to check, not validated for range
+     *
      * @return true if the year is a leap year
      */
     boolean isLeapYear(long prolepticYear);
@@ -554,12 +612,18 @@ public interface Chronology extends Comparable<Chronology> {
      * then the year-of-era will be validated against the era.
      * For other chronologies, validation is optional.
      *
-     * @param era  the era of the correct type for the chronology, not null
-     * @param yearOfEra  the chronology year-of-era
+     * @param era
+     *         the era of the correct type for the chronology, not null
+     * @param yearOfEra
+     *         the chronology year-of-era
+     *
      * @return the proleptic-year
-     * @throws DateTimeException if unable to convert to a proleptic-year,
-     *  such as if the year is invalid for the era
-     * @throws ClassCastException if the {@code era} is not of the correct type for the chronology
+     *
+     * @throws DateTimeException
+     *         if unable to convert to a proleptic-year,
+     *         such as if the year is invalid for the era
+     * @throws ClassCastException
+     *         if the {@code era} is not of the correct type for the chronology
      */
     int prolepticYear(Era era, int yearOfEra);
 
@@ -578,9 +642,13 @@ public interface Chronology extends Comparable<Chronology> {
      * <p>
      * This method returns the singleton era of the correct type for the specified era value.
      *
-     * @param eraValue  the era value
+     * @param eraValue
+     *         the era value
+     *
      * @return the calendar system era, not null
-     * @throws DateTimeException if unable to create the era
+     *
+     * @throws DateTimeException
+     *         if unable to create the era
      */
     Era eraOf(int eraValue);
 
@@ -596,6 +664,7 @@ public interface Chronology extends Comparable<Chronology> {
     List<Era> eras();
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the range of valid values for the specified field.
      * <p>
@@ -608,13 +677,18 @@ public interface Chronology extends Comparable<Chronology> {
      * <p>
      * This method will return a result whether or not the chronology supports the field.
      *
-     * @param field  the field to get the range for, not null
+     * @param field
+     *         the field to get the range for, not null
+     *
      * @return the range of valid values for the field, not null
-     * @throws DateTimeException if the range for the field cannot be obtained
+     *
+     * @throws DateTimeException
+     *         if the range for the field cannot be obtained
      */
     ValueRange range(ChronoField field);
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the textual representation of this chronology.
      * <p>
@@ -622,12 +696,11 @@ public interface Chronology extends Comparable<Chronology> {
      * suitable for presentation to the user.
      * The parameters control the style of the returned text and the locale.
      *
-     * @implSpec
-     * The default implementation behaves as though the formatter was used to
-     * format the chronology textual name.
+     * @param style
+     *         the style of the text required, not null
+     * @param locale
+     *         the locale to use, not null
      *
-     * @param style  the style of the text required, not null
-     * @param locale  the locale to use, not null
      * @return the text value of the chronology, not null
      */
     default String getDisplayName(TextStyle style, Locale locale) {
@@ -636,10 +709,12 @@ public interface Chronology extends Comparable<Chronology> {
             public boolean isSupported(TemporalField field) {
                 return false;
             }
+
             @Override
             public long getLong(TemporalField field) {
                 throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
             }
+
             @SuppressWarnings("unchecked")
             @Override
             public <R> R query(TemporalQuery<R> query) {
@@ -653,6 +728,7 @@ public interface Chronology extends Comparable<Chronology> {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Resolves parsed {@code ChronoField} values into a date during parsing.
      * <p>
@@ -665,15 +741,21 @@ public interface Chronology extends Comparable<Chronology> {
      * The default implementation, which explains typical resolve behaviour,
      * is provided in {@link AbstractChronology}.
      *
-     * @param fieldValues  the map of fields to values, which can be updated, not null
-     * @param resolverStyle  the requested type of resolve, not null
+     * @param fieldValues
+     *         the map of fields to values, which can be updated, not null
+     * @param resolverStyle
+     *         the requested type of resolve, not null
+     *
      * @return the resolved date, null if insufficient information to create a date
-     * @throws DateTimeException if the date cannot be resolved, typically
-     *  because of a conflict in the input data
+     *
+     * @throws DateTimeException
+     *         if the date cannot be resolved, typically
+     *         because of a conflict in the input data
      */
     ChronoLocalDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle);
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains a period for this chronology based on years, months and days.
      * <p>
@@ -682,23 +764,13 @@ public interface Chronology extends Comparable<Chronology> {
      * based on years, months and days, however the {@code ChronoPeriod} API
      * allows the period to be represented using other units.
      *
-     * @implSpec
-     * The default implementation returns an implementation class suitable
-     * for most calendar systems. It is based solely on the three units.
-     * Normalization, addition and subtraction derive the number of months
-     * in a year from the {@link #range(ChronoField)}. If the number of
-     * months within a year is fixed, then the calculation approach for
-     * addition, subtraction and normalization is slightly different.
-     * <p>
-     * If implementing an unusual calendar system that is not based on
-     * years, months and days, or where you want direct control, then
-     * the {@code ChronoPeriod} interface must be directly implemented.
-     * <p>
-     * The returned period is immutable and thread-safe.
+     * @param years
+     *         the number of years, may be negative
+     * @param months
+     *         the number of years, may be negative
+     * @param days
+     *         the number of years, may be negative
      *
-     * @param years  the number of years, may be negative
-     * @param months  the number of years, may be negative
-     * @param days  the number of years, may be negative
      * @return the period in terms of this chronology, not null
      */
     default ChronoPeriod period(int years, int months, int days) {
@@ -706,6 +778,7 @@ public interface Chronology extends Comparable<Chronology> {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Compares this chronology to another chronology.
      * <p>
@@ -713,7 +786,9 @@ public interface Chronology extends Comparable<Chronology> {
      * additional information specific to the subclass.
      * It is "consistent with equals", as defined by {@link Comparable}.
      *
-     * @param other  the other chronology to compare to, not null
+     * @param other
+     *         the other chronology to compare to, not null
+     *
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
@@ -724,7 +799,9 @@ public interface Chronology extends Comparable<Chronology> {
      * <p>
      * The comparison is based on the entire state of the object.
      *
-     * @param obj  the object to check, null returns false
+     * @param obj
+     *         the object to check, null returns false
+     *
      * @return true if this is equal to the other chronology
      */
     @Override
@@ -741,6 +818,7 @@ public interface Chronology extends Comparable<Chronology> {
     int hashCode();
 
     //-----------------------------------------------------------------------
+
     /**
      * Outputs this chronology as a {@code String}.
      * <p>

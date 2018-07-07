@@ -27,11 +27,8 @@ package java.security.cert;
 
 import java.io.IOException;
 import java.security.PublicKey;
-
 import javax.security.auth.x500.X500Principal;
-
 import sun.security.x509.NameConstraintsExtension;
-import sun.security.x509.X500Name;
 
 /**
  * A trust anchor or most-trusted Certification Authority (CA).
@@ -54,11 +51,10 @@ import sun.security.x509.X500Name;
  * public fields and methods of this class and any added or overridden
  * by subclasses.
  *
+ * @author Sean Mullan
  * @see PKIXParameters#PKIXParameters(Set)
  * @see PKIXBuilderParameters#PKIXBuilderParameters(Set, CertSelector)
- *
- * @since       1.4
- * @author      Sean Mullan
+ * @since 1.4
  */
 public class TrustAnchor {
 
@@ -110,21 +106,25 @@ public class TrustAnchor {
      * Note that the name constraints byte array supplied is cloned to protect
      * against subsequent modifications.
      *
-     * @param trustedCert a trusted {@code X509Certificate}
-     * @param nameConstraints a byte array containing the ASN.1 DER encoding of
-     * a NameConstraints extension to be used for checking name constraints.
-     * Only the value of the extension is included, not the OID or criticality
-     * flag. Specify {@code null} to omit the parameter.
-     * @throws IllegalArgumentException if the name constraints cannot be
-     * decoded
-     * @throws NullPointerException if the specified
-     * {@code X509Certificate} is {@code null}
+     * @param trustedCert
+     *         a trusted {@code X509Certificate}
+     * @param nameConstraints
+     *         a byte array containing the ASN.1 DER encoding of
+     *         a NameConstraints extension to be used for checking name constraints.
+     *         Only the value of the extension is included, not the OID or criticality
+     *         flag. Specify {@code null} to omit the parameter.
+     *
+     * @throws IllegalArgumentException
+     *         if the name constraints cannot be
+     *         decoded
+     * @throws NullPointerException
+     *         if the specified
+     *         {@code X509Certificate} is {@code null}
      */
-    public TrustAnchor(X509Certificate trustedCert, byte[] nameConstraints)
-    {
-        if (trustedCert == null)
-            throw new NullPointerException("the trustedCert parameter must " +
-                "be non-null");
+    public TrustAnchor(X509Certificate trustedCert, byte[] nameConstraints) {
+        if (trustedCert == null) {
+            throw new NullPointerException("the trustedCert parameter must " + "be non-null");
+        }
         this.trustedCert = trustedCert;
         this.pubKey = null;
         this.caName = null;
@@ -149,18 +149,22 @@ public class TrustAnchor {
      * Note that the name constraints byte array supplied here is cloned to
      * protect against subsequent modifications.
      *
-     * @param caPrincipal the name of the most-trusted CA as X500Principal
-     * @param pubKey the public key of the most-trusted CA
-     * @param nameConstraints a byte array containing the ASN.1 DER encoding of
-     * a NameConstraints extension to be used for checking name constraints.
-     * Only the value of the extension is included, not the OID or criticality
-     * flag. Specify {@code null} to omit the parameter.
-     * @throws NullPointerException if the specified {@code caPrincipal} or
-     * {@code pubKey} parameter is {@code null}
+     * @param caPrincipal
+     *         the name of the most-trusted CA as X500Principal
+     * @param pubKey
+     *         the public key of the most-trusted CA
+     * @param nameConstraints
+     *         a byte array containing the ASN.1 DER encoding of
+     *         a NameConstraints extension to be used for checking name constraints.
+     *         Only the value of the extension is included, not the OID or criticality
+     *         flag. Specify {@code null} to omit the parameter.
+     *
+     * @throws NullPointerException
+     *         if the specified {@code caPrincipal} or
+     *         {@code pubKey} parameter is {@code null}
      * @since 1.5
      */
-    public TrustAnchor(X500Principal caPrincipal, PublicKey pubKey,
-            byte[] nameConstraints) {
+    public TrustAnchor(X500Principal caPrincipal, PublicKey pubKey, byte[] nameConstraints) {
         if ((caPrincipal == null) || (pubKey == null)) {
             throw new NullPointerException();
         }
@@ -188,31 +192,36 @@ public class TrustAnchor {
      * Note that the name constraints byte array supplied here is cloned to
      * protect against subsequent modifications.
      *
-     * @param caName the X.500 distinguished name of the most-trusted CA in
-     * <a href="http://www.ietf.org/rfc/rfc2253.txt">RFC 2253</a>
-     * {@code String} format
-     * @param pubKey the public key of the most-trusted CA
-     * @param nameConstraints a byte array containing the ASN.1 DER encoding of
-     * a NameConstraints extension to be used for checking name constraints.
-     * Only the value of the extension is included, not the OID or criticality
-     * flag. Specify {@code null} to omit the parameter.
-     * @throws IllegalArgumentException if the specified
-     * {@code caName} parameter is empty {@code (caName.length() == 0)}
-     * or incorrectly formatted or the name constraints cannot be decoded
-     * @throws NullPointerException if the specified {@code caName} or
-     * {@code pubKey} parameter is {@code null}
+     * @param caName
+     *         the X.500 distinguished name of the most-trusted CA in
+     *         <a href="http://www.ietf.org/rfc/rfc2253.txt">RFC 2253</a>
+     *         {@code String} format
+     * @param pubKey
+     *         the public key of the most-trusted CA
+     * @param nameConstraints
+     *         a byte array containing the ASN.1 DER encoding of
+     *         a NameConstraints extension to be used for checking name constraints.
+     *         Only the value of the extension is included, not the OID or criticality
+     *         flag. Specify {@code null} to omit the parameter.
+     *
+     * @throws IllegalArgumentException
+     *         if the specified
+     *         {@code caName} parameter is empty {@code (caName.length() == 0)}
+     *         or incorrectly formatted or the name constraints cannot be decoded
+     * @throws NullPointerException
+     *         if the specified {@code caName} or
+     *         {@code pubKey} parameter is {@code null}
      */
-    public TrustAnchor(String caName, PublicKey pubKey, byte[] nameConstraints)
-    {
-        if (pubKey == null)
-            throw new NullPointerException("the pubKey parameter must be " +
-                "non-null");
-        if (caName == null)
-            throw new NullPointerException("the caName parameter must be " +
-                "non-null");
-        if (caName.length() == 0)
-            throw new IllegalArgumentException("the caName " +
-                "parameter must be a non-empty String");
+    public TrustAnchor(String caName, PublicKey pubKey, byte[] nameConstraints) {
+        if (pubKey == null) {
+            throw new NullPointerException("the pubKey parameter must be " + "non-null");
+        }
+        if (caName == null) {
+            throw new NullPointerException("the caName parameter must be " + "non-null");
+        }
+        if (caName.length() == 0) {
+            throw new IllegalArgumentException("the caName " + "parameter must be a non-empty String");
+        }
         // check if caName is formatted correctly
         this.caPrincipal = new X500Principal(caName);
         this.pubKey = pubKey;
@@ -237,6 +246,7 @@ public class TrustAnchor {
      * @return the X.500 distinguished name of the most-trusted CA, or
      * {@code null} if the trust anchor was not specified as a trusted
      * public key and name or X500Principal pair
+     *
      * @since 1.5
      */
     public final X500Principal getCA() {
@@ -279,8 +289,7 @@ public class TrustAnchor {
             try {
                 nc = new NameConstraintsExtension(Boolean.FALSE, bytes);
             } catch (IOException ioe) {
-                IllegalArgumentException iae =
-                    new IllegalArgumentException(ioe.getMessage());
+                IllegalArgumentException iae = new IllegalArgumentException(ioe.getMessage());
                 iae.initCause(ioe);
                 throw iae;
             }
@@ -304,10 +313,10 @@ public class TrustAnchor {
      * subsequent modifications.
      *
      * @return a byte array containing the ASN.1 DER encoding of
-     *         a NameConstraints extension used for checking name constraints,
-     *         or {@code null} if not set.
+     * a NameConstraints extension used for checking name constraints,
+     * or {@code null} if not set.
      */
-    public final byte [] getNameConstraints() {
+    public final byte[] getNameConstraints() {
         return ncBytes == null ? null : ncBytes.clone();
     }
 
@@ -321,13 +330,13 @@ public class TrustAnchor {
         sb.append("[\n");
         if (pubKey != null) {
             sb.append("  Trusted CA Public Key: " + pubKey.toString() + "\n");
-            sb.append("  Trusted CA Issuer Name: "
-                + String.valueOf(caName) + "\n");
+            sb.append("  Trusted CA Issuer Name: " + String.valueOf(caName) + "\n");
         } else {
             sb.append("  Trusted CA cert: " + trustedCert.toString() + "\n");
         }
-        if (nc != null)
+        if (nc != null) {
             sb.append("  Name Constraints: " + nc.toString() + "\n");
+        }
         return sb.toString();
     }
 }

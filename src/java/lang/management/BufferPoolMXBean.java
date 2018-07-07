@@ -49,21 +49,21 @@ package java.lang.management;
  * </pre>
  * where <em>pool name</em> is the {@link #getName name} of the buffer pool.
  *
- * @since   1.7
+ * @since 1.7
  */
 public interface BufferPoolMXBean extends PlatformManagedObject {
 
     /**
      * Returns the name representing this buffer pool.
      *
-     * @return  The name of this buffer pool.
+     * @return The name of this buffer pool.
      */
     String getName();
 
     /**
      * Returns an estimate of the number of buffers in the pool.
      *
-     * @return  An estimate of the number of buffers in this pool
+     * @return An estimate of the number of buffers in this pool
      */
     long getCount();
 
@@ -73,8 +73,8 @@ public interface BufferPoolMXBean extends PlatformManagedObject {
      * returned by this method is an estimate of the total capacity of buffers
      * in the pool in bytes.
      *
-     * @return  An estimate of the total capacity of the buffers in this pool
-     *          in bytes
+     * @return An estimate of the total capacity of the buffers in this pool
+     * in bytes
      */
     long getTotalCapacity();
 
@@ -85,9 +85,9 @@ public interface BufferPoolMXBean extends PlatformManagedObject {
      * the buffers in this pool. This difference is explained by alignment,
      * memory allocator, and other implementation specific reasons.
      *
-     * @return  An estimate of the memory that the Java virtual machine is using
-     *          for this buffer pool in bytes, or {@code -1L} if an estimate of
-     *          the memory usage is not available
+     * @return An estimate of the memory that the Java virtual machine is using
+     * for this buffer pool in bytes, or {@code -1L} if an estimate of
+     * the memory usage is not available
      */
     long getMemoryUsed();
 }

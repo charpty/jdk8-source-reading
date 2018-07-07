@@ -32,7 +32,7 @@ import java.util.Locale;
  * provide localized names for the
  * {@link java.util.Locale Locale} class.
  *
- * @since        1.6
+ * @since 1.6
  */
 public abstract class LocaleNameProvider extends LocaleServiceProvider {
 
@@ -53,17 +53,24 @@ public abstract class LocaleNameProvider extends LocaleServiceProvider {
      * If the name returned cannot be localized according to <code>locale</code>,
      * (say, the provider does not have a Japanese name for Croatian),
      * this method returns null.
-     * @param languageCode the language code string in the form of two to eight
-     *     lower-case letters between 'a' (U+0061) and 'z' (U+007A)
-     * @param locale the desired locale
+     *
+     * @param languageCode
+     *         the language code string in the form of two to eight
+     *         lower-case letters between 'a' (U+0061) and 'z' (U+007A)
+     * @param locale
+     *         the desired locale
+     *
      * @return the name of the given language code for the specified locale, or null if it's not
-     *     available.
-     * @exception NullPointerException if <code>languageCode</code> or <code>locale</code> is null
-     * @exception IllegalArgumentException if <code>languageCode</code> is not in the form of
-     *     two or three lower-case letters, or <code>locale</code> isn't
-     *     one of the locales returned from
-     *     {@link java.util.spi.LocaleServiceProvider#getAvailableLocales()
-     *     getAvailableLocales()}.
+     * available.
+     *
+     * @throws NullPointerException
+     *         if <code>languageCode</code> or <code>locale</code> is null
+     * @throws IllegalArgumentException
+     *         if <code>languageCode</code> is not in the form of
+     *         two or three lower-case letters, or <code>locale</code> isn't
+     *         one of the locales returned from
+     *         {@link java.util.spi.LocaleServiceProvider#getAvailableLocales()
+     *         getAvailableLocales()}.
      * @see java.util.Locale#getDisplayLanguage(java.util.Locale)
      */
     public abstract String getDisplayLanguage(String languageCode, Locale locale);
@@ -78,19 +85,26 @@ public abstract class LocaleNameProvider extends LocaleServiceProvider {
      * If the name returned cannot be localized according to <code>locale</code>,
      * (say, the provider does not have a Japanese name for Cyrillic),
      * this method returns null. The default implementation returns null.
-     * @param scriptCode the four letter script code string in the form of title-case
-     *     letters (the first letter is upper-case character between 'A' (U+0041) and
-     *     'Z' (U+005A) followed by three lower-case character between 'a' (U+0061)
-     *     and 'z' (U+007A)).
-     * @param locale the desired locale
+     *
+     * @param scriptCode
+     *         the four letter script code string in the form of title-case
+     *         letters (the first letter is upper-case character between 'A' (U+0041) and
+     *         'Z' (U+005A) followed by three lower-case character between 'a' (U+0061)
+     *         and 'z' (U+007A)).
+     * @param locale
+     *         the desired locale
+     *
      * @return the name of the given script code for the specified locale, or null if it's not
-     *     available.
-     * @exception NullPointerException if <code>scriptCode</code> or <code>locale</code> is null
-     * @exception IllegalArgumentException if <code>scriptCode</code> is not in the form of
-     *     four title case letters, or <code>locale</code> isn't
-     *     one of the locales returned from
-     *     {@link java.util.spi.LocaleServiceProvider#getAvailableLocales()
-     *     getAvailableLocales()}.
+     * available.
+     *
+     * @throws NullPointerException
+     *         if <code>scriptCode</code> or <code>locale</code> is null
+     * @throws IllegalArgumentException
+     *         if <code>scriptCode</code> is not in the form of
+     *         four title case letters, or <code>locale</code> isn't
+     *         one of the locales returned from
+     *         {@link java.util.spi.LocaleServiceProvider#getAvailableLocales()
+     *         getAvailableLocales()}.
      * @see java.util.Locale#getDisplayScript(java.util.Locale)
      * @since 1.7
      */
@@ -108,18 +122,25 @@ public abstract class LocaleNameProvider extends LocaleServiceProvider {
      * If the name returned cannot be localized according to <code>locale</code>,
      * (say, the provider does not have a Japanese name for Croatia),
      * this method returns null.
-     * @param countryCode the country(region) code string in the form of two
-     *     upper-case letters between 'A' (U+0041) and 'Z' (U+005A) or the UN M.49 area code
-     *     in the form of three digit letters between '0' (U+0030) and '9' (U+0039).
-     * @param locale the desired locale
+     *
+     * @param countryCode
+     *         the country(region) code string in the form of two
+     *         upper-case letters between 'A' (U+0041) and 'Z' (U+005A) or the UN M.49 area code
+     *         in the form of three digit letters between '0' (U+0030) and '9' (U+0039).
+     * @param locale
+     *         the desired locale
+     *
      * @return the name of the given country code for the specified locale, or null if it's not
-     *     available.
-     * @exception NullPointerException if <code>countryCode</code> or <code>locale</code> is null
-     * @exception IllegalArgumentException if <code>countryCode</code> is not in the form of
-     *     two upper-case letters or three digit letters, or <code>locale</code> isn't
-     *     one of the locales returned from
-     *     {@link java.util.spi.LocaleServiceProvider#getAvailableLocales()
-     *     getAvailableLocales()}.
+     * available.
+     *
+     * @throws NullPointerException
+     *         if <code>countryCode</code> or <code>locale</code> is null
+     * @throws IllegalArgumentException
+     *         if <code>countryCode</code> is not in the form of
+     *         two upper-case letters or three digit letters, or <code>locale</code> isn't
+     *         one of the locales returned from
+     *         {@link java.util.spi.LocaleServiceProvider#getAvailableLocales()
+     *         getAvailableLocales()}.
      * @see java.util.Locale#getDisplayCountry(java.util.Locale)
      */
     public abstract String getDisplayCountry(String countryCode, Locale locale);
@@ -129,15 +150,22 @@ public abstract class LocaleNameProvider extends LocaleServiceProvider {
      * is appropriate for display to the user.
      * If the name returned cannot be localized according to <code>locale</code>,
      * this method returns null.
-     * @param variant the variant string
-     * @param locale the desired locale
+     *
+     * @param variant
+     *         the variant string
+     * @param locale
+     *         the desired locale
+     *
      * @return the name of the given variant string for the specified locale, or null if it's not
-     *     available.
-     * @exception NullPointerException if <code>variant</code> or <code>locale</code> is null
-     * @exception IllegalArgumentException if <code>locale</code> isn't
-     *     one of the locales returned from
-     *     {@link java.util.spi.LocaleServiceProvider#getAvailableLocales()
-     *     getAvailableLocales()}.
+     * available.
+     *
+     * @throws NullPointerException
+     *         if <code>variant</code> or <code>locale</code> is null
+     * @throws IllegalArgumentException
+     *         if <code>locale</code> isn't
+     *         one of the locales returned from
+     *         {@link java.util.spi.LocaleServiceProvider#getAvailableLocales()
+     *         getAvailableLocales()}.
      * @see java.util.Locale#getDisplayVariant(java.util.Locale)
      */
     public abstract String getDisplayVariant(String variant, Locale locale);

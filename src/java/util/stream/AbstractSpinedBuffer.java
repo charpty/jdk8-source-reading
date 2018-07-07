@@ -28,6 +28,7 @@ package java.util.stream;
  * Base class for a data structure for gathering elements into a buffer and then
  * iterating them. Maintains an array of increasingly sized arrays, so there is
  * no copying cost associated with growing the data structure.
+ *
  * @since 1.8
  */
 abstract class AbstractSpinedBuffer {
@@ -50,7 +51,6 @@ abstract class AbstractSpinedBuffer {
      * Minimum array size for array-of-chunks.
      */
     public static final int MIN_SPINE_SIZE = 8;
-
 
     /**
      * log2 of the size of the first chunk.
@@ -84,14 +84,15 @@ abstract class AbstractSpinedBuffer {
     /**
      * Construct with a specified initial capacity.
      *
-     * @param initialCapacity The minimum expected number of elements
+     * @param initialCapacity
+     *         The minimum expected number of elements
      */
     protected AbstractSpinedBuffer(int initialCapacity) {
-        if (initialCapacity < 0)
-            throw new IllegalArgumentException("Illegal Capacity: "+ initialCapacity);
+        if (initialCapacity < 0) {
+            throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
+        }
 
-        this.initialChunkPower = Math.max(MIN_CHUNK_POWER,
-                                          Integer.SIZE - Integer.numberOfLeadingZeros(initialCapacity - 1));
+        this.initialChunkPower = Math.max(MIN_CHUNK_POWER, Integer.SIZE - Integer.numberOfLeadingZeros(initialCapacity - 1));
     }
 
     /**
@@ -105,18 +106,14 @@ abstract class AbstractSpinedBuffer {
      * How many elements are currently in the buffer?
      */
     public long count() {
-        return (spineIndex == 0)
-               ? elementIndex
-               : priorElementCount[spineIndex] + elementIndex;
+        return (spineIndex == 0) ? elementIndex : priorElementCount[spineIndex] + elementIndex;
     }
 
     /**
      * How big should the nth chunk be?
      */
     protected int chunkSize(int n) {
-        int power = (n == 0 || n == 1)
-                    ? initialChunkPower
-                    : Math.min(initialChunkPower + n - 1, AbstractSpinedBuffer.MAX_CHUNK_POWER);
+        int power = (n == 0 || n == 1) ? initialChunkPower : Math.min(initialChunkPower + n - 1, AbstractSpinedBuffer.MAX_CHUNK_POWER);
         return 1 << power;
     }
 

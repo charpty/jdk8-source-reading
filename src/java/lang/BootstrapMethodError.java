@@ -49,7 +49,8 @@ public class BootstrapMethodError extends LinkageError {
      * Constructs a {@code BootstrapMethodError} with the specified
      * detail message.
      *
-     * @param s the detail message.
+     * @param s
+     *         the detail message.
      */
     public BootstrapMethodError(String s) {
         super(s);
@@ -59,8 +60,10 @@ public class BootstrapMethodError extends LinkageError {
      * Constructs a {@code BootstrapMethodError} with the specified
      * detail message and cause.
      *
-     * @param s the detail message.
-     * @param cause the cause, may be {@code null}.
+     * @param s
+     *         the detail message.
+     * @param cause
+     *         the cause, may be {@code null}.
      */
     public BootstrapMethodError(String s, Throwable cause) {
         super(s, cause);
@@ -70,7 +73,8 @@ public class BootstrapMethodError extends LinkageError {
      * Constructs a {@code BootstrapMethodError} with the specified
      * cause.
      *
-     * @param cause the cause, may be {@code null}.
+     * @param cause
+     *         the cause, may be {@code null}.
      */
     public BootstrapMethodError(Throwable cause) {
         // cf. Throwable(Throwable cause) constructor.

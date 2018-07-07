@@ -61,12 +61,13 @@
  */
 package java.time;
 
-import static java.time.LocalTime.NANOS_PER_MINUTE;
-import static java.time.LocalTime.NANOS_PER_SECOND;
-
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.TimeZone;
+
+
+import static java.time.LocalTime.NANOS_PER_MINUTE;
+import static java.time.LocalTime.NANOS_PER_SECOND;
 
 /**
  * A clock providing access to the current instant, date and time using a time-zone.
@@ -102,32 +103,6 @@ import java.util.TimeZone;
  * The {@code system} factory methods provide clocks based on the best available
  * system clock This may use {@link System#currentTimeMillis()}, or a higher
  * resolution clock if one is available.
- *
- * @implSpec
- * This abstract class must be implemented with care to ensure other classes operate correctly.
- * All implementations that can be instantiated must be final, immutable and thread-safe.
- * <p>
- * The principal methods are defined to allow the throwing of an exception.
- * In normal use, no exceptions will be thrown, however one possible implementation would be to
- * obtain the time from a central time server across the network. Obviously, in this case the
- * lookup could fail, and so the method is permitted to throw an exception.
- * <p>
- * The returned instants from {@code Clock} work on a time-scale that ignores leap seconds,
- * as described in {@link Instant}. If the implementation wraps a source that provides leap
- * second information, then a mechanism should be used to "smooth" the leap second.
- * The Java Time-Scale mandates the use of UTC-SLS, however clock implementations may choose
- * how accurate they are with the time-scale so long as they document how they work.
- * Implementations are therefore not required to actually perform the UTC-SLS slew or to
- * otherwise be aware of leap seconds.
- * <p>
- * Implementations should implement {@code Serializable} wherever possible and must
- * document whether or not they do support serialization.
- *
- * @implNote
- * The clock implementation provided here is based on {@link System#currentTimeMillis()}.
- * That method provides little to no guarantee about the accuracy of the clock.
- * Applications requiring a more accurate clock must implement this abstract class
- * themselves using a different external clock, such as an NTP server.
  *
  * @since 1.8
  */
@@ -172,6 +147,7 @@ public abstract class Clock {
      * It is equivalent to {@code system(ZoneId.systemDefault())}.
      *
      * @return a clock that uses the best available system clock in the default zone, not null
+     *
      * @see ZoneId#systemDefault()
      */
     public static Clock systemDefaultZone() {
@@ -190,7 +166,9 @@ public abstract class Clock {
      * <p>
      * The returned implementation is immutable, thread-safe and {@code Serializable}.
      *
-     * @param zone  the time-zone to use to convert the instant to date-time, not null
+     * @param zone
+     *         the time-zone to use to convert the instant to date-time, not null
+     *
      * @return a clock that uses the best available system clock in the specified zone, not null
      */
     public static Clock system(ZoneId zone) {
@@ -199,6 +177,7 @@ public abstract class Clock {
     }
 
     //-------------------------------------------------------------------------
+
     /**
      * Obtains a clock that returns the current instant ticking in whole seconds
      * using best available system clock.
@@ -215,7 +194,9 @@ public abstract class Clock {
      * The returned implementation is immutable, thread-safe and {@code Serializable}.
      * It is equivalent to {@code tick(system(zone), Duration.ofSeconds(1))}.
      *
-     * @param zone  the time-zone to use to convert the instant to date-time, not null
+     * @param zone
+     *         the time-zone to use to convert the instant to date-time, not null
+     *
      * @return a clock that ticks in whole seconds using the specified zone, not null
      */
     public static Clock tickSeconds(ZoneId zone) {
@@ -238,7 +219,9 @@ public abstract class Clock {
      * The returned implementation is immutable, thread-safe and {@code Serializable}.
      * It is equivalent to {@code tick(system(zone), Duration.ofMinutes(1))}.
      *
-     * @param zone  the time-zone to use to convert the instant to date-time, not null
+     * @param zone
+     *         the time-zone to use to convert the instant to date-time, not null
+     *
      * @return a clock that ticks in whole minutes using the specified zone, not null
      */
     public static Clock tickMinutes(ZoneId zone) {
@@ -268,13 +251,19 @@ public abstract class Clock {
      * The returned implementation is immutable, thread-safe and {@code Serializable}
      * providing that the base clock is.
      *
-     * @param baseClock  the base clock to base the ticking clock on, not null
-     * @param tickDuration  the duration of each visible tick, not negative, not null
+     * @param baseClock
+     *         the base clock to base the ticking clock on, not null
+     * @param tickDuration
+     *         the duration of each visible tick, not negative, not null
+     *
      * @return a clock that ticks in whole units of the duration, not null
-     * @throws IllegalArgumentException if the duration is negative, or has a
-     *  part smaller than a whole millisecond such that the whole duration is not
-     *  divisible into one second
-     * @throws ArithmeticException if the duration is too large to be represented as nanos
+     *
+     * @throws IllegalArgumentException
+     *         if the duration is negative, or has a
+     *         part smaller than a whole millisecond such that the whole duration is not
+     *         divisible into one second
+     * @throws ArithmeticException
+     *         if the duration is too large to be represented as nanos
      */
     public static Clock tick(Clock baseClock, Duration tickDuration) {
         Objects.requireNonNull(baseClock, "baseClock");
@@ -297,6 +286,7 @@ public abstract class Clock {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains a clock that always returns the same instant.
      * <p>
@@ -307,8 +297,11 @@ public abstract class Clock {
      * <p>
      * The returned implementation is immutable, thread-safe and {@code Serializable}.
      *
-     * @param fixedInstant  the instant to use as the clock, not null
-     * @param zone  the time-zone to use to convert the instant to date-time, not null
+     * @param fixedInstant
+     *         the instant to use as the clock, not null
+     * @param zone
+     *         the time-zone to use to convert the instant to date-time, not null
+     *
      * @return a clock that always returns the same instant, not null
      */
     public static Clock fixed(Instant fixedInstant, ZoneId zone) {
@@ -318,6 +311,7 @@ public abstract class Clock {
     }
 
     //-------------------------------------------------------------------------
+
     /**
      * Obtains a clock that returns instants from the specified clock with the
      * specified duration added
@@ -333,8 +327,11 @@ public abstract class Clock {
      * The returned implementation is immutable, thread-safe and {@code Serializable}
      * providing that the base clock is.
      *
-     * @param baseClock  the base clock to add the duration to, not null
-     * @param offsetDuration  the duration to add, not null
+     * @param baseClock
+     *         the base clock to add the duration to, not null
+     * @param offsetDuration
+     *         the duration to add, not null
+     *
      * @return a clock based on the base clock with the duration added, not null
      */
     public static Clock offset(Clock baseClock, Duration offsetDuration) {
@@ -347,6 +344,7 @@ public abstract class Clock {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Constructor accessible by subclasses.
      */
@@ -354,6 +352,7 @@ public abstract class Clock {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the time-zone being used to create dates and times.
      * <p>
@@ -371,12 +370,15 @@ public abstract class Clock {
      * to a date or time using a time-zone. This method returns a clock with
      * similar properties but using a different time-zone.
      *
-     * @param zone  the time-zone to change to, not null
+     * @param zone
+     *         the time-zone to change to, not null
+     *
      * @return a clock based on this clock with the specified time-zone, not null
      */
     public abstract Clock withZone(ZoneId zone);
 
     //-------------------------------------------------------------------------
+
     /**
      * Gets the current millisecond instant of the clock.
      * <p>
@@ -391,25 +393,31 @@ public abstract class Clock {
      * The default implementation currently calls {@link #instant}.
      *
      * @return the current millisecond instant from this clock, measured from
-     *  the Java epoch of 1970-01-01T00:00Z (UTC), not null
-     * @throws DateTimeException if the instant cannot be obtained, not thrown by most implementations
+     * the Java epoch of 1970-01-01T00:00Z (UTC), not null
+     *
+     * @throws DateTimeException
+     *         if the instant cannot be obtained, not thrown by most implementations
      */
     public long millis() {
         return instant().toEpochMilli();
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the current instant of the clock.
      * <p>
      * This returns an instant representing the current instant as defined by the clock.
      *
      * @return the current instant from this clock, not null
-     * @throws DateTimeException if the instant cannot be obtained, not thrown by most implementations
+     *
+     * @throws DateTimeException
+     *         if the instant cannot be obtained, not thrown by most implementations
      */
     public abstract Instant instant();
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks if this clock is equal to another clock.
      * <p>
@@ -417,7 +425,9 @@ public abstract class Clock {
      * their state and to meet the contract of {@link Object#equals}.
      * If not overridden, the behavior is defined by {@link Object#equals}
      *
-     * @param obj  the object to check, null returns false
+     * @param obj
+     *         the object to check, null returns false
+     *
      * @return true if this is equal to the other clock
      */
     @Override
@@ -435,11 +445,12 @@ public abstract class Clock {
      * @return a suitable hash code
      */
     @Override
-    public  int hashCode() {
+    public int hashCode() {
         return super.hashCode();
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Implementation of a clock that always returns the latest time from
      * {@link System#currentTimeMillis()}.
@@ -451,10 +462,12 @@ public abstract class Clock {
         SystemClock(ZoneId zone) {
             this.zone = zone;
         }
+
         @Override
         public ZoneId getZone() {
             return zone;
         }
+
         @Override
         public Clock withZone(ZoneId zone) {
             if (zone.equals(this.zone)) {  // intentional NPE
@@ -462,14 +475,17 @@ public abstract class Clock {
             }
             return new SystemClock(zone);
         }
+
         @Override
         public long millis() {
             return System.currentTimeMillis();
         }
+
         @Override
         public Instant instant() {
             return Instant.ofEpochMilli(millis());
         }
+
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof SystemClock) {
@@ -477,10 +493,12 @@ public abstract class Clock {
             }
             return false;
         }
+
         @Override
         public int hashCode() {
             return zone.hashCode() + 1;
         }
+
         @Override
         public String toString() {
             return "SystemClock[" + zone + "]";
@@ -488,12 +506,13 @@ public abstract class Clock {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Implementation of a clock that always returns the same instant.
      * This is typically used for testing.
      */
     static final class FixedClock extends Clock implements Serializable {
-       private static final long serialVersionUID = 7430389292664866958L;
+        private static final long serialVersionUID = 7430389292664866958L;
         private final Instant instant;
         private final ZoneId zone;
 
@@ -501,10 +520,12 @@ public abstract class Clock {
             this.instant = fixedInstant;
             this.zone = zone;
         }
+
         @Override
         public ZoneId getZone() {
             return zone;
         }
+
         @Override
         public Clock withZone(ZoneId zone) {
             if (zone.equals(this.zone)) {  // intentional NPE
@@ -512,14 +533,17 @@ public abstract class Clock {
             }
             return new FixedClock(instant, zone);
         }
+
         @Override
         public long millis() {
             return instant.toEpochMilli();
         }
+
         @Override
         public Instant instant() {
             return instant;
         }
+
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof FixedClock) {
@@ -528,10 +552,12 @@ public abstract class Clock {
             }
             return false;
         }
+
         @Override
         public int hashCode() {
             return instant.hashCode() ^ zone.hashCode();
         }
+
         @Override
         public String toString() {
             return "FixedClock[" + instant + "," + zone + "]";
@@ -539,11 +565,12 @@ public abstract class Clock {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Implementation of a clock that adds an offset to an underlying clock.
      */
     static final class OffsetClock extends Clock implements Serializable {
-       private static final long serialVersionUID = 2007484719125426256L;
+        private static final long serialVersionUID = 2007484719125426256L;
         private final Clock baseClock;
         private final Duration offset;
 
@@ -551,10 +578,12 @@ public abstract class Clock {
             this.baseClock = baseClock;
             this.offset = offset;
         }
+
         @Override
         public ZoneId getZone() {
             return baseClock.getZone();
         }
+
         @Override
         public Clock withZone(ZoneId zone) {
             if (zone.equals(baseClock.getZone())) {  // intentional NPE
@@ -562,14 +591,17 @@ public abstract class Clock {
             }
             return new OffsetClock(baseClock.withZone(zone), offset);
         }
+
         @Override
         public long millis() {
             return Math.addExact(baseClock.millis(), offset.toMillis());
         }
+
         @Override
         public Instant instant() {
             return baseClock.instant().plus(offset);
         }
+
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof OffsetClock) {
@@ -578,10 +610,12 @@ public abstract class Clock {
             }
             return false;
         }
+
         @Override
         public int hashCode() {
             return baseClock.hashCode() ^ offset.hashCode();
         }
+
         @Override
         public String toString() {
             return "OffsetClock[" + baseClock + "," + offset + "]";
@@ -589,6 +623,7 @@ public abstract class Clock {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Implementation of a clock that adds an offset to an underlying clock.
      */
@@ -601,10 +636,12 @@ public abstract class Clock {
             this.baseClock = baseClock;
             this.tickNanos = tickNanos;
         }
+
         @Override
         public ZoneId getZone() {
             return baseClock.getZone();
         }
+
         @Override
         public Clock withZone(ZoneId zone) {
             if (zone.equals(baseClock.getZone())) {  // intentional NPE
@@ -612,11 +649,13 @@ public abstract class Clock {
             }
             return new TickClock(baseClock.withZone(zone), tickNanos);
         }
+
         @Override
         public long millis() {
             long millis = baseClock.millis();
             return millis - Math.floorMod(millis, tickNanos / 1000_000L);
         }
+
         @Override
         public Instant instant() {
             if ((tickNanos % 1000_000) == 0) {
@@ -628,6 +667,7 @@ public abstract class Clock {
             long adjust = Math.floorMod(nanos, tickNanos);
             return instant.minusNanos(adjust);
         }
+
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof TickClock) {
@@ -636,10 +676,12 @@ public abstract class Clock {
             }
             return false;
         }
+
         @Override
         public int hashCode() {
             return baseClock.hashCode() ^ ((int) (tickNanos ^ (tickNanos >>> 32)));
         }
+
         @Override
         public String toString() {
             return "TickClock[" + baseClock + "," + Duration.ofNanos(tickNanos) + "]";

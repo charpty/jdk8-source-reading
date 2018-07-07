@@ -38,16 +38,21 @@ package java.lang.invoke;
  * <p>
  * In other respects, a {@code VolatileCallSite} is interchangeable
  * with {@code MutableCallSite}.
- * @see MutableCallSite
+ *
  * @author John Rose, JSR 292 EG
+ * @see MutableCallSite
  */
 public class VolatileCallSite extends CallSite {
     /**
      * Creates a call site with a volatile binding to its target.
      * The initial target is set to a method handle
      * of the given type which will throw an {@code IllegalStateException} if called.
-     * @param type the method type that this call site will have
-     * @throws NullPointerException if the proposed type is null
+     *
+     * @param type
+     *         the method type that this call site will have
+     *
+     * @throws NullPointerException
+     *         if the proposed type is null
      */
     public VolatileCallSite(MethodType type) {
         super(type);
@@ -56,8 +61,12 @@ public class VolatileCallSite extends CallSite {
     /**
      * Creates a call site with a volatile binding to its target.
      * The target is set to the given value.
-     * @param target the method handle that will be the initial target of the call site
-     * @throws NullPointerException if the proposed target is null
+     *
+     * @param target
+     *         the method handle that will be the initial target of the call site
+     *
+     * @throws NullPointerException
+     *         if the proposed target is null
      */
     public VolatileCallSite(MethodHandle target) {
         super(target);
@@ -75,9 +84,11 @@ public class VolatileCallSite extends CallSite {
      * a recent update to the target by another thread.
      *
      * @return the linkage state of this call site, a method handle which can change over time
+     *
      * @see #setTarget
      */
-    @Override public final MethodHandle getTarget() {
+    @Override
+    public final MethodHandle getTarget() {
         return getTargetVolatile();
     }
 
@@ -88,13 +99,19 @@ public class VolatileCallSite extends CallSite {
      * The interactions with memory are the same as of a write to a volatile field.
      * In particular, any threads is guaranteed to see the updated target
      * the next time it calls {@code getTarget}.
-     * @param newTarget the new target
-     * @throws NullPointerException if the proposed new target is null
-     * @throws WrongMethodTypeException if the proposed new target
+     *
+     * @param newTarget
+     *         the new target
+     *
+     * @throws NullPointerException
+     *         if the proposed new target is null
+     * @throws WrongMethodTypeException
+     *         if the proposed new target
      *         has a method type that differs from the previous target
      * @see #getTarget
      */
-    @Override public void setTarget(MethodHandle newTarget) {
+    @Override
+    public void setTarget(MethodHandle newTarget) {
         checkTargetChange(getTargetVolatile(), newTarget);
         setTargetVolatile(newTarget);
     }

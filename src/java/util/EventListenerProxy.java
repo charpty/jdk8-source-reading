@@ -50,15 +50,15 @@ package java.util;
  *
  * @since 1.4
  */
-public abstract class EventListenerProxy<T extends EventListener>
-        implements EventListener {
+public abstract class EventListenerProxy<T extends EventListener> implements EventListener {
 
     private final T listener;
 
     /**
      * Creates a proxy for the specified listener.
      *
-     * @param listener  the listener object
+     * @param listener
+     *         the listener object
      */
     public EventListenerProxy(T listener) {
         this.listener = listener;
@@ -67,7 +67,7 @@ public abstract class EventListenerProxy<T extends EventListener>
     /**
      * Returns the listener associated with the proxy.
      *
-     * @return  the listener associated with the proxy
+     * @return the listener associated with the proxy
      */
     public T getListener() {
         return this.listener;

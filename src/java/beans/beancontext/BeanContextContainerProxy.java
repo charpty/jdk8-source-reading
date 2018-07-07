@@ -25,7 +25,7 @@
 
 package java.beans.beancontext;
 
-import java.awt.Container;
+import java.awt.*;
 
 /**
  * <p>
@@ -34,10 +34,9 @@ import java.awt.Container;
  * </p>
  *
  * @author Laurence P. G. Cable
- * @since 1.2
- *
  * @see java.beans.beancontext.BeanContext
  * @see java.beans.beancontext.BeanContextSupport
+ * @since 1.2
  */
 
 public interface BeanContextContainerProxy {
@@ -45,6 +44,7 @@ public interface BeanContextContainerProxy {
     /**
      * Gets the <code>java.awt.Container</code> associated
      * with this <code>BeanContext</code>.
+     *
      * @return the <code>java.awt.Container</code> associated
      * with this <code>BeanContext</code>.
      */

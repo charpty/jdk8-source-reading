@@ -25,8 +25,7 @@
 
 package java.nio.channels.spi;
 
-import java.nio.channels.*;
-
+import java.nio.channels.SelectionKey;
 
 /**
  * Base implementation class for selection keys.
@@ -38,14 +37,13 @@ import java.nio.channels.*;
  * @since 1.4
  */
 
-public abstract class AbstractSelectionKey
-    extends SelectionKey
-{
+public abstract class AbstractSelectionKey extends SelectionKey {
 
     /**
      * Initializes a new instance of this class.
      */
-    protected AbstractSelectionKey() { }
+    protected AbstractSelectionKey() {
+    }
 
     private volatile boolean valid = true;
 
@@ -70,7 +68,7 @@ public abstract class AbstractSelectionKey
         synchronized (this) {
             if (valid) {
                 valid = false;
-                ((AbstractSelector)selector()).cancel(this);
+                ((AbstractSelector) selector()).cancel(this);
             }
         }
     }

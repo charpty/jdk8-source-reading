@@ -48,19 +48,11 @@ import java.util.stream.Collector;
  * <pre> {@code
  * LongSummaryStatistics stats = people.stream()
  *                                     .collect(Collectors.summarizingLong(Person::getAge));
- *}</pre>
+ * }</pre>
  *
  * This computes, in a single pass, the count of people, as well as the minimum,
  * maximum, sum, and average of their ages.
  *
- * @implNote This implementation is not thread safe. However, it is safe to use
- * {@link java.util.stream.Collectors#summarizingLong(java.util.function.ToLongFunction)
- * Collectors.toLongStatistics()} on a parallel stream, because the parallel
- * implementation of {@link java.util.stream.Stream#collect Stream.collect()}
- * provides the necessary partitioning, isolation, and merging of results for
- * safe and efficient parallel execution.
- *
- * <p>This implementation does not check for overflow of the sum.
  * @since 1.8
  */
 public class LongSummaryStatistics implements LongConsumer, IntConsumer {
@@ -74,12 +66,14 @@ public class LongSummaryStatistics implements LongConsumer, IntConsumer {
      * {@code Long.MAX_VALUE} min, {@code Long.MIN_VALUE} max and zero
      * average.
      */
-    public LongSummaryStatistics() { }
+    public LongSummaryStatistics() {
+    }
 
     /**
      * Records a new {@code int} value into the summary information.
      *
-     * @param value the input value
+     * @param value
+     *         the input value
      */
     @Override
     public void accept(int value) {
@@ -89,7 +83,8 @@ public class LongSummaryStatistics implements LongConsumer, IntConsumer {
     /**
      * Records a new {@code long} value into the summary information.
      *
-     * @param value the input value
+     * @param value
+     *         the input value
      */
     @Override
     public void accept(long value) {
@@ -103,8 +98,11 @@ public class LongSummaryStatistics implements LongConsumer, IntConsumer {
      * Combines the state of another {@code LongSummaryStatistics} into this
      * one.
      *
-     * @param other another {@code LongSummaryStatistics}
-     * @throws NullPointerException if {@code other} is null
+     * @param other
+     *         another {@code LongSummaryStatistics}
+     *
+     * @throws NullPointerException
+     *         if {@code other} is null
      */
     public void combine(LongSummaryStatistics other) {
         count += other.count;
@@ -169,15 +167,8 @@ public class LongSummaryStatistics implements LongConsumer, IntConsumer {
      * Returns a non-empty string representation of this object suitable for
      * debugging. The exact presentation format is unspecified and may vary
      * between implementations and versions.
-     */
-    public String toString() {
-        return String.format(
-            "%s{count=%d, sum=%d, min=%d, average=%f, max=%d}",
-            this.getClass().getSimpleName(),
-            getCount(),
-            getSum(),
-            getMin(),
-            getAverage(),
-            getMax());
+     */ public String toString() {
+        return String.format("%s{count=%d, sum=%d, min=%d, average=%f, max=%d}", this.getClass().getSimpleName(), getCount(), getSum(), getMin(), getAverage(),
+                getMax());
     }
 }

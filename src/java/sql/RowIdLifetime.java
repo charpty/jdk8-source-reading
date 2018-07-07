@@ -25,8 +25,6 @@
 
 package java.sql;
 
-import java.util.*;
-
 /**
  * Enumeration for RowId life-time values.
  *

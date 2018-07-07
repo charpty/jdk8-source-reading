@@ -40,21 +40,20 @@ package java.lang.management;
  * <p>The <tt>ObjectName</tt> for uniquely identifying the MXBean for
  * the compilation system within an MBeanServer is:
  * <blockquote>
- *  {@link ManagementFactory#COMPILATION_MXBEAN_NAME
- *         <tt>java.lang:type=Compilation</tt>}
+ * {@link ManagementFactory#COMPILATION_MXBEAN_NAME
+ * <tt>java.lang:type=Compilation</tt>}
  * </blockquote>
  *
  * It can be obtained by calling the
  * {@link PlatformManagedObject#getObjectName} method.
  *
+ * @author Mandy Chung
  * @see ManagementFactory#getPlatformMXBeans(Class)
  * @see <a href="../../../javax/management/package-summary.html">
- *      JMX Specification.</a>
+ * JMX Specification.</a>
  * @see <a href="package-summary.html#examples">
- *      Ways to Access MXBeans</a>
- *
- * @author  Mandy Chung
- * @since   1.5
+ * Ways to Access MXBeans</a>
+ * @since 1.5
  */
 public interface CompilationMXBean extends PlatformManagedObject {
     /**
@@ -62,7 +61,7 @@ public interface CompilationMXBean extends PlatformManagedObject {
      *
      * @return the name of the JIT compiler.
      */
-    public java.lang.String    getName();
+    public java.lang.String getName();
 
     /**
      * Tests if the Java virtual machine supports the monitoring of
@@ -92,10 +91,11 @@ public interface CompilationMXBean extends PlatformManagedObject {
      * measurements of the compilation time.
      *
      * @return Compilation time in milliseconds
-     * @throws java.lang.UnsupportedOperationException if the Java
-     * virtual machine does not support
-     * this operation.
      *
+     * @throws java.lang.UnsupportedOperationException
+     *         if the Java
+     *         virtual machine does not support
+     *         this operation.
      */
-    public long                getTotalCompilationTime();
+    public long getTotalCompilationTime();
 }

@@ -33,11 +33,10 @@ package java.lang;
  * only occur at run time if the definition of a class has
  * incompatibly changed.
  *
- * @author  unascribed
- * @since   JDK1.0
+ * @author unascribed
+ * @since JDK1.0
  */
-public
-class NoSuchFieldError extends IncompatibleClassChangeError {
+public class NoSuchFieldError extends IncompatibleClassChangeError {
     private static final long serialVersionUID = -3456430195886129035L;
 
     /**
@@ -51,7 +50,8 @@ class NoSuchFieldError extends IncompatibleClassChangeError {
      * Constructs a <code>NoSuchFieldError</code> with the specified
      * detail message.
      *
-     * @param   s   the detail message.
+     * @param s
+     *         the detail message.
      */
     public NoSuchFieldError(String s) {
         super(s);

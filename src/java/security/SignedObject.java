@@ -25,7 +25,14 @@
 
 package java.security;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 /**
  * <p> SignedObject is a class for the purpose of creating authentic
@@ -111,9 +118,8 @@ import java.io.*;
  * delegation.
  * </ul>
  *
- * @see Signature
- *
  * @author Li Gong
+ * @see Signature
  */
 
 public final class SignedObject implements Serializable {
@@ -135,30 +141,34 @@ public final class SignedObject implements Serializable {
      * The given object is signed with the given signing key, using the
      * designated signature engine.
      *
-     * @param object the object to be signed.
-     * @param signingKey the private key for signing.
-     * @param signingEngine the signature signing engine.
+     * @param object
+     *         the object to be signed.
+     * @param signingKey
+     *         the private key for signing.
+     * @param signingEngine
+     *         the signature signing engine.
      *
-     * @exception IOException if an error occurs during serialization
-     * @exception InvalidKeyException if the key is invalid.
-     * @exception SignatureException if signing fails.
+     * @throws IOException
+     *         if an error occurs during serialization
+     * @throws InvalidKeyException
+     *         if the key is invalid.
+     * @throws SignatureException
+     *         if signing fails.
      */
-    public SignedObject(Serializable object, PrivateKey signingKey,
-                        Signature signingEngine)
-        throws IOException, InvalidKeyException, SignatureException {
-            // creating a stream pipe-line, from a to b
-            ByteArrayOutputStream b = new ByteArrayOutputStream();
-            ObjectOutput a = new ObjectOutputStream(b);
+    public SignedObject(Serializable object, PrivateKey signingKey, Signature signingEngine) throws IOException, InvalidKeyException, SignatureException {
+        // creating a stream pipe-line, from a to b
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
+        ObjectOutput a = new ObjectOutputStream(b);
 
-            // write and flush the object content to byte array
-            a.writeObject(object);
-            a.flush();
-            a.close();
-            this.content = b.toByteArray();
-            b.close();
+        // write and flush the object content to byte array
+        a.writeObject(object);
+        a.flush();
+        a.close();
+        this.content = b.toByteArray();
+        b.close();
 
-            // now sign the encapsulated object
-            this.sign(signingKey, signingEngine);
+        // now sign the encapsulated object
+        this.sign(signingKey, signingEngine);
     }
 
     /**
@@ -167,13 +177,13 @@ public final class SignedObject implements Serializable {
      *
      * @return the encapsulated object.
      *
-     * @exception IOException if an error occurs during de-serialization
-     * @exception ClassNotFoundException if an error occurs during
-     * de-serialization
+     * @throws IOException
+     *         if an error occurs during de-serialization
+     * @throws ClassNotFoundException
+     *         if an error occurs during
+     *         de-serialization
      */
-    public Object getObject()
-        throws IOException, ClassNotFoundException
-    {
+    public Object getObject() throws IOException, ClassNotFoundException {
         // creating a stream pipe-line, from b to a
         ByteArrayInputStream b = new ByteArrayInputStream(this.content);
         ObjectInput a = new ObjectInputStream(b);
@@ -208,21 +218,23 @@ public final class SignedObject implements Serializable {
      * signature for the object stored inside, with the given
      * verification key, using the designated verification engine.
      *
-     * @param verificationKey the public key for verification.
-     * @param verificationEngine the signature verification engine.
-     *
-     * @exception SignatureException if signature verification failed.
-     * @exception InvalidKeyException if the verification key is invalid.
+     * @param verificationKey
+     *         the public key for verification.
+     * @param verificationEngine
+     *         the signature verification engine.
      *
      * @return {@code true} if the signature
      * is valid, {@code false} otherwise
+     *
+     * @throws SignatureException
+     *         if signature verification failed.
+     * @throws InvalidKeyException
+     *         if the verification key is invalid.
      */
-    public boolean verify(PublicKey verificationKey,
-                          Signature verificationEngine)
-         throws InvalidKeyException, SignatureException {
-             verificationEngine.initVerify(verificationKey);
-             verificationEngine.update(this.content.clone());
-             return verificationEngine.verify(this.signature.clone());
+    public boolean verify(PublicKey verificationKey, Signature verificationEngine) throws InvalidKeyException, SignatureException {
+        verificationEngine.initVerify(verificationKey);
+        verificationEngine.update(this.content.clone());
+        return verificationEngine.verify(this.signature.clone());
     }
 
     /*
@@ -235,24 +247,22 @@ public final class SignedObject implements Serializable {
      * @exception InvalidKeyException if the key is invalid.
      * @exception SignatureException if signing fails.
      */
-    private void sign(PrivateKey signingKey, Signature signingEngine)
-        throws InvalidKeyException, SignatureException {
-            // initialize the signing engine
-            signingEngine.initSign(signingKey);
-            signingEngine.update(this.content.clone());
-            this.signature = signingEngine.sign().clone();
-            this.thealgorithm = signingEngine.getAlgorithm();
+    private void sign(PrivateKey signingKey, Signature signingEngine) throws InvalidKeyException, SignatureException {
+        // initialize the signing engine
+        signingEngine.initSign(signingKey);
+        signingEngine.update(this.content.clone());
+        this.signature = signingEngine.sign().clone();
+        this.thealgorithm = signingEngine.getAlgorithm();
     }
 
     /**
      * readObject is called to restore the state of the SignedObject from
      * a stream.
      */
-    private void readObject(java.io.ObjectInputStream s)
-        throws java.io.IOException, ClassNotFoundException {
-            java.io.ObjectInputStream.GetField fields = s.readFields();
-            content = ((byte[])fields.get("content", null)).clone();
-            signature = ((byte[])fields.get("signature", null)).clone();
-            thealgorithm = (String)fields.get("thealgorithm", null);
+    private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
+        java.io.ObjectInputStream.GetField fields = s.readFields();
+        content = ((byte[]) fields.get("content", null)).clone();
+        signature = ((byte[]) fields.get("signature", null)).clone();
+        thealgorithm = (String) fields.get("thealgorithm", null);
     }
 }

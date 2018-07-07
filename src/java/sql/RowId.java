@@ -26,7 +26,6 @@
 package java.sql;
 
 /**
- *
  * The representation (mapping) in the Java programming language of an SQL ROWID
  * value. An SQL ROWID is a built-in type, a value of which can be thought of as
  * an address  for its identified row in a database table. Whether that address
@@ -76,9 +75,12 @@ public interface RowId {
      * same data source, they  may be equal but still
      * not identify the same row.
      *
-     * @param obj the <code>Object</code> to compare this <code>RowId</code> object
-     *     against.
+     * @param obj
+     *         the <code>Object</code> to compare this <code>RowId</code> object
+     *         against.
+     *
      * @return true if the <code>RowId</code>s are equal; false otherwise
+     *
      * @since 1.6
      */
     boolean equals(Object obj);
@@ -88,33 +90,33 @@ public interface RowId {
      * designated by this <code>java.sql.RowId</code> object.
      *
      * @return an array of bytes, whose length is determined by the driver supplying
-     *     the connection, representing the value of the ROWID designated by this
-     *     java.sql.RowId object.
+     * the connection, representing the value of the ROWID designated by this
+     * java.sql.RowId object.
      */
-     byte[] getBytes();
+    byte[] getBytes();
 
-     /**
-      * Returns a String representing the value of the SQL ROWID designated by this
-      * <code>java.sql.RowId</code> object.
-      * <p>
-      *Like <code>java.sql.Date.toString()</code>
-      * returns the contents of its DATE as the <code>String</code> "2004-03-17"
-      * rather than as  DATE literal in SQL (which would have been the <code>String</code>
-      * DATE "2004-03-17"), toString()
-      * returns the contents of its ROWID in a form specific to the driver supplying
-      * the connection, and possibly not as a <code>ROWID</code> literal.
-      *
-      * @return a String whose format is determined by the driver supplying the
-      *     connection, representing the value of the <code>ROWID</code> designated
-      *     by this <code>java.sql.RowId</code>  object.
-      */
-     String toString();
+    /**
+     * Returns a String representing the value of the SQL ROWID designated by this
+     * <code>java.sql.RowId</code> object.
+     * <p>
+     * Like <code>java.sql.Date.toString()</code>
+     * returns the contents of its DATE as the <code>String</code> "2004-03-17"
+     * rather than as  DATE literal in SQL (which would have been the <code>String</code>
+     * DATE "2004-03-17"), toString()
+     * returns the contents of its ROWID in a form specific to the driver supplying
+     * the connection, and possibly not as a <code>ROWID</code> literal.
+     *
+     * @return a String whose format is determined by the driver supplying the
+     * connection, representing the value of the <code>ROWID</code> designated
+     * by this <code>java.sql.RowId</code>  object.
+     */
+    String toString();
 
-     /**
-      * Returns a hash code value of this <code>RowId</code> object.
-      *
-      * @return a hash code for the <code>RowId</code>
-      */
-     int hashCode();
+    /**
+     * Returns a hash code value of this <code>RowId</code> object.
+     *
+     * @return a hash code for the <code>RowId</code>
+     */
+    int hashCode();
 
 }

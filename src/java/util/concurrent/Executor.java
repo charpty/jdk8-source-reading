@@ -56,7 +56,7 @@ package java.util.concurrent;
  * executor can run the submitted task immediately in the caller's
  * thread:
  *
- *  <pre> {@code
+ * <pre> {@code
  * class DirectExecutor implements Executor {
  *   public void execute(Runnable r) {
  *     r.run();
@@ -67,7 +67,7 @@ package java.util.concurrent;
  * than the caller's thread.  The executor below spawns a new thread
  * for each task.
  *
- *  <pre> {@code
+ * <pre> {@code
  * class ThreadPerTaskExecutor implements Executor {
  *   public void execute(Runnable r) {
  *     new Thread(r).start();
@@ -79,7 +79,7 @@ package java.util.concurrent;
  * serializes the submission of tasks to a second executor,
  * illustrating a composite executor.
  *
- *  <pre> {@code
+ * <pre> {@code
  * class SerialExecutor implements Executor {
  *   final Queue<Runnable> tasks = new ArrayDeque<Runnable>();
  *   final Executor executor;
@@ -122,8 +122,8 @@ package java.util.concurrent;
  * <a href="package-summary.html#MemoryVisibility"><i>happen-before</i></a>
  * its execution begins, perhaps in another thread.
  *
- * @since 1.5
  * @author Doug Lea
+ * @since 1.5
  */
 public interface Executor {
 
@@ -132,10 +132,14 @@ public interface Executor {
      * may execute in a new thread, in a pooled thread, or in the calling
      * thread, at the discretion of the {@code Executor} implementation.
      *
-     * @param command the runnable task
-     * @throws RejectedExecutionException if this task cannot be
-     * accepted for execution
-     * @throws NullPointerException if command is null
+     * @param command
+     *         the runnable task
+     *
+     * @throws RejectedExecutionException
+     *         if this task cannot be
+     *         accepted for execution
+     * @throws NullPointerException
+     *         if command is null
      */
     void execute(Runnable command);
 }

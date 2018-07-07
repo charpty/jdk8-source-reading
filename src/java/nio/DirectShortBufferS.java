@@ -27,29 +27,21 @@
 
 package java.nio;
 
-import java.io.FileDescriptor;
 import sun.misc.Cleaner;
 import sun.misc.Unsafe;
-import sun.misc.VM;
 import sun.nio.ch.DirectBuffer;
-
 
 class DirectShortBufferS
 
-    extends ShortBuffer
+        extends ShortBuffer
 
-
-
-    implements DirectBuffer
-{
-
-
+        implements DirectBuffer {
 
     // Cached unsafe-access object
     protected static final Unsafe unsafe = Bits.unsafe();
 
     // Cached array base offset
-    private static final long arrayBaseOffset = (long)unsafe.arrayBaseOffset(short[].class);
+    private static final long arrayBaseOffset = (long) unsafe.arrayBaseOffset(short[].class);
 
     // Cached unaligned-access capability
     protected static final boolean unaligned = Bits.unaligned();
@@ -67,139 +59,19 @@ class DirectShortBufferS
         return att;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public Cleaner cleaner() { return null; }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public Cleaner cleaner() {
+        return null;
+    }
 
     // For duplicates and slices
     //
     DirectShortBufferS(DirectBuffer db,         // package-private
-                               int mark, int pos, int lim, int cap,
-                               int off)
-    {
+            int mark, int pos, int lim, int cap, int off) {
 
         super(mark, pos, lim, cap);
         address = db.address() + off;
 
-
-
         att = db;
-
-
 
     }
 
@@ -214,35 +86,21 @@ class DirectShortBufferS
     }
 
     public ShortBuffer duplicate() {
-        return new DirectShortBufferS(this,
-                                              this.markValue(),
-                                              this.position(),
-                                              this.limit(),
-                                              this.capacity(),
-                                              0);
+        return new DirectShortBufferS(this, this.markValue(), this.position(), this.limit(), this.capacity(), 0);
     }
 
     public ShortBuffer asReadOnlyBuffer() {
 
-        return new DirectShortBufferRS(this,
-                                           this.markValue(),
-                                           this.position(),
-                                           this.limit(),
-                                           this.capacity(),
-                                           0);
-
-
+        return new DirectShortBufferRS(this, this.markValue(), this.position(), this.limit(), this.capacity(), 0);
 
     }
-
-
 
     public long address() {
         return address;
     }
 
     private long ix(int i) {
-        return address + ((long)i << 1);
+        return address + ((long) i << 1);
     }
 
     public short get() {
@@ -253,51 +111,37 @@ class DirectShortBufferS
         return (Bits.swap(unsafe.getShort(ix(checkIndex(i)))));
     }
 
-
-
-
-
-
-
     public ShortBuffer get(short[] dst, int offset, int length) {
 
-        if (((long)length << 1) > Bits.JNI_COPY_TO_ARRAY_THRESHOLD) {
+        if (((long) length << 1) > Bits.JNI_COPY_TO_ARRAY_THRESHOLD) {
             checkBounds(offset, length, dst.length);
             int pos = position();
             int lim = limit();
             assert (pos <= lim);
             int rem = (pos <= lim ? lim - pos : 0);
-            if (length > rem)
+            if (length > rem) {
                 throw new BufferUnderflowException();
+            }
 
+            if (order() != ByteOrder.nativeOrder()) {
+                Bits.copyToShortArray(ix(pos), dst, (long) offset << 1, (long) length << 1);
+            } else
 
-            if (order() != ByteOrder.nativeOrder())
-                Bits.copyToShortArray(ix(pos), dst,
-                                          (long)offset << 1,
-                                          (long)length << 1);
-            else
-
-                Bits.copyToArray(ix(pos), dst, arrayBaseOffset,
-                                 (long)offset << 1,
-                                 (long)length << 1);
+            {
+                Bits.copyToArray(ix(pos), dst, arrayBaseOffset, (long) offset << 1, (long) length << 1);
+            }
             position(pos + length);
         } else {
             super.get(dst, offset, length);
         }
         return this;
 
-
-
     }
-
-
 
     public ShortBuffer put(short x) {
 
         unsafe.putShort(ix(nextPutIndex()), Bits.swap((x)));
         return this;
-
-
 
     }
 
@@ -306,16 +150,15 @@ class DirectShortBufferS
         unsafe.putShort(ix(checkIndex(i)), Bits.swap((x)));
         return this;
 
-
-
     }
 
     public ShortBuffer put(ShortBuffer src) {
 
         if (src instanceof DirectShortBufferS) {
-            if (src == this)
+            if (src == this) {
                 throw new IllegalArgumentException();
-            DirectShortBufferS sb = (DirectShortBufferS)src;
+            }
+            DirectShortBufferS sb = (DirectShortBufferS) src;
 
             int spos = sb.position();
             int slim = sb.limit();
@@ -327,9 +170,10 @@ class DirectShortBufferS
             assert (pos <= lim);
             int rem = (pos <= lim ? lim - pos : 0);
 
-            if (srem > rem)
+            if (srem > rem) {
                 throw new BufferOverflowException();
-            unsafe.copyMemory(sb.ix(spos), ix(pos), (long)srem << 1);
+            }
+            unsafe.copyMemory(sb.ix(spos), ix(pos), (long) srem << 1);
             sb.position(spos + srem);
             position(pos + srem);
         } else if (src.hb != null) {
@@ -347,40 +191,32 @@ class DirectShortBufferS
         }
         return this;
 
-
-
     }
 
     public ShortBuffer put(short[] src, int offset, int length) {
 
-        if (((long)length << 1) > Bits.JNI_COPY_FROM_ARRAY_THRESHOLD) {
+        if (((long) length << 1) > Bits.JNI_COPY_FROM_ARRAY_THRESHOLD) {
             checkBounds(offset, length, src.length);
             int pos = position();
             int lim = limit();
             assert (pos <= lim);
             int rem = (pos <= lim ? lim - pos : 0);
-            if (length > rem)
+            if (length > rem) {
                 throw new BufferOverflowException();
+            }
 
+            if (order() != ByteOrder.nativeOrder()) {
+                Bits.copyFromShortArray(src, (long) offset << 1, ix(pos), (long) length << 1);
+            } else
 
-            if (order() != ByteOrder.nativeOrder())
-                Bits.copyFromShortArray(src,
-                                            (long)offset << 1,
-                                            ix(pos),
-                                            (long)length << 1);
-            else
-
-                Bits.copyFromArray(src, arrayBaseOffset,
-                                   (long)offset << 1,
-                                   ix(pos),
-                                   (long)length << 1);
+            {
+                Bits.copyFromArray(src, arrayBaseOffset, (long) offset << 1, ix(pos), (long) length << 1);
+            }
             position(pos + length);
         } else {
             super.put(src, offset, length);
         }
         return this;
-
-
 
     }
 
@@ -391,13 +227,11 @@ class DirectShortBufferS
         assert (pos <= lim);
         int rem = (pos <= lim ? lim - pos : 0);
 
-        unsafe.copyMemory(ix(pos), ix(0), (long)rem << 1);
+        unsafe.copyMemory(ix(pos), ix(0), (long) rem << 1);
         position(rem);
         limit(capacity());
         discardMark();
         return this;
-
-
 
     }
 
@@ -409,86 +243,10 @@ class DirectShortBufferS
         return false;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public ByteOrder order() {
 
-        return ((ByteOrder.nativeOrder() == ByteOrder.BIG_ENDIAN)
-                ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN);
-
-
-
-
+        return ((ByteOrder.nativeOrder() == ByteOrder.BIG_ENDIAN) ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN);
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

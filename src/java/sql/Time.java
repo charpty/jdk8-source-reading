@@ -49,12 +49,15 @@ public class Time extends java.util.Date {
      * <P>
      * The result is undefined if a given argument is out of bounds.
      *
-     * @param hour 0 to 23
-     * @param minute 0 to 59
-     * @param second 0 to 59
+     * @param hour
+     *         0 to 23
+     * @param minute
+     *         0 to 59
+     * @param second
+     *         0 to 59
      *
      * @deprecated Use the constructor that takes a milliseconds value
-     *             in place of this constructor
+     * in place of this constructor
      */
     @Deprecated
     public Time(int hour, int minute, int second) {
@@ -64,9 +67,10 @@ public class Time extends java.util.Date {
     /**
      * Constructs a <code>Time</code> object using a milliseconds time value.
      *
-     * @param time milliseconds since January 1, 1970, 00:00:00 GMT;
-     *             a negative number is milliseconds before
-     *               January 1, 1970, 00:00:00 GMT
+     * @param time
+     *         milliseconds since January 1, 1970, 00:00:00 GMT;
+     *         a negative number is milliseconds before
+     *         January 1, 1970, 00:00:00 GMT
      */
     public Time(long time) {
         super(time);
@@ -75,9 +79,10 @@ public class Time extends java.util.Date {
     /**
      * Sets a <code>Time</code> object using a milliseconds time value.
      *
-     * @param time milliseconds since January 1, 1970, 00:00:00 GMT;
-     *             a negative number is milliseconds before
-     *               January 1, 1970, 00:00:00 GMT
+     * @param time
+     *         milliseconds since January 1, 1970, 00:00:00 GMT;
+     *         a negative number is milliseconds before
+     *         January 1, 1970, 00:00:00 GMT
      */
     public void setTime(long time) {
         super.setTime(time);
@@ -86,7 +91,9 @@ public class Time extends java.util.Date {
     /**
      * Converts a string in JDBC time escape format to a <code>Time</code> value.
      *
-     * @param s time in format "hh:mm:ss"
+     * @param s
+     *         time in format "hh:mm:ss"
+     *
      * @return a corresponding <code>Time</code> object
      */
     public static Time valueOf(String s) {
@@ -96,16 +103,16 @@ public class Time extends java.util.Date {
         int firstColon;
         int secondColon;
 
-        if (s == null) throw new java.lang.IllegalArgumentException();
+        if (s == null) {
+            throw new java.lang.IllegalArgumentException();
+        }
 
         firstColon = s.indexOf(':');
-        secondColon = s.indexOf(':', firstColon+1);
-        if ((firstColon > 0) & (secondColon > 0) &
-            (secondColon < s.length()-1)) {
+        secondColon = s.indexOf(':', firstColon + 1);
+        if ((firstColon > 0) & (secondColon > 0) & (secondColon < s.length() - 1)) {
             hour = Integer.parseInt(s.substring(0, firstColon));
-            minute =
-                Integer.parseInt(s.substring(firstColon+1, secondColon));
-            second = Integer.parseInt(s.substring(secondColon+1));
+            minute = Integer.parseInt(s.substring(firstColon + 1, secondColon));
+            second = Integer.parseInt(s.substring(secondColon + 1));
         } else {
             throw new java.lang.IllegalArgumentException();
         }
@@ -119,7 +126,7 @@ public class Time extends java.util.Date {
      * @return a <code>String</code> in hh:mm:ss format
      */
     @SuppressWarnings("deprecation")
-    public String toString () {
+    public String toString() {
         int hour = super.getHours();
         int minute = super.getMinutes();
         int second = super.getSeconds();
@@ -147,107 +154,114 @@ public class Time extends java.util.Date {
 
     // Override all the date operations inherited from java.util.Date;
 
-   /**
-    * This method is deprecated and should not be used because SQL <code>TIME</code>
-    * values do not have a year component.
-    *
-    * @deprecated
-    * @exception java.lang.IllegalArgumentException if this
-    *           method is invoked
-    * @see #setYear
-    */
+    /**
+     * This method is deprecated and should not be used because SQL <code>TIME</code>
+     * values do not have a year component.
+     *
+     * @throws java.lang.IllegalArgumentException
+     *         if this
+     *         method is invoked
+     * @see #setYear
+     * @deprecated
+     */
     @Deprecated
     public int getYear() {
         throw new java.lang.IllegalArgumentException();
     }
 
-   /**
-    * This method is deprecated and should not be used because SQL <code>TIME</code>
-    * values do not have a month component.
-    *
-    * @deprecated
-    * @exception java.lang.IllegalArgumentException if this
-    *           method is invoked
-    * @see #setMonth
-    */
+    /**
+     * This method is deprecated and should not be used because SQL <code>TIME</code>
+     * values do not have a month component.
+     *
+     * @throws java.lang.IllegalArgumentException
+     *         if this
+     *         method is invoked
+     * @see #setMonth
+     * @deprecated
+     */
     @Deprecated
     public int getMonth() {
         throw new java.lang.IllegalArgumentException();
     }
 
-   /**
-    * This method is deprecated and should not be used because SQL <code>TIME</code>
-    * values do not have a day component.
-    *
-    * @deprecated
-    * @exception java.lang.IllegalArgumentException if this
-    *           method is invoked
-    */
+    /**
+     * This method is deprecated and should not be used because SQL <code>TIME</code>
+     * values do not have a day component.
+     *
+     * @throws java.lang.IllegalArgumentException
+     *         if this
+     *         method is invoked
+     * @deprecated
+     */
     @Deprecated
     public int getDay() {
         throw new java.lang.IllegalArgumentException();
     }
 
-   /**
-    * This method is deprecated and should not be used because SQL <code>TIME</code>
-    * values do not have a date component.
-    *
-    * @deprecated
-    * @exception java.lang.IllegalArgumentException if this
-    *           method is invoked
-    * @see #setDate
-    */
+    /**
+     * This method is deprecated and should not be used because SQL <code>TIME</code>
+     * values do not have a date component.
+     *
+     * @throws java.lang.IllegalArgumentException
+     *         if this
+     *         method is invoked
+     * @see #setDate
+     * @deprecated
+     */
     @Deprecated
     public int getDate() {
         throw new java.lang.IllegalArgumentException();
     }
 
-   /**
-    * This method is deprecated and should not be used because SQL <code>TIME</code>
-    * values do not have a year component.
-    *
-    * @deprecated
-    * @exception java.lang.IllegalArgumentException if this
-    *           method is invoked
-    * @see #getYear
-    */
+    /**
+     * This method is deprecated and should not be used because SQL <code>TIME</code>
+     * values do not have a year component.
+     *
+     * @throws java.lang.IllegalArgumentException
+     *         if this
+     *         method is invoked
+     * @see #getYear
+     * @deprecated
+     */
     @Deprecated
     public void setYear(int i) {
         throw new java.lang.IllegalArgumentException();
     }
 
-   /**
-    * This method is deprecated and should not be used because SQL <code>TIME</code>
-    * values do not have a month component.
-    *
-    * @deprecated
-    * @exception java.lang.IllegalArgumentException if this
-    *           method is invoked
-    * @see #getMonth
-    */
+    /**
+     * This method is deprecated and should not be used because SQL <code>TIME</code>
+     * values do not have a month component.
+     *
+     * @throws java.lang.IllegalArgumentException
+     *         if this
+     *         method is invoked
+     * @see #getMonth
+     * @deprecated
+     */
     @Deprecated
     public void setMonth(int i) {
         throw new java.lang.IllegalArgumentException();
     }
 
-   /**
-    * This method is deprecated and should not be used because SQL <code>TIME</code>
-    * values do not have a date component.
-    *
-    * @deprecated
-    * @exception java.lang.IllegalArgumentException if this
-    *           method is invoked
-    * @see #getDate
-    */
+    /**
+     * This method is deprecated and should not be used because SQL <code>TIME</code>
+     * values do not have a date component.
+     *
+     * @throws java.lang.IllegalArgumentException
+     *         if this
+     *         method is invoked
+     * @see #getDate
+     * @deprecated
+     */
     @Deprecated
     public void setDate(int i) {
         throw new java.lang.IllegalArgumentException();
     }
 
-   /**
-    * Private serial version unique ID to ensure serialization
-    * compatibility.
-    */
+    /**
+     * Private serial version unique ID to ensure serialization
+     * compatibility.
+     */
     static final long serialVersionUID = 8397324403548013681L;
 
     /**
@@ -255,9 +269,13 @@ public class Time extends java.util.Date {
      * with the same hour, minute and second time value as the given
      * {@code LocalTime}.
      *
-     * @param time a {@code LocalTime} to convert
+     * @param time
+     *         a {@code LocalTime} to convert
+     *
      * @return a {@code Time} object
-     * @exception NullPointerException if {@code time} is null
+     *
+     * @throws NullPointerException
+     *         if {@code time} is null
      * @since 1.8
      */
     @SuppressWarnings("deprecation")
@@ -272,6 +290,7 @@ public class Time extends java.util.Date {
      * hour, minute, and second time value as this {@code Time}.
      *
      * @return a {@code LocalTime} object representing the same time value
+     *
      * @since 1.8
      */
     @SuppressWarnings("deprecation")
@@ -279,13 +298,14 @@ public class Time extends java.util.Date {
         return LocalTime.of(getHours(), getMinutes(), getSeconds());
     }
 
-   /**
-    * This method always throws an UnsupportedOperationException and should
-    * not be used because SQL {@code Time} values do not have a date
-    * component.
-    *
-    * @exception java.lang.UnsupportedOperationException if this method is invoked
-    */
+    /**
+     * This method always throws an UnsupportedOperationException and should
+     * not be used because SQL {@code Time} values do not have a date
+     * component.
+     *
+     * @throws java.lang.UnsupportedOperationException
+     *         if this method is invoked
+     */
     @Override
     public Instant toInstant() {
         throw new java.lang.UnsupportedOperationException();

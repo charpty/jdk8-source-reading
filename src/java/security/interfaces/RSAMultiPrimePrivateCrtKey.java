@@ -34,13 +34,10 @@ import java.security.spec.RSAOtherPrimeInfo;
  * (CRT) information values.
  *
  * @author Valerie Peng
- *
- *
  * @see java.security.spec.RSAPrivateKeySpec
  * @see java.security.spec.RSAMultiPrimePrivateCrtKeySpec
  * @see RSAPrivateKey
  * @see RSAPrivateCrtKey
- *
  * @since 1.4
  */
 

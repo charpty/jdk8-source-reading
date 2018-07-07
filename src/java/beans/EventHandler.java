@@ -26,12 +26,11 @@ package java.beans;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Proxy;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-
 import sun.reflect.misc.MethodUtil;
 import sun.reflect.misc.ReflectUtil;
 
@@ -102,10 +101,10 @@ import sun.reflect.misc.ReflectUtil;
  * of <code>javax.swing.JFrame</code>.
  *
  * <blockquote>
- *<pre>
- *myButton.addActionListener(
+ * <pre>
+ * myButton.addActionListener(
  *    (ActionListener)EventHandler.create(ActionListener.class, frame, "toFront"));
- *</pre>
+ * </pre>
  * </blockquote>
  *
  * When <code>myButton</code> is pressed, the statement
@@ -115,14 +114,14 @@ import sun.reflect.misc.ReflectUtil;
  * interface and adding an instance of it to the button:
  *
  * <blockquote>
- *<pre>
-//Equivalent code using an inner class instead of EventHandler.
- *myButton.addActionListener(new ActionListener() {
+ * <pre>
+ * //Equivalent code using an inner class instead of EventHandler.
+ * myButton.addActionListener(new ActionListener() {
  *    public void actionPerformed(ActionEvent e) {
  *        frame.toFront();
  *    }
- *});
- *</pre>
+ * });
+ * </pre>
  * </blockquote>
  *
  * The next simplest use of <code>EventHandler</code> is
@@ -134,22 +133,22 @@ import sun.reflect.misc.ReflectUtil;
  * (myButton) object to the value of the "source" property of the event.
  *
  * <blockquote>
- *<pre>
- *EventHandler.create(ActionListener.class, myButton, "nextFocusableComponent", "source")
- *</pre>
+ * <pre>
+ * EventHandler.create(ActionListener.class, myButton, "nextFocusableComponent", "source")
+ * </pre>
  * </blockquote>
  *
  * This would correspond to the following inner class implementation:
  *
  * <blockquote>
- *<pre>
-//Equivalent code using an inner class instead of EventHandler.
- *new ActionListener() {
+ * <pre>
+ * //Equivalent code using an inner class instead of EventHandler.
+ * new ActionListener() {
  *    public void actionPerformed(ActionEvent e) {
  *        myButton.setNextFocusableComponent((Component)e.getSource());
  *    }
- *}
- *</pre>
+ * }
+ * </pre>
  * </blockquote>
  *
  * It's also possible to create an <code>EventHandler</code> that
@@ -158,22 +157,22 @@ import sun.reflect.misc.ReflectUtil;
  * an empty string, then the event is just passed along:
  *
  * <blockquote>
- *<pre>
- *EventHandler.create(ActionListener.class, target, "doActionEvent", "")
- *</pre>
+ * <pre>
+ * EventHandler.create(ActionListener.class, target, "doActionEvent", "")
+ * </pre>
  * </blockquote>
  *
  * This would correspond to the following inner class implementation:
  *
  * <blockquote>
- *<pre>
-//Equivalent code using an inner class instead of EventHandler.
- *new ActionListener() {
+ * <pre>
+ * //Equivalent code using an inner class instead of EventHandler.
+ * new ActionListener() {
  *    public void actionPerformed(ActionEvent e) {
  *        target.doActionEvent(e);
  *    }
- *}
- *</pre>
+ * }
+ * </pre>
  * </blockquote>
  *
  * Probably the most common use of <code>EventHandler</code>
@@ -186,22 +185,22 @@ import sun.reflect.misc.ReflectUtil;
  * source (the value of the "source" property) of the event.
  *
  * <blockquote>
- *<pre>
- *EventHandler.create(ActionListener.class, myButton, "label", "source.text")
- *</pre>
+ * <pre>
+ * EventHandler.create(ActionListener.class, myButton, "label", "source.text")
+ * </pre>
  * </blockquote>
  *
  * This would correspond to the following inner class implementation:
  *
  * <blockquote>
- *<pre>
-//Equivalent code using an inner class instead of EventHandler.
- *new ActionListener {
+ * <pre>
+ * //Equivalent code using an inner class instead of EventHandler.
+ * new ActionListener {
  *    public void actionPerformed(ActionEvent e) {
  *        myButton.setLabel(((JTextField)e.getSource()).getText());
  *    }
- *}
- *</pre>
+ * }
+ * </pre>
  * </blockquote>
  *
  * The event property may be "qualified" with an arbitrary number
@@ -213,9 +212,9 @@ import sun.reflect.misc.ReflectUtil;
  * For example, the following action listener
  *
  * <blockquote>
- *<pre>
- *EventHandler.create(ActionListener.class, target, "a", "b.c.d")
- *</pre>
+ * <pre>
+ * EventHandler.create(ActionListener.class, target, "a", "b.c.d")
+ * </pre>
  * </blockquote>
  *
  * might be written as the following inner class
@@ -223,14 +222,14 @@ import sun.reflect.misc.ReflectUtil;
  * returned the appropriate types):
  *
  * <blockquote>
- *<pre>
-//Equivalent code using an inner class instead of EventHandler.
- *new ActionListener {
+ * <pre>
+ * //Equivalent code using an inner class instead of EventHandler.
+ * new ActionListener {
  *    public void actionPerformed(ActionEvent e) {
  *        target.setA(e.getB().getC().isD());
  *    }
- *}
- *</pre>
+ * }
+ * </pre>
  * </blockquote>
  * The target property may also be "qualified" with an arbitrary number
  * of property prefixs delimited with the "." character.  For example, the
@@ -247,8 +246,8 @@ import sun.reflect.misc.ReflectUtil;
  *     public void actionPerformed(ActionEvent e) {
  *         target.getA().setB(e.getC().isD());
  *    }
- *}
- *</pre>
+ * }
+ * </pre>
  * <p>
  * As <code>EventHandler</code> ultimately relies on reflection to invoke
  * a method we recommend against targeting an overloaded method.  For example,
@@ -266,15 +265,12 @@ import sun.reflect.misc.ReflectUtil;
  * undefined.  For that reason we recommend against targeting overloaded
  * methods.
  *
- * @see java.lang.reflect.Proxy
- * @see java.util.EventObject
- *
- * @since 1.4
- *
  * @author Mark Davidson
  * @author Philip Milne
  * @author Hans Muller
- *
+ * @see java.lang.reflect.Proxy
+ * @see java.util.EventObject
+ * @since 1.4
  */
 public class EventHandler implements InvocationHandler {
     private Object target;
@@ -292,15 +288,20 @@ public class EventHandler implements InvocationHandler {
      * the <code>eventPropertyName</code> and <code>listenerMethodName</code>
      * parameter.
      *
-     * @param target the object that will perform the action
-     * @param action the name of a (possibly qualified) property or method on
-     *        the target
-     * @param eventPropertyName the (possibly qualified) name of a readable property of the incoming event
-     * @param listenerMethodName the name of the method in the listener interface that should trigger the action
+     * @param target
+     *         the object that will perform the action
+     * @param action
+     *         the name of a (possibly qualified) property or method on
+     *         the target
+     * @param eventPropertyName
+     *         the (possibly qualified) name of a readable property of the incoming event
+     * @param listenerMethodName
+     *         the name of the method in the listener interface that should trigger the action
      *
-     * @throws NullPointerException if <code>target</code> is null
-     * @throws NullPointerException if <code>action</code> is null
-     *
+     * @throws NullPointerException
+     *         if <code>target</code> is null
+     * @throws NullPointerException
+     *         if <code>action</code> is null
      * @see EventHandler
      * @see #create(Class, Object, String, String, String)
      * @see #getTarget
@@ -308,7 +309,7 @@ public class EventHandler implements InvocationHandler {
      * @see #getEventPropertyName
      * @see #getListenerMethodName
      */
-    @ConstructorProperties({"target", "action", "eventPropertyName", "listenerMethodName"})
+    @ConstructorProperties({ "target", "action", "eventPropertyName", "listenerMethodName" })
     public EventHandler(Object target, String action, String eventPropertyName, String listenerMethodName) {
         this.target = target;
         this.action = action;
@@ -326,9 +327,10 @@ public class EventHandler implements InvocationHandler {
      * Returns the object to which this event handler will send a message.
      *
      * @return the target of this event handler
+     *
      * @see #EventHandler(Object, String, String, String)
      */
-    public Object getTarget()  {
+    public Object getTarget() {
         return target;
     }
 
@@ -339,9 +341,10 @@ public class EventHandler implements InvocationHandler {
      * will invoke on the target.
      *
      * @return the action of this event handler
+     *
      * @see #EventHandler(Object, String, String, String)
      */
-    public String getAction()  {
+    public String getAction() {
         return action;
     }
 
@@ -353,7 +356,7 @@ public class EventHandler implements InvocationHandler {
      *
      * @see #EventHandler(Object, String, String, String)
      */
-    public String getEventPropertyName()  {
+    public String getEventPropertyName() {
         return eventPropertyName;
     }
 
@@ -366,7 +369,7 @@ public class EventHandler implements InvocationHandler {
      *
      * @see #EventHandler(Object, String, String, String)
      */
-    public String getListenerMethodName()  {
+    public String getListenerMethodName() {
         return listenerMethodName;
     }
 
@@ -384,28 +387,21 @@ public class EventHandler implements InvocationHandler {
         try {
             Method getter = null;
             if (target != null) {
-                getter = Statement.getMethod(target.getClass(),
-                                      "get" + NameGenerator.capitalize(first),
-                                      new Class<?>[]{});
+                getter = Statement.getMethod(target.getClass(), "get" + NameGenerator.capitalize(first), new Class<?>[] {});
                 if (getter == null) {
-                    getter = Statement.getMethod(target.getClass(),
-                                   "is" + NameGenerator.capitalize(first),
-                                   new Class<?>[]{});
+                    getter = Statement.getMethod(target.getClass(), "is" + NameGenerator.capitalize(first), new Class<?>[] {});
                 }
                 if (getter == null) {
-                    getter = Statement.getMethod(target.getClass(), first, new Class<?>[]{});
+                    getter = Statement.getMethod(target.getClass(), first, new Class<?>[] {});
                 }
             }
             if (getter == null) {
-                throw new RuntimeException("No method called: " + first +
-                                           " defined on " + target);
+                throw new RuntimeException("No method called: " + first + " defined on " + target);
             }
-            Object newTarget = MethodUtil.invoke(getter, target, new Object[]{});
+            Object newTarget = MethodUtil.invoke(getter, target, new Object[] {});
             return applyGetters(newTarget, rest);
-        }
-        catch (Exception e) {
-            throw new RuntimeException("Failed to call method: " + first +
-                                       " on " + target, e);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to call method: " + first + " on " + target, e);
         }
     }
 
@@ -414,8 +410,11 @@ public class EventHandler implements InvocationHandler {
      * pass it to the action associated with
      * this <code>EventHandler</code>.
      *
-     * @param proxy the proxy object
-     * @param method the method in the listener interface
+     * @param proxy
+     *         the proxy object
+     * @param method
+     *         the method in the listener interface
+     *
      * @return the result of applying the action to the target
      *
      * @see EventHandler
@@ -434,9 +433,9 @@ public class EventHandler implements InvocationHandler {
 
     private Object invokeInternal(Object proxy, Method method, Object[] arguments) {
         String methodName = method.getName();
-        if (method.getDeclaringClass() == Object.class)  {
+        if (method.getDeclaringClass() == Object.class) {
             // Handle the Object public methods.
-            if (methodName.equals("hashCode"))  {
+            if (methodName.equals("hashCode")) {
                 return new Integer(System.identityHashCode(proxy));
             } else if (methodName.equals("equals")) {
                 return (proxy == arguments[0] ? Boolean.TRUE : Boolean.FALSE);
@@ -450,14 +449,12 @@ public class EventHandler implements InvocationHandler {
             Object[] newArgs = null;
 
             if (eventPropertyName == null) {     // Nullary method.
-                newArgs = new Object[]{};
-                argTypes = new Class<?>[]{};
-            }
-            else {
+                newArgs = new Object[] {};
+                argTypes = new Class<?>[] {};
+            } else {
                 Object input = applyGetters(arguments[0], getEventPropertyName());
-                newArgs = new Object[]{input};
-                argTypes = new Class<?>[]{input == null ? null :
-                                       input.getClass()};
+                newArgs = new Object[] { input };
+                argTypes = new Class<?>[] { input == null ? null : input.getClass() };
             }
             try {
                 int lastDot = action.lastIndexOf('.');
@@ -465,30 +462,20 @@ public class EventHandler implements InvocationHandler {
                     target = applyGetters(target, action.substring(0, lastDot));
                     action = action.substring(lastDot + 1);
                 }
-                Method targetMethod = Statement.getMethod(
-                             target.getClass(), action, argTypes);
+                Method targetMethod = Statement.getMethod(target.getClass(), action, argTypes);
                 if (targetMethod == null) {
-                    targetMethod = Statement.getMethod(target.getClass(),
-                             "set" + NameGenerator.capitalize(action), argTypes);
+                    targetMethod = Statement.getMethod(target.getClass(), "set" + NameGenerator.capitalize(action), argTypes);
                 }
                 if (targetMethod == null) {
-                    String argTypeString = (argTypes.length == 0)
-                        ? " with no arguments"
-                        : " with argument " + argTypes[0];
-                    throw new RuntimeException(
-                        "No method called " + action + " on " +
-                        target.getClass() + argTypeString);
+                    String argTypeString = (argTypes.length == 0) ? " with no arguments" : " with argument " + argTypes[0];
+                    throw new RuntimeException("No method called " + action + " on " + target.getClass() + argTypeString);
                 }
                 return MethodUtil.invoke(targetMethod, target, newArgs);
-            }
-            catch (IllegalAccessException ex) {
+            } catch (IllegalAccessException ex) {
                 throw new RuntimeException(ex);
-            }
-            catch (InvocationTargetException ex) {
+            } catch (InvocationTargetException ex) {
                 Throwable th = ex.getTargetException();
-                throw (th instanceof RuntimeException)
-                        ? (RuntimeException) th
-                        : new RuntimeException(th);
+                throw (th instanceof RuntimeException) ? (RuntimeException) th : new RuntimeException(th);
             }
         }
         return null;
@@ -510,33 +497,38 @@ public class EventHandler implements InvocationHandler {
      * <code>JDialog</code> with <code>dialog.show()</code>,
      * one can write:
      *
-     *<blockquote>
-     *<pre>
-     *EventHandler.create(ActionListener.class, dialog, "show")
-     *</pre>
-     *</blockquote>
+     * <blockquote>
+     * <pre>
+     * EventHandler.create(ActionListener.class, dialog, "show")
+     * </pre>
+     * </blockquote>
      *
-     * @param <T> the type to create
-     * @param listenerInterface the listener interface to create a proxy for
-     * @param target the object that will perform the action
-     * @param action the name of a (possibly qualified) property or method on
-     *        the target
+     * @param <T>
+     *         the type to create
+     * @param listenerInterface
+     *         the listener interface to create a proxy for
+     * @param target
+     *         the object that will perform the action
+     * @param action
+     *         the name of a (possibly qualified) property or method on
+     *         the target
+     *
      * @return an object that implements <code>listenerInterface</code>
      *
-     * @throws NullPointerException if <code>listenerInterface</code> is null
-     * @throws NullPointerException if <code>target</code> is null
-     * @throws NullPointerException if <code>action</code> is null
-     *
+     * @throws NullPointerException
+     *         if <code>listenerInterface</code> is null
+     * @throws NullPointerException
+     *         if <code>target</code> is null
+     * @throws NullPointerException
+     *         if <code>action</code> is null
      * @see #create(Class, Object, String, String)
      */
-    public static <T> T create(Class<T> listenerInterface,
-                               Object target, String action)
-    {
+    public static <T> T create(Class<T> listenerInterface, Object target, String action) {
         return create(listenerInterface, target, action, null, null);
     }
 
     /**
-    /**
+     * /**
      * Creates an implementation of <code>listenerInterface</code> in which
      * <em>all</em> of the methods pass the value of the event
      * expression, <code>eventPropertyName</code>, to the final method in the
@@ -554,43 +546,47 @@ public class EventHandler implements InvocationHandler {
      * the <code>JTextField</code> source of the incoming event,
      * you can use the following code:
      *
-     *<blockquote>
-     *<pre>
-     *EventHandler.create(ActionListener.class, label, "text", "source.text");
-     *</pre>
-     *</blockquote>
+     * <blockquote>
+     * <pre>
+     * EventHandler.create(ActionListener.class, label, "text", "source.text");
+     * </pre>
+     * </blockquote>
      *
      * This is equivalent to the following code:
-     *<blockquote>
-     *<pre>
-//Equivalent code using an inner class instead of EventHandler.
-     *new ActionListener() {
+     * <blockquote>
+     * <pre>
+     * //Equivalent code using an inner class instead of EventHandler.
+     * new ActionListener() {
      *    public void actionPerformed(ActionEvent event) {
      *        label.setText(((JTextField)(event.getSource())).getText());
      *     }
-     *};
-     *</pre>
-     *</blockquote>
+     * };
+     * </pre>
+     * </blockquote>
      *
-     * @param <T> the type to create
-     * @param listenerInterface the listener interface to create a proxy for
-     * @param target the object that will perform the action
-     * @param action the name of a (possibly qualified) property or method on
-     *        the target
-     * @param eventPropertyName the (possibly qualified) name of a readable property of the incoming event
+     * @param <T>
+     *         the type to create
+     * @param listenerInterface
+     *         the listener interface to create a proxy for
+     * @param target
+     *         the object that will perform the action
+     * @param action
+     *         the name of a (possibly qualified) property or method on
+     *         the target
+     * @param eventPropertyName
+     *         the (possibly qualified) name of a readable property of the incoming event
      *
      * @return an object that implements <code>listenerInterface</code>
      *
-     * @throws NullPointerException if <code>listenerInterface</code> is null
-     * @throws NullPointerException if <code>target</code> is null
-     * @throws NullPointerException if <code>action</code> is null
-     *
+     * @throws NullPointerException
+     *         if <code>listenerInterface</code> is null
+     * @throws NullPointerException
+     *         if <code>target</code> is null
+     * @throws NullPointerException
+     *         if <code>action</code> is null
      * @see #create(Class, Object, String, String, String)
      */
-    public static <T> T create(Class<T> listenerInterface,
-                               Object target, String action,
-                               String eventPropertyName)
-    {
+    public static <T> T create(Class<T> listenerInterface, Object target, String action, String eventPropertyName) {
         return create(listenerInterface, target, action, eventPropertyName, null);
     }
 
@@ -642,57 +638,58 @@ public class EventHandler implements InvocationHandler {
      * object's <code>origin</code> property to the incoming <code>MouseEvent</code>'s
      * location (that's the value of <code>mouseEvent.getPoint()</code>) each
      * time a mouse button is pressed, one would write:
-     *<blockquote>
-     *<pre>
-     *EventHandler.create(MouseListener.class, target, "origin", "point", "mousePressed");
-     *</pre>
-     *</blockquote>
+     * <blockquote>
+     * <pre>
+     * EventHandler.create(MouseListener.class, target, "origin", "point", "mousePressed");
+     * </pre>
+     * </blockquote>
      *
      * This is comparable to writing a <code>MouseListener</code> in which all
      * of the methods except <code>mousePressed</code> are no-ops:
      *
-     *<blockquote>
-     *<pre>
-//Equivalent code using an inner class instead of EventHandler.
-     *new MouseAdapter() {
+     * <blockquote>
+     * <pre>
+     * //Equivalent code using an inner class instead of EventHandler.
+     * new MouseAdapter() {
      *    public void mousePressed(MouseEvent e) {
      *        target.setOrigin(e.getPoint());
      *    }
-     *};
+     * };
      * </pre>
-     *</blockquote>
+     * </blockquote>
      *
-     * @param <T> the type to create
-     * @param listenerInterface the listener interface to create a proxy for
-     * @param target the object that will perform the action
-     * @param action the name of a (possibly qualified) property or method on
-     *        the target
-     * @param eventPropertyName the (possibly qualified) name of a readable property of the incoming event
-     * @param listenerMethodName the name of the method in the listener interface that should trigger the action
+     * @param <T>
+     *         the type to create
+     * @param listenerInterface
+     *         the listener interface to create a proxy for
+     * @param target
+     *         the object that will perform the action
+     * @param action
+     *         the name of a (possibly qualified) property or method on
+     *         the target
+     * @param eventPropertyName
+     *         the (possibly qualified) name of a readable property of the incoming event
+     * @param listenerMethodName
+     *         the name of the method in the listener interface that should trigger the action
      *
      * @return an object that implements <code>listenerInterface</code>
      *
-     * @throws NullPointerException if <code>listenerInterface</code> is null
-     * @throws NullPointerException if <code>target</code> is null
-     * @throws NullPointerException if <code>action</code> is null
-     *
+     * @throws NullPointerException
+     *         if <code>listenerInterface</code> is null
+     * @throws NullPointerException
+     *         if <code>target</code> is null
+     * @throws NullPointerException
+     *         if <code>action</code> is null
      * @see EventHandler
      */
-    public static <T> T create(Class<T> listenerInterface,
-                               Object target, String action,
-                               String eventPropertyName,
-                               String listenerMethodName)
-    {
+    public static <T> T create(Class<T> listenerInterface, Object target, String action, String eventPropertyName, String listenerMethodName) {
         // Create this first to verify target/action are non-null
-        final EventHandler handler = new EventHandler(target, action,
-                                                     eventPropertyName,
-                                                     listenerMethodName);
+        final EventHandler handler = new EventHandler(target, action, eventPropertyName, listenerMethodName);
         if (listenerInterface == null) {
-            throw new NullPointerException(
-                          "listenerInterface must be non-null");
+            throw new NullPointerException("listenerInterface must be non-null");
         }
         final ClassLoader loader = getClassLoader(listenerInterface);
-        final Class<?>[] interfaces = {listenerInterface};
+        final Class<?>[] interfaces = { listenerInterface };
         return AccessController.doPrivileged(new PrivilegedAction<T>() {
             @SuppressWarnings("unchecked")
             public T run() {

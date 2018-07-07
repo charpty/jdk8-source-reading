@@ -25,7 +25,10 @@
 
 package java.lang.invoke;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * A field may be annotated as stable if all of its component variables

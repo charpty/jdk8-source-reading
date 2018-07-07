@@ -26,13 +26,13 @@
 package java.util;
 
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.DoubleConsumer;
 import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
-import java.util.function.DoubleConsumer;
-import java.util.stream.StreamSupport;
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
-import java.util.stream.DoubleStream;
+import java.util.stream.StreamSupport;
 
 /**
  * A generator of uniform pseudorandom values applicable for use in
@@ -82,9 +82,9 @@ import java.util.stream.DoubleStream;
  * seed unless the {@linkplain System#getProperty system property}
  * {@code java.util.secureRandomSeed} is set to {@code true}.
  *
- * @author  Guy Steele
- * @author  Doug Lea
- * @since   1.8
+ * @author Guy Steele
+ * @author Doug Lea
+ * @since 1.8
  */
 public final class SplittableRandom {
 
@@ -198,7 +198,7 @@ public final class SplittableRandom {
      */
     private static int mix32(long z) {
         z = (z ^ (z >>> 33)) * 0x62a9d9ed799705f5L;
-        return (int)(((z ^ (z >>> 28)) * 0xcb24d0a5c88c35b3L) >>> 32);
+        return (int) (((z ^ (z >>> 28)) * 0xcb24d0a5c88c35b3L) >>> 32);
     }
 
     /**
@@ -225,24 +225,22 @@ public final class SplittableRandom {
     private static final AtomicLong defaultGen = new AtomicLong(initialSeed());
 
     private static long initialSeed() {
-        String pp = java.security.AccessController.doPrivileged(
-                new sun.security.action.GetPropertyAction(
-                        "java.util.secureRandomSeed"));
+        String pp = java.security.AccessController.doPrivileged(new sun.security.action.GetPropertyAction("java.util.secureRandomSeed"));
         if (pp != null && pp.equalsIgnoreCase("true")) {
             byte[] seedBytes = java.security.SecureRandom.getSeed(8);
-            long s = (long)(seedBytes[0]) & 0xffL;
-            for (int i = 1; i < 8; ++i)
-                s = (s << 8) | ((long)(seedBytes[i]) & 0xffL);
+            long s = (long) (seedBytes[0]) & 0xffL;
+            for (int i = 1; i < 8; ++i) {
+                s = (s << 8) | ((long) (seedBytes[i]) & 0xffL);
+            }
             return s;
         }
-        return (mix64(System.currentTimeMillis()) ^
-                mix64(System.nanoTime()));
+        return (mix64(System.currentTimeMillis()) ^ mix64(System.nanoTime()));
     }
 
     // IllegalArgumentException messages
     static final String BadBound = "bound must be positive";
     static final String BadRange = "bound must be greater than origin";
-    static final String BadSize  = "size must be non-negative";
+    static final String BadSize = "size must be non-negative";
 
     /*
      * Internal versions of nextX methods used by streams, as well as
@@ -256,8 +254,11 @@ public final class SplittableRandom {
      * origin is greater than bound, acts as unbounded form of
      * nextLong, else as bounded form.
      *
-     * @param origin the least value, unless greater than bound
-     * @param bound the upper bound (exclusive), must not equal origin
+     * @param origin
+     *         the least value, unless greater than bound
+     * @param bound
+     *         the upper bound (exclusive), must not equal origin
+     *
      * @return a pseudorandom value
      */
     final long internalNextLong(long origin, long bound) {
@@ -291,17 +292,20 @@ public final class SplittableRandom {
         if (origin < bound) {
             long n = bound - origin, m = n - 1;
             if ((n & m) == 0L)  // power of two
+            {
                 r = (r & m) + origin;
-            else if (n > 0L) {  // reject over-represented candidates
+            } else if (n > 0L) {  // reject over-represented candidates
                 for (long u = r >>> 1;            // ensure nonnegative
                      u + m - (r = u % n) < 0L;    // rejection check
                      u = mix64(nextSeed()) >>> 1) // retry
+                {
                     ;
+                }
                 r += origin;
-            }
-            else {              // range not representable as long
-                while (r < origin || r >= bound)
+            } else {              // range not representable as long
+                while (r < origin || r >= bound) {
                     r = mix64(nextSeed());
+                }
             }
         }
         return r;
@@ -311,26 +315,28 @@ public final class SplittableRandom {
      * The form of nextInt used by IntStream Spliterators.
      * Exactly the same as long version, except for types.
      *
-     * @param origin the least value, unless greater than bound
-     * @param bound the upper bound (exclusive), must not equal origin
+     * @param origin
+     *         the least value, unless greater than bound
+     * @param bound
+     *         the upper bound (exclusive), must not equal origin
+     *
      * @return a pseudorandom value
      */
     final int internalNextInt(int origin, int bound) {
         int r = mix32(nextSeed());
         if (origin < bound) {
             int n = bound - origin, m = n - 1;
-            if ((n & m) == 0)
+            if ((n & m) == 0) {
                 r = (r & m) + origin;
-            else if (n > 0) {
-                for (int u = r >>> 1;
-                     u + m - (r = u % n) < 0;
-                     u = mix32(nextSeed()) >>> 1)
+            } else if (n > 0) {
+                for (int u = r >>> 1; u + m - (r = u % n) < 0; u = mix32(nextSeed()) >>> 1) {
                     ;
+                }
                 r += origin;
-            }
-            else {
-                while (r < origin || r >= bound)
+            } else {
+                while (r < origin || r >= bound) {
                     r = mix32(nextSeed());
+                }
             }
         }
         return r;
@@ -339,8 +345,11 @@ public final class SplittableRandom {
     /**
      * The form of nextDouble used by DoubleStream Spliterators.
      *
-     * @param origin the least value, unless greater than bound
-     * @param bound the upper bound (exclusive), must not equal origin
+     * @param origin
+     *         the least value, unless greater than bound
+     * @param bound
+     *         the upper bound (exclusive), must not equal origin
+     *
      * @return a pseudorandom value
      */
     final double internalNextDouble(double origin, double bound) {
@@ -348,7 +357,9 @@ public final class SplittableRandom {
         if (origin < bound) {
             r = r * (bound - origin) + origin;
             if (r >= bound) // correct for rounding
+            {
                 r = Double.longBitsToDouble(Double.doubleToLongBits(bound) - 1);
+            }
         }
         return r;
     }
@@ -360,7 +371,8 @@ public final class SplittableRandom {
      * initial seed. SplittableRandom instances created with the same
      * seed in the same program generate identical sequences of values.
      *
-     * @param seed the initial seed
+     * @param seed
+     *         the initial seed
      */
     public SplittableRandom(long seed) {
         this(seed, GOLDEN_GAMMA);
@@ -409,24 +421,29 @@ public final class SplittableRandom {
      * Returns a pseudorandom {@code int} value between zero (inclusive)
      * and the specified bound (exclusive).
      *
-     * @param bound the upper bound (exclusive).  Must be positive.
+     * @param bound
+     *         the upper bound (exclusive).  Must be positive.
+     *
      * @return a pseudorandom {@code int} value between zero
-     *         (inclusive) and the bound (exclusive)
-     * @throws IllegalArgumentException if {@code bound} is not positive
+     * (inclusive) and the bound (exclusive)
+     *
+     * @throws IllegalArgumentException
+     *         if {@code bound} is not positive
      */
     public int nextInt(int bound) {
-        if (bound <= 0)
+        if (bound <= 0) {
             throw new IllegalArgumentException(BadBound);
+        }
         // Specialize internalNextInt for origin 0
         int r = mix32(nextSeed());
         int m = bound - 1;
         if ((bound & m) == 0) // power of two
+        {
             r &= m;
-        else { // reject over-represented candidates
-            for (int u = r >>> 1;
-                 u + m - (r = u % bound) < 0;
-                 u = mix32(nextSeed()) >>> 1)
+        } else { // reject over-represented candidates
+            for (int u = r >>> 1; u + m - (r = u % bound) < 0; u = mix32(nextSeed()) >>> 1) {
                 ;
+            }
         }
         return r;
     }
@@ -435,16 +452,22 @@ public final class SplittableRandom {
      * Returns a pseudorandom {@code int} value between the specified
      * origin (inclusive) and the specified bound (exclusive).
      *
-     * @param origin the least value returned
-     * @param bound the upper bound (exclusive)
+     * @param origin
+     *         the least value returned
+     * @param bound
+     *         the upper bound (exclusive)
+     *
      * @return a pseudorandom {@code int} value between the origin
-     *         (inclusive) and the bound (exclusive)
-     * @throws IllegalArgumentException if {@code origin} is greater than
+     * (inclusive) and the bound (exclusive)
+     *
+     * @throws IllegalArgumentException
+     *         if {@code origin} is greater than
      *         or equal to {@code bound}
      */
     public int nextInt(int origin, int bound) {
-        if (origin >= bound)
+        if (origin >= bound) {
             throw new IllegalArgumentException(BadRange);
+        }
         return internalNextInt(origin, bound);
     }
 
@@ -461,24 +484,29 @@ public final class SplittableRandom {
      * Returns a pseudorandom {@code long} value between zero (inclusive)
      * and the specified bound (exclusive).
      *
-     * @param bound the upper bound (exclusive).  Must be positive.
+     * @param bound
+     *         the upper bound (exclusive).  Must be positive.
+     *
      * @return a pseudorandom {@code long} value between zero
-     *         (inclusive) and the bound (exclusive)
-     * @throws IllegalArgumentException if {@code bound} is not positive
+     * (inclusive) and the bound (exclusive)
+     *
+     * @throws IllegalArgumentException
+     *         if {@code bound} is not positive
      */
     public long nextLong(long bound) {
-        if (bound <= 0)
+        if (bound <= 0) {
             throw new IllegalArgumentException(BadBound);
+        }
         // Specialize internalNextLong for origin 0
         long r = mix64(nextSeed());
         long m = bound - 1;
         if ((bound & m) == 0L) // power of two
+        {
             r &= m;
-        else { // reject over-represented candidates
-            for (long u = r >>> 1;
-                 u + m - (r = u % bound) < 0L;
-                 u = mix64(nextSeed()) >>> 1)
+        } else { // reject over-represented candidates
+            for (long u = r >>> 1; u + m - (r = u % bound) < 0L; u = mix64(nextSeed()) >>> 1) {
                 ;
+            }
         }
         return r;
     }
@@ -487,16 +515,22 @@ public final class SplittableRandom {
      * Returns a pseudorandom {@code long} value between the specified
      * origin (inclusive) and the specified bound (exclusive).
      *
-     * @param origin the least value returned
-     * @param bound the upper bound (exclusive)
+     * @param origin
+     *         the least value returned
+     * @param bound
+     *         the upper bound (exclusive)
+     *
      * @return a pseudorandom {@code long} value between the origin
-     *         (inclusive) and the bound (exclusive)
-     * @throws IllegalArgumentException if {@code origin} is greater than
+     * (inclusive) and the bound (exclusive)
+     *
+     * @throws IllegalArgumentException
+     *         if {@code origin} is greater than
      *         or equal to {@code bound}
      */
     public long nextLong(long origin, long bound) {
-        if (origin >= bound)
+        if (origin >= bound) {
             throw new IllegalArgumentException(BadRange);
+        }
         return internalNextLong(origin, bound);
     }
 
@@ -505,7 +539,7 @@ public final class SplittableRandom {
      * (inclusive) and one (exclusive).
      *
      * @return a pseudorandom {@code double} value between zero
-     *         (inclusive) and one (exclusive)
+     * (inclusive) and one (exclusive)
      */
     public double nextDouble() {
         return (mix64(nextSeed()) >>> 11) * DOUBLE_UNIT;
@@ -515,33 +549,44 @@ public final class SplittableRandom {
      * Returns a pseudorandom {@code double} value between 0.0
      * (inclusive) and the specified bound (exclusive).
      *
-     * @param bound the upper bound (exclusive).  Must be positive.
+     * @param bound
+     *         the upper bound (exclusive).  Must be positive.
+     *
      * @return a pseudorandom {@code double} value between zero
-     *         (inclusive) and the bound (exclusive)
-     * @throws IllegalArgumentException if {@code bound} is not positive
+     * (inclusive) and the bound (exclusive)
+     *
+     * @throws IllegalArgumentException
+     *         if {@code bound} is not positive
      */
     public double nextDouble(double bound) {
-        if (!(bound > 0.0))
+        if (!(bound > 0.0)) {
             throw new IllegalArgumentException(BadBound);
+        }
         double result = (mix64(nextSeed()) >>> 11) * DOUBLE_UNIT * bound;
-        return (result < bound) ?  result : // correct for rounding
-            Double.longBitsToDouble(Double.doubleToLongBits(bound) - 1);
+        return (result < bound) ? result : // correct for rounding
+                Double.longBitsToDouble(Double.doubleToLongBits(bound) - 1);
     }
 
     /**
      * Returns a pseudorandom {@code double} value between the specified
      * origin (inclusive) and bound (exclusive).
      *
-     * @param origin the least value returned
-     * @param bound the upper bound (exclusive)
+     * @param origin
+     *         the least value returned
+     * @param bound
+     *         the upper bound (exclusive)
+     *
      * @return a pseudorandom {@code double} value between the origin
-     *         (inclusive) and the bound (exclusive)
-     * @throws IllegalArgumentException if {@code origin} is greater than
+     * (inclusive) and the bound (exclusive)
+     *
+     * @throws IllegalArgumentException
+     *         if {@code origin} is greater than
      *         or equal to {@code bound}
      */
     public double nextDouble(double origin, double bound) {
-        if (!(origin < bound))
+        if (!(origin < bound)) {
             throw new IllegalArgumentException(BadRange);
+        }
         return internalNextDouble(origin, bound);
     }
 
@@ -562,34 +607,30 @@ public final class SplittableRandom {
      * of pseudorandom {@code int} values from this generator and/or
      * one split from it.
      *
-     * @param streamSize the number of values to generate
+     * @param streamSize
+     *         the number of values to generate
+     *
      * @return a stream of pseudorandom {@code int} values
-     * @throws IllegalArgumentException if {@code streamSize} is
+     *
+     * @throws IllegalArgumentException
+     *         if {@code streamSize} is
      *         less than zero
      */
     public IntStream ints(long streamSize) {
-        if (streamSize < 0L)
+        if (streamSize < 0L) {
             throw new IllegalArgumentException(BadSize);
-        return StreamSupport.intStream
-            (new RandomIntsSpliterator
-             (this, 0L, streamSize, Integer.MAX_VALUE, 0),
-             false);
+        }
+        return StreamSupport.intStream(new RandomIntsSpliterator(this, 0L, streamSize, Integer.MAX_VALUE, 0), false);
     }
 
     /**
      * Returns an effectively unlimited stream of pseudorandom {@code int}
      * values from this generator and/or one split from it.
      *
-     * @implNote This method is implemented to be equivalent to {@code
-     * ints(Long.MAX_VALUE)}.
-     *
      * @return a stream of pseudorandom {@code int} values
      */
     public IntStream ints() {
-        return StreamSupport.intStream
-            (new RandomIntsSpliterator
-             (this, 0L, Long.MAX_VALUE, Integer.MAX_VALUE, 0),
-             false);
+        return StreamSupport.intStream(new RandomIntsSpliterator(this, 0L, Long.MAX_VALUE, Integer.MAX_VALUE, 0), false);
     }
 
     /**
@@ -598,25 +639,29 @@ public final class SplittableRandom {
      * from it; each value conforms to the given origin (inclusive) and bound
      * (exclusive).
      *
-     * @param streamSize the number of values to generate
-     * @param randomNumberOrigin the origin (inclusive) of each random value
-     * @param randomNumberBound the bound (exclusive) of each random value
+     * @param streamSize
+     *         the number of values to generate
+     * @param randomNumberOrigin
+     *         the origin (inclusive) of each random value
+     * @param randomNumberBound
+     *         the bound (exclusive) of each random value
+     *
      * @return a stream of pseudorandom {@code int} values,
-     *         each with the given origin (inclusive) and bound (exclusive)
-     * @throws IllegalArgumentException if {@code streamSize} is
+     * each with the given origin (inclusive) and bound (exclusive)
+     *
+     * @throws IllegalArgumentException
+     *         if {@code streamSize} is
      *         less than zero, or {@code randomNumberOrigin}
      *         is greater than or equal to {@code randomNumberBound}
      */
-    public IntStream ints(long streamSize, int randomNumberOrigin,
-                          int randomNumberBound) {
-        if (streamSize < 0L)
+    public IntStream ints(long streamSize, int randomNumberOrigin, int randomNumberBound) {
+        if (streamSize < 0L) {
             throw new IllegalArgumentException(BadSize);
-        if (randomNumberOrigin >= randomNumberBound)
+        }
+        if (randomNumberOrigin >= randomNumberBound) {
             throw new IllegalArgumentException(BadRange);
-        return StreamSupport.intStream
-            (new RandomIntsSpliterator
-             (this, 0L, streamSize, randomNumberOrigin, randomNumberBound),
-             false);
+        }
+        return StreamSupport.intStream(new RandomIntsSpliterator(this, 0L, streamSize, randomNumberOrigin, randomNumberBound), false);
     }
 
     /**
@@ -624,23 +669,23 @@ public final class SplittableRandom {
      * int} values from this generator and/or one split from it; each value
      * conforms to the given origin (inclusive) and bound (exclusive).
      *
-     * @implNote This method is implemented to be equivalent to {@code
-     * ints(Long.MAX_VALUE, randomNumberOrigin, randomNumberBound)}.
+     * @param randomNumberOrigin
+     *         the origin (inclusive) of each random value
+     * @param randomNumberBound
+     *         the bound (exclusive) of each random value
      *
-     * @param randomNumberOrigin the origin (inclusive) of each random value
-     * @param randomNumberBound the bound (exclusive) of each random value
      * @return a stream of pseudorandom {@code int} values,
-     *         each with the given origin (inclusive) and bound (exclusive)
-     * @throws IllegalArgumentException if {@code randomNumberOrigin}
+     * each with the given origin (inclusive) and bound (exclusive)
+     *
+     * @throws IllegalArgumentException
+     *         if {@code randomNumberOrigin}
      *         is greater than or equal to {@code randomNumberBound}
      */
     public IntStream ints(int randomNumberOrigin, int randomNumberBound) {
-        if (randomNumberOrigin >= randomNumberBound)
+        if (randomNumberOrigin >= randomNumberBound) {
             throw new IllegalArgumentException(BadRange);
-        return StreamSupport.intStream
-            (new RandomIntsSpliterator
-             (this, 0L, Long.MAX_VALUE, randomNumberOrigin, randomNumberBound),
-             false);
+        }
+        return StreamSupport.intStream(new RandomIntsSpliterator(this, 0L, Long.MAX_VALUE, randomNumberOrigin, randomNumberBound), false);
     }
 
     /**
@@ -648,34 +693,30 @@ public final class SplittableRandom {
      * of pseudorandom {@code long} values from this generator and/or
      * one split from it.
      *
-     * @param streamSize the number of values to generate
+     * @param streamSize
+     *         the number of values to generate
+     *
      * @return a stream of pseudorandom {@code long} values
-     * @throws IllegalArgumentException if {@code streamSize} is
+     *
+     * @throws IllegalArgumentException
+     *         if {@code streamSize} is
      *         less than zero
      */
     public LongStream longs(long streamSize) {
-        if (streamSize < 0L)
+        if (streamSize < 0L) {
             throw new IllegalArgumentException(BadSize);
-        return StreamSupport.longStream
-            (new RandomLongsSpliterator
-             (this, 0L, streamSize, Long.MAX_VALUE, 0L),
-             false);
+        }
+        return StreamSupport.longStream(new RandomLongsSpliterator(this, 0L, streamSize, Long.MAX_VALUE, 0L), false);
     }
 
     /**
      * Returns an effectively unlimited stream of pseudorandom {@code
      * long} values from this generator and/or one split from it.
      *
-     * @implNote This method is implemented to be equivalent to {@code
-     * longs(Long.MAX_VALUE)}.
-     *
      * @return a stream of pseudorandom {@code long} values
      */
     public LongStream longs() {
-        return StreamSupport.longStream
-            (new RandomLongsSpliterator
-             (this, 0L, Long.MAX_VALUE, Long.MAX_VALUE, 0L),
-             false);
+        return StreamSupport.longStream(new RandomLongsSpliterator(this, 0L, Long.MAX_VALUE, Long.MAX_VALUE, 0L), false);
     }
 
     /**
@@ -684,25 +725,29 @@ public final class SplittableRandom {
      * from it; each value conforms to the given origin (inclusive) and bound
      * (exclusive).
      *
-     * @param streamSize the number of values to generate
-     * @param randomNumberOrigin the origin (inclusive) of each random value
-     * @param randomNumberBound the bound (exclusive) of each random value
+     * @param streamSize
+     *         the number of values to generate
+     * @param randomNumberOrigin
+     *         the origin (inclusive) of each random value
+     * @param randomNumberBound
+     *         the bound (exclusive) of each random value
+     *
      * @return a stream of pseudorandom {@code long} values,
-     *         each with the given origin (inclusive) and bound (exclusive)
-     * @throws IllegalArgumentException if {@code streamSize} is
+     * each with the given origin (inclusive) and bound (exclusive)
+     *
+     * @throws IllegalArgumentException
+     *         if {@code streamSize} is
      *         less than zero, or {@code randomNumberOrigin}
      *         is greater than or equal to {@code randomNumberBound}
      */
-    public LongStream longs(long streamSize, long randomNumberOrigin,
-                            long randomNumberBound) {
-        if (streamSize < 0L)
+    public LongStream longs(long streamSize, long randomNumberOrigin, long randomNumberBound) {
+        if (streamSize < 0L) {
             throw new IllegalArgumentException(BadSize);
-        if (randomNumberOrigin >= randomNumberBound)
+        }
+        if (randomNumberOrigin >= randomNumberBound) {
             throw new IllegalArgumentException(BadRange);
-        return StreamSupport.longStream
-            (new RandomLongsSpliterator
-             (this, 0L, streamSize, randomNumberOrigin, randomNumberBound),
-             false);
+        }
+        return StreamSupport.longStream(new RandomLongsSpliterator(this, 0L, streamSize, randomNumberOrigin, randomNumberBound), false);
     }
 
     /**
@@ -710,23 +755,23 @@ public final class SplittableRandom {
      * long} values from this generator and/or one split from it; each value
      * conforms to the given origin (inclusive) and bound (exclusive).
      *
-     * @implNote This method is implemented to be equivalent to {@code
-     * longs(Long.MAX_VALUE, randomNumberOrigin, randomNumberBound)}.
+     * @param randomNumberOrigin
+     *         the origin (inclusive) of each random value
+     * @param randomNumberBound
+     *         the bound (exclusive) of each random value
      *
-     * @param randomNumberOrigin the origin (inclusive) of each random value
-     * @param randomNumberBound the bound (exclusive) of each random value
      * @return a stream of pseudorandom {@code long} values,
-     *         each with the given origin (inclusive) and bound (exclusive)
-     * @throws IllegalArgumentException if {@code randomNumberOrigin}
+     * each with the given origin (inclusive) and bound (exclusive)
+     *
+     * @throws IllegalArgumentException
+     *         if {@code randomNumberOrigin}
      *         is greater than or equal to {@code randomNumberBound}
      */
     public LongStream longs(long randomNumberOrigin, long randomNumberBound) {
-        if (randomNumberOrigin >= randomNumberBound)
+        if (randomNumberOrigin >= randomNumberBound) {
             throw new IllegalArgumentException(BadRange);
-        return StreamSupport.longStream
-            (new RandomLongsSpliterator
-             (this, 0L, Long.MAX_VALUE, randomNumberOrigin, randomNumberBound),
-             false);
+        }
+        return StreamSupport.longStream(new RandomLongsSpliterator(this, 0L, Long.MAX_VALUE, randomNumberOrigin, randomNumberBound), false);
     }
 
     /**
@@ -734,18 +779,20 @@ public final class SplittableRandom {
      * pseudorandom {@code double} values from this generator and/or one split
      * from it; each value is between zero (inclusive) and one (exclusive).
      *
-     * @param streamSize the number of values to generate
+     * @param streamSize
+     *         the number of values to generate
+     *
      * @return a stream of {@code double} values
-     * @throws IllegalArgumentException if {@code streamSize} is
+     *
+     * @throws IllegalArgumentException
+     *         if {@code streamSize} is
      *         less than zero
      */
     public DoubleStream doubles(long streamSize) {
-        if (streamSize < 0L)
+        if (streamSize < 0L) {
             throw new IllegalArgumentException(BadSize);
-        return StreamSupport.doubleStream
-            (new RandomDoublesSpliterator
-             (this, 0L, streamSize, Double.MAX_VALUE, 0.0),
-             false);
+        }
+        return StreamSupport.doubleStream(new RandomDoublesSpliterator(this, 0L, streamSize, Double.MAX_VALUE, 0.0), false);
     }
 
     /**
@@ -753,16 +800,10 @@ public final class SplittableRandom {
      * double} values from this generator and/or one split from it; each value
      * is between zero (inclusive) and one (exclusive).
      *
-     * @implNote This method is implemented to be equivalent to {@code
-     * doubles(Long.MAX_VALUE)}.
-     *
      * @return a stream of pseudorandom {@code double} values
      */
     public DoubleStream doubles() {
-        return StreamSupport.doubleStream
-            (new RandomDoublesSpliterator
-             (this, 0L, Long.MAX_VALUE, Double.MAX_VALUE, 0.0),
-             false);
+        return StreamSupport.doubleStream(new RandomDoublesSpliterator(this, 0L, Long.MAX_VALUE, Double.MAX_VALUE, 0.0), false);
     }
 
     /**
@@ -771,26 +812,31 @@ public final class SplittableRandom {
      * from it; each value conforms to the given origin (inclusive) and bound
      * (exclusive).
      *
-     * @param streamSize the number of values to generate
-     * @param randomNumberOrigin the origin (inclusive) of each random value
-     * @param randomNumberBound the bound (exclusive) of each random value
+     * @param streamSize
+     *         the number of values to generate
+     * @param randomNumberOrigin
+     *         the origin (inclusive) of each random value
+     * @param randomNumberBound
+     *         the bound (exclusive) of each random value
+     *
      * @return a stream of pseudorandom {@code double} values,
-     *         each with the given origin (inclusive) and bound (exclusive)
-     * @throws IllegalArgumentException if {@code streamSize} is
+     * each with the given origin (inclusive) and bound (exclusive)
+     *
+     * @throws IllegalArgumentException
+     *         if {@code streamSize} is
      *         less than zero
-     * @throws IllegalArgumentException if {@code randomNumberOrigin}
+     * @throws IllegalArgumentException
+     *         if {@code randomNumberOrigin}
      *         is greater than or equal to {@code randomNumberBound}
      */
-    public DoubleStream doubles(long streamSize, double randomNumberOrigin,
-                                double randomNumberBound) {
-        if (streamSize < 0L)
+    public DoubleStream doubles(long streamSize, double randomNumberOrigin, double randomNumberBound) {
+        if (streamSize < 0L) {
             throw new IllegalArgumentException(BadSize);
-        if (!(randomNumberOrigin < randomNumberBound))
+        }
+        if (!(randomNumberOrigin < randomNumberBound)) {
             throw new IllegalArgumentException(BadRange);
-        return StreamSupport.doubleStream
-            (new RandomDoublesSpliterator
-             (this, 0L, streamSize, randomNumberOrigin, randomNumberBound),
-             false);
+        }
+        return StreamSupport.doubleStream(new RandomDoublesSpliterator(this, 0L, streamSize, randomNumberOrigin, randomNumberBound), false);
     }
 
     /**
@@ -798,23 +844,23 @@ public final class SplittableRandom {
      * double} values from this generator and/or one split from it; each value
      * conforms to the given origin (inclusive) and bound (exclusive).
      *
-     * @implNote This method is implemented to be equivalent to {@code
-     * doubles(Long.MAX_VALUE, randomNumberOrigin, randomNumberBound)}.
+     * @param randomNumberOrigin
+     *         the origin (inclusive) of each random value
+     * @param randomNumberBound
+     *         the bound (exclusive) of each random value
      *
-     * @param randomNumberOrigin the origin (inclusive) of each random value
-     * @param randomNumberBound the bound (exclusive) of each random value
      * @return a stream of pseudorandom {@code double} values,
-     *         each with the given origin (inclusive) and bound (exclusive)
-     * @throws IllegalArgumentException if {@code randomNumberOrigin}
+     * each with the given origin (inclusive) and bound (exclusive)
+     *
+     * @throws IllegalArgumentException
+     *         if {@code randomNumberOrigin}
      *         is greater than or equal to {@code randomNumberBound}
      */
     public DoubleStream doubles(double randomNumberOrigin, double randomNumberBound) {
-        if (!(randomNumberOrigin < randomNumberBound))
+        if (!(randomNumberOrigin < randomNumberBound)) {
             throw new IllegalArgumentException(BadRange);
-        return StreamSupport.doubleStream
-            (new RandomDoublesSpliterator
-             (this, 0L, Long.MAX_VALUE, randomNumberOrigin, randomNumberBound),
-             false);
+        }
+        return StreamSupport.doubleStream(new RandomDoublesSpliterator(this, 0L, Long.MAX_VALUE, randomNumberOrigin, randomNumberBound), false);
     }
 
     /**
@@ -831,16 +877,18 @@ public final class SplittableRandom {
         final long fence;
         final int origin;
         final int bound;
-        RandomIntsSpliterator(SplittableRandom rng, long index, long fence,
-                              int origin, int bound) {
-            this.rng = rng; this.index = index; this.fence = fence;
-            this.origin = origin; this.bound = bound;
+
+        RandomIntsSpliterator(SplittableRandom rng, long index, long fence, int origin, int bound) {
+            this.rng = rng;
+            this.index = index;
+            this.fence = fence;
+            this.origin = origin;
+            this.bound = bound;
         }
 
         public RandomIntsSpliterator trySplit() {
             long i = index, m = (i + fence) >>> 1;
-            return (m <= i) ? null :
-                new RandomIntsSpliterator(rng.split(), i, index = m, origin, bound);
+            return (m <= i) ? null : new RandomIntsSpliterator(rng.split(), i, index = m, origin, bound);
         }
 
         public long estimateSize() {
@@ -848,12 +896,13 @@ public final class SplittableRandom {
         }
 
         public int characteristics() {
-            return (Spliterator.SIZED | Spliterator.SUBSIZED |
-                    Spliterator.NONNULL | Spliterator.IMMUTABLE);
+            return (Spliterator.SIZED | Spliterator.SUBSIZED | Spliterator.NONNULL | Spliterator.IMMUTABLE);
         }
 
         public boolean tryAdvance(IntConsumer consumer) {
-            if (consumer == null) throw new NullPointerException();
+            if (consumer == null) {
+                throw new NullPointerException();
+            }
             long i = index, f = fence;
             if (i < f) {
                 consumer.accept(rng.internalNextInt(origin, bound));
@@ -864,7 +913,9 @@ public final class SplittableRandom {
         }
 
         public void forEachRemaining(IntConsumer consumer) {
-            if (consumer == null) throw new NullPointerException();
+            if (consumer == null) {
+                throw new NullPointerException();
+            }
             long i = index, f = fence;
             if (i < f) {
                 index = f;
@@ -886,16 +937,18 @@ public final class SplittableRandom {
         final long fence;
         final long origin;
         final long bound;
-        RandomLongsSpliterator(SplittableRandom rng, long index, long fence,
-                               long origin, long bound) {
-            this.rng = rng; this.index = index; this.fence = fence;
-            this.origin = origin; this.bound = bound;
+
+        RandomLongsSpliterator(SplittableRandom rng, long index, long fence, long origin, long bound) {
+            this.rng = rng;
+            this.index = index;
+            this.fence = fence;
+            this.origin = origin;
+            this.bound = bound;
         }
 
         public RandomLongsSpliterator trySplit() {
             long i = index, m = (i + fence) >>> 1;
-            return (m <= i) ? null :
-                new RandomLongsSpliterator(rng.split(), i, index = m, origin, bound);
+            return (m <= i) ? null : new RandomLongsSpliterator(rng.split(), i, index = m, origin, bound);
         }
 
         public long estimateSize() {
@@ -903,12 +956,13 @@ public final class SplittableRandom {
         }
 
         public int characteristics() {
-            return (Spliterator.SIZED | Spliterator.SUBSIZED |
-                    Spliterator.NONNULL | Spliterator.IMMUTABLE);
+            return (Spliterator.SIZED | Spliterator.SUBSIZED | Spliterator.NONNULL | Spliterator.IMMUTABLE);
         }
 
         public boolean tryAdvance(LongConsumer consumer) {
-            if (consumer == null) throw new NullPointerException();
+            if (consumer == null) {
+                throw new NullPointerException();
+            }
             long i = index, f = fence;
             if (i < f) {
                 consumer.accept(rng.internalNextLong(origin, bound));
@@ -919,7 +973,9 @@ public final class SplittableRandom {
         }
 
         public void forEachRemaining(LongConsumer consumer) {
-            if (consumer == null) throw new NullPointerException();
+            if (consumer == null) {
+                throw new NullPointerException();
+            }
             long i = index, f = fence;
             if (i < f) {
                 index = f;
@@ -942,16 +998,18 @@ public final class SplittableRandom {
         final long fence;
         final double origin;
         final double bound;
-        RandomDoublesSpliterator(SplittableRandom rng, long index, long fence,
-                                 double origin, double bound) {
-            this.rng = rng; this.index = index; this.fence = fence;
-            this.origin = origin; this.bound = bound;
+
+        RandomDoublesSpliterator(SplittableRandom rng, long index, long fence, double origin, double bound) {
+            this.rng = rng;
+            this.index = index;
+            this.fence = fence;
+            this.origin = origin;
+            this.bound = bound;
         }
 
         public RandomDoublesSpliterator trySplit() {
             long i = index, m = (i + fence) >>> 1;
-            return (m <= i) ? null :
-                new RandomDoublesSpliterator(rng.split(), i, index = m, origin, bound);
+            return (m <= i) ? null : new RandomDoublesSpliterator(rng.split(), i, index = m, origin, bound);
         }
 
         public long estimateSize() {
@@ -959,12 +1017,13 @@ public final class SplittableRandom {
         }
 
         public int characteristics() {
-            return (Spliterator.SIZED | Spliterator.SUBSIZED |
-                    Spliterator.NONNULL | Spliterator.IMMUTABLE);
+            return (Spliterator.SIZED | Spliterator.SUBSIZED | Spliterator.NONNULL | Spliterator.IMMUTABLE);
         }
 
         public boolean tryAdvance(DoubleConsumer consumer) {
-            if (consumer == null) throw new NullPointerException();
+            if (consumer == null) {
+                throw new NullPointerException();
+            }
             long i = index, f = fence;
             if (i < f) {
                 consumer.accept(rng.internalNextDouble(origin, bound));
@@ -975,7 +1034,9 @@ public final class SplittableRandom {
         }
 
         public void forEachRemaining(DoubleConsumer consumer) {
-            if (consumer == null) throw new NullPointerException();
+            if (consumer == null) {
+                throw new NullPointerException();
+            }
             long i = index, f = fence;
             if (i < f) {
                 index = f;

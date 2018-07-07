@@ -34,6 +34,7 @@
  */
 
 package java.util.concurrent;
+
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
 /**
@@ -72,7 +73,7 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  * until all workers have completed.
  * </ul>
  *
- *  <pre> {@code
+ * <pre> {@code
  * class Driver { // ...
  *   void main() throws InterruptedException {
  *     CountDownLatch startSignal = new CountDownLatch(1);
@@ -113,7 +114,7 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  * will be able to pass through await. (When threads must repeatedly
  * count down in this way, instead use a {@link CyclicBarrier}.)
  *
- *  <pre> {@code
+ * <pre> {@code
  * class Driver2 { // ...
  *   void main() throws InterruptedException {
  *     CountDownLatch doneSignal = new CountDownLatch(N);
@@ -150,8 +151,8 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  * actions following a successful return from a corresponding
  * {@code await()} in another thread.
  *
- * @since 1.5
  * @author Doug Lea
+ * @since 1.5
  */
 public class CountDownLatch {
     /**
@@ -175,13 +176,15 @@ public class CountDownLatch {
 
         protected boolean tryReleaseShared(int releases) {
             // Decrement count; signal when transition to zero
-            for (;;) {
+            for (; ; ) {
                 int c = getState();
-                if (c == 0)
+                if (c == 0) {
                     return false;
-                int nextc = c-1;
-                if (compareAndSetState(c, nextc))
+                }
+                int nextc = c - 1;
+                if (compareAndSetState(c, nextc)) {
                     return nextc == 0;
+                }
             }
         }
     }
@@ -191,12 +194,17 @@ public class CountDownLatch {
     /**
      * Constructs a {@code CountDownLatch} initialized with the given count.
      *
-     * @param count the number of times {@link #countDown} must be invoked
-     *        before threads can pass through {@link #await}
-     * @throws IllegalArgumentException if {@code count} is negative
+     * @param count
+     *         the number of times {@link #countDown} must be invoked
+     *         before threads can pass through {@link #await}
+     *
+     * @throws IllegalArgumentException
+     *         if {@code count} is negative
      */
     public CountDownLatch(int count) {
-        if (count < 0) throw new IllegalArgumentException("count < 0");
+        if (count < 0) {
+            throw new IllegalArgumentException("count < 0");
+        }
         this.sync = new Sync(count);
     }
 
@@ -224,7 +232,8 @@ public class CountDownLatch {
      * then {@link InterruptedException} is thrown and the current thread's
      * interrupted status is cleared.
      *
-     * @throws InterruptedException if the current thread is interrupted
+     * @throws InterruptedException
+     *         if the current thread is interrupted
      *         while waiting
      */
     public void await() throws InterruptedException {
@@ -265,15 +274,19 @@ public class CountDownLatch {
      * is returned.  If the time is less than or equal to zero, the method
      * will not wait at all.
      *
-     * @param timeout the maximum time to wait
-     * @param unit the time unit of the {@code timeout} argument
+     * @param timeout
+     *         the maximum time to wait
+     * @param unit
+     *         the time unit of the {@code timeout} argument
+     *
      * @return {@code true} if the count reached zero and {@code false}
-     *         if the waiting time elapsed before the count reached zero
-     * @throws InterruptedException if the current thread is interrupted
+     * if the waiting time elapsed before the count reached zero
+     *
+     * @throws InterruptedException
+     *         if the current thread is interrupted
      *         while waiting
      */
-    public boolean await(long timeout, TimeUnit unit)
-        throws InterruptedException {
+    public boolean await(long timeout, TimeUnit unit) throws InterruptedException {
         return sync.tryAcquireSharedNanos(1, unit.toNanos(timeout));
     }
 

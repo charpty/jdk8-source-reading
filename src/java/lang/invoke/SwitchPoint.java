@@ -107,12 +107,11 @@ package java.lang.invoke;
  *     }
  * }
  * }</pre>
+ *
  * @author Remi Forax, JSR 292 EG
  */
 public class SwitchPoint {
-    private static final MethodHandle
-        K_true  = MethodHandles.constant(boolean.class, true),
-        K_false = MethodHandles.constant(boolean.class, false);
+    private static final MethodHandle K_true = MethodHandles.constant(boolean.class, true), K_false = MethodHandles.constant(boolean.class, false);
 
     private final MutableCallSite mcs;
     private final MethodHandle mcsInvoker;
@@ -160,16 +159,23 @@ public class SwitchPoint {
      * The target and fallback must be of exactly the same method type,
      * and the resulting combined method handle will also be of this type.
      *
-     * @param target the method handle selected by the switch point as long as it is valid
-     * @param fallback the method handle selected by the switch point after it is invalidated
+     * @param target
+     *         the method handle selected by the switch point as long as it is valid
+     * @param fallback
+     *         the method handle selected by the switch point after it is invalidated
+     *
      * @return a combined method handle which always calls either the target or fallback
-     * @throws NullPointerException if either argument is null
-     * @throws IllegalArgumentException if the two method types do not match
+     *
+     * @throws NullPointerException
+     *         if either argument is null
+     * @throws IllegalArgumentException
+     *         if the two method types do not match
      * @see MethodHandles#guardWithTest
      */
     public MethodHandle guardWithTest(MethodHandle target, MethodHandle fallback) {
-        if (mcs.getTarget() == K_false)
+        if (mcs.getTarget() == K_false) {
             return fallback;  // already invalid
+        }
         return MethodHandles.guardWithTest(mcsInvoker, target, fallback);
     }
 
@@ -210,16 +216,23 @@ public class SwitchPoint {
      * {@linkplain MutableCallSite#syncAll synchronize} all the
      * private call sites.
      *
-     * @param switchPoints an array of call sites to be synchronized
-     * @throws NullPointerException if the {@code switchPoints} array reference is null
-     *                              or the array contains a null
+     * @param switchPoints
+     *         an array of call sites to be synchronized
+     *
+     * @throws NullPointerException
+     *         if the {@code switchPoints} array reference is null
+     *         or the array contains a null
      */
     public static void invalidateAll(SwitchPoint[] switchPoints) {
-        if (switchPoints.length == 0)  return;
+        if (switchPoints.length == 0) {
+            return;
+        }
         MutableCallSite[] sites = new MutableCallSite[switchPoints.length];
         for (int i = 0; i < switchPoints.length; i++) {
             SwitchPoint spt = switchPoints[i];
-            if (spt == null)  break;  // MSC.syncAll will trigger a NPE
+            if (spt == null) {
+                break;  // MSC.syncAll will trigger a NPE
+            }
             sites[i] = spt.mcs;
             spt.mcs.setTarget(K_false);
         }

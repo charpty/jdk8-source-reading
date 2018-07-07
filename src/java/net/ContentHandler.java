@@ -59,14 +59,14 @@ import java.io.IOException;
  * a classloader that is outside of the delegation chain of the caller,
  * the JVM will need the RuntimePermission "getClassLoader".
  *
- * @author  James Gosling
- * @see     java.net.ContentHandler#getContent(java.net.URLConnection)
- * @see     java.net.ContentHandlerFactory
- * @see     java.net.URL#getContent()
- * @see     java.net.URLConnection
- * @see     java.net.URLConnection#getContent()
- * @see     java.net.URLConnection#setContentHandlerFactory(java.net.ContentHandlerFactory)
- * @since   JDK1.0
+ * @author James Gosling
+ * @see java.net.ContentHandler#getContent(java.net.URLConnection)
+ * @see java.net.ContentHandlerFactory
+ * @see java.net.URL#getContent()
+ * @see java.net.URLConnection
+ * @see java.net.URLConnection#getContent()
+ * @see java.net.URLConnection#setContentHandlerFactory(java.net.ContentHandlerFactory)
+ * @since JDK1.0
  */
 abstract public class ContentHandler {
     /**
@@ -74,9 +74,13 @@ abstract public class ContentHandler {
      * representation of an object, this method reads that stream and
      * creates an object from it.
      *
-     * @param      urlc   a URL connection.
-     * @return     the object read by the {@code ContentHandler}.
-     * @exception  IOException  if an I/O error occurs while reading the object.
+     * @param urlc
+     *         a URL connection.
+     *
+     * @return the object read by the {@code ContentHandler}.
+     *
+     * @throws IOException
+     *         if an I/O error occurs while reading the object.
      */
     abstract public Object getContent(URLConnection urlc) throws IOException;
 
@@ -88,12 +92,17 @@ abstract public class ContentHandler {
      * The default implementation of this method should call getContent()
      * and screen the return type for a match of the suggested types.
      *
-     * @param      urlc   a URL connection.
-     * @param      classes      an array of types requested
-     * @return     the object read by the {@code ContentHandler} that is
-     *                 the first match of the suggested types.
-     *                 null if none of the requested  are supported.
-     * @exception  IOException  if an I/O error occurs while reading the object.
+     * @param urlc
+     *         a URL connection.
+     * @param classes
+     *         an array of types requested
+     *
+     * @return the object read by the {@code ContentHandler} that is
+     * the first match of the suggested types.
+     * null if none of the requested  are supported.
+     *
+     * @throws IOException
+     *         if an I/O error occurs while reading the object.
      * @since 1.3
      */
     @SuppressWarnings("rawtypes")
@@ -101,9 +110,9 @@ abstract public class ContentHandler {
         Object obj = getContent(urlc);
 
         for (int i = 0; i < classes.length; i++) {
-          if (classes[i].isInstance(obj)) {
+            if (classes[i].isInstance(obj)) {
                 return obj;
-          }
+            }
         }
         return null;
     }

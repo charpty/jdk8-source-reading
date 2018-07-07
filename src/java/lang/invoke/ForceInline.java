@@ -25,13 +25,16 @@
 
 package java.lang.invoke;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Internal marker for some methods in the JSR 292 implementation.
  */
 /*non-public*/
-@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })
 @Retention(RetentionPolicy.RUNTIME)
 @interface ForceInline {
 }

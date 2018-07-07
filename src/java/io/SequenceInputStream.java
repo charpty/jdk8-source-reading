@@ -25,7 +25,6 @@
 
 package java.io;
 
-import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -39,11 +38,10 @@ import java.util.Vector;
  * and so on, until end of file is reached
  * on the last of the contained input streams.
  *
- * @author  Author van Hoff
- * @since   JDK1.0
+ * @author Author van Hoff
+ * @since JDK1.0
  */
-public
-class SequenceInputStream extends InputStream {
+public class SequenceInputStream extends InputStream {
     Enumeration<? extends InputStream> e;
     InputStream in;
 
@@ -60,8 +58,10 @@ class SequenceInputStream extends InputStream {
      * is exhausted, it is closed by calling its
      * <code>close</code> method.
      *
-     * @param   e   an enumeration of input streams.
-     * @see     java.util.Enumeration
+     * @param e
+     *         an enumeration of input streams.
+     *
+     * @see java.util.Enumeration
      */
     public SequenceInputStream(Enumeration<? extends InputStream> e) {
         this.e = e;
@@ -81,8 +81,10 @@ class SequenceInputStream extends InputStream {
      * and then <code>s2</code>, to provide the
      * bytes to be read from this <code>SequenceInputStream</code>.
      *
-     * @param   s1   the first input stream to read.
-     * @param   s2   the second input stream to read.
+     * @param s1
+     *         the first input stream to read.
+     * @param s2
+     *         the second input stream to read.
      */
     public SequenceInputStream(InputStream s1, InputStream s2) {
         Vector<InputStream> v = new Vector<>(2);
@@ -99,7 +101,7 @@ class SequenceInputStream extends InputStream {
     }
 
     /**
-     *  Continues reading in the next stream if an EOF is reached.
+     * Continues reading in the next stream if an EOF is reached.
      */
     final void nextStream() throws IOException {
         if (in != null) {
@@ -108,10 +110,12 @@ class SequenceInputStream extends InputStream {
 
         if (e.hasMoreElements()) {
             in = (InputStream) e.nextElement();
-            if (in == null)
+            if (in == null) {
                 throw new NullPointerException();
+            }
+        } else {
+            in = null;
         }
-        else in = null;
 
     }
 
@@ -127,12 +131,13 @@ class SequenceInputStream extends InputStream {
      * input stream and returns the result.
      *
      * @return an estimate of the number of bytes that can be read (or
-     *         skipped over) from the current underlying input stream
-     *         without blocking or {@code 0} if this input stream
-     *         has been closed by invoking its {@link #close()} method
-     * @exception  IOException  if an I/O error occurs.
+     * skipped over) from the current underlying input stream
+     * without blocking or {@code 0} if this input stream
+     * has been closed by invoking its {@link #close()} method
      *
-     * @since   JDK1.1
+     * @throws IOException
+     *         if an I/O error occurs.
+     * @since JDK1.1
      */
     public int available() throws IOException {
         if (in == null) {
@@ -155,9 +160,11 @@ class SequenceInputStream extends InputStream {
      * method of the current substream and begins reading from the next
      * substream.
      *
-     * @return     the next byte of data, or <code>-1</code> if the end of the
-     *             stream is reached.
-     * @exception  IOException  if an I/O error occurs.
+     * @return the next byte of data, or <code>-1</code> if the end of the
+     * stream is reached.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     public int read() throws IOException {
         while (in != null) {
@@ -182,16 +189,24 @@ class SequenceInputStream extends InputStream {
      * the stream, it calls the <code>close</code> method of the current
      * substream and begins reading from the next substream.
      *
-     * @param      b     the buffer into which the data is read.
-     * @param      off   the start offset in array <code>b</code>
-     *                   at which the data is written.
-     * @param      len   the maximum number of bytes read.
-     * @return     int   the number of bytes read.
-     * @exception  NullPointerException If <code>b</code> is <code>null</code>.
-     * @exception  IndexOutOfBoundsException If <code>off</code> is negative,
-     * <code>len</code> is negative, or <code>len</code> is greater than
-     * <code>b.length - off</code>
-     * @exception  IOException  if an I/O error occurs.
+     * @param b
+     *         the buffer into which the data is read.
+     * @param off
+     *         the start offset in array <code>b</code>
+     *         at which the data is written.
+     * @param len
+     *         the maximum number of bytes read.
+     *
+     * @return int   the number of bytes read.
+     *
+     * @throws NullPointerException
+     *         If <code>b</code> is <code>null</code>.
+     * @throws IndexOutOfBoundsException
+     *         If <code>off</code> is negative,
+     *         <code>len</code> is negative, or <code>len</code> is greater than
+     *         <code>b.length - off</code>
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     public int read(byte b[], int off, int len) throws IOException {
         if (in == null) {
@@ -225,7 +240,8 @@ class SequenceInputStream extends InputStream {
      * are requested from the enumeration and closed
      * before the <code>close</code> method returns.
      *
-     * @exception  IOException  if an I/O error occurs.
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     public void close() throws IOException {
         do {

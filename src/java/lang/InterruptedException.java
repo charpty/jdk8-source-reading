@@ -37,17 +37,16 @@ package java.lang;
  *      throw new InterruptedException();
  * </pre>
  *
- * @author  Frank Yellin
- * @see     java.lang.Object#wait()
- * @see     java.lang.Object#wait(long)
- * @see     java.lang.Object#wait(long, int)
- * @see     java.lang.Thread#sleep(long)
- * @see     java.lang.Thread#interrupt()
- * @see     java.lang.Thread#interrupted()
- * @since   JDK1.0
+ * @author Frank Yellin
+ * @see java.lang.Object#wait()
+ * @see java.lang.Object#wait(long)
+ * @see java.lang.Object#wait(long, int)
+ * @see java.lang.Thread#sleep(long)
+ * @see java.lang.Thread#interrupt()
+ * @see java.lang.Thread#interrupted()
+ * @since JDK1.0
  */
-public
-class InterruptedException extends Exception {
+public class InterruptedException extends Exception {
     private static final long serialVersionUID = 6700697376100628473L;
 
     /**
@@ -61,7 +60,8 @@ class InterruptedException extends Exception {
      * Constructs an <code>InterruptedException</code> with the
      * specified detail message.
      *
-     * @param   s   the detail message.
+     * @param s
+     *         the detail message.
      */
     public InterruptedException(String s) {
         super(s);

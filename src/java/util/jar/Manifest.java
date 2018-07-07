@@ -25,14 +25,14 @@
 
 package java.util.jar;
 
-import java.io.FilterInputStream;
 import java.io.DataOutputStream;
+import java.io.FilterInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.IOException;
-import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * The Manifest class is used to maintain Manifest entry names and their
@@ -42,9 +42,9 @@ import java.util.Iterator;
  * <a href="../../../../technotes/guides/jar/jar.html">
  * Manifest format specification</a>.
  *
- * @author  David Connelly
- * @see     Attributes
- * @since   1.2
+ * @author David Connelly
+ * @see Attributes
+ * @since 1.2
  */
 public class Manifest implements Cloneable {
     // manifest main attributes
@@ -62,8 +62,11 @@ public class Manifest implements Cloneable {
     /**
      * Constructs a new Manifest from the specified input stream.
      *
-     * @param is the input stream containing manifest data
-     * @throws IOException if an I/O error has occurred
+     * @param is
+     *         the input stream containing manifest data
+     *
+     * @throws IOException
+     *         if an I/O error has occurred
      */
     public Manifest(InputStream is) throws IOException {
         read(is);
@@ -72,7 +75,8 @@ public class Manifest implements Cloneable {
     /**
      * Constructs a new Manifest that is a copy of the specified Manifest.
      *
-     * @param man the Manifest to copy
+     * @param man
+     *         the Manifest to copy
      */
     public Manifest(Manifest man) {
         attr.putAll(man.getMainAttributes());
@@ -81,6 +85,7 @@ public class Manifest implements Cloneable {
 
     /**
      * Returns the main Attributes for the Manifest.
+     *
      * @return the main Attributes for the Manifest
      */
     public Attributes getMainAttributes() {
@@ -96,7 +101,7 @@ public class Manifest implements Cloneable {
      *
      * @return a Map of the entries contained in this Manifest
      */
-    public Map<String,Attributes> getEntries() {
+    public Map<String, Attributes> getEntries() {
         return entries;
     }
 
@@ -119,7 +124,9 @@ public class Manifest implements Cloneable {
      * Note that this method does not return the manifest's main attributes;
      * see {@link #getMainAttributes}.
      *
-     * @param name entry name
+     * @param name
+     *         entry name
+     *
      * @return the Attributes for the specified entry name
      */
     public Attributes getAttributes(String name) {
@@ -139,8 +146,11 @@ public class Manifest implements Cloneable {
      * Attributes.Name.MANIFEST_VERSION must be set in
      * MainAttributes prior to invoking this method.
      *
-     * @param out the output stream
-     * @exception IOException if an I/O error has occurred
+     * @param out
+     *         the output stream
+     *
+     * @throws IOException
+     *         if an I/O error has occurred
      * @see #getMainAttributes
      */
     public void write(OutputStream out) throws IOException {
@@ -187,8 +197,11 @@ public class Manifest implements Cloneable {
      * names and attributes read will be merged in with the current
      * manifest entries.
      *
-     * @param is the input stream
-     * @exception IOException if an I/O error has occurred
+     * @param is
+     *         the input stream
+     *
+     * @throws IOException
+     *         if an I/O error has occurred
      */
     public void read(InputStream is) throws IOException {
         // Buffered input stream for reading manifest data
@@ -211,7 +224,7 @@ public class Manifest implements Cloneable {
             if (lbuf[--len] != '\n') {
                 throw new IOException("manifest line too long");
             }
-            if (len > 0 && lbuf[len-1] == '\r') {
+            if (len > 0 && lbuf[len - 1] == '\r') {
                 --len;
             }
             if (len == 0 && skipEmptyLines) {
@@ -262,13 +275,10 @@ public class Manifest implements Cloneable {
     }
 
     private String parseName(byte[] lbuf, int len) {
-        if (toLower(lbuf[0]) == 'n' && toLower(lbuf[1]) == 'a' &&
-            toLower(lbuf[2]) == 'm' && toLower(lbuf[3]) == 'e' &&
-            lbuf[4] == ':' && lbuf[5] == ' ') {
+        if (toLower(lbuf[0]) == 'n' && toLower(lbuf[1]) == 'a' && toLower(lbuf[2]) == 'm' && toLower(lbuf[3]) == 'e' && lbuf[4] == ':' && lbuf[5] == ' ') {
             try {
                 return new String(lbuf, 6, len - 6, "UTF8");
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
             }
         }
         return null;
@@ -282,15 +292,16 @@ public class Manifest implements Cloneable {
      * Returns true if the specified Object is also a Manifest and has
      * the same main Attributes and entries.
      *
-     * @param o the object to be compared
+     * @param o
+     *         the object to be compared
+     *
      * @return true if the specified Object is also a Manifest and has
      * the same main Attributes and entries
      */
     public boolean equals(Object o) {
         if (o instanceof Manifest) {
-            Manifest m = (Manifest)o;
-            return attr.equals(m.getMainAttributes()) &&
-                   entries.equals(m.getEntries());
+            Manifest m = (Manifest) o;
+            return attr.equals(m.getMainAttributes()) && entries.equals(m.getEntries());
         } else {
             return false;
         }
@@ -309,6 +320,7 @@ public class Manifest implements Cloneable {
      * <pre>
      *     public Object clone() { return new Manifest(this); }
      * </pre>
+     *
      * @return a shallow copy of this Manifest
      */
     public Object clone() {
@@ -384,13 +396,15 @@ public class Manifest implements Cloneable {
                 }
                 int tpos = pos;
                 int maxpos = tpos + n;
-                while (tpos < maxpos && tbuf[tpos++] != '\n') ;
+                while (tpos < maxpos && tbuf[tpos++] != '\n') {
+                    ;
+                }
                 n = tpos - pos;
                 System.arraycopy(tbuf, pos, b, off, n);
                 off += n;
                 total += n;
                 pos = tpos;
-                if (tbuf[tpos-1] == '\n') {
+                if (tbuf[tpos - 1] == '\n') {
                     break;
                 }
             }
@@ -398,10 +412,12 @@ public class Manifest implements Cloneable {
         }
 
         public byte peek() throws IOException {
-            if (pos == count)
+            if (pos == count) {
                 fill();
-            if (pos == count)
+            }
+            if (pos == count) {
                 return -1; // nothing left in buffer
+            }
             return buf[pos];
         }
 

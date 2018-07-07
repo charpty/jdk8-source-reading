@@ -43,10 +43,9 @@ import java.security.GeneralSecurityException;
  * provide the necessary locking. Multiple threads each manipulating
  * separate objects need not synchronize.
  *
+ * @author Sean Mullan
  * @see CertPathBuilder
- *
- * @since       1.4
- * @author      Sean Mullan
+ * @since 1.4
  */
 public class CertPathBuilderException extends GeneralSecurityException {
 
@@ -65,7 +64,8 @@ public class CertPathBuilderException extends GeneralSecurityException {
      * detail message. The detail message is a {@code String} that
      * describes this particular exception in more detail.
      *
-     * @param msg the detail message
+     * @param msg
+     *         the detail message
      */
     public CertPathBuilderException(String msg) {
         super(msg);
@@ -80,9 +80,10 @@ public class CertPathBuilderException extends GeneralSecurityException {
      * (which typically contains the class and detail message of
      * cause).
      *
-     * @param cause the cause (which is saved for later retrieval by the
-     * {@link #getCause getCause()} method). (A {@code null} value is
-     * permitted, and indicates that the cause is nonexistent or unknown.)
+     * @param cause
+     *         the cause (which is saved for later retrieval by the
+     *         {@link #getCause getCause()} method). (A {@code null} value is
+     *         permitted, and indicates that the cause is nonexistent or unknown.)
      */
     public CertPathBuilderException(Throwable cause) {
         super(cause);
@@ -92,10 +93,12 @@ public class CertPathBuilderException extends GeneralSecurityException {
      * Creates a {@code CertPathBuilderException} with the specified
      * detail message and cause.
      *
-     * @param msg the detail message
-     * @param  cause the cause (which is saved for later retrieval by the
-     * {@link #getCause getCause()} method). (A {@code null} value is
-     * permitted, and indicates that the cause is nonexistent or unknown.)
+     * @param msg
+     *         the detail message
+     * @param cause
+     *         the cause (which is saved for later retrieval by the
+     *         {@link #getCause getCause()} method). (A {@code null} value is
+     *         permitted, and indicates that the cause is nonexistent or unknown.)
      */
     public CertPathBuilderException(String msg, Throwable cause) {
         super(msg, cause);

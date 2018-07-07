@@ -62,13 +62,6 @@
 package java.time.chrono;
 
 import java.io.InvalidObjectException;
-import static java.time.temporal.ChronoField.DAY_OF_MONTH;
-import static java.time.temporal.ChronoField.ERA;
-import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
-import static java.time.temporal.ChronoField.PROLEPTIC_MONTH;
-import static java.time.temporal.ChronoField.YEAR;
-import static java.time.temporal.ChronoField.YEAR_OF_ERA;
-
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.time.Clock;
@@ -92,6 +85,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
+
+import static java.time.temporal.ChronoField.*;
+
 /**
  * The ISO calendar system.
  * <p>
@@ -103,20 +99,17 @@ import java.util.Objects;
  * <ul>
  * <li>era - There are two eras, 'Current Era' (CE) and 'Before Current Era' (BCE).
  * <li>year-of-era - The year-of-era is the same as the proleptic-year for the current CE era.
- *  For the BCE era before the ISO epoch the year increases from 1 upwards as time goes backwards.
+ * For the BCE era before the ISO epoch the year increases from 1 upwards as time goes backwards.
  * <li>proleptic-year - The proleptic year is the same as the year-of-era for the
- *  current era. For the previous era, years have zero, then negative values.
+ * current era. For the previous era, years have zero, then negative values.
  * <li>month-of-year - There are 12 months in an ISO year, numbered from 1 to 12.
  * <li>day-of-month - There are between 28 and 31 days in each of the ISO month, numbered from 1 to 31.
- *  Months 4, 6, 9 and 11 have 30 days, Months 1, 3, 5, 7, 8, 10 and 12 have 31 days.
- *  Month 2 has 28 days, or 29 in a leap year.
+ * Months 4, 6, 9 and 11 have 30 days, Months 1, 3, 5, 7, 8, 10 and 12 have 31 days.
+ * Month 2 has 28 days, or 29 in a leap year.
  * <li>day-of-year - There are 365 days in a standard ISO year and 366 in a leap year.
- *  The days are numbered from 1 to 365 or 1 to 366.
+ * The days are numbered from 1 to 365 or 1 to 366.
  * <li>leap-year - Leap years occur every 4 years, except where the year is divisble by 100 and not divisble by 400.
  * </ul>
- *
- * @implSpec
- * This class is immutable and thread-safe.
  *
  * @since 1.8
  */
@@ -139,6 +132,7 @@ public final class IsoChronology extends AbstractChronology implements Serializa
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the ID of the chronology - 'ISO'.
      * <p>
@@ -146,6 +140,7 @@ public final class IsoChronology extends AbstractChronology implements Serializa
      * It can be used to lookup the {@code Chronology} using {@link Chronology#of(String)}.
      *
      * @return the chronology ID - 'ISO'
+     *
      * @see #getCalendarType()
      */
     @Override
@@ -163,6 +158,7 @@ public final class IsoChronology extends AbstractChronology implements Serializa
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
      *
      * @return the calendar system type - 'iso8601'
+     *
      * @see #getId()
      */
     @Override
@@ -171,17 +167,26 @@ public final class IsoChronology extends AbstractChronology implements Serializa
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an ISO local date from the era, year-of-era, month-of-year
      * and day-of-month fields.
      *
-     * @param era  the ISO era, not null
-     * @param yearOfEra  the ISO year-of-era
-     * @param month  the ISO month-of-year
-     * @param dayOfMonth  the ISO day-of-month
+     * @param era
+     *         the ISO era, not null
+     * @param yearOfEra
+     *         the ISO year-of-era
+     * @param month
+     *         the ISO month-of-year
+     * @param dayOfMonth
+     *         the ISO day-of-month
+     *
      * @return the ISO local date, not null
-     * @throws DateTimeException if unable to create the date
-     * @throws ClassCastException if the type of {@code era} is not {@code IsoEra}
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
+     * @throws ClassCastException
+     *         if the type of {@code era} is not {@code IsoEra}
      */
     @Override  // override with covariant return type
     public LocalDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
@@ -194,11 +199,17 @@ public final class IsoChronology extends AbstractChronology implements Serializa
      * <p>
      * This is equivalent to {@link LocalDate#of(int, int, int)}.
      *
-     * @param prolepticYear  the ISO proleptic-year
-     * @param month  the ISO month-of-year
-     * @param dayOfMonth  the ISO day-of-month
+     * @param prolepticYear
+     *         the ISO proleptic-year
+     * @param month
+     *         the ISO month-of-year
+     * @param dayOfMonth
+     *         the ISO day-of-month
+     *
      * @return the ISO local date, not null
-     * @throws DateTimeException if unable to create the date
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
      */
     @Override  // override with covariant return type
     public LocalDate date(int prolepticYear, int month, int dayOfMonth) {
@@ -208,11 +219,17 @@ public final class IsoChronology extends AbstractChronology implements Serializa
     /**
      * Obtains an ISO local date from the era, year-of-era and day-of-year fields.
      *
-     * @param era  the ISO era, not null
-     * @param yearOfEra  the ISO year-of-era
-     * @param dayOfYear  the ISO day-of-year
+     * @param era
+     *         the ISO era, not null
+     * @param yearOfEra
+     *         the ISO year-of-era
+     * @param dayOfYear
+     *         the ISO day-of-year
+     *
      * @return the ISO local date, not null
-     * @throws DateTimeException if unable to create the date
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
      */
     @Override  // override with covariant return type
     public LocalDate dateYearDay(Era era, int yearOfEra, int dayOfYear) {
@@ -224,10 +241,15 @@ public final class IsoChronology extends AbstractChronology implements Serializa
      * <p>
      * This is equivalent to {@link LocalDate#ofYearDay(int, int)}.
      *
-     * @param prolepticYear  the ISO proleptic-year
-     * @param dayOfYear  the ISO day-of-year
+     * @param prolepticYear
+     *         the ISO proleptic-year
+     * @param dayOfYear
+     *         the ISO day-of-year
+     *
      * @return the ISO local date, not null
-     * @throws DateTimeException if unable to create the date
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
      */
     @Override  // override with covariant return type
     public LocalDate dateYearDay(int prolepticYear, int dayOfYear) {
@@ -239,9 +261,13 @@ public final class IsoChronology extends AbstractChronology implements Serializa
      * <p>
      * This is equivalent to {@link LocalDate#ofEpochDay(long)}.
      *
-     * @param epochDay  the epoch day
+     * @param epochDay
+     *         the epoch day
+     *
      * @return the ISO local date, not null
-     * @throws DateTimeException if unable to create the date
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
      */
     @Override  // override with covariant return type
     public LocalDate dateEpochDay(long epochDay) {
@@ -249,14 +275,19 @@ public final class IsoChronology extends AbstractChronology implements Serializa
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an ISO local date from another date-time object.
      * <p>
      * This is equivalent to {@link LocalDate#from(TemporalAccessor)}.
      *
-     * @param temporal  the date-time object to convert, not null
+     * @param temporal
+     *         the date-time object to convert, not null
+     *
      * @return the ISO local date, not null
-     * @throws DateTimeException if unable to create the date
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
      */
     @Override  // override with covariant return type
     public LocalDate date(TemporalAccessor temporal) {
@@ -268,9 +299,13 @@ public final class IsoChronology extends AbstractChronology implements Serializa
      * <p>
      * This is equivalent to {@link LocalDateTime#from(TemporalAccessor)}.
      *
-     * @param temporal  the date-time object to convert, not null
+     * @param temporal
+     *         the date-time object to convert, not null
+     *
      * @return the ISO local date-time, not null
-     * @throws DateTimeException if unable to create the date-time
+     *
+     * @throws DateTimeException
+     *         if unable to create the date-time
      */
     @Override  // override with covariant return type
     public LocalDateTime localDateTime(TemporalAccessor temporal) {
@@ -282,9 +317,13 @@ public final class IsoChronology extends AbstractChronology implements Serializa
      * <p>
      * This is equivalent to {@link ZonedDateTime#from(TemporalAccessor)}.
      *
-     * @param temporal  the date-time object to convert, not null
+     * @param temporal
+     *         the date-time object to convert, not null
+     *
      * @return the ISO zoned date-time, not null
-     * @throws DateTimeException if unable to create the date-time
+     *
+     * @throws DateTimeException
+     *         if unable to create the date-time
      */
     @Override  // override with covariant return type
     public ZonedDateTime zonedDateTime(TemporalAccessor temporal) {
@@ -296,10 +335,15 @@ public final class IsoChronology extends AbstractChronology implements Serializa
      * <p>
      * This is equivalent to {@link ZonedDateTime#ofInstant(Instant, ZoneId)}.
      *
-     * @param instant  the instant to create the date-time from, not null
-     * @param zone  the time-zone, not null
+     * @param instant
+     *         the instant to create the date-time from, not null
+     * @param zone
+     *         the time-zone, not null
+     *
      * @return the zoned date-time, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported range
      */
     @Override
     public ZonedDateTime zonedDateTime(Instant instant, ZoneId zone) {
@@ -307,6 +351,7 @@ public final class IsoChronology extends AbstractChronology implements Serializa
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains the current ISO local date from the system clock in the default time-zone.
      * <p>
@@ -317,7 +362,9 @@ public final class IsoChronology extends AbstractChronology implements Serializa
      * because the clock is hard-coded.
      *
      * @return the current ISO local date using the system clock and default time-zone, not null
-     * @throws DateTimeException if unable to create the date
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
      */
     @Override  // override with covariant return type
     public LocalDate dateNow() {
@@ -334,7 +381,9 @@ public final class IsoChronology extends AbstractChronology implements Serializa
      * because the clock is hard-coded.
      *
      * @return the current ISO local date using the system clock, not null
-     * @throws DateTimeException if unable to create the date
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
      */
     @Override  // override with covariant return type
     public LocalDate dateNow(ZoneId zone) {
@@ -348,9 +397,13 @@ public final class IsoChronology extends AbstractChronology implements Serializa
      * Using this method allows the use of an alternate clock for testing.
      * The alternate clock may be introduced using {@link Clock dependency injection}.
      *
-     * @param clock  the clock to use, not null
+     * @param clock
+     *         the clock to use, not null
+     *
      * @return the current ISO local date, not null
-     * @throws DateTimeException if unable to create the date
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
      */
     @Override  // override with covariant return type
     public LocalDate dateNow(Clock clock) {
@@ -359,6 +412,7 @@ public final class IsoChronology extends AbstractChronology implements Serializa
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks if the year is a leap year, according to the ISO proleptic
      * calendar system rules.
@@ -375,7 +429,9 @@ public final class IsoChronology extends AbstractChronology implements Serializa
      * The calculation is proleptic - applying the same rules into the far future and far past.
      * This is historically inaccurate, but is correct for the ISO-8601 standard.
      *
-     * @param prolepticYear  the ISO proleptic year to check
+     * @param prolepticYear
+     *         the ISO proleptic year to check
+     *
      * @return true if the year is leap, false otherwise
      */
     @Override
@@ -402,6 +458,7 @@ public final class IsoChronology extends AbstractChronology implements Serializa
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Resolves parsed {@code ChronoField} values into a date during parsing.
      * <p>
@@ -415,84 +472,90 @@ public final class IsoChronology extends AbstractChronology implements Serializa
      * as follows.
      * <ul>
      * <li>{@code EPOCH_DAY} - If present, this is converted to a {@code LocalDate}
-     *  and all other date fields are then cross-checked against the date.
+     * and all other date fields are then cross-checked against the date.
      * <li>{@code PROLEPTIC_MONTH} - If present, then it is split into the
-     *  {@code YEAR} and {@code MONTH_OF_YEAR}. If the mode is strict or smart
-     *  then the field is validated.
+     * {@code YEAR} and {@code MONTH_OF_YEAR}. If the mode is strict or smart
+     * then the field is validated.
      * <li>{@code YEAR_OF_ERA} and {@code ERA} - If both are present, then they
-     *  are combined to form a {@code YEAR}. In lenient mode, the {@code YEAR_OF_ERA}
-     *  range is not validated, in smart and strict mode it is. The {@code ERA} is
-     *  validated for range in all three modes. If only the {@code YEAR_OF_ERA} is
-     *  present, and the mode is smart or lenient, then the current era (CE/AD)
-     *  is assumed. In strict mode, no era is assumed and the {@code YEAR_OF_ERA} is
-     *  left untouched. If only the {@code ERA} is present, then it is left untouched.
+     * are combined to form a {@code YEAR}. In lenient mode, the {@code YEAR_OF_ERA}
+     * range is not validated, in smart and strict mode it is. The {@code ERA} is
+     * validated for range in all three modes. If only the {@code YEAR_OF_ERA} is
+     * present, and the mode is smart or lenient, then the current era (CE/AD)
+     * is assumed. In strict mode, no era is assumed and the {@code YEAR_OF_ERA} is
+     * left untouched. If only the {@code ERA} is present, then it is left untouched.
      * <li>{@code YEAR}, {@code MONTH_OF_YEAR} and {@code DAY_OF_MONTH} -
-     *  If all three are present, then they are combined to form a {@code LocalDate}.
-     *  In all three modes, the {@code YEAR} is validated. If the mode is smart or strict,
-     *  then the month and day are validated, with the day validated from 1 to 31.
-     *  If the mode is lenient, then the date is combined in a manner equivalent to
-     *  creating a date on the first of January in the requested year, then adding
-     *  the difference in months, then the difference in days.
-     *  If the mode is smart, and the day-of-month is greater than the maximum for
-     *  the year-month, then the day-of-month is adjusted to the last day-of-month.
-     *  If the mode is strict, then the three fields must form a valid date.
+     * If all three are present, then they are combined to form a {@code LocalDate}.
+     * In all three modes, the {@code YEAR} is validated. If the mode is smart or strict,
+     * then the month and day are validated, with the day validated from 1 to 31.
+     * If the mode is lenient, then the date is combined in a manner equivalent to
+     * creating a date on the first of January in the requested year, then adding
+     * the difference in months, then the difference in days.
+     * If the mode is smart, and the day-of-month is greater than the maximum for
+     * the year-month, then the day-of-month is adjusted to the last day-of-month.
+     * If the mode is strict, then the three fields must form a valid date.
      * <li>{@code YEAR} and {@code DAY_OF_YEAR} -
-     *  If both are present, then they are combined to form a {@code LocalDate}.
-     *  In all three modes, the {@code YEAR} is validated.
-     *  If the mode is lenient, then the date is combined in a manner equivalent to
-     *  creating a date on the first of January in the requested year, then adding
-     *  the difference in days.
-     *  If the mode is smart or strict, then the two fields must form a valid date.
+     * If both are present, then they are combined to form a {@code LocalDate}.
+     * In all three modes, the {@code YEAR} is validated.
+     * If the mode is lenient, then the date is combined in a manner equivalent to
+     * creating a date on the first of January in the requested year, then adding
+     * the difference in days.
+     * If the mode is smart or strict, then the two fields must form a valid date.
      * <li>{@code YEAR}, {@code MONTH_OF_YEAR}, {@code ALIGNED_WEEK_OF_MONTH} and
-     *  {@code ALIGNED_DAY_OF_WEEK_IN_MONTH} -
-     *  If all four are present, then they are combined to form a {@code LocalDate}.
-     *  In all three modes, the {@code YEAR} is validated.
-     *  If the mode is lenient, then the date is combined in a manner equivalent to
-     *  creating a date on the first of January in the requested year, then adding
-     *  the difference in months, then the difference in weeks, then in days.
-     *  If the mode is smart or strict, then the all four fields are validated to
-     *  their outer ranges. The date is then combined in a manner equivalent to
-     *  creating a date on the first day of the requested year and month, then adding
-     *  the amount in weeks and days to reach their values. If the mode is strict,
-     *  the date is additionally validated to check that the day and week adjustment
-     *  did not change the month.
+     * {@code ALIGNED_DAY_OF_WEEK_IN_MONTH} -
+     * If all four are present, then they are combined to form a {@code LocalDate}.
+     * In all three modes, the {@code YEAR} is validated.
+     * If the mode is lenient, then the date is combined in a manner equivalent to
+     * creating a date on the first of January in the requested year, then adding
+     * the difference in months, then the difference in weeks, then in days.
+     * If the mode is smart or strict, then the all four fields are validated to
+     * their outer ranges. The date is then combined in a manner equivalent to
+     * creating a date on the first day of the requested year and month, then adding
+     * the amount in weeks and days to reach their values. If the mode is strict,
+     * the date is additionally validated to check that the day and week adjustment
+     * did not change the month.
      * <li>{@code YEAR}, {@code MONTH_OF_YEAR}, {@code ALIGNED_WEEK_OF_MONTH} and
-     *  {@code DAY_OF_WEEK} - If all four are present, then they are combined to
-     *  form a {@code LocalDate}. The approach is the same as described above for
-     *  years, months and weeks in {@code ALIGNED_DAY_OF_WEEK_IN_MONTH}.
-     *  The day-of-week is adjusted as the next or same matching day-of-week once
-     *  the years, months and weeks have been handled.
+     * {@code DAY_OF_WEEK} - If all four are present, then they are combined to
+     * form a {@code LocalDate}. The approach is the same as described above for
+     * years, months and weeks in {@code ALIGNED_DAY_OF_WEEK_IN_MONTH}.
+     * The day-of-week is adjusted as the next or same matching day-of-week once
+     * the years, months and weeks have been handled.
      * <li>{@code YEAR}, {@code ALIGNED_WEEK_OF_YEAR} and {@code ALIGNED_DAY_OF_WEEK_IN_YEAR} -
-     *  If all three are present, then they are combined to form a {@code LocalDate}.
-     *  In all three modes, the {@code YEAR} is validated.
-     *  If the mode is lenient, then the date is combined in a manner equivalent to
-     *  creating a date on the first of January in the requested year, then adding
-     *  the difference in weeks, then in days.
-     *  If the mode is smart or strict, then the all three fields are validated to
-     *  their outer ranges. The date is then combined in a manner equivalent to
-     *  creating a date on the first day of the requested year, then adding
-     *  the amount in weeks and days to reach their values. If the mode is strict,
-     *  the date is additionally validated to check that the day and week adjustment
-     *  did not change the year.
+     * If all three are present, then they are combined to form a {@code LocalDate}.
+     * In all three modes, the {@code YEAR} is validated.
+     * If the mode is lenient, then the date is combined in a manner equivalent to
+     * creating a date on the first of January in the requested year, then adding
+     * the difference in weeks, then in days.
+     * If the mode is smart or strict, then the all three fields are validated to
+     * their outer ranges. The date is then combined in a manner equivalent to
+     * creating a date on the first day of the requested year, then adding
+     * the amount in weeks and days to reach their values. If the mode is strict,
+     * the date is additionally validated to check that the day and week adjustment
+     * did not change the year.
      * <li>{@code YEAR}, {@code ALIGNED_WEEK_OF_YEAR} and {@code DAY_OF_WEEK} -
-     *  If all three are present, then they are combined to form a {@code LocalDate}.
-     *  The approach is the same as described above for years and weeks in
-     *  {@code ALIGNED_DAY_OF_WEEK_IN_YEAR}. The day-of-week is adjusted as the
-     *  next or same matching day-of-week once the years and weeks have been handled.
+     * If all three are present, then they are combined to form a {@code LocalDate}.
+     * The approach is the same as described above for years and weeks in
+     * {@code ALIGNED_DAY_OF_WEEK_IN_YEAR}. The day-of-week is adjusted as the
+     * next or same matching day-of-week once the years and weeks have been handled.
      * </ul>
      *
-     * @param fieldValues  the map of fields to values, which can be updated, not null
-     * @param resolverStyle  the requested type of resolve, not null
+     * @param fieldValues
+     *         the map of fields to values, which can be updated, not null
+     * @param resolverStyle
+     *         the requested type of resolve, not null
+     *
      * @return the resolved date, null if insufficient information to create a date
-     * @throws DateTimeException if the date cannot be resolved, typically
-     *  because of a conflict in the input data
+     *
+     * @throws DateTimeException
+     *         if the date cannot be resolved, typically
+     *         because of a conflict in the input data
      */
     @Override  // override for performance
     public LocalDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
         return (LocalDate) super.resolveDate(fieldValues, resolverStyle);
     }
 
-    @Override  // override for better proleptic algorithm
+    @Override
+        // override for better proleptic algorithm
     void resolveProlepticMonth(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
         Long pMonth = fieldValues.remove(PROLEPTIC_MONTH);
         if (pMonth != null) {
@@ -504,7 +567,8 @@ public final class IsoChronology extends AbstractChronology implements Serializa
         }
     }
 
-    @Override  // override for enhanced behaviour
+    @Override
+        // override for enhanced behaviour
     LocalDate resolveYearOfEra(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
         Long yoeLong = fieldValues.remove(YEAR_OF_ERA);
         if (yoeLong != null) {
@@ -517,14 +581,14 @@ public final class IsoChronology extends AbstractChronology implements Serializa
                 if (resolverStyle == ResolverStyle.STRICT) {
                     // do not invent era if strict, but do cross-check with year
                     if (year != null) {
-                        addFieldValue(fieldValues, YEAR, (year > 0 ? yoeLong: Math.subtractExact(1, yoeLong)));
+                        addFieldValue(fieldValues, YEAR, (year > 0 ? yoeLong : Math.subtractExact(1, yoeLong)));
                     } else {
                         // reinstate the field removed earlier, no cross-check issues
                         fieldValues.put(YEAR_OF_ERA, yoeLong);
                     }
                 } else {
                     // invent era
-                    addFieldValue(fieldValues, YEAR, (year == null || year > 0 ? yoeLong: Math.subtractExact(1, yoeLong)));
+                    addFieldValue(fieldValues, YEAR, (year == null || year > 0 ? yoeLong : Math.subtractExact(1, yoeLong)));
                 }
             } else if (era.longValue() == 1L) {
                 addFieldValue(fieldValues, YEAR, yoeLong);
@@ -539,8 +603,9 @@ public final class IsoChronology extends AbstractChronology implements Serializa
         return null;
     }
 
-    @Override  // override for performance
-    LocalDate resolveYMD(Map <TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+    @Override
+        // override for performance
+    LocalDate resolveYMD(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
         int y = YEAR.checkValidIntValue(fieldValues.remove(YEAR));
         if (resolverStyle == ResolverStyle.LENIENT) {
             long months = Math.subtractExact(fieldValues.remove(MONTH_OF_YEAR), 1);
@@ -567,16 +632,20 @@ public final class IsoChronology extends AbstractChronology implements Serializa
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains a period for this chronology based on years, months and days.
      * <p>
      * This returns a period tied to the ISO chronology using the specified
      * years, months and days. See {@link Period} for further details.
      *
-     * @param years  the number of years, may be negative
-     * @param months  the number of years, may be negative
-     * @param days  the number of years, may be negative
-     * @return the period in terms of this chronology, not null
+     * @param years
+     *         the number of years, may be negative
+     * @param months
+     *         the number of years, may be negative
+     * @param days
+     *         the number of years, may be negative
+     *
      * @return the ISO period, not null
      */
     @Override  // override with covariant return type
@@ -585,14 +654,10 @@ public final class IsoChronology extends AbstractChronology implements Serializa
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Writes the Chronology using a
      * <a href="../../../serialized-form.html#java.time.chrono.Ser">dedicated serialized form</a>.
-     * @serialData
-     * <pre>
-     *  out.writeByte(1);     // identifies a Chronology
-     *  out.writeUTF(getId());
-     * </pre>
      *
      * @return the instance of {@code Ser}, not null
      */
@@ -604,8 +669,11 @@ public final class IsoChronology extends AbstractChronology implements Serializa
     /**
      * Defend against malicious streams.
      *
-     * @param s the stream to read
-     * @throws InvalidObjectException always
+     * @param s
+     *         the stream to read
+     *
+     * @throws InvalidObjectException
+     *         always
      */
     private void readObject(ObjectInputStream s) throws InvalidObjectException {
         throw new InvalidObjectException("Deserialization via serialization delegate");

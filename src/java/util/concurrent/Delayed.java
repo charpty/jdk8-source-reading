@@ -43,8 +43,8 @@ package java.util.concurrent;
  * {@code compareTo} method that provides an ordering consistent with
  * its {@code getDelay} method.
  *
- * @since 1.5
  * @author Doug Lea
+ * @since 1.5
  */
 public interface Delayed extends Comparable<Delayed> {
 
@@ -52,7 +52,9 @@ public interface Delayed extends Comparable<Delayed> {
      * Returns the remaining delay associated with this object, in the
      * given time unit.
      *
-     * @param unit the time unit
+     * @param unit
+     *         the time unit
+     *
      * @return the remaining delay; zero or negative values indicate
      * that the delay has already elapsed
      */

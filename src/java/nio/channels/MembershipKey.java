@@ -25,9 +25,9 @@
 
 package java.nio.channels;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.io.IOException;
 
 /**
  * A token representing the membership of an Internet Protocol (IP) multicast
@@ -50,7 +50,6 @@ import java.io.IOException;
  * from particular source addresses.
  *
  * @see MulticastChannel
- *
  * @since 1.7
  */
 public abstract class MembershipKey {
@@ -68,8 +67,8 @@ public abstract class MembershipKey {
      * valid until the membership is dropped by invoking the {@link #drop() drop}
      * method, or the channel is closed.
      *
-     * @return  {@code true} if this membership key is valid, {@code false}
-     *          otherwise
+     * @return {@code true} if this membership key is valid, {@code false}
+     * otherwise
      */
     public abstract boolean isValid();
 
@@ -106,21 +105,21 @@ public abstract class MembershipKey {
      * datagrams from that source. This can arise when datagrams are waiting to
      * be received in the socket's receive buffer.
      *
-     * @param   source
-     *          The source address to block
+     * @param source
+     *         The source address to block
      *
-     * @return  This membership key
+     * @return This membership key
      *
-     * @throws  IllegalArgumentException
-     *          If the {@code source} parameter is not a unicast address or
-     *          is not the same address type as the multicast group
-     * @throws  IllegalStateException
-     *          If this membership key is source-specific or is no longer valid
-     * @throws  UnsupportedOperationException
-     *          If the underlying operating system does not support source
-     *          filtering
-     * @throws  IOException
-     *          If an I/O error occurs
+     * @throws IllegalArgumentException
+     *         If the {@code source} parameter is not a unicast address or
+     *         is not the same address type as the multicast group
+     * @throws IllegalStateException
+     *         If this membership key is source-specific or is no longer valid
+     * @throws UnsupportedOperationException
+     *         If the underlying operating system does not support source
+     *         filtering
+     * @throws IOException
+     *         If an I/O error occurs
      */
     public abstract MembershipKey block(InetAddress source) throws IOException;
 
@@ -128,14 +127,14 @@ public abstract class MembershipKey {
      * Unblock multicast datagrams from the given source address that was
      * previously blocked using the {@link #block(InetAddress) block} method.
      *
-     * @param   source
-     *          The source address to unblock
+     * @param source
+     *         The source address to unblock
      *
-     * @return  This membership key
+     * @return This membership key
      *
-     * @throws  IllegalStateException
-     *          If the given source address is not currently blocked or the
-     *          membership key is no longer valid
+     * @throws IllegalStateException
+     *         If the given source address is not currently blocked or the
+     *         membership key is no longer valid
      */
     public abstract MembershipKey unblock(InetAddress source);
 
@@ -144,7 +143,7 @@ public abstract class MembershipKey {
      * method will continue to return the channel even after the membership
      * becomes {@link #isValid invalid}.
      *
-     * @return  the channel
+     * @return the channel
      */
     public abstract MulticastChannel channel();
 
@@ -153,7 +152,7 @@ public abstract class MembershipKey {
      * This method will continue to return the group even after the membership
      * becomes {@link #isValid invalid}.
      *
-     * @return  the multicast group
+     * @return the multicast group
      */
     public abstract InetAddress group();
 
@@ -162,7 +161,7 @@ public abstract class MembershipKey {
      * This method will continue to return the network interface even after the
      * membership becomes {@link #isValid invalid}.
      *
-     * @return  the network interface
+     * @return the network interface
      */
     public abstract NetworkInterface networkInterface();
 
@@ -170,8 +169,8 @@ public abstract class MembershipKey {
      * Returns the source address if this membership key is source-specific,
      * or {@code null} if this membership is not source-specific.
      *
-     * @return  The source address if this membership key is source-specific,
-     *          otherwise {@code null}
+     * @return The source address if this membership key is source-specific,
+     * otherwise {@code null}
      */
     public abstract InetAddress sourceAddress();
 }

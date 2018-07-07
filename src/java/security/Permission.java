@@ -54,12 +54,10 @@ package java.security;
  * provide methods that can change the state of a permission
  * once it has been created.
  *
- * @see Permissions
- * @see PermissionCollection
- *
- *
  * @author Marianne Mueller
  * @author Roland Schemers
+ * @see Permissions
+ * @see PermissionCollection
  */
 
 public abstract class Permission implements Guard, java.io.Serializable {
@@ -71,8 +69,8 @@ public abstract class Permission implements Guard, java.io.Serializable {
     /**
      * Constructs a permission with the specified name.
      *
-     * @param name name of the Permission object being created.
-     *
+     * @param name
+     *         name of the Permission object being created.
      */
 
     public Permission(String name) {
@@ -86,20 +84,21 @@ public abstract class Permission implements Guard, java.io.Serializable {
      * Returns silently if access is granted. Otherwise, throws
      * a SecurityException.
      *
-     * @param object the object being guarded (currently ignored).
+     * @param object
+     *         the object being guarded (currently ignored).
      *
      * @throws SecurityException
-     *        if a security manager exists and its
-     *        {@code checkPermission} method doesn't allow access.
-     *
+     *         if a security manager exists and its
+     *         {@code checkPermission} method doesn't allow access.
      * @see Guard
      * @see GuardedObject
      * @see SecurityManager#checkPermission
-     *
      */
     public void checkGuard(Object object) throws SecurityException {
         SecurityManager sm = System.getSecurityManager();
-        if (sm != null) sm.checkPermission(this);
+        if (sm != null) {
+            sm.checkPermission(this);
+        }
     }
 
     /**
@@ -113,7 +112,8 @@ public abstract class Permission implements Guard, java.io.Serializable {
      * whether or not a requested permission is implied by another permission that
      * is known to be valid in the current execution context.
      *
-     * @param permission the permission to check against.
+     * @param permission
+     *         the permission to check against.
      *
      * @return true if the specified permission is implied by this object,
      * false if not.
@@ -127,7 +127,8 @@ public abstract class Permission implements Guard, java.io.Serializable {
      * Do not use the {@code equals} method for making access control
      * decisions; use the {@code implies} method.
      *
-     * @param obj the object we are testing for equality with this object.
+     * @param obj
+     *         the object we are testing for equality with this object.
      *
      * @return true if both Permission objects are equivalent.
      */
@@ -141,15 +142,15 @@ public abstract class Permission implements Guard, java.io.Serializable {
      * the following:
      * <ul>
      * <li>Whenever it is invoked on the same Permission object more than
-     *     once during an execution of a Java application, the
-     *     {@code hashCode} method
-     *     must consistently return the same integer. This integer need not
-     *     remain consistent from one execution of an application to another
-     *     execution of the same application.
+     * once during an execution of a Java application, the
+     * {@code hashCode} method
+     * must consistently return the same integer. This integer need not
+     * remain consistent from one execution of an application to another
+     * execution of the same application.
      * <li>If two Permission objects are equal according to the
-     *     {@code equals}
-     *     method, then calling the {@code hashCode} method on each of the
-     *     two Permission objects must produce the same integer result.
+     * {@code equals}
+     * method, then calling the {@code hashCode} method on each of the
+     * two Permission objects must produce the same integer result.
      * </ul>
      *
      * @return a hash code value for this object.
@@ -163,7 +164,6 @@ public abstract class Permission implements Guard, java.io.Serializable {
      * the name will be a pathname.
      *
      * @return the name of this Permission.
-     *
      */
 
     public final String getName() {
@@ -187,7 +187,6 @@ public abstract class Permission implements Guard, java.io.Serializable {
      * "read,write" when the {@code getActions} method is invoked.
      *
      * @return the actions of this Permission.
-     *
      */
 
     public abstract String getActions();
@@ -224,8 +223,7 @@ public abstract class Permission implements Guard, java.io.Serializable {
         if ((actions == null) || (actions.length() == 0)) { // OPTIONAL
             return "(\"" + getClass().getName() + "\" \"" + name + "\")";
         } else {
-            return "(\"" + getClass().getName() + "\" \"" + name +
-                 "\" \"" + actions + "\")";
+            return "(\"" + getClass().getName() + "\" \"" + name + "\" \"" + actions + "\")";
         }
     }
 }

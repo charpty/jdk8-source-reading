@@ -28,8 +28,8 @@ package java.io;
 /**
  * Thrown when a serious I/O error has occurred.
  *
- * @author  Xueming Shen
- * @since   1.6
+ * @author Xueming Shen
+ * @since 1.6
  */
 public class IOError extends Error {
     /**
@@ -38,7 +38,7 @@ public class IOError extends Error {
      * <tt>(cause==null ? null : cause.toString())</tt> (which typically
      * contains the class and detail message of cause).
      *
-     * @param  cause
+     * @param cause
      *         The cause of this error, or <tt>null</tt> if the cause
      *         is not known
      */

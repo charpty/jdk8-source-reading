@@ -25,7 +25,11 @@
 
 package java.lang;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * An informative annotation type used to indicate that an interface
@@ -57,12 +61,10 @@ import java.lang.annotation.*;
  * regardless of whether or not a {@code FunctionalInterface}
  * annotation is present on the interface declaration.
  *
- * @jls 4.3.2. The Class Object
- * @jls 9.8 Functional Interfaces
- * @jls 9.4.3 Interface Method Body
  * @since 1.8
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface FunctionalInterface {}
+public @interface FunctionalInterface {
+}

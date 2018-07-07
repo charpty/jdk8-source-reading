@@ -33,14 +33,13 @@ package java.io;
  * indicates how many bytes were successfully transferred before
  * the interruption occurred.
  *
- * @author  unascribed
- * @see     java.io.InputStream
- * @see     java.io.OutputStream
- * @see     java.lang.Thread#interrupt()
- * @since   JDK1.0
+ * @author unascribed
+ * @see java.io.InputStream
+ * @see java.io.OutputStream
+ * @see java.lang.Thread#interrupt()
+ * @since JDK1.0
  */
-public
-class InterruptedIOException extends IOException {
+public class InterruptedIOException extends IOException {
     private static final long serialVersionUID = 4020568460727500567L;
 
     /**
@@ -58,7 +57,8 @@ class InterruptedIOException extends IOException {
      * <code>{@link java.lang.Throwable#getMessage}</code>
      * method of class <code>java.lang.Throwable</code>.
      *
-     * @param   s   the detail message.
+     * @param s
+     *         the detail message.
      */
     public InterruptedIOException(String s) {
         super(s);
@@ -67,8 +67,6 @@ class InterruptedIOException extends IOException {
     /**
      * Reports how many bytes had been transferred as part of the I/O
      * operation before it was interrupted.
-     *
-     * @serial
      */
     public int bytesTransferred = 0;
 }

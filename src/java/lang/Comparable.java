@@ -24,7 +24,13 @@
  */
 
 package java.lang;
-import java.util.*;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.SortedSet;
 
 /**
  * This interface imposes a total ordering on the objects of each class that
@@ -87,9 +93,10 @@ import java.util.*;
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
- * @param <T> the type of objects that this object may be compared to
+ * @param <T>
+ *         the type of objects that this object may be compared to
  *
- * @author  Josh Bloch
+ * @author Josh Bloch
  * @see java.util.Comparator
  * @since 1.2
  */
@@ -125,12 +132,16 @@ public interface Comparable<T> {
      * <tt>0</tt>, or <tt>1</tt> according to whether the value of
      * <i>expression</i> is negative, zero or positive.
      *
-     * @param   o the object to be compared.
-     * @return  a negative integer, zero, or a positive integer as this object
-     *          is less than, equal to, or greater than the specified object.
+     * @param o
+     *         the object to be compared.
      *
-     * @throws NullPointerException if the specified object is null
-     * @throws ClassCastException if the specified object's type prevents it
+     * @return a negative integer, zero, or a positive integer as this object
+     * is less than, equal to, or greater than the specified object.
+     *
+     * @throws NullPointerException
+     *         if the specified object is null
+     * @throws ClassCastException
+     *         if the specified object's type prevents it
      *         from being compared to this object.
      */
     public int compareTo(T o);

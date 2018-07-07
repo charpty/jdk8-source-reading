@@ -32,9 +32,8 @@ import javax.security.auth.Subject;
  * can be used to represent any entity, such as an individual, a
  * corporation, and a login id.
  *
- * @see java.security.cert.X509Certificate
- *
  * @author Li Gong
+ * @see java.security.cert.X509Certificate
  */
 public interface Principal {
 
@@ -43,7 +42,8 @@ public interface Principal {
      * if the object passed in matches the principal represented by
      * the implementation of this interface.
      *
-     * @param another principal to compare with.
+     * @param another
+     *         principal to compare with.
      *
      * @return true if the principal passed in is the same as that
      * encapsulated by this principal, and false otherwise.
@@ -81,14 +81,18 @@ public interface Principal {
      * <p>Subclasses may override this with a different implementation, if
      * necessary.
      *
-     * @param subject the {@code Subject}
+     * @param subject
+     *         the {@code Subject}
+     *
      * @return true if {@code subject} is non-null and is
-     *              implied by this principal, or false otherwise.
+     * implied by this principal, or false otherwise.
+     *
      * @since 1.8
      */
     public default boolean implies(Subject subject) {
-        if (subject == null)
+        if (subject == null) {
             return false;
+        }
         return subject.getPrincipals().contains(this);
     }
 }

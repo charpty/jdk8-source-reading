@@ -31,7 +31,6 @@ import java.util.ArrayList;
  * into a resulting <code>AttributedCharacterIterator</code>. The resulting
  * <code>AttributedCharacterIterator</code> can be retrieved by way of
  * the <code>getIterator</code> method.
- *
  */
 class CharacterIteratorFieldDelegate implements Format.FieldDelegate {
     /**
@@ -48,13 +47,11 @@ class CharacterIteratorFieldDelegate implements Format.FieldDelegate {
      */
     private int size;
 
-
     CharacterIteratorFieldDelegate() {
         attributedStrings = new ArrayList<>();
     }
 
-    public void formatted(Format.Field attr, Object value, int start, int end,
-                          StringBuffer buffer) {
+    public void formatted(Format.Field attr, Object value, int start, int end, StringBuffer buffer) {
         if (start != end) {
             if (start < size) {
                 // Adjust attributes of existing runs
@@ -63,27 +60,23 @@ class CharacterIteratorFieldDelegate implements Format.FieldDelegate {
 
                 while (start < index) {
                     AttributedString as = attributedStrings.
-                                           get(asIndex--);
+                            get(asIndex--);
                     int newIndex = index - as.length();
                     int aStart = Math.max(0, start - newIndex);
 
-                    as.addAttribute(attr, value, aStart, Math.min(
-                                    end - start, as.length() - aStart) +
-                                    aStart);
+                    as.addAttribute(attr, value, aStart, Math.min(end - start, as.length() - aStart) + aStart);
                     index = newIndex;
                 }
             }
             if (size < start) {
                 // Pad attributes
-                attributedStrings.add(new AttributedString(
-                                          buffer.substring(size, start)));
+                attributedStrings.add(new AttributedString(buffer.substring(size, start)));
                 size = start;
             }
             if (size < end) {
                 // Add new string
                 int aStart = Math.max(start, size);
-                AttributedString string = new AttributedString(
-                                   buffer.substring(aStart, end));
+                AttributedString string = new AttributedString(buffer.substring(aStart, end));
 
                 string.addAttribute(attr, value);
                 attributedStrings.add(string);
@@ -92,32 +85,27 @@ class CharacterIteratorFieldDelegate implements Format.FieldDelegate {
         }
     }
 
-    public void formatted(int fieldID, Format.Field attr, Object value,
-                          int start, int end, StringBuffer buffer) {
+    public void formatted(int fieldID, Format.Field attr, Object value, int start, int end, StringBuffer buffer) {
         formatted(attr, value, start, end, buffer);
     }
 
     /**
      * Returns an <code>AttributedCharacterIterator</code> that can be used
      * to iterate over the resulting formatted String.
-     *
-     * @pararm string Result of formatting.
      */
     public AttributedCharacterIterator getIterator(String string) {
         // Add the last AttributedCharacterIterator if necessary
         // assert(size <= string.length());
         if (string.length() > size) {
-            attributedStrings.add(new AttributedString(
-                                  string.substring(size)));
+            attributedStrings.add(new AttributedString(string.substring(size)));
             size = string.length();
         }
         int iCount = attributedStrings.size();
-        AttributedCharacterIterator iterators[] = new
-                                    AttributedCharacterIterator[iCount];
+        AttributedCharacterIterator iterators[] = new AttributedCharacterIterator[iCount];
 
         for (int counter = 0; counter < iCount; counter++) {
             iterators[counter] = attributedStrings.
-                                  get(counter).getIterator();
+                    get(counter).getIterator();
         }
         return new AttributedString(iterators).getIterator();
     }

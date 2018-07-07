@@ -34,8 +34,9 @@
  */
 
 package java.util.concurrent.atomic;
-import java.util.function.IntUnaryOperator;
+
 import java.util.function.IntBinaryOperator;
+import java.util.function.IntUnaryOperator;
 import sun.misc.Unsafe;
 
 /**
@@ -48,9 +49,9 @@ import sun.misc.Unsafe;
  * {@code Number} to allow uniform access by tools and utilities that
  * deal with numerically-based classes.
  *
- * @since 1.5
  * @author Doug Lea
-*/
+ * @since 1.5
+ */
 public class AtomicInteger extends Number implements java.io.Serializable {
     private static final long serialVersionUID = 6214790243416807050L;
 
@@ -60,9 +61,10 @@ public class AtomicInteger extends Number implements java.io.Serializable {
 
     static {
         try {
-            valueOffset = unsafe.objectFieldOffset
-                (AtomicInteger.class.getDeclaredField("value"));
-        } catch (Exception ex) { throw new Error(ex); }
+            valueOffset = unsafe.objectFieldOffset(AtomicInteger.class.getDeclaredField("value"));
+        } catch (Exception ex) {
+            throw new Error(ex);
+        }
     }
 
     private volatile int value;
@@ -70,7 +72,8 @@ public class AtomicInteger extends Number implements java.io.Serializable {
     /**
      * Creates a new AtomicInteger with the given initial value.
      *
-     * @param initialValue the initial value
+     * @param initialValue
+     *         the initial value
      */
     public AtomicInteger(int initialValue) {
         value = initialValue;
@@ -94,7 +97,8 @@ public class AtomicInteger extends Number implements java.io.Serializable {
     /**
      * Sets to the given value.
      *
-     * @param newValue the new value
+     * @param newValue
+     *         the new value
      */
     public final void set(int newValue) {
         value = newValue;
@@ -103,7 +107,9 @@ public class AtomicInteger extends Number implements java.io.Serializable {
     /**
      * Eventually sets to the given value.
      *
-     * @param newValue the new value
+     * @param newValue
+     *         the new value
+     *
      * @since 1.6
      */
     public final void lazySet(int newValue) {
@@ -113,7 +119,9 @@ public class AtomicInteger extends Number implements java.io.Serializable {
     /**
      * Atomically sets to the given value and returns the old value.
      *
-     * @param newValue the new value
+     * @param newValue
+     *         the new value
+     *
      * @return the previous value
      */
     public final int getAndSet(int newValue) {
@@ -124,8 +132,11 @@ public class AtomicInteger extends Number implements java.io.Serializable {
      * Atomically sets the value to the given updated value
      * if the current value {@code ==} the expected value.
      *
-     * @param expect the expected value
-     * @param update the new value
+     * @param expect
+     *         the expected value
+     * @param update
+     *         the new value
+     *
      * @return {@code true} if successful. False return indicates that
      * the actual value was not equal to the expected value.
      */
@@ -141,8 +152,11 @@ public class AtomicInteger extends Number implements java.io.Serializable {
      * spuriously and does not provide ordering guarantees</a>, so is
      * only rarely an appropriate alternative to {@code compareAndSet}.
      *
-     * @param expect the expected value
-     * @param update the new value
+     * @param expect
+     *         the expected value
+     * @param update
+     *         the new value
+     *
      * @return {@code true} if successful
      */
     public final boolean weakCompareAndSet(int expect, int update) {
@@ -170,7 +184,9 @@ public class AtomicInteger extends Number implements java.io.Serializable {
     /**
      * Atomically adds the given value to the current value.
      *
-     * @param delta the value to add
+     * @param delta
+     *         the value to add
+     *
      * @return the previous value
      */
     public final int getAndAdd(int delta) {
@@ -198,7 +214,9 @@ public class AtomicInteger extends Number implements java.io.Serializable {
     /**
      * Atomically adds the given value to the current value.
      *
-     * @param delta the value to add
+     * @param delta
+     *         the value to add
+     *
      * @return the updated value
      */
     public final int addAndGet(int delta) {
@@ -211,8 +229,11 @@ public class AtomicInteger extends Number implements java.io.Serializable {
      * function should be side-effect-free, since it may be re-applied
      * when attempted updates fail due to contention among threads.
      *
-     * @param updateFunction a side-effect-free function
+     * @param updateFunction
+     *         a side-effect-free function
+     *
      * @return the previous value
+     *
      * @since 1.8
      */
     public final int getAndUpdate(IntUnaryOperator updateFunction) {
@@ -230,8 +251,11 @@ public class AtomicInteger extends Number implements java.io.Serializable {
      * function should be side-effect-free, since it may be re-applied
      * when attempted updates fail due to contention among threads.
      *
-     * @param updateFunction a side-effect-free function
+     * @param updateFunction
+     *         a side-effect-free function
+     *
      * @return the updated value
+     *
      * @since 1.8
      */
     public final int updateAndGet(IntUnaryOperator updateFunction) {
@@ -252,13 +276,16 @@ public class AtomicInteger extends Number implements java.io.Serializable {
      * is applied with the current value as its first argument,
      * and the given update as the second argument.
      *
-     * @param x the update value
-     * @param accumulatorFunction a side-effect-free function of two arguments
+     * @param x
+     *         the update value
+     * @param accumulatorFunction
+     *         a side-effect-free function of two arguments
+     *
      * @return the previous value
+     *
      * @since 1.8
      */
-    public final int getAndAccumulate(int x,
-                                      IntBinaryOperator accumulatorFunction) {
+    public final int getAndAccumulate(int x, IntBinaryOperator accumulatorFunction) {
         int prev, next;
         do {
             prev = get();
@@ -276,13 +303,16 @@ public class AtomicInteger extends Number implements java.io.Serializable {
      * is applied with the current value as its first argument,
      * and the given update as the second argument.
      *
-     * @param x the update value
-     * @param accumulatorFunction a side-effect-free function of two arguments
+     * @param x
+     *         the update value
+     * @param accumulatorFunction
+     *         a side-effect-free function of two arguments
+     *
      * @return the updated value
+     *
      * @since 1.8
      */
-    public final int accumulateAndGet(int x,
-                                      IntBinaryOperator accumulatorFunction) {
+    public final int accumulateAndGet(int x, IntBinaryOperator accumulatorFunction) {
         int prev, next;
         do {
             prev = get();
@@ -293,6 +323,7 @@ public class AtomicInteger extends Number implements java.io.Serializable {
 
     /**
      * Returns the String representation of the current value.
+     *
      * @return the String representation of the current value
      */
     public String toString() {
@@ -309,28 +340,25 @@ public class AtomicInteger extends Number implements java.io.Serializable {
     /**
      * Returns the value of this {@code AtomicInteger} as a {@code long}
      * after a widening primitive conversion.
-     * @jls 5.1.2 Widening Primitive Conversions
      */
     public long longValue() {
-        return (long)get();
+        return (long) get();
     }
 
     /**
      * Returns the value of this {@code AtomicInteger} as a {@code float}
      * after a widening primitive conversion.
-     * @jls 5.1.2 Widening Primitive Conversions
      */
     public float floatValue() {
-        return (float)get();
+        return (float) get();
     }
 
     /**
      * Returns the value of this {@code AtomicInteger} as a {@code double}
      * after a widening primitive conversion.
-     * @jls 5.1.2 Widening Primitive Conversions
      */
     public double doubleValue() {
-        return (double)get();
+        return (double) get();
     }
 
 }

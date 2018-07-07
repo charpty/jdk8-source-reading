@@ -46,25 +46,24 @@ package java.util;
  * has shorter method names.  New implementations should consider using
  * Iterator in preference to Enumeration.
  *
- * @see     java.util.Iterator
- * @see     java.io.SequenceInputStream
- * @see     java.util.Enumeration#nextElement()
- * @see     java.util.Hashtable
- * @see     java.util.Hashtable#elements()
- * @see     java.util.Hashtable#keys()
- * @see     java.util.Vector
- * @see     java.util.Vector#elements()
- *
- * @author  Lee Boynton
- * @since   JDK1.0
+ * @author Lee Boynton
+ * @see java.util.Iterator
+ * @see java.io.SequenceInputStream
+ * @see java.util.Enumeration#nextElement()
+ * @see java.util.Hashtable
+ * @see java.util.Hashtable#elements()
+ * @see java.util.Hashtable#keys()
+ * @see java.util.Vector
+ * @see java.util.Vector#elements()
+ * @since JDK1.0
  */
 public interface Enumeration<E> {
     /**
      * Tests if this enumeration contains more elements.
      *
-     * @return  <code>true</code> if and only if this enumeration object
-     *           contains at least one more element to provide;
-     *          <code>false</code> otherwise.
+     * @return <code>true</code> if and only if this enumeration object
+     * contains at least one more element to provide;
+     * <code>false</code> otherwise.
      */
     boolean hasMoreElements();
 
@@ -72,8 +71,10 @@ public interface Enumeration<E> {
      * Returns the next element of this enumeration if this enumeration
      * object has at least one more element to provide.
      *
-     * @return     the next element of this enumeration.
-     * @exception  NoSuchElementException  if no more elements exist.
+     * @return the next element of this enumeration.
+     *
+     * @throws NoSuchElementException
+     *         if no more elements exist.
      */
     E nextElement();
 }

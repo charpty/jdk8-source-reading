@@ -30,13 +30,13 @@ package java.io;
  * problems with a Class.
  * <UL>
  * <LI> The serial version of the class does not match that of the class
- *      descriptor read from the stream
+ * descriptor read from the stream
  * <LI> The class contains unknown datatypes
  * <LI> The class does not have an accessible no-arg constructor
  * </UL>
  *
- * @author  unascribed
- * @since   JDK1.1
+ * @author unascribed
+ * @since JDK1.1
  */
 public class InvalidClassException extends ObjectStreamException {
 
@@ -44,15 +44,14 @@ public class InvalidClassException extends ObjectStreamException {
 
     /**
      * Name of the invalid class.
-     *
-     * @serial Name of the invalid class.
      */
     public String classname;
 
     /**
      * Report an InvalidClassException for the reason specified.
      *
-     * @param reason  String describing the reason for the exception.
+     * @param reason
+     *         String describing the reason for the exception.
      */
     public InvalidClassException(String reason) {
         super(reason);
@@ -61,8 +60,10 @@ public class InvalidClassException extends ObjectStreamException {
     /**
      * Constructs an InvalidClassException object.
      *
-     * @param cname   a String naming the invalid class.
-     * @param reason  a String describing the reason for the exception.
+     * @param cname
+     *         a String naming the invalid class.
+     * @param reason
+     *         a String describing the reason for the exception.
      */
     public InvalidClassException(String cname, String reason) {
         super(reason);
@@ -73,9 +74,10 @@ public class InvalidClassException extends ObjectStreamException {
      * Produce the message and include the classname, if present.
      */
     public String getMessage() {
-        if (classname == null)
+        if (classname == null) {
             return super.getMessage();
-        else
+        } else {
             return classname + "; " + super.getMessage();
+        }
     }
 }

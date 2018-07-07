@@ -41,18 +41,16 @@ import java.util.Map;
  * <code>Map&lt;String,ClientInfoStatus&gt;</code> to
  * the appropriate <code>SQLClientInfoException</code> constructor.
  * <p>
+ *
  * @see ClientInfoStatus
  * @see Connection#setClientInfo
  * @since 1.6
  */
 public class SQLClientInfoException extends SQLException {
 
+    private Map<String, ClientInfoStatus> failedProperties;
 
-
-
-        private Map<String, ClientInfoStatus>   failedProperties;
-
-        /**
+    /**
      * Constructs a <code>SQLClientInfoException</code>  Object.
      * The <code>reason</code>,
      * <code>SQLState</code>, and failedProperties list are initialized to
@@ -64,12 +62,12 @@ public class SQLClientInfoException extends SQLException {
      *
      * @since 1.6
      */
-        public SQLClientInfoException() {
+    public SQLClientInfoException() {
 
-                this.failedProperties = null;
-        }
+        this.failedProperties = null;
+    }
 
-        /**
+    /**
      * Constructs a <code>SQLClientInfoException</code> object initialized with a
      * given <code>failedProperties</code>.
      * The <code>reason</code> and <code>SQLState</code> are initialized
@@ -80,21 +78,23 @@ public class SQLClientInfoException extends SQLException {
      * {@link Throwable#initCause(java.lang.Throwable)} method.
      * <p>
      *
-     * @param failedProperties          A Map containing the property values that could not
-     *                                  be set.  The keys in the Map
-     *                                  contain the names of the client info
-     *                                  properties that could not be set and
-     *                                  the values contain one of the reason codes
-     *                                  defined in <code>ClientInfoStatus</code>
-     * <p>
+     * @param failedProperties
+     *         A Map containing the property values that could not
+     *         be set.  The keys in the Map
+     *         contain the names of the client info
+     *         properties that could not be set and
+     *         the values contain one of the reason codes
+     *         defined in <code>ClientInfoStatus</code>
+     *         <p>
+     *
      * @since 1.6
      */
-        public SQLClientInfoException(Map<String, ClientInfoStatus> failedProperties) {
+    public SQLClientInfoException(Map<String, ClientInfoStatus> failedProperties) {
 
-                this.failedProperties = failedProperties;
-        }
+        this.failedProperties = failedProperties;
+    }
 
-        /**
+    /**
      * Constructs a <code>SQLClientInfoException</code> object initialized with
      * a given <code>cause</code> and <code>failedProperties</code>.
      *
@@ -104,26 +104,28 @@ public class SQLClientInfoException extends SQLException {
      *
      * <p>
      *
-     * @param failedProperties          A Map containing the property values that could not
-     *                                  be set.  The keys in the Map
-     *                                  contain the names of the client info
-     *                                  properties that could not be set and
-     *                                  the values contain one of the reason codes
-     *                                  defined in <code>ClientInfoStatus</code>
-     * @param cause                                     the (which is saved for later retrieval by the <code>getCause()</code> method); may be null indicating
-     *     the cause is non-existent or unknown.
-     * <p>
+     * @param failedProperties
+     *         A Map containing the property values that could not
+     *         be set.  The keys in the Map
+     *         contain the names of the client info
+     *         properties that could not be set and
+     *         the values contain one of the reason codes
+     *         defined in <code>ClientInfoStatus</code>
+     * @param cause
+     *         the (which is saved for later retrieval by the <code>getCause()</code> method); may be null indicating
+     *         the cause is non-existent or unknown.
+     *         <p>
+     *
      * @since 1.6
      */
-        public SQLClientInfoException(Map<String, ClientInfoStatus> failedProperties,
-                                                           Throwable cause) {
+    public SQLClientInfoException(Map<String, ClientInfoStatus> failedProperties, Throwable cause) {
 
-                super(cause != null?cause.toString():null);
-                initCause(cause);
-                this.failedProperties = failedProperties;
-        }
+        super(cause != null ? cause.toString() : null);
+        initCause(cause);
+        this.failedProperties = failedProperties;
+    }
 
-        /**
+    /**
      * Constructs a <code>SQLClientInfoException</code> object initialized with a
      * given <code>reason</code> and <code>failedProperties</code>.
      * The <code>SQLState</code> is initialized
@@ -134,24 +136,26 @@ public class SQLClientInfoException extends SQLException {
      * {@link Throwable#initCause(java.lang.Throwable)} method.
      * <p>
      *
-     * @param reason                            a description of the exception
-     * @param failedProperties          A Map containing the property values that could not
-     *                                  be set.  The keys in the Map
-     *                                  contain the names of the client info
-     *                                  properties that could not be set and
-     *                                  the values contain one of the reason codes
-     *                                  defined in <code>ClientInfoStatus</code>
-     * <p>
+     * @param reason
+     *         a description of the exception
+     * @param failedProperties
+     *         A Map containing the property values that could not
+     *         be set.  The keys in the Map
+     *         contain the names of the client info
+     *         properties that could not be set and
+     *         the values contain one of the reason codes
+     *         defined in <code>ClientInfoStatus</code>
+     *         <p>
+     *
      * @since 1.6
      */
-        public SQLClientInfoException(String reason,
-                Map<String, ClientInfoStatus> failedProperties) {
+    public SQLClientInfoException(String reason, Map<String, ClientInfoStatus> failedProperties) {
 
-                super(reason);
-                this.failedProperties = failedProperties;
-        }
+        super(reason);
+        this.failedProperties = failedProperties;
+    }
 
-        /**
+    /**
      * Constructs a <code>SQLClientInfoException</code> object initialized with a
      * given <code>reason</code>, <code>cause</code> and
      * <code>failedProperties</code>.
@@ -159,28 +163,30 @@ public class SQLClientInfoException extends SQLException {
      * to <code>null</code> and the vendor code is initialized to 0.
      * <p>
      *
-     * @param reason                            a description of the exception
-     * @param failedProperties          A Map containing the property values that could not
-     *                                  be set.  The keys in the Map
-     *                                  contain the names of the client info
-     *                                  properties that could not be set and
-     *                                  the values contain one of the reason codes
-     *                                  defined in <code>ClientInfoStatus</code>
-     * @param cause                                     the underlying reason for this <code>SQLException</code> (which is saved for later retrieval by the <code>getCause()</code> method); may be null indicating
-     *     the cause is non-existent or unknown.
-     * <p>
+     * @param reason
+     *         a description of the exception
+     * @param failedProperties
+     *         A Map containing the property values that could not
+     *         be set.  The keys in the Map
+     *         contain the names of the client info
+     *         properties that could not be set and
+     *         the values contain one of the reason codes
+     *         defined in <code>ClientInfoStatus</code>
+     * @param cause
+     *         the underlying reason for this <code>SQLException</code> (which is saved for later retrieval by the <code>getCause()</code> method); may be null indicating
+     *         the cause is non-existent or unknown.
+     *         <p>
+     *
      * @since 1.6
      */
-        public SQLClientInfoException(String reason,
-                                                           Map<String, ClientInfoStatus> failedProperties,
-                                                           Throwable cause) {
+    public SQLClientInfoException(String reason, Map<String, ClientInfoStatus> failedProperties, Throwable cause) {
 
-                super(reason);
-                initCause(cause);
-                this.failedProperties = failedProperties;
-        }
+        super(reason);
+        initCause(cause);
+        this.failedProperties = failedProperties;
+    }
 
-        /**
+    /**
      * Constructs a <code>SQLClientInfoException</code> object initialized with a
      * given  <code>reason</code>, <code>SQLState</code>  and
      * <code>failedProperties</code>.
@@ -190,55 +196,59 @@ public class SQLClientInfoException extends SQLException {
      * is initialized to 0.
      * <p>
      *
-     * @param reason                            a description of the exception
-     * @param SQLState                          an XOPEN or SQL:2003 code identifying the exception
-     * @param failedProperties          A Map containing the property values that could not
-     *                                  be set.  The keys in the Map
-     *                                  contain the names of the client info
-     *                                  properties that could not be set and
-     *                                  the values contain one of the reason codes
-     *                                  defined in <code>ClientInfoStatus</code>
-     * <p>
+     * @param reason
+     *         a description of the exception
+     * @param SQLState
+     *         an XOPEN or SQL:2003 code identifying the exception
+     * @param failedProperties
+     *         A Map containing the property values that could not
+     *         be set.  The keys in the Map
+     *         contain the names of the client info
+     *         properties that could not be set and
+     *         the values contain one of the reason codes
+     *         defined in <code>ClientInfoStatus</code>
+     *         <p>
+     *
      * @since 1.6
      */
-        public SQLClientInfoException(String reason,
-                                                           String SQLState,
-                                                           Map<String, ClientInfoStatus> failedProperties) {
+    public SQLClientInfoException(String reason, String SQLState, Map<String, ClientInfoStatus> failedProperties) {
 
-                super(reason, SQLState);
-                this.failedProperties = failedProperties;
-        }
+        super(reason, SQLState);
+        this.failedProperties = failedProperties;
+    }
 
-        /**
+    /**
      * Constructs a <code>SQLClientInfoException</code> object initialized with a
      * given  <code>reason</code>, <code>SQLState</code>, <code>cause</code>
      * and <code>failedProperties</code>.  The vendor code is initialized to 0.
      * <p>
      *
-     * @param reason                            a description of the exception
-     * @param SQLState                          an XOPEN or SQL:2003 code identifying the exception
-     * @param failedProperties          A Map containing the property values that could not
-     *                                  be set.  The keys in the Map
-     *                                  contain the names of the client info
-     *                                  properties that could not be set and
-     *                                  the values contain one of the reason codes
-     *                                  defined in <code>ClientInfoStatus</code>
-     * @param cause                                     the underlying reason for this <code>SQLException</code> (which is saved for later retrieval by the <code>getCause()</code> method); may be null indicating
-     *     the cause is non-existent or unknown.
-     * <p>
+     * @param reason
+     *         a description of the exception
+     * @param SQLState
+     *         an XOPEN or SQL:2003 code identifying the exception
+     * @param failedProperties
+     *         A Map containing the property values that could not
+     *         be set.  The keys in the Map
+     *         contain the names of the client info
+     *         properties that could not be set and
+     *         the values contain one of the reason codes
+     *         defined in <code>ClientInfoStatus</code>
+     * @param cause
+     *         the underlying reason for this <code>SQLException</code> (which is saved for later retrieval by the <code>getCause()</code> method); may be null indicating
+     *         the cause is non-existent or unknown.
+     *         <p>
+     *
      * @since 1.6
      */
-        public SQLClientInfoException(String reason,
-                                                           String SQLState,
-                                                           Map<String, ClientInfoStatus> failedProperties,
-                                                           Throwable cause) {
+    public SQLClientInfoException(String reason, String SQLState, Map<String, ClientInfoStatus> failedProperties, Throwable cause) {
 
-                super(reason, SQLState);
-                initCause(cause);
-                this.failedProperties = failedProperties;
-        }
+        super(reason, SQLState);
+        initCause(cause);
+        this.failedProperties = failedProperties;
+    }
 
-        /**
+    /**
      * Constructs a <code>SQLClientInfoException</code> object initialized with a
      * given  <code>reason</code>, <code>SQLState</code>,
      * <code>vendorCode</code>  and <code>failedProperties</code>.
@@ -247,58 +257,62 @@ public class SQLClientInfoException extends SQLException {
      * {@link Throwable#initCause(java.lang.Throwable)} method.
      * <p>
      *
-     * @param reason                            a description of the exception
-     * @param SQLState                          an XOPEN or SQL:2003 code identifying the exception
-     * @param vendorCode                        a database vendor-specific exception code
-     * @param failedProperties          A Map containing the property values that could not
-     *                                  be set.  The keys in the Map
-     *                                  contain the names of the client info
-     *                                  properties that could not be set and
-     *                                  the values contain one of the reason codes
-     *                                  defined in <code>ClientInfoStatus</code>
-     * <p>
+     * @param reason
+     *         a description of the exception
+     * @param SQLState
+     *         an XOPEN or SQL:2003 code identifying the exception
+     * @param vendorCode
+     *         a database vendor-specific exception code
+     * @param failedProperties
+     *         A Map containing the property values that could not
+     *         be set.  The keys in the Map
+     *         contain the names of the client info
+     *         properties that could not be set and
+     *         the values contain one of the reason codes
+     *         defined in <code>ClientInfoStatus</code>
+     *         <p>
+     *
      * @since 1.6
      */
-        public SQLClientInfoException(String reason,
-                                                           String SQLState,
-                                                           int vendorCode,
-                                                           Map<String, ClientInfoStatus> failedProperties) {
+    public SQLClientInfoException(String reason, String SQLState, int vendorCode, Map<String, ClientInfoStatus> failedProperties) {
 
-                super(reason, SQLState, vendorCode);
-                this.failedProperties = failedProperties;
-        }
+        super(reason, SQLState, vendorCode);
+        this.failedProperties = failedProperties;
+    }
 
-        /**
+    /**
      * Constructs a <code>SQLClientInfoException</code> object initialized with a
      * given  <code>reason</code>, <code>SQLState</code>,
      * <code>cause</code>, <code>vendorCode</code> and
      * <code>failedProperties</code>.
      * <p>
      *
-     * @param reason                            a description of the exception
-     * @param SQLState                          an XOPEN or SQL:2003 code identifying the exception
-     * @param vendorCode                        a database vendor-specific exception code
-     * @param failedProperties          A Map containing the property values that could not
-     *                                  be set.  The keys in the Map
-     *                                  contain the names of the client info
-     *                                  properties that could not be set and
-     *                                  the values contain one of the reason codes
-     *                                  defined in <code>ClientInfoStatus</code>
-     * @param cause                     the underlying reason for this <code>SQLException</code> (which is saved for later retrieval by the <code>getCause()</code> method); may be null indicating
-     *     the cause is non-existent or unknown.
-     * <p>
+     * @param reason
+     *         a description of the exception
+     * @param SQLState
+     *         an XOPEN or SQL:2003 code identifying the exception
+     * @param vendorCode
+     *         a database vendor-specific exception code
+     * @param failedProperties
+     *         A Map containing the property values that could not
+     *         be set.  The keys in the Map
+     *         contain the names of the client info
+     *         properties that could not be set and
+     *         the values contain one of the reason codes
+     *         defined in <code>ClientInfoStatus</code>
+     * @param cause
+     *         the underlying reason for this <code>SQLException</code> (which is saved for later retrieval by the <code>getCause()</code> method); may be null indicating
+     *         the cause is non-existent or unknown.
+     *         <p>
+     *
      * @since 1.6
      */
-        public SQLClientInfoException(String reason,
-                                                           String SQLState,
-                                                           int vendorCode,
-                                                           Map<String, ClientInfoStatus> failedProperties,
-                                                           Throwable cause) {
+    public SQLClientInfoException(String reason, String SQLState, int vendorCode, Map<String, ClientInfoStatus> failedProperties, Throwable cause) {
 
-                super(reason, SQLState, vendorCode);
-                initCause(cause);
-                this.failedProperties = failedProperties;
-        }
+        super(reason, SQLState, vendorCode);
+        initCause(cause);
+        this.failedProperties = failedProperties;
+    }
 
     /**
      * Returns the list of client info properties that could not be set.  The
@@ -310,12 +324,13 @@ public class SQLClientInfoException extends SQLException {
      * @return Map list containing the client info properties that could
      * not be set
      * <p>
+     *
      * @since 1.6
      */
-        public Map<String, ClientInfoStatus> getFailedProperties() {
+    public Map<String, ClientInfoStatus> getFailedProperties() {
 
-                return this.failedProperties;
-        }
+        return this.failedProperties;
+    }
 
     private static final long serialVersionUID = -4319604256824655880L;
 }

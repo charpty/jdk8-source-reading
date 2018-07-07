@@ -29,7 +29,6 @@
 
 package java.nio.channels;
 
-
 /**
  * Unchecked exception thrown when the {@link SocketChannel#finishConnect
  * finishConnect} method of a {@link SocketChannel} is invoked without first
@@ -38,15 +37,14 @@ package java.nio.channels;
  * @since 1.4
  */
 
-public class NoConnectionPendingException
-    extends IllegalStateException
-{
+public class NoConnectionPendingException extends IllegalStateException {
 
     private static final long serialVersionUID = -8296561183633134743L;
 
     /**
      * Constructs an instance of this class.
      */
-    public NoConnectionPendingException() { }
+    public NoConnectionPendingException() {
+    }
 
 }

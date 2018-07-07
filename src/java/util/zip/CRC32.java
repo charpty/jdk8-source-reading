@@ -34,11 +34,10 @@ import sun.nio.ch.DirectBuffer;
  * <p> Passing a {@code null} argument to a method in this class will cause
  * a {@link NullPointerException} to be thrown.
  *
- * @see         Checksum
- * @author      David Connelly
+ * @author David Connelly
+ * @see Checksum
  */
-public
-class CRC32 implements Checksum {
+public class CRC32 implements Checksum {
     private int crc;
 
     /**
@@ -47,12 +46,12 @@ class CRC32 implements Checksum {
     public CRC32() {
     }
 
-
     /**
      * Updates the CRC-32 checksum with the specified byte (the low
      * eight bits of the argument b).
      *
-     * @param b the byte to update the checksum with
+     * @param b
+     *         the byte to update the checksum with
      */
     public void update(int b) {
         crc = update(crc, b);
@@ -61,10 +60,10 @@ class CRC32 implements Checksum {
     /**
      * Updates the CRC-32 checksum with the specified array of bytes.
      *
-     * @throws  ArrayIndexOutOfBoundsException
-     *          if {@code off} is negative, or {@code len} is negative,
-     *          or {@code off+len} is greater than the length of the
-     *          array {@code b}
+     * @throws ArrayIndexOutOfBoundsException
+     *         if {@code off} is negative, or {@code len} is negative,
+     *         or {@code off+len} is greater than the length of the
+     *         array {@code b}
      */
     public void update(byte[] b, int off, int len) {
         if (b == null) {
@@ -79,7 +78,8 @@ class CRC32 implements Checksum {
     /**
      * Updates the CRC-32 checksum with the specified array of bytes.
      *
-     * @param b the array of bytes to update the checksum with
+     * @param b
+     *         the array of bytes to update the checksum with
      */
     public void update(byte[] b) {
         crc = updateBytes(crc, b, 0, b.length);
@@ -95,7 +95,9 @@ class CRC32 implements Checksum {
      * Upon return, the buffer's position will
      * be updated to its limit; its limit will not have been changed.
      *
-     * @param buffer the ByteBuffer to update the checksum with
+     * @param buffer
+     *         the ByteBuffer to update the checksum with
+     *
      * @since 1.8
      */
     public void update(ByteBuffer buffer) {
@@ -103,10 +105,11 @@ class CRC32 implements Checksum {
         int limit = buffer.limit();
         assert (pos <= limit);
         int rem = limit - pos;
-        if (rem <= 0)
+        if (rem <= 0) {
             return;
+        }
         if (buffer instanceof DirectBuffer) {
-            crc = updateByteBuffer(crc, ((DirectBuffer)buffer).address(), pos, rem);
+            crc = updateByteBuffer(crc, ((DirectBuffer) buffer).address(), pos, rem);
         } else if (buffer.hasArray()) {
             crc = updateBytes(crc, buffer.array(), pos + buffer.arrayOffset(), rem);
         } else {
@@ -128,12 +131,12 @@ class CRC32 implements Checksum {
      * Returns CRC-32 value.
      */
     public long getValue() {
-        return (long)crc & 0xffffffffL;
+        return (long) crc & 0xffffffffL;
     }
 
     private native static int update(int crc, int b);
+
     private native static int updateBytes(int crc, byte[] b, int off, int len);
 
-    private native static int updateByteBuffer(int adler, long addr,
-                                               int off, int len);
+    private native static int updateByteBuffer(int adler, long addr, int off, int len);
 }

@@ -33,7 +33,8 @@ import sun.util.logging.LoggingProxy;
 class LoggingProxyImpl implements LoggingProxy {
     static final LoggingProxy INSTANCE = new LoggingProxyImpl();
 
-    private LoggingProxyImpl() { }
+    private LoggingProxyImpl() {
+    }
 
     @Override
     public Object getLogger(String name) {

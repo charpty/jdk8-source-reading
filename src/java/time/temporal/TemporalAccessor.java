@@ -94,10 +94,6 @@ import java.util.Objects;
  * of this interface may be in calendar systems other than ISO.
  * See {@link java.time.chrono.ChronoLocalDate} for a fuller discussion of the issues.
  *
- * @implSpec
- * This interface places no restrictions on the mutability of implementations,
- * however immutability is strongly recommended.
- *
  * @since 1.8
  */
 public interface TemporalAccessor {
@@ -109,18 +105,9 @@ public interface TemporalAccessor {
      * If false, then calling the {@link #range(TemporalField) range} and {@link #get(TemporalField) get}
      * methods will throw an exception.
      *
-     * @implSpec
-     * Implementations must check and handle all fields defined in {@link ChronoField}.
-     * If the field is supported, then true must be returned, otherwise false must be returned.
-     * <p>
-     * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.isSupportedBy(TemporalAccessor)}
-     * passing {@code this} as the argument.
-     * <p>
-     * Implementations must ensure that no observable state is altered when this
-     * read-only method is invoked.
+     * @param field
+     *         the field to check, null returns false
      *
-     * @param field  the field to check, null returns false
      * @return true if this date-time can be queried for the field, false if not
      */
     boolean isSupported(TemporalField field);
@@ -138,33 +125,15 @@ public interface TemporalAccessor {
      * and it is important not to read too much into them. For example, there
      * could be values within the range that are invalid for the field.
      *
-     * @implSpec
-     * Implementations must check and handle all fields defined in {@link ChronoField}.
-     * If the field is supported, then the range of the field must be returned.
-     * If unsupported, then an {@code UnsupportedTemporalTypeException} must be thrown.
-     * <p>
-     * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.rangeRefinedBy(TemporalAccessorl)}
-     * passing {@code this} as the argument.
-     * <p>
-     * Implementations must ensure that no observable state is altered when this
-     * read-only method is invoked.
-     * <p>
-     * The default implementation must behave equivalent to this code:
-     * <pre>
-     *  if (field instanceof ChronoField) {
-     *    if (isSupported(field)) {
-     *      return field.range();
-     *    }
-     *    throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
-     *  }
-     *  return field.rangeRefinedBy(this);
-     * </pre>
+     * @param field
+     *         the field to query the range for, not null
      *
-     * @param field  the field to query the range for, not null
      * @return the range of valid values for the field, not null
-     * @throws DateTimeException if the range for the field cannot be obtained
-     * @throws UnsupportedTemporalTypeException if the field is not supported
+     *
+     * @throws DateTimeException
+     *         if the range for the field cannot be obtained
+     * @throws UnsupportedTemporalTypeException
+     *         if the field is not supported
      */
     default ValueRange range(TemporalField field) {
         if (field instanceof ChronoField) {
@@ -185,34 +154,19 @@ public interface TemporalAccessor {
      * If the date-time cannot return the value, because the field is unsupported or for
      * some other reason, an exception will be thrown.
      *
-     * @implSpec
-     * Implementations must check and handle all fields defined in {@link ChronoField}.
-     * If the field is supported and has an {@code int} range, then the value of
-     * the field must be returned.
-     * If unsupported, then an {@code UnsupportedTemporalTypeException} must be thrown.
-     * <p>
-     * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
-     * passing {@code this} as the argument.
-     * <p>
-     * Implementations must ensure that no observable state is altered when this
-     * read-only method is invoked.
-     * <p>
-     * The default implementation must behave equivalent to this code:
-     * <pre>
-     *  if (range(field).isIntValue()) {
-     *    return range(field).checkValidIntValue(getLong(field), field);
-     *  }
-     *  throw new UnsupportedTemporalTypeException("Invalid field " + field + " + for get() method, use getLong() instead");
-     * </pre>
+     * @param field
+     *         the field to get, not null
      *
-     * @param field  the field to get, not null
      * @return the value for the field, within the valid range of values
-     * @throws DateTimeException if a value for the field cannot be obtained or
+     *
+     * @throws DateTimeException
+     *         if a value for the field cannot be obtained or
      *         the value is outside the range of valid values for the field
-     * @throws UnsupportedTemporalTypeException if the field is not supported or
+     * @throws UnsupportedTemporalTypeException
+     *         if the field is not supported or
      *         the range of values exceeds an {@code int}
-     * @throws ArithmeticException if numeric overflow occurs
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     default int get(TemporalField field) {
         ValueRange range = range(field);
@@ -234,23 +188,17 @@ public interface TemporalAccessor {
      * If the date-time cannot return the value, because the field is unsupported or for
      * some other reason, an exception will be thrown.
      *
-     * @implSpec
-     * Implementations must check and handle all fields defined in {@link ChronoField}.
-     * If the field is supported, then the value of the field must be returned.
-     * If unsupported, then an {@code UnsupportedTemporalTypeException} must be thrown.
-     * <p>
-     * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
-     * passing {@code this} as the argument.
-     * <p>
-     * Implementations must ensure that no observable state is altered when this
-     * read-only method is invoked.
+     * @param field
+     *         the field to get, not null
      *
-     * @param field  the field to get, not null
      * @return the value for the field
-     * @throws DateTimeException if a value for the field cannot be obtained
-     * @throws UnsupportedTemporalTypeException if the field is not supported
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if a value for the field cannot be obtained
+     * @throws UnsupportedTemporalTypeException
+     *         if the field is not supported
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     long getLong(TemporalField field);
 
@@ -269,46 +217,20 @@ public interface TemporalAccessor {
      * {@code LocalDate::from} and {@code ZoneId::from}.
      * Additional implementations are provided as static methods on {@link TemporalQuery}.
      *
-     * @implSpec
-     * The default implementation must behave equivalent to this code:
-     * <pre>
-     *  if (query == TemporalQueries.zoneId() ||
-     *        query == TemporalQueries.chronology() || query == TemporalQueries.precision()) {
-     *    return null;
-     *  }
-     *  return query.queryFrom(this);
-     * </pre>
-     * Future versions are permitted to add further queries to the if statement.
-     * <p>
-     * All classes implementing this interface and overriding this method must call
-     * {@code TemporalAccessor.super.query(query)}. JDK classes may avoid calling
-     * super if they provide behavior equivalent to the default behaviour, however
-     * non-JDK classes may not utilize this optimization and must call {@code super}.
-     * <p>
-     * If the implementation can supply a value for one of the queries listed in the
-     * if statement of the default implementation, then it must do so.
-     * For example, an application-defined {@code HourMin} class storing the hour
-     * and minute must override this method as follows:
-     * <pre>
-     *  if (query == TemporalQueries.precision()) {
-     *    return MINUTES;
-     *  }
-     *  return TemporalAccessor.super.query(query);
-     * </pre>
-     * <p>
-     * Implementations must ensure that no observable state is altered when this
-     * read-only method is invoked.
+     * @param <R>
+     *         the type of the result
+     * @param query
+     *         the query to invoke, not null
      *
-     * @param <R> the type of the result
-     * @param query  the query to invoke, not null
      * @return the query result, null may be returned (defined by the query)
-     * @throws DateTimeException if unable to query
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if unable to query
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     default <R> R query(TemporalQuery<R> query) {
-        if (query == TemporalQueries.zoneId()
-                || query == TemporalQueries.chronology()
-                || query == TemporalQueries.precision()) {
+        if (query == TemporalQueries.zoneId() || query == TemporalQueries.chronology() || query == TemporalQueries.precision()) {
             return null;
         }
         return query.queryFrom(this);

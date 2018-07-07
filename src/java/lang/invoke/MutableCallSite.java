@@ -39,30 +39,30 @@ import java.util.concurrent.atomic.AtomicInteger;
  * state variable into a method handle chain.
  * <!-- JavaDocExamplesTest.testMutableCallSite -->
  * <blockquote><pre>{@code
-MutableCallSite name = new MutableCallSite(MethodType.methodType(String.class));
-MethodHandle MH_name = name.dynamicInvoker();
-MethodType MT_str1 = MethodType.methodType(String.class);
-MethodHandle MH_upcase = MethodHandles.lookup()
-    .findVirtual(String.class, "toUpperCase", MT_str1);
-MethodHandle worker1 = MethodHandles.filterReturnValue(MH_name, MH_upcase);
-name.setTarget(MethodHandles.constant(String.class, "Rocky"));
-assertEquals("ROCKY", (String) worker1.invokeExact());
-name.setTarget(MethodHandles.constant(String.class, "Fred"));
-assertEquals("FRED", (String) worker1.invokeExact());
-// (mutation can be continued indefinitely)
+ * MutableCallSite name = new MutableCallSite(MethodType.methodType(String.class));
+ * MethodHandle MH_name = name.dynamicInvoker();
+ * MethodType MT_str1 = MethodType.methodType(String.class);
+ * MethodHandle MH_upcase = MethodHandles.lookup()
+ * .findVirtual(String.class, "toUpperCase", MT_str1);
+ * MethodHandle worker1 = MethodHandles.filterReturnValue(MH_name, MH_upcase);
+ * name.setTarget(MethodHandles.constant(String.class, "Rocky"));
+ * assertEquals("ROCKY", (String) worker1.invokeExact());
+ * name.setTarget(MethodHandles.constant(String.class, "Fred"));
+ * assertEquals("FRED", (String) worker1.invokeExact());
+ * // (mutation can be continued indefinitely)
  * }</pre></blockquote>
  * <p>
  * The same call site may be used in several places at once.
  * <blockquote><pre>{@code
-MethodType MT_str2 = MethodType.methodType(String.class, String.class);
-MethodHandle MH_cat = lookup().findVirtual(String.class,
-  "concat", methodType(String.class, String.class));
-MethodHandle MH_dear = MethodHandles.insertArguments(MH_cat, 1, ", dear?");
-MethodHandle worker2 = MethodHandles.filterReturnValue(MH_name, MH_dear);
-assertEquals("Fred, dear?", (String) worker2.invokeExact());
-name.setTarget(MethodHandles.constant(String.class, "Wilma"));
-assertEquals("WILMA", (String) worker1.invokeExact());
-assertEquals("Wilma, dear?", (String) worker2.invokeExact());
+ * MethodType MT_str2 = MethodType.methodType(String.class, String.class);
+ * MethodHandle MH_cat = lookup().findVirtual(String.class,
+ * "concat", methodType(String.class, String.class));
+ * MethodHandle MH_dear = MethodHandles.insertArguments(MH_cat, 1, ", dear?");
+ * MethodHandle worker2 = MethodHandles.filterReturnValue(MH_name, MH_dear);
+ * assertEquals("Fred, dear?", (String) worker2.invokeExact());
+ * name.setTarget(MethodHandles.constant(String.class, "Wilma"));
+ * assertEquals("WILMA", (String) worker1.invokeExact());
+ * assertEquals("Wilma, dear?", (String) worker2.invokeExact());
  * }</pre></blockquote>
  * <p>
  * <em>Non-synchronization of target values:</em>
@@ -79,6 +79,7 @@ assertEquals("Wilma, dear?", (String) worker2.invokeExact());
  * <p>
  * For target values which will be frequently updated, consider using
  * a {@linkplain VolatileCallSite volatile call site} instead.
+ *
  * @author John Rose, JSR 292 EG
  */
 public class MutableCallSite extends CallSite {
@@ -93,8 +94,12 @@ public class MutableCallSite extends CallSite {
      * or invoked in some other manner,
      * it is usually provided with a more useful target method,
      * via a call to {@link CallSite#setTarget(MethodHandle) setTarget}.
-     * @param type the method type that this call site will have
-     * @throws NullPointerException if the proposed type is null
+     *
+     * @param type
+     *         the method type that this call site will have
+     *
+     * @throws NullPointerException
+     *         if the proposed type is null
      */
     public MutableCallSite(MethodType type) {
         super(type);
@@ -103,8 +108,12 @@ public class MutableCallSite extends CallSite {
     /**
      * Creates a call site object with an initial target method handle.
      * The type of the call site is permanently set to the initial target's type.
-     * @param target the method handle that will be the initial target of the call site
-     * @throws NullPointerException if the proposed target is null
+     *
+     * @param target
+     *         the method handle that will be the initial target of the call site
+     *
+     * @throws NullPointerException
+     *         if the proposed target is null
      */
     public MutableCallSite(MethodHandle target) {
         super(target);
@@ -123,9 +132,11 @@ public class MutableCallSite extends CallSite {
      * a recent update to the target by another thread.
      *
      * @return the linkage state of this call site, a method handle which can change over time
+     *
      * @see #setTarget
      */
-    @Override public final MethodHandle getTarget() {
+    @Override
+    public final MethodHandle getTarget() {
         return target;
     }
 
@@ -143,13 +154,18 @@ public class MutableCallSite extends CallSite {
      * into the bootstrap method and/or the target methods used
      * at any given call site.
      *
-     * @param newTarget the new target
-     * @throws NullPointerException if the proposed new target is null
-     * @throws WrongMethodTypeException if the proposed new target
+     * @param newTarget
+     *         the new target
+     *
+     * @throws NullPointerException
+     *         if the proposed new target is null
+     * @throws WrongMethodTypeException
+     *         if the proposed new target
      *         has a method type that differs from the previous target
      * @see #getTarget
      */
-    @Override public void setTarget(MethodHandle newTarget) {
+    @Override
+    public void setTarget(MethodHandle newTarget) {
         checkTargetChange(this.target, newTarget);
         setTargetNormal(newTarget);
     }
@@ -204,30 +220,30 @@ public class MutableCallSite extends CallSite {
      * The following effects are apparent, for each individual call site {@code S}:
      * <ul>
      * <li>A new volatile variable {@code V} is created, and written by the current thread.
-     *     As defined by the JMM, this write is a global synchronization event.
+     * As defined by the JMM, this write is a global synchronization event.
      * <li>As is normal with thread-local ordering of write events,
-     *     every action already performed by the current thread is
-     *     taken to happen before the volatile write to {@code V}.
-     *     (In some implementations, this means that the current thread
-     *     performs a global release operation.)
+     * every action already performed by the current thread is
+     * taken to happen before the volatile write to {@code V}.
+     * (In some implementations, this means that the current thread
+     * performs a global release operation.)
      * <li>Specifically, the write to the current target of {@code S} is
-     *     taken to happen before the volatile write to {@code V}.
+     * taken to happen before the volatile write to {@code V}.
      * <li>The volatile write to {@code V} is placed
-     *     (in an implementation specific manner)
-     *     in the global synchronization order.
+     * (in an implementation specific manner)
+     * in the global synchronization order.
      * <li>Consider an arbitrary thread {@code T} (other than the current thread).
-     *     If {@code T} executes a synchronization action {@code A}
-     *     after the volatile write to {@code V} (in the global synchronization order),
-     *     it is therefore required to see either the current target
-     *     of {@code S}, or a later write to that target,
-     *     if it executes a read on the target of {@code S}.
-     *     (This constraint is called "synchronization-order consistency".)
+     * If {@code T} executes a synchronization action {@code A}
+     * after the volatile write to {@code V} (in the global synchronization order),
+     * it is therefore required to see either the current target
+     * of {@code S}, or a later write to that target,
+     * if it executes a read on the target of {@code S}.
+     * (This constraint is called "synchronization-order consistency".)
      * <li>The JMM specifically allows optimizing compilers to elide
-     *     reads or writes of variables that are known to be useless.
-     *     Such elided reads and writes have no effect on the happens-before
-     *     relation.  Regardless of this fact, the volatile {@code V}
-     *     will not be elided, even though its written value is
-     *     indeterminate and its read value is not used.
+     * reads or writes of variables that are known to be useless.
+     * Such elided reads and writes have no effect on the happens-before
+     * relation.  Regardless of this fact, the volatile {@code V}
+     * will not be elided, even though its written value is
+     * indeterminate and its read value is not used.
      * </ul>
      * Because of the last point, the implementation behaves as if a
      * volatile read of {@code V} were performed by {@code T}
@@ -267,17 +283,23 @@ public class MutableCallSite extends CallSite {
      * In such an implementation, the {@code syncAll} method can be a no-op,
      * and yet it will conform to the JMM behavior documented above.
      *
-     * @param sites an array of call sites to be synchronized
-     * @throws NullPointerException if the {@code sites} array reference is null
-     *                              or the array contains a null
+     * @param sites
+     *         an array of call sites to be synchronized
+     *
+     * @throws NullPointerException
+     *         if the {@code sites} array reference is null
+     *         or the array contains a null
      */
     public static void syncAll(MutableCallSite[] sites) {
-        if (sites.length == 0)  return;
+        if (sites.length == 0) {
+            return;
+        }
         STORE_BARRIER.lazySet(0);
         for (int i = 0; i < sites.length; i++) {
             sites[i].getClass();  // trigger NPE on first null
         }
         // FIXME: NYI
     }
+
     private static final AtomicInteger STORE_BARRIER = new AtomicInteger();
 }

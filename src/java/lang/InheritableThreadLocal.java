@@ -24,7 +24,6 @@
  */
 
 package java.lang;
-import java.lang.ref.*;
 
 /**
  * This class extends <tt>ThreadLocal</tt> to provide inheritance of values
@@ -40,9 +39,9 @@ import java.lang.ref.*;
  * maintained in the variable (e.g., User ID, Transaction ID) must be
  * automatically transmitted to any child threads that are created.
  *
- * @author  Josh Bloch and Doug Lea
- * @see     ThreadLocal
- * @since   1.2
+ * @author Josh Bloch and Doug Lea
+ * @see ThreadLocal
+ * @since 1.2
  */
 
 public class InheritableThreadLocal<T> extends ThreadLocal<T> {
@@ -55,7 +54,9 @@ public class InheritableThreadLocal<T> extends ThreadLocal<T> {
      * This method merely returns its input argument, and should be overridden
      * if a different behavior is desired.
      *
-     * @param parentValue the parent thread's value
+     * @param parentValue
+     *         the parent thread's value
+     *
      * @return the child thread's initial value
      */
     protected T childValue(T parentValue) {
@@ -65,17 +66,20 @@ public class InheritableThreadLocal<T> extends ThreadLocal<T> {
     /**
      * Get the map associated with a ThreadLocal.
      *
-     * @param t the current thread
+     * @param t
+     *         the current thread
      */
     ThreadLocalMap getMap(Thread t) {
-       return t.inheritableThreadLocals;
+        return t.inheritableThreadLocals;
     }
 
     /**
      * Create the map associated with a ThreadLocal.
      *
-     * @param t the current thread
-     * @param firstValue value for the initial entry of the table.
+     * @param t
+     *         the current thread
+     * @param firstValue
+     *         value for the initial entry of the table.
      */
     void createMap(Thread t, T firstValue) {
         t.inheritableThreadLocals = new ThreadLocalMap(this, firstValue);

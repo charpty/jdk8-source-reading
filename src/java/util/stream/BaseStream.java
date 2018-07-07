@@ -24,15 +24,8 @@
  */
 package java.util.stream;
 
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Spliterator;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.IntConsumer;
-import java.util.function.Predicate;
 
 /**
  * Base interface for streams, which are sequences of elements supporting
@@ -52,17 +45,19 @@ import java.util.function.Predicate;
  * specification of streams, stream operations, stream pipelines, and
  * parallelism, which governs the behavior of all stream types.
  *
- * @param <T> the type of the stream elements
- * @param <S> the type of of the stream implementing {@code BaseStream}
- * @since 1.8
+ * @param <T>
+ *         the type of the stream elements
+ * @param <S>
+ *         the type of of the stream implementing {@code BaseStream}
+ *
  * @see Stream
  * @see IntStream
  * @see LongStream
  * @see DoubleStream
  * @see <a href="package-summary.html">java.util.stream</a>
+ * @since 1.8
  */
-public interface BaseStream<T, S extends BaseStream<T, S>>
-        extends AutoCloseable {
+public interface BaseStream<T, S extends BaseStream<T, S>> extends AutoCloseable {
     /**
      * Returns an iterator for the elements of this stream.
      *
@@ -144,7 +139,9 @@ public interface BaseStream<T, S extends BaseStream<T, S>>
      * <p>This is an <a href="package-summary.html#StreamOps">intermediate
      * operation</a>.
      *
-     * @param closeHandler A task to execute when the stream is closed
+     * @param closeHandler
+     *         A task to execute when the stream is closed
+     *
      * @return a stream with a handler that is run if the stream is closed
      */
     S onClose(Runnable closeHandler);

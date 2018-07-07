@@ -51,7 +51,8 @@ public class CertificateNotYetValidException extends CertificateException {
      * message. A detail message is a String that describes this
      * particular exception.
      *
-     * @param message the detail message.
+     * @param message
+     *         the detail message.
      */
     public CertificateNotYetValidException(String message) {
         super(message);

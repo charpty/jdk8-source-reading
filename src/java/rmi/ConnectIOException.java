@@ -30,8 +30,8 @@ package java.rmi;
  * <code>IOException</code> occurs while making a connection
  * to the remote host for a remote method call.
  *
- * @author  Ann Wollrath
- * @since   JDK1.1
+ * @author Ann Wollrath
+ * @since JDK1.1
  */
 public class ConnectIOException extends RemoteException {
 
@@ -42,20 +42,24 @@ public class ConnectIOException extends RemoteException {
      * Constructs a <code>ConnectIOException</code> with the specified
      * detail message.
      *
-     * @param s the detail message
+     * @param s
+     *         the detail message
+     *
      * @since JDK1.1
      */
     public ConnectIOException(String s) {
         super(s);
     }
 
-
     /**
      * Constructs a <code>ConnectIOException</code> with the specified
      * detail message and nested exception.
      *
-     * @param s the detail message
-     * @param ex the nested exception
+     * @param s
+     *         the detail message
+     * @param ex
+     *         the nested exception
+     *
      * @since JDK1.1
      */
     public ConnectIOException(String s, Exception ex) {

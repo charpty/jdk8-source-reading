@@ -51,13 +51,11 @@ import java.security.PublicKey;
  * provide the necessary locking. Multiple threads each manipulating
  * separate objects need not synchronize.
  *
+ * @author Anne Anderson
  * @see CertPathBuilderResult
- *
- * @since       1.4
- * @author      Anne Anderson
+ * @since 1.4
  */
-public class PKIXCertPathBuilderResult extends PKIXCertPathValidatorResult
-    implements CertPathBuilderResult {
+public class PKIXCertPathBuilderResult extends PKIXCertPathValidatorResult implements CertPathBuilderResult {
 
     private CertPath certPath;
 
@@ -65,23 +63,27 @@ public class PKIXCertPathBuilderResult extends PKIXCertPathValidatorResult
      * Creates an instance of {@code PKIXCertPathBuilderResult}
      * containing the specified parameters.
      *
-     * @param certPath the validated {@code CertPath}
-     * @param trustAnchor a {@code TrustAnchor} describing the CA that
-     * served as a trust anchor for the certification path
-     * @param policyTree the immutable valid policy tree, or {@code null}
-     * if there are no valid policies
-     * @param subjectPublicKey the public key of the subject
-     * @throws NullPointerException if the {@code certPath},
-     * {@code trustAnchor} or {@code subjectPublicKey} parameters
-     * are {@code null}
+     * @param certPath
+     *         the validated {@code CertPath}
+     * @param trustAnchor
+     *         a {@code TrustAnchor} describing the CA that
+     *         served as a trust anchor for the certification path
+     * @param policyTree
+     *         the immutable valid policy tree, or {@code null}
+     *         if there are no valid policies
+     * @param subjectPublicKey
+     *         the public key of the subject
+     *
+     * @throws NullPointerException
+     *         if the {@code certPath},
+     *         {@code trustAnchor} or {@code subjectPublicKey} parameters
+     *         are {@code null}
      */
-    public PKIXCertPathBuilderResult(CertPath certPath,
-        TrustAnchor trustAnchor, PolicyNode policyTree,
-        PublicKey subjectPublicKey)
-    {
+    public PKIXCertPathBuilderResult(CertPath certPath, TrustAnchor trustAnchor, PolicyNode policyTree, PublicKey subjectPublicKey) {
         super(trustAnchor, policyTree, subjectPublicKey);
-        if (certPath == null)
+        if (certPath == null) {
             throw new NullPointerException("certPath must be non-null");
+        }
         this.certPath = certPath;
     }
 
@@ -104,7 +106,7 @@ public class PKIXCertPathBuilderResult extends PKIXCertPathValidatorResult
      * {@code PKIXCertPathBuilderResult}.
      *
      * @return a {@code String} describing the contents of this
-     *         {@code PKIXCertPathBuilderResult}
+     * {@code PKIXCertPathBuilderResult}
      */
     public String toString() {
         StringBuffer sb = new StringBuffer();

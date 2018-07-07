@@ -25,9 +25,11 @@
 
 package java.nio.file.attribute;
 
-import java.nio.file.*;
-import java.util.List;
 import java.io.IOException;
+import java.nio.file.FileStore;
+import java.nio.file.Files;
+import java.nio.file.ProviderMismatchException;
+import java.util.List;
 
 /**
  * A file attribute view that supports reading or updating a file's Access
@@ -95,18 +97,18 @@ import java.io.IOException;
  * supported by this attribute view are as follows:
  * <blockquote>
  * <table border="1" cellpadding="8" summary="Supported attributes">
- *   <tr>
- *     <th> Name </th>
- *     <th> Type </th>
- *   </tr>
- *   <tr>
- *     <td> "acl" </td>
- *     <td> {@link List}&lt;{@link AclEntry}&gt; </td>
- *   </tr>
- *   <tr>
- *     <td> "owner" </td>
- *     <td> {@link UserPrincipal} </td>
- *   </tr>
+ * <tr>
+ * <th> Name </th>
+ * <th> Type </th>
+ * </tr>
+ * <tr>
+ * <td> "acl" </td>
+ * <td> {@link List}&lt;{@link AclEntry}&gt; </td>
+ * </tr>
+ * <tr>
+ * <td> "owner" </td>
+ * <td> {@link UserPrincipal} </td>
+ * </tr>
  * </table>
  * </blockquote>
  *
@@ -137,9 +139,7 @@ import java.io.IOException;
  * @since 1.7
  */
 
-public interface AclFileAttributeView
-    extends FileOwnerAttributeView
-{
+public interface AclFileAttributeView extends FileOwnerAttributeView {
     /**
      * Returns the name of the attribute view. Attribute views of this type
      * have the name {@code "acl"}.
@@ -158,16 +158,16 @@ public interface AclFileAttributeView
      * existing ACL. The {@link #setAcl setAcl} method is used to update
      * the file's ACL attribute.
      *
-     * @return  an ordered list of {@link AclEntry entries} representing the
-     *          ACL
+     * @return an ordered list of {@link AclEntry entries} representing the
+     * ACL
      *
-     * @throws  IOException
-     *          if an I/O error occurs
-     * @throws  SecurityException
-     *          In the case of the default provider, a security manager is
-     *          installed, and it denies {@link RuntimePermission}<tt>("accessUserInformation")</tt>
-     *          or its {@link SecurityManager#checkRead(String) checkRead} method
-     *          denies read access to the file.
+     * @throws IOException
+     *         if an I/O error occurs
+     * @throws SecurityException
+     *         In the case of the default provider, a security manager is
+     *         installed, and it denies {@link RuntimePermission}<tt>("accessUserInformation")</tt>
+     *         or its {@link SecurityManager#checkRead(String) checkRead} method
+     *         denies read access to the file.
      */
     List<AclEntry> getAcl() throws IOException;
 
@@ -194,16 +194,16 @@ public interface AclFileAttributeView
      * access-permissions} for example), the updating the access control list
      * may also cause these security related attributes to be updated.
      *
-     * @param   acl
-     *          the new access control list
+     * @param acl
+     *         the new access control list
      *
-     * @throws  IOException
-     *          if an I/O error occurs or the ACL is invalid
-     * @throws  SecurityException
-     *          In the case of the default provider, a security manager is
-     *          installed, it denies {@link RuntimePermission}<tt>("accessUserInformation")</tt>
-     *          or its {@link SecurityManager#checkWrite(String) checkWrite}
-     *          method denies write access to the file.
+     * @throws IOException
+     *         if an I/O error occurs or the ACL is invalid
+     * @throws SecurityException
+     *         In the case of the default provider, a security manager is
+     *         installed, it denies {@link RuntimePermission}<tt>("accessUserInformation")</tt>
+     *         or its {@link SecurityManager#checkWrite(String) checkWrite}
+     *         method denies write access to the file.
      */
     void setAcl(List<AclEntry> acl) throws IOException;
 }

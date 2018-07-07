@@ -34,8 +34,8 @@ package java.rmi.server;
  * indicating whether the runtime should attempt to re-create the
  * <code>ServerSocket</code>.
  *
- * @author      Ann Wollrath
- * @since       JDK1.1
+ * @author Ann Wollrath
+ * @since JDK1.1
  */
 public interface RMIFailureHandler {
 
@@ -48,10 +48,13 @@ public interface RMIFailureHandler {
      * handler is installed, the default behavior is to attempt to
      * re-create the ServerSocket.
      *
-     * @param ex the exception that occurred during <code>ServerSocket</code>
-     *           creation
+     * @param ex
+     *         the exception that occurred during <code>ServerSocket</code>
+     *         creation
+     *
      * @return if true, the RMI runtime attempts to retry
      * <code>ServerSocket</code> creation
+     *
      * @see java.rmi.server.RMISocketFactory#setFailureHandler(RMIFailureHandler)
      * @since JDK1.1
      */

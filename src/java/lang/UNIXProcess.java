@@ -34,19 +34,21 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Set;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.security.AccessController;
+
+
 import static java.security.AccessController.doPrivileged;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 
 /**
  * java.lang.Process subclass in the UNIX environment.
@@ -57,25 +59,22 @@ import java.security.PrivilegedExceptionAction;
  * @author Volker Simonis (ported to AIX)
  */
 final class UNIXProcess extends Process {
-    private static final sun.misc.JavaIOFileDescriptorAccess fdAccess
-        = sun.misc.SharedSecrets.getJavaIOFileDescriptorAccess();
+    private static final sun.misc.JavaIOFileDescriptorAccess fdAccess = sun.misc.SharedSecrets.getJavaIOFileDescriptorAccess();
 
     private final int pid;
     private int exitcode;
     private boolean hasExited;
 
     private /* final */ OutputStream stdin;
-    private /* final */ InputStream  stdout;
-    private /* final */ InputStream  stderr;
+    private /* final */ InputStream stdout;
+    private /* final */ InputStream stderr;
 
     // only used on Solaris
     private /* final */ DeferredCloseInputStream stdout_inner_stream;
 
     private static enum LaunchMechanism {
         // order IS important!
-        FORK,
-        POSIX_SPAWN,
-        VFORK
+        FORK, POSIX_SPAWN, VFORK
     }
 
     private static enum Platform {
@@ -91,75 +90,72 @@ final class UNIXProcess extends Process {
         final LaunchMechanism defaultLaunchMechanism;
         final Set<LaunchMechanism> validLaunchMechanisms;
 
-        Platform(LaunchMechanism ... launchMechanisms) {
+        Platform(LaunchMechanism... launchMechanisms) {
             this.defaultLaunchMechanism = launchMechanisms[0];
-            this.validLaunchMechanisms =
-                EnumSet.copyOf(Arrays.asList(launchMechanisms));
+            this.validLaunchMechanisms = EnumSet.copyOf(Arrays.asList(launchMechanisms));
         }
 
         private String helperPath(String javahome, String osArch) {
             switch (this) {
-                case SOLARIS:
-                    if (osArch.equals("x86")) { osArch = "i386"; }
-                    else if (osArch.equals("x86_64")) { osArch = "amd64"; }
-                    // fall through...
-                case LINUX:
-                case AIX:
-                    return javahome + "/lib/" + osArch + "/jspawnhelper";
+            case SOLARIS:
+                if (osArch.equals("x86")) {
+                    osArch = "i386";
+                } else if (osArch.equals("x86_64")) {
+                    osArch = "amd64";
+                }
+                // fall through...
+            case LINUX:
+            case AIX:
+                return javahome + "/lib/" + osArch + "/jspawnhelper";
 
-                case BSD:
-                    return javahome + "/lib/jspawnhelper";
+            case BSD:
+                return javahome + "/lib/jspawnhelper";
 
-                default:
-                    throw new AssertionError("Unsupported platform: " + this);
+            default:
+                throw new AssertionError("Unsupported platform: " + this);
             }
         }
 
         String helperPath() {
-            return AccessController.doPrivileged(
-                (PrivilegedAction<String>) () ->
-                    helperPath(System.getProperty("java.home"),
-                               System.getProperty("os.arch"))
-            );
+            return AccessController.doPrivileged((PrivilegedAction<String>) () -> helperPath(System.getProperty("java.home"), System.getProperty("os.arch")));
         }
 
         LaunchMechanism launchMechanism() {
-            return AccessController.doPrivileged(
-                (PrivilegedAction<LaunchMechanism>) () -> {
-                    String s = System.getProperty(
-                        "jdk.lang.Process.launchMechanism");
-                    LaunchMechanism lm;
-                    if (s == null) {
-                        lm = defaultLaunchMechanism;
-                        s = lm.name().toLowerCase(Locale.ENGLISH);
-                    } else {
-                        try {
-                            lm = LaunchMechanism.valueOf(
-                                s.toUpperCase(Locale.ENGLISH));
-                        } catch (IllegalArgumentException e) {
-                            lm = null;
-                        }
+            return AccessController.doPrivileged((PrivilegedAction<LaunchMechanism>) () -> {
+                String s = System.getProperty("jdk.lang.Process.launchMechanism");
+                LaunchMechanism lm;
+                if (s == null) {
+                    lm = defaultLaunchMechanism;
+                    s = lm.name().toLowerCase(Locale.ENGLISH);
+                } else {
+                    try {
+                        lm = LaunchMechanism.valueOf(s.toUpperCase(Locale.ENGLISH));
+                    } catch (IllegalArgumentException e) {
+                        lm = null;
                     }
-                    if (lm == null || !validLaunchMechanisms.contains(lm)) {
-                        throw new Error(
-                            s + " is not a supported " +
-                            "process launch mechanism on this platform."
-                        );
-                    }
-                    return lm;
                 }
-            );
+                if (lm == null || !validLaunchMechanisms.contains(lm)) {
+                    throw new Error(s + " is not a supported " + "process launch mechanism on this platform.");
+                }
+                return lm;
+            });
         }
 
         static Platform get() {
-            String osName = AccessController.doPrivileged(
-                (PrivilegedAction<String>) () -> System.getProperty("os.name")
-            );
+            String osName = AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty("os.name"));
 
-            if (osName.equals("Linux")) { return LINUX; }
-            if (osName.contains("OS X")) { return BSD; }
-            if (osName.equals("SunOS")) { return SOLARIS; }
-            if (osName.equals("AIX")) { return AIX; }
+            if (osName.equals("Linux")) {
+                return LINUX;
+            }
+            if (osName.contains("OS X")) {
+                return BSD;
+            }
+            if (osName.equals("SunOS")) {
+                return SOLARIS;
+            }
+            if (osName.equals("AIX")) {
+                return AIX;
+            }
 
             throw new Error(osName + " is not a supported OS platform.");
         }
@@ -170,14 +166,13 @@ final class UNIXProcess extends Process {
     private static final byte[] helperpath = toCString(platform.helperPath());
 
     private static byte[] toCString(String s) {
-        if (s == null)
+        if (s == null) {
             return null;
+        }
         byte[] bytes = s.getBytes();
         byte[] result = new byte[bytes.length + 1];
-        System.arraycopy(bytes, 0,
-                         result, 0,
-                         bytes.length);
-        result[result.length-1] = (byte)0;
+        System.arraycopy(bytes, 0, result, 0, bytes.length);
+        result[result.length - 1] = (byte) 0;
         return result;
     }
 
@@ -194,64 +189,50 @@ final class UNIXProcess extends Process {
      *
      *  (4 - clone(2) and exec(2) - obsolete and currently disabled in native code)
      * </pre>
-     * @param fds an array of three file descriptors.
-     *        Indexes 0, 1, and 2 correspond to standard input,
-     *        standard output and standard error, respectively.  On
-     *        input, a value of -1 means to create a pipe to connect
-     *        child and parent processes.  On output, a value which
-     *        is not -1 is the parent pipe fd corresponding to the
-     *        pipe which has been created.  An element of this array
-     *        is -1 on input if and only if it is <em>not</em> -1 on
-     *        output.
+     *
+     * @param fds
+     *         an array of three file descriptors.
+     *         Indexes 0, 1, and 2 correspond to standard input,
+     *         standard output and standard error, respectively.  On
+     *         input, a value of -1 means to create a pipe to connect
+     *         child and parent processes.  On output, a value which
+     *         is not -1 is the parent pipe fd corresponding to the
+     *         pipe which has been created.  An element of this array
+     *         is -1 on input if and only if it is <em>not</em> -1 on
+     *         output.
+     *
      * @return the pid of the subprocess
      */
-    private native int forkAndExec(int mode, byte[] helperpath,
-                                   byte[] prog,
-                                   byte[] argBlock, int argc,
-                                   byte[] envBlock, int envc,
-                                   byte[] dir,
-                                   int[] fds,
-                                   boolean redirectErrorStream)
-        throws IOException;
+    private native int forkAndExec(int mode, byte[] helperpath, byte[] prog, byte[] argBlock, int argc, byte[] envBlock, int envc, byte[] dir, int[] fds,
+            boolean redirectErrorStream) throws IOException;
 
     /**
      * The thread pool of "process reaper" daemon threads.
      */
-    private static final Executor processReaperExecutor =
-        doPrivileged((PrivilegedAction<Executor>) () -> {
+    private static final Executor processReaperExecutor = doPrivileged((PrivilegedAction<Executor>) () -> {
 
-            ThreadGroup tg = Thread.currentThread().getThreadGroup();
-            while (tg.getParent() != null) tg = tg.getParent();
-            ThreadGroup systemThreadGroup = tg;
+        ThreadGroup tg = Thread.currentThread().getThreadGroup();
+        while (tg.getParent() != null) {
+            tg = tg.getParent();
+        }
+        ThreadGroup systemThreadGroup = tg;
 
-            ThreadFactory threadFactory = grimReaper -> {
-                long stackSize = Boolean.getBoolean("jdk.lang.processReaperUseDefaultStackSize") ? 0 : 32768;
-                Thread t = new Thread(systemThreadGroup, grimReaper,"process reaper", stackSize);
-                t.setDaemon(true);
-                // A small attempt (probably futile) to avoid priority inversion
-                t.setPriority(Thread.MAX_PRIORITY);
-                return t;
-            };
+        ThreadFactory threadFactory = grimReaper -> {
+            long stackSize = Boolean.getBoolean("jdk.lang.processReaperUseDefaultStackSize") ? 0 : 32768;
+            Thread t = new Thread(systemThreadGroup, grimReaper, "process reaper", stackSize);
+            t.setDaemon(true);
+            // A small attempt (probably futile) to avoid priority inversion
+            t.setPriority(Thread.MAX_PRIORITY);
+            return t;
+        };
 
-            return Executors.newCachedThreadPool(threadFactory);
-        });
+        return Executors.newCachedThreadPool(threadFactory);
+    });
 
-    UNIXProcess(final byte[] prog,
-                final byte[] argBlock, final int argc,
-                final byte[] envBlock, final int envc,
-                final byte[] dir,
-                final int[] fds,
-                final boolean redirectErrorStream)
-            throws IOException {
+    UNIXProcess(final byte[] prog, final byte[] argBlock, final int argc, final byte[] envBlock, final int envc, final byte[] dir, final int[] fds,
+            final boolean redirectErrorStream) throws IOException {
 
-        pid = forkAndExec(launchMechanism.ordinal() + 1,
-                          helperpath,
-                          prog,
-                          argBlock, argc,
-                          envBlock, envc,
-                          dir,
-                          fds,
-                          redirectErrorStream);
+        pid = forkAndExec(launchMechanism.ordinal() + 1, helperpath, prog, argBlock, argc, envBlock, envc, dir, fds, redirectErrorStream);
 
         try {
             doPrivileged((PrivilegedExceptionAction<Void>) () -> {
@@ -271,110 +252,97 @@ final class UNIXProcess extends Process {
 
     void initStreams(int[] fds) throws IOException {
         switch (platform) {
-            case LINUX:
-            case BSD:
-                stdin = (fds[0] == -1) ?
-                        ProcessBuilder.NullOutputStream.INSTANCE :
-                        new ProcessPipeOutputStream(fds[0]);
+        case LINUX:
+        case BSD:
+            stdin = (fds[0] == -1) ? ProcessBuilder.NullOutputStream.INSTANCE : new ProcessPipeOutputStream(fds[0]);
 
-                stdout = (fds[1] == -1) ?
-                         ProcessBuilder.NullInputStream.INSTANCE :
-                         new ProcessPipeInputStream(fds[1]);
+            stdout = (fds[1] == -1) ? ProcessBuilder.NullInputStream.INSTANCE : new ProcessPipeInputStream(fds[1]);
 
-                stderr = (fds[2] == -1) ?
-                         ProcessBuilder.NullInputStream.INSTANCE :
-                         new ProcessPipeInputStream(fds[2]);
+            stderr = (fds[2] == -1) ? ProcessBuilder.NullInputStream.INSTANCE : new ProcessPipeInputStream(fds[2]);
 
-                processReaperExecutor.execute(() -> {
-                    int exitcode = waitForProcessExit(pid);
+            processReaperExecutor.execute(() -> {
+                int exitcode = waitForProcessExit(pid);
 
-                    synchronized (this) {
-                        this.exitcode = exitcode;
-                        this.hasExited = true;
-                        this.notifyAll();
-                    }
+                synchronized (this) {
+                    this.exitcode = exitcode;
+                    this.hasExited = true;
+                    this.notifyAll();
+                }
 
-                    if (stdout instanceof ProcessPipeInputStream)
-                        ((ProcessPipeInputStream) stdout).processExited();
+                if (stdout instanceof ProcessPipeInputStream) {
+                    ((ProcessPipeInputStream) stdout).processExited();
+                }
 
-                    if (stderr instanceof ProcessPipeInputStream)
-                        ((ProcessPipeInputStream) stderr).processExited();
+                if (stderr instanceof ProcessPipeInputStream) {
+                    ((ProcessPipeInputStream) stderr).processExited();
+                }
 
-                    if (stdin instanceof ProcessPipeOutputStream)
-                        ((ProcessPipeOutputStream) stdin).processExited();
-                });
-                break;
+                if (stdin instanceof ProcessPipeOutputStream) {
+                    ((ProcessPipeOutputStream) stdin).processExited();
+                }
+            });
+            break;
 
-            case SOLARIS:
-                stdin = (fds[0] == -1) ?
-                        ProcessBuilder.NullOutputStream.INSTANCE :
-                        new BufferedOutputStream(
-                            new FileOutputStream(newFileDescriptor(fds[0])));
+        case SOLARIS:
+            stdin = (fds[0] == -1) ? ProcessBuilder.NullOutputStream.INSTANCE : new BufferedOutputStream(new FileOutputStream(newFileDescriptor(fds[0])));
 
-                stdout = (fds[1] == -1) ?
-                         ProcessBuilder.NullInputStream.INSTANCE :
-                         new BufferedInputStream(
-                             stdout_inner_stream =
-                                 new DeferredCloseInputStream(
-                                     newFileDescriptor(fds[1])));
+            stdout = (fds[1] == -1) ?
+                    ProcessBuilder.NullInputStream.INSTANCE :
+                    new BufferedInputStream(stdout_inner_stream = new DeferredCloseInputStream(newFileDescriptor(fds[1])));
 
-                stderr = (fds[2] == -1) ?
-                         ProcessBuilder.NullInputStream.INSTANCE :
-                         new DeferredCloseInputStream(newFileDescriptor(fds[2]));
+            stderr = (fds[2] == -1) ? ProcessBuilder.NullInputStream.INSTANCE : new DeferredCloseInputStream(newFileDescriptor(fds[2]));
 
-                /*
-                 * For each subprocess forked a corresponding reaper task
-                 * is submitted.  That task is the only thread which waits
-                 * for the subprocess to terminate and it doesn't hold any
-                 * locks while doing so.  This design allows waitFor() and
-                 * exitStatus() to be safely executed in parallel (and they
-                 * need no native code).
-                 */
-                processReaperExecutor.execute(() -> {
-                    int exitcode = waitForProcessExit(pid);
+            /*
+             * For each subprocess forked a corresponding reaper task
+             * is submitted.  That task is the only thread which waits
+             * for the subprocess to terminate and it doesn't hold any
+             * locks while doing so.  This design allows waitFor() and
+             * exitStatus() to be safely executed in parallel (and they
+             * need no native code).
+             */
+            processReaperExecutor.execute(() -> {
+                int exitcode = waitForProcessExit(pid);
 
-                    synchronized (this) {
-                        this.exitcode = exitcode;
-                        this.hasExited = true;
-                        this.notifyAll();
-                    }
-                });
-                break;
+                synchronized (this) {
+                    this.exitcode = exitcode;
+                    this.hasExited = true;
+                    this.notifyAll();
+                }
+            });
+            break;
 
-            case AIX:
-                stdin = (fds[0] == -1) ?
-                        ProcessBuilder.NullOutputStream.INSTANCE :
-                        new ProcessPipeOutputStream(fds[0]);
+        case AIX:
+            stdin = (fds[0] == -1) ? ProcessBuilder.NullOutputStream.INSTANCE : new ProcessPipeOutputStream(fds[0]);
 
-                stdout = (fds[1] == -1) ?
-                         ProcessBuilder.NullInputStream.INSTANCE :
-                         new DeferredCloseProcessPipeInputStream(fds[1]);
+            stdout = (fds[1] == -1) ? ProcessBuilder.NullInputStream.INSTANCE : new DeferredCloseProcessPipeInputStream(fds[1]);
 
-                stderr = (fds[2] == -1) ?
-                         ProcessBuilder.NullInputStream.INSTANCE :
-                         new DeferredCloseProcessPipeInputStream(fds[2]);
+            stderr = (fds[2] == -1) ? ProcessBuilder.NullInputStream.INSTANCE : new DeferredCloseProcessPipeInputStream(fds[2]);
 
-                processReaperExecutor.execute(() -> {
-                    int exitcode = waitForProcessExit(pid);
+            processReaperExecutor.execute(() -> {
+                int exitcode = waitForProcessExit(pid);
 
-                    synchronized (this) {
-                        this.exitcode = exitcode;
-                        this.hasExited = true;
-                        this.notifyAll();
-                    }
+                synchronized (this) {
+                    this.exitcode = exitcode;
+                    this.hasExited = true;
+                    this.notifyAll();
+                }
 
-                    if (stdout instanceof DeferredCloseProcessPipeInputStream)
-                        ((DeferredCloseProcessPipeInputStream) stdout).processExited();
+                if (stdout instanceof DeferredCloseProcessPipeInputStream) {
+                    ((DeferredCloseProcessPipeInputStream) stdout).processExited();
+                }
 
-                    if (stderr instanceof DeferredCloseProcessPipeInputStream)
-                        ((DeferredCloseProcessPipeInputStream) stderr).processExited();
+                if (stderr instanceof DeferredCloseProcessPipeInputStream) {
+                    ((DeferredCloseProcessPipeInputStream) stderr).processExited();
+                }
 
-                    if (stdin instanceof ProcessPipeOutputStream)
-                        ((ProcessPipeOutputStream) stdin).processExited();
-                });
-                break;
+                if (stdin instanceof ProcessPipeOutputStream) {
+                    ((ProcessPipeOutputStream) stdin).processExited();
+                }
+            });
+            break;
 
-            default: throw new AssertionError("Unsupported platform: " + platform);
+        default:
+            throw new AssertionError("Unsupported platform: " + platform);
         }
     }
 
@@ -398,11 +366,13 @@ final class UNIXProcess extends Process {
     }
 
     @Override
-    public synchronized boolean waitFor(long timeout, TimeUnit unit)
-        throws InterruptedException
-    {
-        if (hasExited) return true;
-        if (timeout <= 0) return false;
+    public synchronized boolean waitFor(long timeout, TimeUnit unit) throws InterruptedException {
+        if (hasExited) {
+            return true;
+        }
+        if (timeout <= 0) {
+            return false;
+        }
 
         long remainingNanos = unit.toNanos(timeout);
         long deadline = System.nanoTime() + remainingNanos;
@@ -429,48 +399,61 @@ final class UNIXProcess extends Process {
 
     private void destroy(boolean force) {
         switch (platform) {
-            case LINUX:
-            case BSD:
-            case AIX:
-                // There is a risk that pid will be recycled, causing us to
-                // kill the wrong process!  So we only terminate processes
-                // that appear to still be running.  Even with this check,
-                // there is an unavoidable race condition here, but the window
-                // is very small, and OSes try hard to not recycle pids too
-                // soon, so this is quite safe.
-                synchronized (this) {
-                    if (!hasExited)
-                        destroyProcess(pid, force);
+        case LINUX:
+        case BSD:
+        case AIX:
+            // There is a risk that pid will be recycled, causing us to
+            // kill the wrong process!  So we only terminate processes
+            // that appear to still be running.  Even with this check,
+            // there is an unavoidable race condition here, but the window
+            // is very small, and OSes try hard to not recycle pids too
+            // soon, so this is quite safe.
+            synchronized (this) {
+                if (!hasExited) {
+                    destroyProcess(pid, force);
                 }
-                try { stdin.close();  } catch (IOException ignored) {}
-                try { stdout.close(); } catch (IOException ignored) {}
-                try { stderr.close(); } catch (IOException ignored) {}
-                break;
+            }
+            try {
+                stdin.close();
+            } catch (IOException ignored) {
+            }
+            try {
+                stdout.close();
+            } catch (IOException ignored) {
+            }
+            try {
+                stderr.close();
+            } catch (IOException ignored) {
+            }
+            break;
 
-            case SOLARIS:
-                // There is a risk that pid will be recycled, causing us to
-                // kill the wrong process!  So we only terminate processes
-                // that appear to still be running.  Even with this check,
-                // there is an unavoidable race condition here, but the window
-                // is very small, and OSes try hard to not recycle pids too
-                // soon, so this is quite safe.
-                synchronized (this) {
-                    if (!hasExited)
-                        destroyProcess(pid, force);
-                    try {
-                        stdin.close();
-                        if (stdout_inner_stream != null)
-                            stdout_inner_stream.closeDeferred(stdout);
-                        if (stderr instanceof DeferredCloseInputStream)
-                            ((DeferredCloseInputStream) stderr)
-                                .closeDeferred(stderr);
-                    } catch (IOException e) {
-                        // ignore
+        case SOLARIS:
+            // There is a risk that pid will be recycled, causing us to
+            // kill the wrong process!  So we only terminate processes
+            // that appear to still be running.  Even with this check,
+            // there is an unavoidable race condition here, but the window
+            // is very small, and OSes try hard to not recycle pids too
+            // soon, so this is quite safe.
+            synchronized (this) {
+                if (!hasExited) {
+                    destroyProcess(pid, force);
+                }
+                try {
+                    stdin.close();
+                    if (stdout_inner_stream != null) {
+                        stdout_inner_stream.closeDeferred(stdout);
                     }
+                    if (stderr instanceof DeferredCloseInputStream) {
+                        ((DeferredCloseInputStream) stderr).closeDeferred(stderr);
+                    }
+                } catch (IOException e) {
+                    // ignore
                 }
-                break;
+            }
+            break;
 
-            default: throw new AssertionError("Unsupported platform: " + platform);
+        default:
+            throw new AssertionError("Unsupported platform: " + platform);
         }
     }
 
@@ -510,8 +493,8 @@ final class UNIXProcess extends Process {
         ProcessPipeInputStream(int fd) {
             super(new FileInputStream(newFileDescriptor(fd)));
         }
-        private static byte[] drainInputStream(InputStream in)
-                throws IOException {
+
+        private static byte[] drainInputStream(InputStream in) throws IOException {
             int n = 0;
             int j;
             byte[] a = null;
@@ -531,11 +514,10 @@ final class UNIXProcess extends Process {
                     if (in != null) {
                         byte[] stragglers = drainInputStream(in);
                         in.close();
-                        this.in = (stragglers == null) ?
-                            ProcessBuilder.NullInputStream.INSTANCE :
-                            new ByteArrayInputStream(stragglers);
+                        this.in = (stragglers == null) ? ProcessBuilder.NullInputStream.INSTANCE : new ByteArrayInputStream(stragglers);
                     }
-                } catch (IOException ignored) {}
+                } catch (IOException ignored) {
+                }
             }
         }
 
@@ -584,8 +566,7 @@ final class UNIXProcess extends Process {
     // behavior.  By deferring the close we allow any pending reads to see -1
     // (EOF) as they did before.
     //
-    private static class DeferredCloseInputStream extends FileInputStream
-    {
+    private static class DeferredCloseInputStream extends FileInputStream {
         DeferredCloseInputStream(FileDescriptor fd) {
             super(fd);
         }
@@ -697,10 +678,8 @@ final class UNIXProcess extends Process {
      * finishes. The 'close()' operation will only be executed if there are
      * no pending operations. Otherwise it is deferred after the last pending
      * operation has finished.
-     *
      */
-    private static class DeferredCloseProcessPipeInputStream
-        extends BufferedInputStream {
+    private static class DeferredCloseProcessPipeInputStream extends BufferedInputStream {
 
         private final Object closeLock = new Object();
         private int useCount = 0;
@@ -710,28 +689,29 @@ final class UNIXProcess extends Process {
             super(new FileInputStream(newFileDescriptor(fd)));
         }
 
-        private InputStream drainInputStream(InputStream in)
-                throws IOException {
+        private InputStream drainInputStream(InputStream in) throws IOException {
             int n = 0;
             int j;
             byte[] a = null;
             synchronized (closeLock) {
                 if (buf == null) // asynchronous close()?
+                {
                     return null; // discard
+                }
                 j = in.available();
             }
             while (j > 0) {
                 a = (a == null) ? new byte[j] : Arrays.copyOf(a, n + j);
                 synchronized (closeLock) {
                     if (buf == null) // asynchronous close()?
+                    {
                         return null; // discard
+                    }
                     n += in.read(a, n, j);
                     j = in.available();
                 }
             }
-            return (a == null) ?
-                    ProcessBuilder.NullInputStream.INSTANCE :
-                    new ByteArrayInputStream(n == a.length ? a : Arrays.copyOf(a, n));
+            return (a == null) ? ProcessBuilder.NullInputStream.INSTANCE : new ByteArrayInputStream(n == a.length ? a : Arrays.copyOf(a, n));
         }
 
         /** Called by the process reaper thread when the process exits. */
@@ -743,7 +723,8 @@ final class UNIXProcess extends Process {
                     in.close();
                     this.in = stragglers;
                 }
-            } catch (IOException ignored) { }
+            } catch (IOException ignored) {
+            }
         }
 
         private void raise() {
@@ -819,8 +800,7 @@ final class UNIXProcess extends Process {
             synchronized (closeLock) {
                 if (useCount == 0) {
                     super.close();
-                }
-                else {
+                } else {
                     closePending = true;
                 }
             }

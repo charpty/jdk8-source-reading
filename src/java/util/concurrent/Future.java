@@ -75,7 +75,7 @@ package java.util.concurrent;
  * The {@link FutureTask} class is an implementation of {@code Future} that
  * implements {@code Runnable}, and so may be executed by an {@code Executor}.
  * For example, the above construction with {@code submit} could be replaced by:
- *  <pre> {@code
+ * <pre> {@code
  * FutureTask<String> future =
  *   new FutureTask<String>(new Callable<String>() {
  *     public String call() {
@@ -87,11 +87,13 @@ package java.util.concurrent;
  * <a href="package-summary.html#MemoryVisibility"> <i>happen-before</i></a>
  * actions following the corresponding {@code Future.get()} in another thread.
  *
+ * @param <V>
+ *         The result type returned by this Future's {@code get} method
+ *
+ * @author Doug Lea
  * @see FutureTask
  * @see Executor
  * @since 1.5
- * @author Doug Lea
- * @param <V> The result type returned by this Future's {@code get} method
  */
 public interface Future<V> {
 
@@ -109,9 +111,11 @@ public interface Future<V> {
      * always return {@code true}.  Subsequent calls to {@link #isCancelled}
      * will always return {@code true} if this method returned {@code true}.
      *
-     * @param mayInterruptIfRunning {@code true} if the thread executing this
-     * task should be interrupted; otherwise, in-progress tasks are allowed
-     * to complete
+     * @param mayInterruptIfRunning
+     *         {@code true} if the thread executing this
+     *         task should be interrupted; otherwise, in-progress tasks are allowed
+     *         to complete
+     *
      * @return {@code false} if the task could not be cancelled,
      * typically because it has already completed normally;
      * {@code true} otherwise
@@ -142,11 +146,15 @@ public interface Future<V> {
      * retrieves its result.
      *
      * @return the computed result
-     * @throws CancellationException if the computation was cancelled
-     * @throws ExecutionException if the computation threw an
-     * exception
-     * @throws InterruptedException if the current thread was interrupted
-     * while waiting
+     *
+     * @throws CancellationException
+     *         if the computation was cancelled
+     * @throws ExecutionException
+     *         if the computation threw an
+     *         exception
+     * @throws InterruptedException
+     *         if the current thread was interrupted
+     *         while waiting
      */
     V get() throws InterruptedException, ExecutionException;
 
@@ -154,16 +162,23 @@ public interface Future<V> {
      * Waits if necessary for at most the given time for the computation
      * to complete, and then retrieves its result, if available.
      *
-     * @param timeout the maximum time to wait
-     * @param unit the time unit of the timeout argument
+     * @param timeout
+     *         the maximum time to wait
+     * @param unit
+     *         the time unit of the timeout argument
+     *
      * @return the computed result
-     * @throws CancellationException if the computation was cancelled
-     * @throws ExecutionException if the computation threw an
-     * exception
-     * @throws InterruptedException if the current thread was interrupted
-     * while waiting
-     * @throws TimeoutException if the wait timed out
+     *
+     * @throws CancellationException
+     *         if the computation was cancelled
+     * @throws ExecutionException
+     *         if the computation threw an
+     *         exception
+     * @throws InterruptedException
+     *         if the current thread was interrupted
+     *         while waiting
+     * @throws TimeoutException
+     *         if the wait timed out
      */
-    V get(long timeout, TimeUnit unit)
-        throws InterruptedException, ExecutionException, TimeoutException;
+    V get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException;
 }

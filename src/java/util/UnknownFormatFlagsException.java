@@ -43,19 +43,20 @@ public class UnknownFormatFlagsException extends IllegalFormatException {
     /**
      * Constructs an instance of this class with the specified flags.
      *
-     * @param  f
+     * @param f
      *         The set of format flags which contain an unknown flag
      */
     public UnknownFormatFlagsException(String f) {
-        if (f == null)
+        if (f == null) {
             throw new NullPointerException();
+        }
         this.flags = f;
     }
 
     /**
      * Returns the set of flags which contains an unknown flag.
      *
-     * @return  The flags
+     * @return The flags
      */
     public String getFlags() {
         return flags;

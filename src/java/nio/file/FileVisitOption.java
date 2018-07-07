@@ -28,9 +28,8 @@ package java.nio.file;
 /**
  * Defines the file tree traversal options.
  *
- * @since 1.7
- *
  * @see Files#walkFileTree
+ * @since 1.7
  */
 
 public enum FileVisitOption {

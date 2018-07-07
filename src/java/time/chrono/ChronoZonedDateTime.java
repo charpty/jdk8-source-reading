@@ -61,11 +61,6 @@
  */
 package java.time.chrono;
 
-import static java.time.temporal.ChronoField.INSTANT_SECONDS;
-import static java.time.temporal.ChronoField.OFFSET_SECONDS;
-import static java.time.temporal.ChronoUnit.FOREVER;
-import static java.time.temporal.ChronoUnit.NANOS;
-
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalTime;
@@ -87,6 +82,12 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Comparator;
 import java.util.Objects;
+
+
+import static java.time.temporal.ChronoField.INSTANT_SECONDS;
+import static java.time.temporal.ChronoField.OFFSET_SECONDS;
+import static java.time.temporal.ChronoUnit.FOREVER;
+import static java.time.temporal.ChronoUnit.NANOS;
 
 /**
  * A date-time with a time-zone in an arbitrary chronology,
@@ -110,16 +111,12 @@ import java.util.Objects;
  * Ensure that the discussion in {@code ChronoLocalDate} has been read and understood
  * before using this interface.
  *
- * @implSpec
- * This interface must be implemented with care to ensure other classes operate correctly.
- * All implementations that can be instantiated must be final, immutable and thread-safe.
- * Subclasses should be Serializable wherever possible.
+ * @param <D>
+ *         the concrete type for the date of this date-time
  *
- * @param <D> the concrete type for the date of this date-time
  * @since 1.8
  */
-public interface ChronoZonedDateTime<D extends ChronoLocalDate>
-        extends Temporal, Comparable<ChronoZonedDateTime<?>> {
+public interface ChronoZonedDateTime<D extends ChronoLocalDate> extends Temporal, Comparable<ChronoZonedDateTime<?>> {
 
     /**
      * Gets a comparator that compares {@code ChronoZonedDateTime} in
@@ -132,6 +129,7 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
      * The underlying comparison is equivalent to comparing the epoch-second and nano-of-second.
      *
      * @return a comparator that compares in time-line order ignoring the chronology
+     *
      * @see #isAfter
      * @see #isBefore
      * @see #isEqual
@@ -141,6 +139,7 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code ChronoZonedDateTime} from a temporal object.
      * <p>
@@ -157,9 +156,13 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
      * This method matches the signature of the functional interface {@link TemporalQuery}
      * allowing it to be used as a query via method reference, {@code ChronoZonedDateTime::from}.
      *
-     * @param temporal  the temporal object to convert, not null
+     * @param temporal
+     *         the temporal object to convert, not null
+     *
      * @return the date-time, not null
-     * @throws DateTimeException if unable to convert to a {@code ChronoZonedDateTime}
+     *
+     * @throws DateTimeException
+     *         if unable to convert to a {@code ChronoZonedDateTime}
      * @see Chronology#zonedDateTime(TemporalAccessor)
      */
     static ChronoZonedDateTime<?> from(TemporalAccessor temporal) {
@@ -190,10 +193,10 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
     default int get(TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
-                case INSTANT_SECONDS:
-                    throw new UnsupportedTemporalTypeException("Invalid field 'InstantSeconds' for get() method, use getLong() instead");
-                case OFFSET_SECONDS:
-                    return getOffset().getTotalSeconds();
+            case INSTANT_SECONDS:
+                throw new UnsupportedTemporalTypeException("Invalid field 'InstantSeconds' for get() method, use getLong() instead");
+            case OFFSET_SECONDS:
+                return getOffset().getTotalSeconds();
             }
             return toLocalDateTime().get(field);
         }
@@ -204,8 +207,10 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
     default long getLong(TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
-                case INSTANT_SECONDS: return toEpochSecond();
-                case OFFSET_SECONDS: return getOffset().getTotalSeconds();
+            case INSTANT_SECONDS:
+                return toEpochSecond();
+            case OFFSET_SECONDS:
+                return getOffset().getTotalSeconds();
             }
             return toLocalDateTime().getLong(field);
         }
@@ -277,6 +282,7 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
     ZoneId getZone();
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns a copy of this date-time changing the zone offset to the
      * earlier of the two valid offsets at a local time-line overlap.
@@ -292,8 +298,11 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
      * This instance is immutable and unaffected by this method call.
      *
      * @return a {@code ChronoZonedDateTime} based on this date-time with the earlier offset, not null
-     * @throws DateTimeException if no rules can be found for the zone
-     * @throws DateTimeException if no rules are valid for this date-time
+     *
+     * @throws DateTimeException
+     *         if no rules can be found for the zone
+     * @throws DateTimeException
+     *         if no rules are valid for this date-time
      */
     ChronoZonedDateTime<D> withEarlierOffsetAtOverlap();
 
@@ -312,8 +321,11 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
      * This instance is immutable and unaffected by this method call.
      *
      * @return a {@code ChronoZonedDateTime} based on this date-time with the later offset, not null
-     * @throws DateTimeException if no rules can be found for the zone
-     * @throws DateTimeException if no rules are valid for this date-time
+     *
+     * @throws DateTimeException
+     *         if no rules can be found for the zone
+     * @throws DateTimeException
+     *         if no rules are valid for this date-time
      */
     ChronoZonedDateTime<D> withLaterOffsetAtOverlap();
 
@@ -329,7 +341,9 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param zone  the time-zone to change to, not null
+     * @param zone
+     *         the time-zone to change to, not null
+     *
      * @return a {@code ChronoZonedDateTime} based on this date-time with the requested zone, not null
      */
     ChronoZonedDateTime<D> withZoneSameLocal(ZoneId zone);
@@ -347,9 +361,13 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
      * To change the offset while keeping the local time,
      * use {@link #withZoneSameLocal(ZoneId)}.
      *
-     * @param zone  the time-zone to change to, not null
+     * @param zone
+     *         the time-zone to change to, not null
+     *
      * @return a {@code ChronoZonedDateTime} based on this date-time with the requested zone, not null
-     * @throws DateTimeException if the result exceeds the supported date range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported date range
      */
     ChronoZonedDateTime<D> withZoneSameInstant(ZoneId zone);
 
@@ -369,7 +387,9 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
      * passing {@code this} as the argument.
      * Whether the field is supported is determined by the field.
      *
-     * @param field  the field to check, null returns false
+     * @param field
+     *         the field to check, null returns false
+     *
      * @return true if the field can be queried, false if not
      */
     @Override
@@ -390,7 +410,9 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
      * passing {@code this} as the argument.
      * Whether the unit is supported is determined by the unit.
      *
-     * @param unit  the unit to check, null returns false
+     * @param unit
+     *         the unit to check, null returns false
+     *
      * @return true if the unit can be added/subtracted, false if not
      */
     @Override
@@ -403,10 +425,14 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
 
     //-----------------------------------------------------------------------
     // override for covariant return type
+
     /**
      * {@inheritDoc}
-     * @throws DateTimeException {@inheritDoc}
-     * @throws ArithmeticException {@inheritDoc}
+     *
+     * @throws DateTimeException
+     *         {@inheritDoc}
+     * @throws ArithmeticException
+     *         {@inheritDoc}
      */
     @Override
     default ChronoZonedDateTime<D> with(TemporalAdjuster adjuster) {
@@ -415,16 +441,22 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
 
     /**
      * {@inheritDoc}
-     * @throws DateTimeException {@inheritDoc}
-     * @throws ArithmeticException {@inheritDoc}
+     *
+     * @throws DateTimeException
+     *         {@inheritDoc}
+     * @throws ArithmeticException
+     *         {@inheritDoc}
      */
     @Override
     ChronoZonedDateTime<D> with(TemporalField field, long newValue);
 
     /**
      * {@inheritDoc}
-     * @throws DateTimeException {@inheritDoc}
-     * @throws ArithmeticException {@inheritDoc}
+     *
+     * @throws DateTimeException
+     *         {@inheritDoc}
+     * @throws ArithmeticException
+     *         {@inheritDoc}
      */
     @Override
     default ChronoZonedDateTime<D> plus(TemporalAmount amount) {
@@ -433,16 +465,22 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
 
     /**
      * {@inheritDoc}
-     * @throws DateTimeException {@inheritDoc}
-     * @throws ArithmeticException {@inheritDoc}
+     *
+     * @throws DateTimeException
+     *         {@inheritDoc}
+     * @throws ArithmeticException
+     *         {@inheritDoc}
      */
     @Override
     ChronoZonedDateTime<D> plus(long amountToAdd, TemporalUnit unit);
 
     /**
      * {@inheritDoc}
-     * @throws DateTimeException {@inheritDoc}
-     * @throws ArithmeticException {@inheritDoc}
+     *
+     * @throws DateTimeException
+     *         {@inheritDoc}
+     * @throws ArithmeticException
+     *         {@inheritDoc}
      */
     @Override
     default ChronoZonedDateTime<D> minus(TemporalAmount amount) {
@@ -451,8 +489,11 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
 
     /**
      * {@inheritDoc}
-     * @throws DateTimeException {@inheritDoc}
-     * @throws ArithmeticException {@inheritDoc}
+     *
+     * @throws DateTimeException
+     *         {@inheritDoc}
+     * @throws ArithmeticException
+     *         {@inheritDoc}
      */
     @Override
     default ChronoZonedDateTime<D> minus(long amountToSubtract, TemporalUnit unit) {
@@ -460,6 +501,7 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Queries this date-time using the specified query.
      * <p>
@@ -472,11 +514,17 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
      * {@link TemporalQuery#queryFrom(TemporalAccessor)} method on the
      * specified query passing {@code this} as the argument.
      *
-     * @param <R> the type of the result
-     * @param query  the query to invoke, not null
+     * @param <R>
+     *         the type of the result
+     * @param query
+     *         the query to invoke, not null
+     *
      * @return the query result, null may be returned (defined by the query)
-     * @throws DateTimeException if unable to query (defined by the query)
-     * @throws ArithmeticException if numeric overflow occurs (defined by the query)
+     *
+     * @throws DateTimeException
+     *         if unable to query (defined by the query)
+     * @throws ArithmeticException
+     *         if numeric overflow occurs (defined by the query)
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -507,9 +555,13 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
      *  return formatter.format(this);
      * </pre>
      *
-     * @param formatter  the formatter to use, not null
+     * @param formatter
+     *         the formatter to use, not null
+     *
      * @return the formatted date-time string, not null
-     * @throws DateTimeException if an error occurs during printing
+     *
+     * @throws DateTimeException
+     *         if an error occurs during printing
      */
     default String format(DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
@@ -517,6 +569,7 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Converts this date-time to an {@code Instant}.
      * <p>
@@ -550,6 +603,7 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Compares this date-time to another date-time, including the chronology.
      * <p>
@@ -562,7 +616,9 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
      * <p>
      * This default implementation performs the comparison defined above.
      *
-     * @param other  the other date-time to compare to, not null
+     * @param other
+     *         the other date-time to compare to, not null
+     *
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
@@ -593,14 +649,15 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
      * This default implementation performs the comparison based on the epoch-second
      * and nano-of-second.
      *
-     * @param other  the other date-time to compare to, not null
+     * @param other
+     *         the other date-time to compare to, not null
+     *
      * @return true if this point is before the specified date-time
      */
     default boolean isBefore(ChronoZonedDateTime<?> other) {
         long thisEpochSec = toEpochSecond();
         long otherEpochSec = other.toEpochSecond();
-        return thisEpochSec < otherEpochSec ||
-            (thisEpochSec == otherEpochSec && toLocalTime().getNano() < other.toLocalTime().getNano());
+        return thisEpochSec < otherEpochSec || (thisEpochSec == otherEpochSec && toLocalTime().getNano() < other.toLocalTime().getNano());
     }
 
     /**
@@ -613,14 +670,15 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
      * This default implementation performs the comparison based on the epoch-second
      * and nano-of-second.
      *
-     * @param other  the other date-time to compare to, not null
+     * @param other
+     *         the other date-time to compare to, not null
+     *
      * @return true if this is after the specified date-time
      */
     default boolean isAfter(ChronoZonedDateTime<?> other) {
         long thisEpochSec = toEpochSecond();
         long otherEpochSec = other.toEpochSecond();
-        return thisEpochSec > otherEpochSec ||
-            (thisEpochSec == otherEpochSec && toLocalTime().getNano() > other.toLocalTime().getNano());
+        return thisEpochSec > otherEpochSec || (thisEpochSec == otherEpochSec && toLocalTime().getNano() > other.toLocalTime().getNano());
     }
 
     /**
@@ -633,15 +691,17 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
      * This default implementation performs the comparison based on the epoch-second
      * and nano-of-second.
      *
-     * @param other  the other date-time to compare to, not null
+     * @param other
+     *         the other date-time to compare to, not null
+     *
      * @return true if the instant equals the instant of the specified date-time
      */
     default boolean isEqual(ChronoZonedDateTime<?> other) {
-        return toEpochSecond() == other.toEpochSecond() &&
-                toLocalTime().getNano() == other.toLocalTime().getNano();
+        return toEpochSecond() == other.toEpochSecond() && toLocalTime().getNano() == other.toLocalTime().getNano();
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks if this date-time is equal to another date-time.
      * <p>
@@ -649,7 +709,9 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
      * To compare for the same instant on the time-line, use {@link #compareTo}.
      * Only objects of type {@code ChronoZonedDateTime} are compared, other types return false.
      *
-     * @param obj  the object to check, null returns false
+     * @param obj
+     *         the object to check, null returns false
+     *
      * @return true if this is equal to the other date-time
      */
     @Override
@@ -664,6 +726,7 @@ public interface ChronoZonedDateTime<D extends ChronoLocalDate>
     int hashCode();
 
     //-----------------------------------------------------------------------
+
     /**
      * Outputs this date-time as a {@code String}.
      * <p>

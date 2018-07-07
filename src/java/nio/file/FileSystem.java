@@ -25,11 +25,13 @@
 
 package java.nio.file;
 
-import java.nio.file.attribute.*;
-import java.nio.file.spi.FileSystemProvider;
-import java.util.Set;
 import java.io.Closeable;
 import java.io.IOException;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.FileAttributeView;
+import java.nio.file.attribute.UserPrincipalLookupService;
+import java.nio.file.spi.FileSystemProvider;
+import java.util.Set;
 
 /**
  * Provides an interface to a file system and is the factory for objects to
@@ -44,20 +46,20 @@ import java.io.IOException;
  * <p> A file system is the factory for several types of objects:
  *
  * <ul>
- *   <li><p> The {@link #getPath getPath} method converts a system dependent
- *     <em>path string</em>, returning a {@link Path} object that may be used
- *     to locate and access a file. </p></li>
- *   <li><p> The {@link #getPathMatcher  getPathMatcher} method is used
- *     to create a {@link PathMatcher} that performs match operations on
- *     paths. </p></li>
- *   <li><p> The {@link #getFileStores getFileStores} method returns an iterator
- *     over the underlying {@link FileStore file-stores}. </p></li>
- *   <li><p> The {@link #getUserPrincipalLookupService getUserPrincipalLookupService}
- *     method returns the {@link UserPrincipalLookupService} to lookup users or
- *     groups by name. </p></li>
- *   <li><p> The {@link #newWatchService newWatchService} method creates a
- *     {@link WatchService} that may be used to watch objects for changes and
- *     events. </p></li>
+ * <li><p> The {@link #getPath getPath} method converts a system dependent
+ * <em>path string</em>, returning a {@link Path} object that may be used
+ * to locate and access a file. </p></li>
+ * <li><p> The {@link #getPathMatcher  getPathMatcher} method is used
+ * to create a {@link PathMatcher} that performs match operations on
+ * paths. </p></li>
+ * <li><p> The {@link #getFileStores getFileStores} method returns an iterator
+ * over the underlying {@link FileStore file-stores}. </p></li>
+ * <li><p> The {@link #getUserPrincipalLookupService getUserPrincipalLookupService}
+ * method returns the {@link UserPrincipalLookupService} to lookup users or
+ * groups by name. </p></li>
+ * <li><p> The {@link #newWatchService newWatchService} method creates a
+ * {@link WatchService} that may be used to watch objects for changes and
+ * events. </p></li>
  * </ul>
  *
  * <p> File systems vary greatly. In some cases the file system is a single
@@ -95,9 +97,7 @@ import java.io.IOException;
  * @since 1.7
  */
 
-public abstract class FileSystem
-    implements Closeable
-{
+public abstract class FileSystem implements Closeable {
     /**
      * Initializes a new instance of this class.
      */
@@ -107,7 +107,7 @@ public abstract class FileSystem
     /**
      * Returns the provider that created this file system.
      *
-     * @return  The provider that created this file system.
+     * @return The provider that created this file system.
      */
     public abstract FileSystemProvider provider();
 
@@ -125,10 +125,10 @@ public abstract class FileSystem
      * with this file system. The {@link FileSystems#getDefault default} file
      * system cannot be closed.
      *
-     * @throws  IOException
-     *          If an I/O error occurs
-     * @throws  UnsupportedOperationException
-     *          Thrown in the case of the default file system
+     * @throws IOException
+     *         If an I/O error occurs
+     * @throws UnsupportedOperationException
+     *         Thrown in the case of the default file system
      */
     @Override
     public abstract void close() throws IOException;
@@ -138,7 +138,7 @@ public abstract class FileSystem
      *
      * <p> File systems created by the default provider are always open.
      *
-     * @return  {@code true} if, and only if, this file system is open
+     * @return {@code true} if, and only if, this file system is open
      */
     public abstract boolean isOpen();
 
@@ -146,8 +146,8 @@ public abstract class FileSystem
      * Tells whether or not this file system allows only read-only access to
      * its file stores.
      *
-     * @return  {@code true} if, and only if, this file system provides
-     *          read-only access
+     * @return {@code true} if, and only if, this file system provides
+     * read-only access
      */
     public abstract boolean isReadOnly();
 
@@ -163,7 +163,7 @@ public abstract class FileSystem
      * <p> In the case of the default provider, this method returns the same
      * separator as {@link java.io.File#separator}.
      *
-     * @return  The name separator
+     * @return The name separator
      */
     public abstract String getSeparator();
 
@@ -187,7 +187,7 @@ public abstract class FileSystem
      * to each root directory. It is system dependent if the permission checks
      * are done when the iterator is obtained or during iteration.
      *
-     * @return  An object to iterate over the root directories
+     * @return An object to iterate over the root directories
      */
     public abstract Iterable<Path> getRootDirectories();
 
@@ -221,7 +221,7 @@ public abstract class FileSystem
      *     }
      * </pre>
      *
-     * @return  An object to iterate over the backing file stores
+     * @return An object to iterate over the backing file stores
      */
     public abstract Iterable<FileStore> getFileStores();
 
@@ -237,8 +237,8 @@ public abstract class FileSystem
      * underlying {@link FileStore} supports the file attributes identified by a
      * file attribute view.
      *
-     * @return  An unmodifiable set of the names of the supported file attribute
-     *          views
+     * @return An unmodifiable set of the names of the supported file attribute
+     * views
      */
     public abstract Set<String> supportedFileAttributeViews();
 
@@ -282,15 +282,15 @@ public abstract class FileSystem
      * index} value indicating the first position in the {@code path} parameter
      * that caused the path string to be rejected.
      *
-     * @param   first
-     *          the path string or initial part of the path string
-     * @param   more
-     *          additional strings to be joined to form the path string
+     * @param first
+     *         the path string or initial part of the path string
+     * @param more
+     *         additional strings to be joined to form the path string
      *
-     * @return  the resulting {@code Path}
+     * @return the resulting {@code Path}
      *
-     * @throws  InvalidPathException
-     *          If the path string cannot be converted
+     * @throws InvalidPathException
+     *         If the path string cannot be converted
      */
     public abstract Path getPath(String first, String... more);
 
@@ -317,36 +317,36 @@ public abstract class FileSystem
      * <blockquote>
      * <table border="0" summary="Pattern Language">
      * <tr>
-     *   <td>{@code *.java}</td>
-     *   <td>Matches a path that represents a file name ending in {@code .java}</td>
+     * <td>{@code *.java}</td>
+     * <td>Matches a path that represents a file name ending in {@code .java}</td>
      * </tr>
      * <tr>
-     *   <td>{@code *.*}</td>
-     *   <td>Matches file names containing a dot</td>
+     * <td>{@code *.*}</td>
+     * <td>Matches file names containing a dot</td>
      * </tr>
      * <tr>
-     *   <td>{@code *.{java,class}}</td>
-     *   <td>Matches file names ending with {@code .java} or {@code .class}</td>
+     * <td>{@code *.{java,class}}</td>
+     * <td>Matches file names ending with {@code .java} or {@code .class}</td>
      * </tr>
      * <tr>
-     *   <td>{@code foo.?}</td>
-     *   <td>Matches file names starting with {@code foo.} and a single
-     *   character extension</td>
+     * <td>{@code foo.?}</td>
+     * <td>Matches file names starting with {@code foo.} and a single
+     * character extension</td>
      * </tr>
      * <tr>
-     *   <td><tt>&#47;home&#47;*&#47;*</tt>
-     *   <td>Matches <tt>&#47;home&#47;gus&#47;data</tt> on UNIX platforms</td>
+     * <td><tt>&#47;home&#47;*&#47;*</tt>
+     * <td>Matches <tt>&#47;home&#47;gus&#47;data</tt> on UNIX platforms</td>
      * </tr>
      * <tr>
-     *   <td><tt>&#47;home&#47;**</tt>
-     *   <td>Matches <tt>&#47;home&#47;gus</tt> and
-     *   <tt>&#47;home&#47;gus&#47;data</tt> on UNIX platforms</td>
+     * <td><tt>&#47;home&#47;**</tt>
+     * <td>Matches <tt>&#47;home&#47;gus</tt> and
+     * <tt>&#47;home&#47;gus&#47;data</tt> on UNIX platforms</td>
      * </tr>
      * <tr>
-     *   <td><tt>C:&#92;&#92;*</tt>
-     *   <td>Matches <tt>C:&#92;foo</tt> and <tt>C:&#92;bar</tt> on the Windows
-     *   platform (note that the backslash is escaped; as a string literal in the
-     *   Java Language the pattern would be <tt>"C:&#92;&#92;&#92;&#92;*"</tt>) </td>
+     * <td><tt>C:&#92;&#92;*</tt>
+     * <td>Matches <tt>C:&#92;foo</tt> and <tt>C:&#92;bar</tt> on the Windows
+     * platform (note that the backslash is escaped; as a string literal in the
+     * Java Language the pattern would be <tt>"C:&#92;&#92;&#92;&#92;*"</tt>) </td>
      * </tr>
      *
      * </table>
@@ -355,54 +355,54 @@ public abstract class FileSystem
      * <p> The following rules are used to interpret glob patterns:
      *
      * <ul>
-     *   <li><p> The {@code *} character matches zero or more {@link Character
-     *   characters} of a {@link Path#getName(int) name} component without
-     *   crossing directory boundaries. </p></li>
+     * <li><p> The {@code *} character matches zero or more {@link Character
+     * characters} of a {@link Path#getName(int) name} component without
+     * crossing directory boundaries. </p></li>
      *
-     *   <li><p> The {@code **} characters matches zero or more {@link Character
-     *   characters} crossing directory boundaries. </p></li>
+     * <li><p> The {@code **} characters matches zero or more {@link Character
+     * characters} crossing directory boundaries. </p></li>
      *
-     *   <li><p> The {@code ?} character matches exactly one character of a
-     *   name component.</p></li>
+     * <li><p> The {@code ?} character matches exactly one character of a
+     * name component.</p></li>
      *
-     *   <li><p> The backslash character ({@code \}) is used to escape characters
-     *   that would otherwise be interpreted as special characters. The expression
-     *   {@code \\} matches a single backslash and "\{" matches a left brace
-     *   for example.  </p></li>
+     * <li><p> The backslash character ({@code \}) is used to escape characters
+     * that would otherwise be interpreted as special characters. The expression
+     * {@code \\} matches a single backslash and "\{" matches a left brace
+     * for example.  </p></li>
      *
-     *   <li><p> The {@code [ ]} characters are a <i>bracket expression</i> that
-     *   match a single character of a name component out of a set of characters.
-     *   For example, {@code [abc]} matches {@code "a"}, {@code "b"}, or {@code "c"}.
-     *   The hyphen ({@code -}) may be used to specify a range so {@code [a-z]}
-     *   specifies a range that matches from {@code "a"} to {@code "z"} (inclusive).
-     *   These forms can be mixed so [abce-g] matches {@code "a"}, {@code "b"},
-     *   {@code "c"}, {@code "e"}, {@code "f"} or {@code "g"}. If the character
-     *   after the {@code [} is a {@code !} then it is used for negation so {@code
-     *   [!a-c]} matches any character except {@code "a"}, {@code "b"}, or {@code
-     *   "c"}.
-     *   <p> Within a bracket expression the {@code *}, {@code ?} and {@code \}
-     *   characters match themselves. The ({@code -}) character matches itself if
-     *   it is the first character within the brackets, or the first character
-     *   after the {@code !} if negating.</p></li>
+     * <li><p> The {@code [ ]} characters are a <i>bracket expression</i> that
+     * match a single character of a name component out of a set of characters.
+     * For example, {@code [abc]} matches {@code "a"}, {@code "b"}, or {@code "c"}.
+     * The hyphen ({@code -}) may be used to specify a range so {@code [a-z]}
+     * specifies a range that matches from {@code "a"} to {@code "z"} (inclusive).
+     * These forms can be mixed so [abce-g] matches {@code "a"}, {@code "b"},
+     * {@code "c"}, {@code "e"}, {@code "f"} or {@code "g"}. If the character
+     * after the {@code [} is a {@code !} then it is used for negation so {@code
+     * [!a-c]} matches any character except {@code "a"}, {@code "b"}, or {@code
+     * "c"}.
+     * <p> Within a bracket expression the {@code *}, {@code ?} and {@code \}
+     * characters match themselves. The ({@code -}) character matches itself if
+     * it is the first character within the brackets, or the first character
+     * after the {@code !} if negating.</p></li>
      *
-     *   <li><p> The {@code { }} characters are a group of subpatterns, where
-     *   the group matches if any subpattern in the group matches. The {@code ","}
-     *   character is used to separate the subpatterns. Groups cannot be nested.
-     *   </p></li>
+     * <li><p> The {@code { }} characters are a group of subpatterns, where
+     * the group matches if any subpattern in the group matches. The {@code ","}
+     * character is used to separate the subpatterns. Groups cannot be nested.
+     * </p></li>
      *
-     *   <li><p> Leading period<tt>&#47;</tt>dot characters in file name are
-     *   treated as regular characters in match operations. For example,
-     *   the {@code "*"} glob pattern matches file name {@code ".login"}.
-     *   The {@link Files#isHidden} method may be used to test whether a file
-     *   is considered hidden.
-     *   </p></li>
+     * <li><p> Leading period<tt>&#47;</tt>dot characters in file name are
+     * treated as regular characters in match operations. For example,
+     * the {@code "*"} glob pattern matches file name {@code ".login"}.
+     * The {@link Files#isHidden} method may be used to test whether a file
+     * is considered hidden.
+     * </p></li>
      *
-     *   <li><p> All other characters match themselves in an implementation
-     *   dependent manner. This includes characters representing any {@link
-     *   FileSystem#getSeparator name-separators}. </p></li>
+     * <li><p> All other characters match themselves in an implementation
+     * dependent manner. This includes characters representing any {@link
+     * FileSystem#getSeparator name-separators}. </p></li>
      *
-     *   <li><p> The matching of {@link Path#getRoot root} components is highly
-     *   implementation-dependent and is not specified. </p></li>
+     * <li><p> The matching of {@link Path#getRoot root} components is highly
+     * implementation-dependent and is not specified. </p></li>
      *
      * </ul>
      *
@@ -414,19 +414,18 @@ public abstract class FileSystem
      * whether the matching is case sensitive, are implementation-dependent
      * and therefore not specified.
      *
-     * @param   syntaxAndPattern
-     *          The syntax and pattern
+     * @param syntaxAndPattern
+     *         The syntax and pattern
      *
-     * @return  A path matcher that may be used to match paths against the pattern
+     * @return A path matcher that may be used to match paths against the pattern
      *
-     * @throws  IllegalArgumentException
-     *          If the parameter does not take the form: {@code syntax:pattern}
-     * @throws  java.util.regex.PatternSyntaxException
-     *          If the pattern is invalid
-     * @throws  UnsupportedOperationException
-     *          If the pattern syntax is not known to the implementation
-     *
-     * @see Files#newDirectoryStream(Path,String)
+     * @throws IllegalArgumentException
+     *         If the parameter does not take the form: {@code syntax:pattern}
+     * @throws java.util.regex.PatternSyntaxException
+     *         If the pattern is invalid
+     * @throws UnsupportedOperationException
+     *         If the pattern syntax is not known to the implementation
+     * @see Files#newDirectoryStream(Path, String)
      */
     public abstract PathMatcher getPathMatcher(String syntaxAndPattern);
 
@@ -442,10 +441,10 @@ public abstract class FileSystem
      *     Files.setOwner(path, lookupService.lookupPrincipalByName("joe"));
      * </pre>
      *
-     * @throws  UnsupportedOperationException
-     *          If this {@code FileSystem} does not does have a lookup service
+     * @return The {@code UserPrincipalLookupService} for this file system
      *
-     * @return  The {@code UserPrincipalLookupService} for this file system
+     * @throws UnsupportedOperationException
+     *         If this {@code FileSystem} does not does have a lookup service
      */
     public abstract UserPrincipalLookupService getUserPrincipalLookupService();
 
@@ -455,14 +454,14 @@ public abstract class FileSystem
      * <p> This method constructs a new watch service that may be used to watch
      * registered objects for changes and events.
      *
-     * @return  a new watch service
+     * @return a new watch service
      *
-     * @throws  UnsupportedOperationException
-     *          If this {@code FileSystem} does not support watching file system
-     *          objects for changes and events. This exception is not thrown
-     *          by {@code FileSystems} created by the default provider.
-     * @throws  IOException
-     *          If an I/O error occurs
+     * @throws UnsupportedOperationException
+     *         If this {@code FileSystem} does not support watching file system
+     *         objects for changes and events. This exception is not thrown
+     *         by {@code FileSystems} created by the default provider.
+     * @throws IOException
+     *         If an I/O error occurs
      */
     public abstract WatchService newWatchService() throws IOException;
 }

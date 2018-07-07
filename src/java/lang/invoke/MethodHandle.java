@@ -25,8 +25,8 @@
 
 package java.lang.invoke;
 
+import java.util.Arrays;
 
-import java.util.*;
 
 import static java.lang.invoke.MethodHandleStatics.*;
 
@@ -248,47 +248,47 @@ import static java.lang.invoke.MethodHandleStatics.*;
  * <h1>Usage examples</h1>
  * Here are some examples of usage:
  * <blockquote><pre>{@code
-Object x, y; String s; int i;
-MethodType mt; MethodHandle mh;
-MethodHandles.Lookup lookup = MethodHandles.lookup();
-// mt is (char,char)String
-mt = MethodType.methodType(String.class, char.class, char.class);
-mh = lookup.findVirtual(String.class, "replace", mt);
-s = (String) mh.invokeExact("daddy",'d','n');
-// invokeExact(Ljava/lang/String;CC)Ljava/lang/String;
-assertEquals(s, "nanny");
-// weakly typed invocation (using MHs.invoke)
-s = (String) mh.invokeWithArguments("sappy", 'p', 'v');
-assertEquals(s, "savvy");
-// mt is (Object[])List
-mt = MethodType.methodType(java.util.List.class, Object[].class);
-mh = lookup.findStatic(java.util.Arrays.class, "asList", mt);
-assert(mh.isVarargsCollector());
-x = mh.invoke("one", "two");
-// invoke(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;
-assertEquals(x, java.util.Arrays.asList("one","two"));
-// mt is (Object,Object,Object)Object
-mt = MethodType.genericMethodType(3);
-mh = mh.asType(mt);
-x = mh.invokeExact((Object)1, (Object)2, (Object)3);
-// invokeExact(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-assertEquals(x, java.util.Arrays.asList(1,2,3));
-// mt is ()int
-mt = MethodType.methodType(int.class);
-mh = lookup.findVirtual(java.util.List.class, "size", mt);
-i = (int) mh.invokeExact(java.util.Arrays.asList(1,2,3));
-// invokeExact(Ljava/util/List;)I
-assert(i == 3);
-mt = MethodType.methodType(void.class, String.class);
-mh = lookup.findVirtual(java.io.PrintStream.class, "println", mt);
-mh.invokeExact(System.out, "Hello, world.");
-// invokeExact(Ljava/io/PrintStream;Ljava/lang/String;)V
+ * Object x, y; String s; int i;
+ * MethodType mt; MethodHandle mh;
+ * MethodHandles.Lookup lookup = MethodHandles.lookup();
+ * // mt is (char,char)String
+ * mt = MethodType.methodType(String.class, char.class, char.class);
+ * mh = lookup.findVirtual(String.class, "replace", mt);
+ * s = (String) mh.invokeExact("daddy",'d','n');
+ * // invokeExact(Ljava/lang/String;CC)Ljava/lang/String;
+ * assertEquals(s, "nanny");
+ * // weakly typed invocation (using MHs.invoke)
+ * s = (String) mh.invokeWithArguments("sappy", 'p', 'v');
+ * assertEquals(s, "savvy");
+ * // mt is (Object[])List
+ * mt = MethodType.methodType(java.util.List.class, Object[].class);
+ * mh = lookup.findStatic(java.util.Arrays.class, "asList", mt);
+ * assert(mh.isVarargsCollector());
+ * x = mh.invoke("one", "two");
+ * // invoke(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;
+ * assertEquals(x, java.util.Arrays.asList("one","two"));
+ * // mt is (Object,Object,Object)Object
+ * mt = MethodType.genericMethodType(3);
+ * mh = mh.asType(mt);
+ * x = mh.invokeExact((Object)1, (Object)2, (Object)3);
+ * // invokeExact(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+ * assertEquals(x, java.util.Arrays.asList(1,2,3));
+ * // mt is ()int
+ * mt = MethodType.methodType(int.class);
+ * mh = lookup.findVirtual(java.util.List.class, "size", mt);
+ * i = (int) mh.invokeExact(java.util.Arrays.asList(1,2,3));
+ * // invokeExact(Ljava/util/List;)I
+ * assert(i == 3);
+ * mt = MethodType.methodType(void.class, String.class);
+ * mh = lookup.findVirtual(java.io.PrintStream.class, "println", mt);
+ * mh.invokeExact(System.out, "Hello, world.");
+ * // invokeExact(Ljava/io/PrintStream;Ljava/lang/String;)V
  * }</pre></blockquote>
  * Each of the above calls to {@code invokeExact} or plain {@code invoke}
  * generates a single invokevirtual instruction with
  * the symbolic type descriptor indicated in the following comment.
  * In these examples, the helper method {@code assertEquals} is assumed to
- * be a method which calls {@link java.util.Objects#equals(Object,Object) Objects.equals}
+ * be a method which calls {@link java.util.Objects#equals(Object, Object) Objects.equals}
  * on its arguments, and asserts that the result is true.
  *
  * <h1>Exceptions</h1>
@@ -407,27 +407,30 @@ mh.invokeExact(System.out, "Hello, world.");
  * <li>A non-static method consumes an extra argument for the object on which the method is called.
  * <li>A constructor consumes an extra argument for the object which is being constructed.
  * <li>Since a method handle&rsquo;s {@code invoke} method (or other signature-polymorphic method) is non-virtual,
- *     it consumes an extra argument for the method handle itself, in addition to any non-virtual receiver object.
+ * it consumes an extra argument for the method handle itself, in addition to any non-virtual receiver object.
  * </ul>
  * These limits imply that certain method handles cannot be created, solely because of the JVM limit on stacked arguments.
  * For example, if a static JVM method accepts exactly 255 arguments, a method handle cannot be created for it.
  * Attempts to create method handles with impossible method types lead to an {@link IllegalArgumentException}.
  * In particular, a method handle&rsquo;s type must not have an arity of the exact maximum 255.
  *
+ * @author John Rose, JSR 292 EG
  * @see MethodType
  * @see MethodHandles
- * @author John Rose, JSR 292 EG
  */
 public abstract class MethodHandle {
-    static { MethodHandleImpl.initStatics(); }
+    static {
+        MethodHandleImpl.initStatics();
+    }
 
     /**
      * Internal marker interface which distinguishes (to the Java compiler)
      * those methods which are <a href="MethodHandle.html#sigpoly">signature polymorphic</a>.
      */
-    @java.lang.annotation.Target({java.lang.annotation.ElementType.METHOD})
+    @java.lang.annotation.Target({ java.lang.annotation.ElementType.METHOD })
     @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
-    @interface PolymorphicSignature { }
+    @interface PolymorphicSignature {
+    }
 
     private final MethodType type;
     /*private*/ final LambdaForm form;
@@ -440,6 +443,7 @@ public abstract class MethodHandle {
     /**
      * Reports the type of this method handle.
      * Every invocation of this method handle via {@code invokeExact} must exactly match this type.
+     *
      * @return the method handle type
      */
     public MethodType type() {
@@ -473,12 +477,19 @@ public abstract class MethodHandle {
      * {@link java.lang.reflect.Method#invoke java.lang.reflect.Method.invoke}, via JNI,
      * or indirectly via {@link java.lang.invoke.MethodHandles.Lookup#unreflect Lookup.unreflect},
      * it will throw an {@code UnsupportedOperationException}.
-     * @param args the signature-polymorphic parameter list, statically represented using varargs
+     *
+     * @param args
+     *         the signature-polymorphic parameter list, statically represented using varargs
+     *
      * @return the signature-polymorphic result, statically represented using {@code Object}
-     * @throws WrongMethodTypeException if the target's type is not identical with the caller's symbolic type descriptor
-     * @throws Throwable anything thrown by the underlying method propagates unchanged through the method handle call
+     *
+     * @throws WrongMethodTypeException
+     *         if the target's type is not identical with the caller's symbolic type descriptor
+     * @throws Throwable
+     *         anything thrown by the underlying method propagates unchanged through the method handle call
      */
-    public final native @PolymorphicSignature Object invokeExact(Object... args) throws Throwable;
+    public final native @PolymorphicSignature
+    Object invokeExact(Object... args) throws Throwable;
 
     /**
      * Invokes the method handle, allowing any caller type descriptor,
@@ -509,13 +520,21 @@ public abstract class MethodHandle {
      * {@link java.lang.reflect.Method#invoke java.lang.reflect.Method.invoke}, via JNI,
      * or indirectly via {@link java.lang.invoke.MethodHandles.Lookup#unreflect Lookup.unreflect},
      * it will throw an {@code UnsupportedOperationException}.
-     * @param args the signature-polymorphic parameter list, statically represented using varargs
+     *
+     * @param args
+     *         the signature-polymorphic parameter list, statically represented using varargs
+     *
      * @return the signature-polymorphic result, statically represented using {@code Object}
-     * @throws WrongMethodTypeException if the target's type cannot be adjusted to the caller's symbolic type descriptor
-     * @throws ClassCastException if the target's type can be adjusted to the caller, but a reference cast fails
-     * @throws Throwable anything thrown by the underlying method propagates unchanged through the method handle call
+     *
+     * @throws WrongMethodTypeException
+     *         if the target's type cannot be adjusted to the caller's symbolic type descriptor
+     * @throws ClassCastException
+     *         if the target's type can be adjusted to the caller, but a reference cast fails
+     * @throws Throwable
+     *         anything thrown by the underlying method propagates unchanged through the method handle call
      */
-    public final native @PolymorphicSignature Object invoke(Object... args) throws Throwable;
+    public final native @PolymorphicSignature
+    Object invoke(Object... args) throws Throwable;
 
     /**
      * Private method for trusted invocation of a method handle respecting simplified signatures.
@@ -531,46 +550,71 @@ public abstract class MethodHandle {
      * operations on outgoing argument values.)
      * The caller can assume that the incoming result value is part of the range
      * of the callee's return type.
-     * @param args the signature-polymorphic parameter list, statically represented using varargs
+     *
+     * @param args
+     *         the signature-polymorphic parameter list, statically represented using varargs
+     *
      * @return the signature-polymorphic result, statically represented using {@code Object}
      */
-    /*non-public*/ final native @PolymorphicSignature Object invokeBasic(Object... args) throws Throwable;
+    /*non-public*/
+    final native @PolymorphicSignature
+    Object invokeBasic(Object... args) throws Throwable;
 
     /**
      * Private method for trusted invocation of a MemberName of kind {@code REF_invokeVirtual}.
      * The caller signature is restricted to basic types as with {@code invokeBasic}.
      * The trailing (not leading) argument must be a MemberName.
-     * @param args the signature-polymorphic parameter list, statically represented using varargs
+     *
+     * @param args
+     *         the signature-polymorphic parameter list, statically represented using varargs
+     *
      * @return the signature-polymorphic result, statically represented using {@code Object}
      */
-    /*non-public*/ static native @PolymorphicSignature Object linkToVirtual(Object... args) throws Throwable;
+    /*non-public*/
+    static native @PolymorphicSignature
+    Object linkToVirtual(Object... args) throws Throwable;
 
     /**
      * Private method for trusted invocation of a MemberName of kind {@code REF_invokeStatic}.
      * The caller signature is restricted to basic types as with {@code invokeBasic}.
      * The trailing (not leading) argument must be a MemberName.
-     * @param args the signature-polymorphic parameter list, statically represented using varargs
+     *
+     * @param args
+     *         the signature-polymorphic parameter list, statically represented using varargs
+     *
      * @return the signature-polymorphic result, statically represented using {@code Object}
      */
-    /*non-public*/ static native @PolymorphicSignature Object linkToStatic(Object... args) throws Throwable;
+    /*non-public*/
+    static native @PolymorphicSignature
+    Object linkToStatic(Object... args) throws Throwable;
 
     /**
      * Private method for trusted invocation of a MemberName of kind {@code REF_invokeSpecial}.
      * The caller signature is restricted to basic types as with {@code invokeBasic}.
      * The trailing (not leading) argument must be a MemberName.
-     * @param args the signature-polymorphic parameter list, statically represented using varargs
+     *
+     * @param args
+     *         the signature-polymorphic parameter list, statically represented using varargs
+     *
      * @return the signature-polymorphic result, statically represented using {@code Object}
      */
-    /*non-public*/ static native @PolymorphicSignature Object linkToSpecial(Object... args) throws Throwable;
+    /*non-public*/
+    static native @PolymorphicSignature
+    Object linkToSpecial(Object... args) throws Throwable;
 
     /**
      * Private method for trusted invocation of a MemberName of kind {@code REF_invokeInterface}.
      * The caller signature is restricted to basic types as with {@code invokeBasic}.
      * The trailing (not leading) argument must be a MemberName.
-     * @param args the signature-polymorphic parameter list, statically represented using varargs
+     *
+     * @param args
+     *         the signature-polymorphic parameter list, statically represented using varargs
+     *
      * @return the signature-polymorphic result, statically represented using {@code Object}
      */
-    /*non-public*/ static native @PolymorphicSignature Object linkToInterface(Object... args) throws Throwable;
+    /*non-public*/
+    static native @PolymorphicSignature
+    Object linkToInterface(Object... args) throws Throwable;
 
     /**
      * Performs a variable arity invocation, passing the arguments in the given list
@@ -583,14 +627,14 @@ public abstract class MethodHandle {
      * can predict their effects.
      * <ul>
      * <li>Determine the length of the argument array as {@code N}.
-     *     For a null reference, {@code N=0}. </li>
+     * For a null reference, {@code N=0}. </li>
      * <li>Determine the general type {@code TN} of {@code N} arguments as
-     *     as {@code TN=MethodType.genericMethodType(N)}.</li>
+     * as {@code TN=MethodType.genericMethodType(N)}.</li>
      * <li>Force the original target method handle {@code MH0} to the
-     *     required type, as {@code MH1 = MH0.asType(TN)}. </li>
+     * required type, as {@code MH1 = MH0.asType(TN)}. </li>
      * <li>Spread the array into {@code N} separate arguments {@code A0, ...}. </li>
      * <li>Invoke the type-adjusted method handle on the unpacked arguments:
-     *     MH1.invokeExact(A0, ...). </li>
+     * MH1.invokeExact(A0, ...). </li>
      * <li>Take the return value as an {@code Object} reference. </li>
      * </ul>
      * <p>
@@ -615,11 +659,17 @@ public abstract class MethodHandle {
      * {@code invokeWithArguments} can be accessed normally via the Core Reflection API and JNI.
      * It can therefore be used as a bridge between native or reflective code and method handles.
      *
-     * @param arguments the arguments to pass to the target
+     * @param arguments
+     *         the arguments to pass to the target
+     *
      * @return the result returned by the target
-     * @throws ClassCastException if an argument cannot be converted by reference casting
-     * @throws WrongMethodTypeException if the target's type cannot be adjusted to take the given number of {@code Object} arguments
-     * @throws Throwable anything thrown by the target method invocation
+     *
+     * @throws ClassCastException
+     *         if an argument cannot be converted by reference casting
+     * @throws WrongMethodTypeException
+     *         if the target's type cannot be adjusted to take the given number of {@code Object} arguments
+     * @throws Throwable
+     *         anything thrown by the target method invocation
      * @see MethodHandles#spreadInvoker
      */
     public Object invokeWithArguments(Object... arguments) throws Throwable {
@@ -638,12 +688,19 @@ public abstract class MethodHandle {
      *   invokeWithArguments(arguments.toArray()
      * }</pre></blockquote>
      *
-     * @param arguments the arguments to pass to the target
+     * @param arguments
+     *         the arguments to pass to the target
+     *
      * @return the result returned by the target
-     * @throws NullPointerException if {@code arguments} is a null reference
-     * @throws ClassCastException if an argument cannot be converted by reference casting
-     * @throws WrongMethodTypeException if the target's type cannot be adjusted to take the given number of {@code Object} arguments
-     * @throws Throwable anything thrown by the target method invocation
+     *
+     * @throws NullPointerException
+     *         if {@code arguments} is a null reference
+     * @throws ClassCastException
+     *         if an argument cannot be converted by reference casting
+     * @throws WrongMethodTypeException
+     *         if the target's type cannot be adjusted to take the given number of {@code Object} arguments
+     * @throws Throwable
+     *         anything thrown by the target method invocation
      */
     public Object invokeWithArguments(java.util.List<?> arguments) throws Throwable {
         return invokeWithArguments(arguments.toArray());
@@ -661,10 +718,10 @@ public abstract class MethodHandle {
      * steps:
      * <ul>
      * <li>Convert the incoming argument list to match the original
-     *     method handle's argument list.
+     * method handle's argument list.
      * <li>Invoke the original method handle on the converted argument list.
      * <li>Convert any result returned by the original method handle
-     *     to the return type of new method handle.
+     * to the return type of new method handle.
      * </ul>
      * <p>
      * This method provides the crucial behavioral difference between
@@ -697,30 +754,30 @@ public abstract class MethodHandle {
      * if possible:
      * <ul>
      * <li>If <em>T0</em> and <em>T1</em> are references, then a cast to <em>T1</em> is applied.
-     *     (The types do not need to be related in any particular way.
-     *     This is because a dynamic value of null can convert to any reference type.)
+     * (The types do not need to be related in any particular way.
+     * This is because a dynamic value of null can convert to any reference type.)
      * <li>If <em>T0</em> and <em>T1</em> are primitives, then a Java method invocation
-     *     conversion (JLS 5.3) is applied, if one exists.
-     *     (Specifically, <em>T0</em> must convert to <em>T1</em> by a widening primitive conversion.)
+     * conversion (JLS 5.3) is applied, if one exists.
+     * (Specifically, <em>T0</em> must convert to <em>T1</em> by a widening primitive conversion.)
      * <li>If <em>T0</em> is a primitive and <em>T1</em> a reference,
-     *     a Java casting conversion (JLS 5.5) is applied if one exists.
-     *     (Specifically, the value is boxed from <em>T0</em> to its wrapper class,
-     *     which is then widened as needed to <em>T1</em>.)
+     * a Java casting conversion (JLS 5.5) is applied if one exists.
+     * (Specifically, the value is boxed from <em>T0</em> to its wrapper class,
+     * which is then widened as needed to <em>T1</em>.)
      * <li>If <em>T0</em> is a reference and <em>T1</em> a primitive, an unboxing
-     *     conversion will be applied at runtime, possibly followed
-     *     by a Java method invocation conversion (JLS 5.3)
-     *     on the primitive value.  (These are the primitive widening conversions.)
-     *     <em>T0</em> must be a wrapper class or a supertype of one.
-     *     (In the case where <em>T0</em> is Object, these are the conversions
-     *     allowed by {@link java.lang.reflect.Method#invoke java.lang.reflect.Method.invoke}.)
-     *     The unboxing conversion must have a possibility of success, which means that
-     *     if <em>T0</em> is not itself a wrapper class, there must exist at least one
-     *     wrapper class <em>TW</em> which is a subtype of <em>T0</em> and whose unboxed
-     *     primitive value can be widened to <em>T1</em>.
+     * conversion will be applied at runtime, possibly followed
+     * by a Java method invocation conversion (JLS 5.3)
+     * on the primitive value.  (These are the primitive widening conversions.)
+     * <em>T0</em> must be a wrapper class or a supertype of one.
+     * (In the case where <em>T0</em> is Object, these are the conversions
+     * allowed by {@link java.lang.reflect.Method#invoke java.lang.reflect.Method.invoke}.)
+     * The unboxing conversion must have a possibility of success, which means that
+     * if <em>T0</em> is not itself a wrapper class, there must exist at least one
+     * wrapper class <em>TW</em> which is a subtype of <em>T0</em> and whose unboxed
+     * primitive value can be widened to <em>T1</em>.
      * <li>If the return type <em>T1</em> is marked as void, any returned value is discarded
      * <li>If the return type <em>T0</em> is void and <em>T1</em> a reference, a null value is introduced.
      * <li>If the return type <em>T0</em> is void and <em>T1</em> a primitive,
-     *     a zero value is introduced.
+     * a zero value is introduced.
      * </ul>
      * (<em>Note:</em> Both <em>T0</em> and <em>T1</em> may be regarded as static types,
      * because neither corresponds specifically to the <em>dynamic type</em> of any
@@ -739,12 +796,17 @@ public abstract class MethodHandle {
      * Although an unboxing operation may accept several kinds of wrappers,
      * if none are available, a {@code ClassCastException} will be thrown.
      *
-     * @param newType the expected type of the new method handle
+     * @param newType
+     *         the expected type of the new method handle
+     *
      * @return a method handle which delegates to {@code this} after performing
-     *           any necessary argument conversions, and arranges for any
-     *           necessary return value conversions
-     * @throws NullPointerException if {@code newType} is a null reference
-     * @throws WrongMethodTypeException if the conversion cannot be made
+     * any necessary argument conversions, and arranges for any
+     * necessary return value conversions
+     *
+     * @throws NullPointerException
+     *         if {@code newType} is a null reference
+     * @throws WrongMethodTypeException
+     *         if the conversion cannot be made
      * @see MethodHandles#explicitCastArguments
      */
     public MethodHandle asType(MethodType newType) {
@@ -771,8 +833,9 @@ public abstract class MethodHandle {
 
     /** Override this to change asType behavior. */
     /*non-public*/ MethodHandle asTypeUncached(MethodType newType) {
-        if (!type.isConvertibleTo(newType))
-            throw new WrongMethodTypeException("cannot convert "+this+" to "+newType);
+        if (!type.isConvertibleTo(newType)) {
+            throw new WrongMethodTypeException("cannot convert " + this + " to " + newType);
+        }
         return asTypeCache = MethodHandleImpl.makePairwiseConvert(this, newType, true);
     }
 
@@ -809,60 +872,68 @@ public abstract class MethodHandle {
      * <p>
      * Here are some simple examples of array-spreading method handles:
      * <blockquote><pre>{@code
-MethodHandle equals = publicLookup()
-  .findVirtual(String.class, "equals", methodType(boolean.class, Object.class));
-assert( (boolean) equals.invokeExact("me", (Object)"me"));
-assert(!(boolean) equals.invokeExact("me", (Object)"thee"));
-// spread both arguments from a 2-array:
-MethodHandle eq2 = equals.asSpreader(Object[].class, 2);
-assert( (boolean) eq2.invokeExact(new Object[]{ "me", "me" }));
-assert(!(boolean) eq2.invokeExact(new Object[]{ "me", "thee" }));
-// try to spread from anything but a 2-array:
-for (int n = 0; n <= 10; n++) {
-  Object[] badArityArgs = (n == 2 ? null : new Object[n]);
-  try { assert((boolean) eq2.invokeExact(badArityArgs) && false); }
-  catch (IllegalArgumentException ex) { } // OK
-}
-// spread both arguments from a String array:
-MethodHandle eq2s = equals.asSpreader(String[].class, 2);
-assert( (boolean) eq2s.invokeExact(new String[]{ "me", "me" }));
-assert(!(boolean) eq2s.invokeExact(new String[]{ "me", "thee" }));
-// spread second arguments from a 1-array:
-MethodHandle eq1 = equals.asSpreader(Object[].class, 1);
-assert( (boolean) eq1.invokeExact("me", new Object[]{ "me" }));
-assert(!(boolean) eq1.invokeExact("me", new Object[]{ "thee" }));
-// spread no arguments from a 0-array or null:
-MethodHandle eq0 = equals.asSpreader(Object[].class, 0);
-assert( (boolean) eq0.invokeExact("me", (Object)"me", new Object[0]));
-assert(!(boolean) eq0.invokeExact("me", (Object)"thee", (Object[])null));
-// asSpreader and asCollector are approximate inverses:
-for (int n = 0; n <= 2; n++) {
-    for (Class<?> a : new Class<?>[]{Object[].class, String[].class, CharSequence[].class}) {
-        MethodHandle equals2 = equals.asSpreader(a, n).asCollector(a, n);
-        assert( (boolean) equals2.invokeWithArguments("me", "me"));
-        assert(!(boolean) equals2.invokeWithArguments("me", "thee"));
-    }
-}
-MethodHandle caToString = publicLookup()
-  .findStatic(Arrays.class, "toString", methodType(String.class, char[].class));
-assertEquals("[A, B, C]", (String) caToString.invokeExact("ABC".toCharArray()));
-MethodHandle caString3 = caToString.asCollector(char[].class, 3);
-assertEquals("[A, B, C]", (String) caString3.invokeExact('A', 'B', 'C'));
-MethodHandle caToString2 = caString3.asSpreader(char[].class, 2);
-assertEquals("[A, B, C]", (String) caToString2.invokeExact('A', "BC".toCharArray()));
+     * MethodHandle equals = publicLookup()
+     * .findVirtual(String.class, "equals", methodType(boolean.class, Object.class));
+     * assert( (boolean) equals.invokeExact("me", (Object)"me"));
+     * assert(!(boolean) equals.invokeExact("me", (Object)"thee"));
+     * // spread both arguments from a 2-array:
+     * MethodHandle eq2 = equals.asSpreader(Object[].class, 2);
+     * assert( (boolean) eq2.invokeExact(new Object[]{ "me", "me" }));
+     * assert(!(boolean) eq2.invokeExact(new Object[]{ "me", "thee" }));
+     * // try to spread from anything but a 2-array:
+     * for (int n = 0; n <= 10; n++) {
+     * Object[] badArityArgs = (n == 2 ? null : new Object[n]);
+     * try { assert((boolean) eq2.invokeExact(badArityArgs) && false); }
+     * catch (IllegalArgumentException ex) { } // OK
+     * }
+     * // spread both arguments from a String array:
+     * MethodHandle eq2s = equals.asSpreader(String[].class, 2);
+     * assert( (boolean) eq2s.invokeExact(new String[]{ "me", "me" }));
+     * assert(!(boolean) eq2s.invokeExact(new String[]{ "me", "thee" }));
+     * // spread second arguments from a 1-array:
+     * MethodHandle eq1 = equals.asSpreader(Object[].class, 1);
+     * assert( (boolean) eq1.invokeExact("me", new Object[]{ "me" }));
+     * assert(!(boolean) eq1.invokeExact("me", new Object[]{ "thee" }));
+     * // spread no arguments from a 0-array or null:
+     * MethodHandle eq0 = equals.asSpreader(Object[].class, 0);
+     * assert( (boolean) eq0.invokeExact("me", (Object)"me", new Object[0]));
+     * assert(!(boolean) eq0.invokeExact("me", (Object)"thee", (Object[])null));
+     * // asSpreader and asCollector are approximate inverses:
+     * for (int n = 0; n <= 2; n++) {
+     * for (Class<?> a : new Class<?>[]{Object[].class, String[].class, CharSequence[].class}) {
+     * MethodHandle equals2 = equals.asSpreader(a, n).asCollector(a, n);
+     * assert( (boolean) equals2.invokeWithArguments("me", "me"));
+     * assert(!(boolean) equals2.invokeWithArguments("me", "thee"));
+     * }
+     * }
+     * MethodHandle caToString = publicLookup()
+     * .findStatic(Arrays.class, "toString", methodType(String.class, char[].class));
+     * assertEquals("[A, B, C]", (String) caToString.invokeExact("ABC".toCharArray()));
+     * MethodHandle caString3 = caToString.asCollector(char[].class, 3);
+     * assertEquals("[A, B, C]", (String) caString3.invokeExact('A', 'B', 'C'));
+     * MethodHandle caToString2 = caString3.asSpreader(char[].class, 2);
+     * assertEquals("[A, B, C]", (String) caToString2.invokeExact('A', "BC".toCharArray()));
      * }</pre></blockquote>
-     * @param arrayType usually {@code Object[]}, the type of the array argument from which to extract the spread arguments
-     * @param arrayLength the number of arguments to spread from an incoming array argument
+     *
+     * @param arrayType
+     *         usually {@code Object[]}, the type of the array argument from which to extract the spread arguments
+     * @param arrayLength
+     *         the number of arguments to spread from an incoming array argument
+     *
      * @return a new method handle which spreads its final array argument,
-     *         before calling the original method handle
-     * @throws NullPointerException if {@code arrayType} is a null reference
-     * @throws IllegalArgumentException if {@code arrayType} is not an array type,
+     * before calling the original method handle
+     *
+     * @throws NullPointerException
+     *         if {@code arrayType} is a null reference
+     * @throws IllegalArgumentException
+     *         if {@code arrayType} is not an array type,
      *         or if target does not have at least
      *         {@code arrayLength} parameter types,
      *         or if {@code arrayLength} is negative,
      *         or if the resulting method handle's type would have
      *         <a href="MethodHandle.html#maxarity">too many parameters</a>
-     * @throws WrongMethodTypeException if the implied {@code asType} call fails
+     * @throws WrongMethodTypeException
+     *         if the implied {@code asType} call fails
      * @see #asCollector
      */
     public MethodHandle asSpreader(Class<?> arrayType, int arrayLength) {
@@ -883,8 +954,9 @@ assertEquals("[A, B, C]", (String) caToString2.invokeExact('A', "BC".toCharArray
     private MethodType asSpreaderChecks(Class<?> arrayType, int arrayLength) {
         spreadArrayChecks(arrayType, arrayLength);
         int nargs = type().parameterCount();
-        if (nargs < arrayLength || arrayLength < 0)
+        if (nargs < arrayLength || arrayLength < 0) {
             throw newIllegalArgumentException("bad spread array length");
+        }
         Class<?> arrayElement = arrayType.getComponentType();
         MethodType mtype = type();
         boolean match = true, fail = false;
@@ -898,9 +970,13 @@ assertEquals("[A, B, C]", (String) caToString2.invokeExact('A', "BC".toCharArray
                 }
             }
         }
-        if (match)  return mtype;
+        if (match) {
+            return mtype;
+        }
         MethodType needType = mtype.asSpreaderType(arrayType, arrayLength);
-        if (!fail)  return needType;
+        if (!fail) {
+            return needType;
+        }
         // elicit an error:
         this.asType(needType);
         throw newInternalError("should not return", null);
@@ -908,15 +984,17 @@ assertEquals("[A, B, C]", (String) caToString2.invokeExact('A', "BC".toCharArray
 
     private void spreadArrayChecks(Class<?> arrayType, int arrayLength) {
         Class<?> arrayElement = arrayType.getComponentType();
-        if (arrayElement == null)
+        if (arrayElement == null) {
             throw newIllegalArgumentException("not an array type", arrayType);
+        }
         if ((arrayLength & 0x7F) != arrayLength) {
-            if ((arrayLength & 0xFF) != arrayLength)
+            if ((arrayLength & 0xFF) != arrayLength) {
                 throw newIllegalArgumentException("array length is not legal", arrayLength);
-            assert(arrayLength >= 128);
-            if (arrayElement == long.class ||
-                arrayElement == double.class)
+            }
+            assert (arrayLength >= 128);
+            if (arrayElement == long.class || arrayElement == double.class) {
                 throw newIllegalArgumentException("array length is not legal for long[] or double[]", arrayLength);
+            }
         }
     }
 
@@ -951,43 +1029,51 @@ assertEquals("[A, B, C]", (String) caToString2.invokeExact('A', "BC".toCharArray
      * <p>
      * Here are some examples of array-collecting method handles:
      * <blockquote><pre>{@code
-MethodHandle deepToString = publicLookup()
-  .findStatic(Arrays.class, "deepToString", methodType(String.class, Object[].class));
-assertEquals("[won]",   (String) deepToString.invokeExact(new Object[]{"won"}));
-MethodHandle ts1 = deepToString.asCollector(Object[].class, 1);
-assertEquals(methodType(String.class, Object.class), ts1.type());
-//assertEquals("[won]", (String) ts1.invokeExact(         new Object[]{"won"})); //FAIL
-assertEquals("[[won]]", (String) ts1.invokeExact((Object) new Object[]{"won"}));
-// arrayType can be a subtype of Object[]
-MethodHandle ts2 = deepToString.asCollector(String[].class, 2);
-assertEquals(methodType(String.class, String.class, String.class), ts2.type());
-assertEquals("[two, too]", (String) ts2.invokeExact("two", "too"));
-MethodHandle ts0 = deepToString.asCollector(Object[].class, 0);
-assertEquals("[]", (String) ts0.invokeExact());
-// collectors can be nested, Lisp-style
-MethodHandle ts22 = deepToString.asCollector(Object[].class, 3).asCollector(String[].class, 2);
-assertEquals("[A, B, [C, D]]", ((String) ts22.invokeExact((Object)'A', (Object)"B", "C", "D")));
-// arrayType can be any primitive array type
-MethodHandle bytesToString = publicLookup()
-  .findStatic(Arrays.class, "toString", methodType(String.class, byte[].class))
-  .asCollector(byte[].class, 3);
-assertEquals("[1, 2, 3]", (String) bytesToString.invokeExact((byte)1, (byte)2, (byte)3));
-MethodHandle longsToString = publicLookup()
-  .findStatic(Arrays.class, "toString", methodType(String.class, long[].class))
-  .asCollector(long[].class, 1);
-assertEquals("[123]", (String) longsToString.invokeExact((long)123));
+     * MethodHandle deepToString = publicLookup()
+     * .findStatic(Arrays.class, "deepToString", methodType(String.class, Object[].class));
+     * assertEquals("[won]",   (String) deepToString.invokeExact(new Object[]{"won"}));
+     * MethodHandle ts1 = deepToString.asCollector(Object[].class, 1);
+     * assertEquals(methodType(String.class, Object.class), ts1.type());
+     * //assertEquals("[won]", (String) ts1.invokeExact(         new Object[]{"won"})); //FAIL
+     * assertEquals("[[won]]", (String) ts1.invokeExact((Object) new Object[]{"won"}));
+     * // arrayType can be a subtype of Object[]
+     * MethodHandle ts2 = deepToString.asCollector(String[].class, 2);
+     * assertEquals(methodType(String.class, String.class, String.class), ts2.type());
+     * assertEquals("[two, too]", (String) ts2.invokeExact("two", "too"));
+     * MethodHandle ts0 = deepToString.asCollector(Object[].class, 0);
+     * assertEquals("[]", (String) ts0.invokeExact());
+     * // collectors can be nested, Lisp-style
+     * MethodHandle ts22 = deepToString.asCollector(Object[].class, 3).asCollector(String[].class, 2);
+     * assertEquals("[A, B, [C, D]]", ((String) ts22.invokeExact((Object)'A', (Object)"B", "C", "D")));
+     * // arrayType can be any primitive array type
+     * MethodHandle bytesToString = publicLookup()
+     * .findStatic(Arrays.class, "toString", methodType(String.class, byte[].class))
+     * .asCollector(byte[].class, 3);
+     * assertEquals("[1, 2, 3]", (String) bytesToString.invokeExact((byte)1, (byte)2, (byte)3));
+     * MethodHandle longsToString = publicLookup()
+     * .findStatic(Arrays.class, "toString", methodType(String.class, long[].class))
+     * .asCollector(long[].class, 1);
+     * assertEquals("[123]", (String) longsToString.invokeExact((long)123));
      * }</pre></blockquote>
-     * @param arrayType often {@code Object[]}, the type of the array argument which will collect the arguments
-     * @param arrayLength the number of arguments to collect into a new array argument
+     *
+     * @param arrayType
+     *         often {@code Object[]}, the type of the array argument which will collect the arguments
+     * @param arrayLength
+     *         the number of arguments to collect into a new array argument
+     *
      * @return a new method handle which collects some trailing argument
-     *         into an array, before calling the original method handle
-     * @throws NullPointerException if {@code arrayType} is a null reference
-     * @throws IllegalArgumentException if {@code arrayType} is not an array type
+     * into an array, before calling the original method handle
+     *
+     * @throws NullPointerException
+     *         if {@code arrayType} is a null reference
+     * @throws IllegalArgumentException
+     *         if {@code arrayType} is not an array type
      *         or {@code arrayType} is not assignable to this method handle's trailing parameter type,
      *         or {@code arrayLength} is not a legal array size,
      *         or the resulting method handle's type would have
      *         <a href="MethodHandle.html#maxarity">too many parameters</a>
-     * @throws WrongMethodTypeException if the implied {@code asType} call fails
+     * @throws WrongMethodTypeException
+     *         if the implied {@code asType} call fails
      * @see #asSpreader
      * @see #asVarargsCollector
      */
@@ -1013,9 +1099,13 @@ assertEquals("[123]", (String) longsToString.invokeExact((long)123));
         spreadArrayChecks(arrayType, arrayLength);
         int nargs = type().parameterCount();
         if (nargs != 0) {
-            Class<?> lastParam = type().parameterType(nargs-1);
-            if (lastParam == arrayType)  return true;
-            if (lastParam.isAssignableFrom(arrayType))  return false;
+            Class<?> lastParam = type().parameterType(nargs - 1);
+            if (lastParam == arrayType) {
+                return true;
+            }
+            if (lastParam.isAssignableFrom(arrayType)) {
+                return false;
+            }
         }
         throw newIllegalArgumentException("array type not assignable to trailing argument", this, arrayType);
     }
@@ -1123,27 +1213,27 @@ assertEquals("[123]", (String) longsToString.invokeExact((long)123));
      * <p>
      * Here is an example, of a list-making variable arity method handle:
      * <blockquote><pre>{@code
-MethodHandle deepToString = publicLookup()
-  .findStatic(Arrays.class, "deepToString", methodType(String.class, Object[].class));
-MethodHandle ts1 = deepToString.asVarargsCollector(Object[].class);
-assertEquals("[won]",   (String) ts1.invokeExact(    new Object[]{"won"}));
-assertEquals("[won]",   (String) ts1.invoke(         new Object[]{"won"}));
-assertEquals("[won]",   (String) ts1.invoke(                      "won" ));
-assertEquals("[[won]]", (String) ts1.invoke((Object) new Object[]{"won"}));
-// findStatic of Arrays.asList(...) produces a variable arity method handle:
-MethodHandle asList = publicLookup()
-  .findStatic(Arrays.class, "asList", methodType(List.class, Object[].class));
-assertEquals(methodType(List.class, Object[].class), asList.type());
-assert(asList.isVarargsCollector());
-assertEquals("[]", asList.invoke().toString());
-assertEquals("[1]", asList.invoke(1).toString());
-assertEquals("[two, too]", asList.invoke("two", "too").toString());
-String[] argv = { "three", "thee", "tee" };
-assertEquals("[three, thee, tee]", asList.invoke(argv).toString());
-assertEquals("[three, thee, tee]", asList.invoke((Object[])argv).toString());
-List ls = (List) asList.invoke((Object)argv);
-assertEquals(1, ls.size());
-assertEquals("[three, thee, tee]", Arrays.toString((Object[])ls.get(0)));
+     * MethodHandle deepToString = publicLookup()
+     * .findStatic(Arrays.class, "deepToString", methodType(String.class, Object[].class));
+     * MethodHandle ts1 = deepToString.asVarargsCollector(Object[].class);
+     * assertEquals("[won]",   (String) ts1.invokeExact(    new Object[]{"won"}));
+     * assertEquals("[won]",   (String) ts1.invoke(         new Object[]{"won"}));
+     * assertEquals("[won]",   (String) ts1.invoke(                      "won" ));
+     * assertEquals("[[won]]", (String) ts1.invoke((Object) new Object[]{"won"}));
+     * // findStatic of Arrays.asList(...) produces a variable arity method handle:
+     * MethodHandle asList = publicLookup()
+     * .findStatic(Arrays.class, "asList", methodType(List.class, Object[].class));
+     * assertEquals(methodType(List.class, Object[].class), asList.type());
+     * assert(asList.isVarargsCollector());
+     * assertEquals("[]", asList.invoke().toString());
+     * assertEquals("[1]", asList.invoke(1).toString());
+     * assertEquals("[two, too]", asList.invoke("two", "too").toString());
+     * String[] argv = { "three", "thee", "tee" };
+     * assertEquals("[three, thee, tee]", asList.invoke(argv).toString());
+     * assertEquals("[three, thee, tee]", asList.invoke((Object[])argv).toString());
+     * List ls = (List) asList.invoke((Object)argv);
+     * assertEquals(1, ls.size());
+     * assertEquals("[three, thee, tee]", Arrays.toString((Object[])ls.get(0)));
      * }</pre></blockquote>
      * <p style="font-size:smaller;">
      * <em>Discussion:</em>
@@ -1160,11 +1250,16 @@ assertEquals("[three, thee, tee]", Arrays.toString((Object[])ls.get(0)));
      * effect on this decision, only a comparison between the symbolic
      * type descriptor of the call site and the type descriptor of the method handle.)
      *
-     * @param arrayType often {@code Object[]}, the type of the array argument which will collect the arguments
+     * @param arrayType
+     *         often {@code Object[]}, the type of the array argument which will collect the arguments
+     *
      * @return a new method handle which can collect any number of trailing arguments
-     *         into an array, before calling the original method handle
-     * @throws NullPointerException if {@code arrayType} is a null reference
-     * @throws IllegalArgumentException if {@code arrayType} is not an array type
+     * into an array, before calling the original method handle
+     *
+     * @throws NullPointerException
+     *         if {@code arrayType} is a null reference
+     * @throws IllegalArgumentException
+     *         if {@code arrayType} is not an array type
      *         or {@code arrayType} is not assignable to this method handle's trailing parameter type
      * @see #asCollector
      * @see #isVarargsCollector
@@ -1173,8 +1268,9 @@ assertEquals("[three, thee, tee]", Arrays.toString((Object[])ls.get(0)));
     public MethodHandle asVarargsCollector(Class<?> arrayType) {
         arrayType.getClass(); // explicit NPE
         boolean lastMatch = asCollectorChecks(arrayType, 0);
-        if (isVarargsCollector() && lastMatch)
+        if (isVarargsCollector() && lastMatch) {
             return this;
+        }
         return MethodHandleImpl.makeVarargsCollector(this, arrayType);
     }
 
@@ -1185,11 +1281,13 @@ assertEquals("[three, thee, tee]", Arrays.toString((Object[])ls.get(0)));
      * <ul>
      * <li>a call to {@linkplain #asVarargsCollector asVarargsCollector}
      * <li>a call to a {@linkplain java.lang.invoke.MethodHandles.Lookup lookup method}
-     *     which resolves to a variable arity Java method or constructor
+     * which resolves to a variable arity Java method or constructor
      * <li>an {@code ldc} instruction of a {@code CONSTANT_MethodHandle}
-     *     which resolves to a variable arity Java method or constructor
+     * which resolves to a variable arity Java method or constructor
      * </ul>
+     *
      * @return true if this method handle accepts more than one arity of plain, inexact {@code invoke} calls
+     *
      * @see #asVarargsCollector
      * @see #asFixedArity
      */
@@ -1216,32 +1314,33 @@ assertEquals("[three, thee, tee]", Arrays.toString((Object[])ls.get(0)));
      * <p>
      * Here is an example, of a list-making variable arity method handle:
      * <blockquote><pre>{@code
-MethodHandle asListVar = publicLookup()
-  .findStatic(Arrays.class, "asList", methodType(List.class, Object[].class))
-  .asVarargsCollector(Object[].class);
-MethodHandle asListFix = asListVar.asFixedArity();
-assertEquals("[1]", asListVar.invoke(1).toString());
-Exception caught = null;
-try { asListFix.invoke((Object)1); }
-catch (Exception ex) { caught = ex; }
-assert(caught instanceof ClassCastException);
-assertEquals("[two, too]", asListVar.invoke("two", "too").toString());
-try { asListFix.invoke("two", "too"); }
-catch (Exception ex) { caught = ex; }
-assert(caught instanceof WrongMethodTypeException);
-Object[] argv = { "three", "thee", "tee" };
-assertEquals("[three, thee, tee]", asListVar.invoke(argv).toString());
-assertEquals("[three, thee, tee]", asListFix.invoke(argv).toString());
-assertEquals(1, ((List) asListVar.invoke((Object)argv)).size());
-assertEquals("[three, thee, tee]", asListFix.invoke((Object)argv).toString());
+     * MethodHandle asListVar = publicLookup()
+     * .findStatic(Arrays.class, "asList", methodType(List.class, Object[].class))
+     * .asVarargsCollector(Object[].class);
+     * MethodHandle asListFix = asListVar.asFixedArity();
+     * assertEquals("[1]", asListVar.invoke(1).toString());
+     * Exception caught = null;
+     * try { asListFix.invoke((Object)1); }
+     * catch (Exception ex) { caught = ex; }
+     * assert(caught instanceof ClassCastException);
+     * assertEquals("[two, too]", asListVar.invoke("two", "too").toString());
+     * try { asListFix.invoke("two", "too"); }
+     * catch (Exception ex) { caught = ex; }
+     * assert(caught instanceof WrongMethodTypeException);
+     * Object[] argv = { "three", "thee", "tee" };
+     * assertEquals("[three, thee, tee]", asListVar.invoke(argv).toString());
+     * assertEquals("[three, thee, tee]", asListFix.invoke(argv).toString());
+     * assertEquals(1, ((List) asListVar.invoke((Object)argv)).size());
+     * assertEquals("[three, thee, tee]", asListFix.invoke((Object)argv).toString());
      * }</pre></blockquote>
      *
      * @return a new method handle which accepts only a fixed number of arguments
+     *
      * @see #asVarargsCollector
      * @see #isVarargsCollector
      */
     public MethodHandle asFixedArity() {
-        assert(!isVarargsCollector());
+        assert (!isVarargsCollector());
         return this;
     }
 
@@ -1263,12 +1362,18 @@ assertEquals("[three, thee, tee]", asListFix.invoke((Object)argv).toString());
      * <p>
      * (<em>Note:</em>  Because method handles are immutable, the target method handle
      * retains its original type and behavior.)
-     * @param x  the value to bind to the first argument of the target
+     *
+     * @param x
+     *         the value to bind to the first argument of the target
+     *
      * @return a new method handle which prepends the given value to the incoming
-     *         argument list, before calling the original method handle
-     * @throws IllegalArgumentException if the target does not have a
+     * argument list, before calling the original method handle
+     *
+     * @throws IllegalArgumentException
+     *         if the target does not have a
      *         leading parameter type that is a reference type
-     * @throws ClassCastException if {@code x} cannot be converted
+     * @throws ClassCastException
+     *         if {@code x} cannot be converted
      *         to the leading parameter type of the target
      * @see MethodHandles#insertArguments
      */
@@ -1294,17 +1399,22 @@ assertEquals("[three, thee, tee]", asListFix.invoke((Object)argv).toString());
      */
     @Override
     public String toString() {
-        if (DEBUG_METHOD_HANDLE_NAMES)  return "MethodHandle"+debugString();
+        if (DEBUG_METHOD_HANDLE_NAMES) {
+            return "MethodHandle" + debugString();
+        }
         return standardString();
     }
+
     String standardString() {
-        return "MethodHandle"+type;
+        return "MethodHandle" + type;
     }
-    /** Return a string with a several lines describing the method handle structure.
-     *  This string would be suitable for display in an IDE debugger.
+
+    /**
+     * Return a string with a several lines describing the method handle structure.
+     * This string would be suitable for display in an IDE debugger.
      */
     String debugString() {
-        return type+" : "+internalForm()+internalProperties();
+        return type + " : " + internalForm() + internalProperties();
     }
 
     //// Implementation methods.
@@ -1319,7 +1429,9 @@ assertEquals("[three, thee, tee]", asListFix.invoke((Object)argv).toString());
 
     /*non-public*/
     MethodHandle setVarargs(MemberName member) throws IllegalAccessException {
-        if (!member.isVarargs())  return this;
+        if (!member.isVarargs()) {
+            return this;
+        }
         Class<?> arrayType = type().lastParameterType();
         if (arrayType.isArray()) {
             return MethodHandleImpl.makeVarargsCollector(this, arrayType);
@@ -1335,18 +1447,16 @@ assertEquals("[three, thee, tee]", asListFix.invoke((Object)argv).toString());
         // cannot be cracked into MethodHandleInfo.
         assert viewAsTypeChecks(newType, strict);
         BoundMethodHandle mh = rebind();
-        assert(!((MethodHandle)mh instanceof DirectMethodHandle));
+        assert (!((MethodHandle) mh instanceof DirectMethodHandle));
         return mh.copyWith(newType, mh.form);
     }
 
     /*non-public*/
     boolean viewAsTypeChecks(MethodType newType, boolean strict) {
         if (strict) {
-            assert(type().isViewableAs(newType, true))
-                : Arrays.asList(this, newType);
+            assert (type().isViewableAs(newType, true)) : Arrays.asList(this, newType);
         } else {
-            assert(type().basicType().isViewableAs(newType.basicType(), true))
-                : Arrays.asList(this, newType);
+            assert (type().basicType().isViewableAs(newType.basicType(), true)) : Arrays.asList(this, newType);
         }
         return true;
     }
@@ -1412,9 +1522,11 @@ assertEquals("[three, thee, tee]", asListFix.invoke((Object)argv).toString());
     /*non-public*/
     abstract MethodHandle copyWith(MethodType mt, LambdaForm lf);
 
-    /** Require this method handle to be a BMH, or else replace it with a "wrapper" BMH.
-     *  Many transforms are implemented only for BMHs.
-     *  @return a behaviorally equivalent BMH
+    /**
+     * Require this method handle to be a BMH, or else replace it with a "wrapper" BMH.
+     * Many transforms are implemented only for BMHs.
+     *
+     * @return a behaviorally equivalent BMH
      */
     abstract BoundMethodHandle rebind();
 
@@ -1427,8 +1539,10 @@ assertEquals("[three, thee, tee]", asListFix.invoke((Object)argv).toString());
      */
     /*non-public*/
     void updateForm(LambdaForm newForm) {
-        assert(newForm.customized == null || newForm.customized == this);
-        if (form == newForm)  return;
+        assert (newForm.customized == null || newForm.customized == this);
+        if (form == newForm) {
+            return;
+        }
         newForm.prepare();  // as in MethodHandle.<init>
         UNSAFE.putObject(this, FORM_OFFSET, newForm);
         UNSAFE.fullFence();
@@ -1441,11 +1555,12 @@ assertEquals("[three, thee, tee]", asListFix.invoke((Object)argv).toString());
             LambdaForm newForm = form.customize(this);
             updateForm(newForm);
         } else {
-            assert(form.customized == this);
+            assert (form.customized == this);
         }
     }
 
     private static final long FORM_OFFSET;
+
     static {
         try {
             FORM_OFFSET = UNSAFE.objectFieldOffset(MethodHandle.class.getDeclaredField("form"));

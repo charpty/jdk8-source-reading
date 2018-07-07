@@ -38,10 +38,10 @@ import java.util.List;
  * <p>
  * Applications should not create their own file descriptors.
  *
- * @author  Pavani Diwanji
- * @see     java.io.FileInputStream
- * @see     java.io.FileOutputStream
- * @since   JDK1.0
+ * @author Pavani Diwanji
+ * @see java.io.FileInputStream
+ * @see java.io.FileOutputStream
+ * @since JDK1.0
  */
 public final class FileDescriptor {
 
@@ -68,7 +68,7 @@ public final class FileDescriptor {
      * descriptor is not used directly, but rather via the input stream
      * known as <code>System.in</code>.
      *
-     * @see     java.lang.System#in
+     * @see java.lang.System#in
      */
     public static final FileDescriptor in = new FileDescriptor(0);
 
@@ -76,7 +76,8 @@ public final class FileDescriptor {
      * A handle to the standard output stream. Usually, this file
      * descriptor is not used directly, but rather via the output stream
      * known as <code>System.out</code>.
-     * @see     java.lang.System#out
+     *
+     * @see java.lang.System#out
      */
     public static final FileDescriptor out = new FileDescriptor(1);
 
@@ -85,16 +86,16 @@ public final class FileDescriptor {
      * descriptor is not used directly, but rather via the output stream
      * known as <code>System.err</code>.
      *
-     * @see     java.lang.System#err
+     * @see java.lang.System#err
      */
     public static final FileDescriptor err = new FileDescriptor(2);
 
     /**
      * Tests if this file descriptor object is valid.
      *
-     * @return  <code>true</code> if the file descriptor object represents a
-     *          valid, open file, socket, or other active I/O connection;
-     *          <code>false</code> otherwise.
+     * @return <code>true</code> if the file descriptor object represents a
+     * valid, open file, socket, or other active I/O connection;
+     * <code>false</code> otherwise.
      */
     public boolean valid() {
         return fd != -1;
@@ -122,11 +123,11 @@ public final class FileDescriptor {
      * be flushed into the FileDescriptor (for example, by invoking
      * OutputStream.flush) before that data will be affected by sync.
      *
-     * @exception SyncFailedException
-     *        Thrown when the buffers cannot be flushed,
-     *        or because the system cannot guarantee that all the
-     *        buffers have been synchronized with physical media.
-     * @since     JDK1.1
+     * @throws SyncFailedException
+     *         Thrown when the buffers cannot be flushed,
+     *         or because the system cannot guarantee that all the
+     *         buffers have been synchronized with physical media.
+     * @since JDK1.1
      */
     public native void sync() throws SyncFailedException;
 
@@ -139,25 +140,23 @@ public final class FileDescriptor {
 
     // Set up JavaIOFileDescriptorAccess in SharedSecrets
     static {
-        sun.misc.SharedSecrets.setJavaIOFileDescriptorAccess(
-            new sun.misc.JavaIOFileDescriptorAccess() {
-                public void set(FileDescriptor obj, int fd) {
-                    obj.fd = fd;
-                }
-
-                public int get(FileDescriptor obj) {
-                    return obj.fd;
-                }
-
-                public void setHandle(FileDescriptor obj, long handle) {
-                    throw new UnsupportedOperationException();
-                }
-
-                public long getHandle(FileDescriptor obj) {
-                    throw new UnsupportedOperationException();
-                }
+        sun.misc.SharedSecrets.setJavaIOFileDescriptorAccess(new sun.misc.JavaIOFileDescriptorAccess() {
+            public void set(FileDescriptor obj, int fd) {
+                obj.fd = fd;
             }
-        );
+
+            public int get(FileDescriptor obj) {
+                return obj.fd;
+            }
+
+            public void setHandle(FileDescriptor obj, long handle) {
+                throw new UnsupportedOperationException();
+            }
+
+            public long getHandle(FileDescriptor obj) {
+                throw new UnsupportedOperationException();
+            }
+        });
     }
 
     /*
@@ -200,7 +199,7 @@ public final class FileDescriptor {
                     for (Closeable referent : otherParents) {
                         try {
                             referent.close();
-                        } catch(IOException x) {
+                        } catch (IOException x) {
                             if (ioe == null) {
                                 ioe = x;
                             } else {
@@ -209,17 +208,19 @@ public final class FileDescriptor {
                         }
                     }
                 }
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 /*
                  * If releaser close() throws IOException
                  * add other exceptions as suppressed.
                  */
-                if (ioe != null)
+                if (ioe != null) {
                     ex.addSuppressed(ioe);
+                }
                 ioe = ex;
             } finally {
-                if (ioe != null)
+                if (ioe != null) {
                     throw ioe;
+                }
             }
         }
     }

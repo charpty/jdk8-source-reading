@@ -82,9 +82,6 @@ import java.time.DateTimeException;
  * <p>
  * Instances of this class are not tied to a specific field.
  *
- * @implSpec
- * This class is immutable and thread-safe.
- *
  * @since 1.8
  */
 public final class ValueRange implements Serializable {
@@ -117,10 +114,15 @@ public final class ValueRange implements Serializable {
      * This factory obtains a range where the minimum and maximum values are fixed.
      * For example, the ISO month-of-year always runs from 1 to 12.
      *
-     * @param min  the minimum value
-     * @param max  the maximum value
+     * @param min
+     *         the minimum value
+     * @param max
+     *         the maximum value
+     *
      * @return the ValueRange for min, max, not null
-     * @throws IllegalArgumentException if the minimum is greater than the maximum
+     *
+     * @throws IllegalArgumentException
+     *         if the minimum is greater than the maximum
      */
     public static ValueRange of(long min, long max) {
         if (min > max) {
@@ -135,13 +137,19 @@ public final class ValueRange implements Serializable {
      * This factory obtains a range where the minimum value is fixed and the maximum value may vary.
      * For example, the ISO day-of-month always starts at 1, but ends between 28 and 31.
      *
-     * @param min  the minimum value
-     * @param maxSmallest  the smallest maximum value
-     * @param maxLargest  the largest maximum value
+     * @param min
+     *         the minimum value
+     * @param maxSmallest
+     *         the smallest maximum value
+     * @param maxLargest
+     *         the largest maximum value
+     *
      * @return the ValueRange for min, smallest max, largest max, not null
-     * @throws IllegalArgumentException if
-     *     the minimum is greater than the smallest maximum,
-     *  or the smallest maximum is greater than the largest maximum
+     *
+     * @throws IllegalArgumentException
+     *         if
+     *         the minimum is greater than the smallest maximum,
+     *         or the smallest maximum is greater than the largest maximum
      */
     public static ValueRange of(long min, long maxSmallest, long maxLargest) {
         return of(min, min, maxSmallest, maxLargest);
@@ -152,15 +160,22 @@ public final class ValueRange implements Serializable {
      * <p>
      * This factory obtains a range where both the minimum and maximum value may vary.
      *
-     * @param minSmallest  the smallest minimum value
-     * @param minLargest  the largest minimum value
-     * @param maxSmallest  the smallest maximum value
-     * @param maxLargest  the largest maximum value
+     * @param minSmallest
+     *         the smallest minimum value
+     * @param minLargest
+     *         the largest minimum value
+     * @param maxSmallest
+     *         the smallest maximum value
+     * @param maxLargest
+     *         the largest maximum value
+     *
      * @return the ValueRange for smallest min, largest min, smallest max, largest max, not null
-     * @throws IllegalArgumentException if
-     *     the smallest minimum is greater than the smallest maximum,
-     *  or the smallest maximum is greater than the largest maximum
-     *  or the largest minimum is greater than the largest maximum
+     *
+     * @throws IllegalArgumentException
+     *         if
+     *         the smallest minimum is greater than the smallest maximum,
+     *         or the smallest maximum is greater than the largest maximum
+     *         or the largest minimum is greater than the largest maximum
      */
     public static ValueRange of(long minSmallest, long minLargest, long maxSmallest, long maxLargest) {
         if (minSmallest > minLargest) {
@@ -178,10 +193,14 @@ public final class ValueRange implements Serializable {
     /**
      * Restrictive constructor.
      *
-     * @param minSmallest  the smallest minimum value
-     * @param minLargest  the largest minimum value
-     * @param maxSmallest  the smallest minimum value
-     * @param maxLargest  the largest minimum value
+     * @param minSmallest
+     *         the smallest minimum value
+     * @param minLargest
+     *         the largest minimum value
+     * @param maxSmallest
+     *         the smallest minimum value
+     * @param maxLargest
+     *         the largest minimum value
      */
     private ValueRange(long minSmallest, long minLargest, long maxSmallest, long maxLargest) {
         this.minSmallest = minSmallest;
@@ -191,6 +210,7 @@ public final class ValueRange implements Serializable {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Is the value range fixed and fully known.
      * <p>
@@ -205,6 +225,7 @@ public final class ValueRange implements Serializable {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the minimum value that the field can take.
      * <p>
@@ -254,6 +275,7 @@ public final class ValueRange implements Serializable {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks if all values in the range fit in an {@code int}.
      * <p>
@@ -275,7 +297,9 @@ public final class ValueRange implements Serializable {
      * <p>
      * This checks that the value is within the stored range of values.
      *
-     * @param value  the value to check
+     * @param value
+     *         the value to check
+     *
      * @return true if the value is valid
      */
     public boolean isValidValue(long value) {
@@ -288,7 +312,9 @@ public final class ValueRange implements Serializable {
      * <p>
      * This method combines {@link #isIntValue()} and {@link #isValidValue(long)}.
      *
-     * @param value  the value to check
+     * @param value
+     *         the value to check
+     *
      * @return true if the value is valid and fits in an {@code int}
      */
     public boolean isValidIntValue(long value) {
@@ -301,9 +327,13 @@ public final class ValueRange implements Serializable {
      * This validates that the value is within the valid range of values.
      * The field is only used to improve the error message.
      *
-     * @param value  the value to check
-     * @param field  the field being checked, may be null
+     * @param value
+     *         the value to check
+     * @param field
+     *         the field being checked, may be null
+     *
      * @return the value that was passed in
+     *
      * @see #isValidValue(long)
      */
     public long checkValidValue(long value, TemporalField field) {
@@ -320,9 +350,13 @@ public final class ValueRange implements Serializable {
      * all valid values are within the bounds of an {@code int}.
      * The field is only used to improve the error message.
      *
-     * @param value  the value to check
-     * @param field  the field being checked, may be null
+     * @param value
+     *         the value to check
+     * @param field
+     *         the field being checked, may be null
+     *
      * @return the value that was passed in
+     *
      * @see #isValidIntValue(long)
      */
     public int checkValidIntValue(long value, TemporalField field) {
@@ -341,20 +375,23 @@ public final class ValueRange implements Serializable {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Restore the state of an ValueRange from the stream.
      * Check that the values are valid.
      *
-     * @param s the stream to read
-     * @throws InvalidObjectException if
-     *     the smallest minimum is greater than the smallest maximum,
-     *  or the smallest maximum is greater than the largest maximum
-     *  or the largest minimum is greater than the largest maximum
-     * @throws ClassNotFoundException if a class cannot be resolved
+     * @param s
+     *         the stream to read
+     *
+     * @throws InvalidObjectException
+     *         if
+     *         the smallest minimum is greater than the smallest maximum,
+     *         or the smallest maximum is greater than the largest maximum
+     *         or the largest minimum is greater than the largest maximum
+     * @throws ClassNotFoundException
+     *         if a class cannot be resolved
      */
-    private void readObject(ObjectInputStream s)
-         throws IOException, ClassNotFoundException, InvalidObjectException
-    {
+    private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException, InvalidObjectException {
         s.defaultReadObject();
         if (minSmallest > minLargest) {
             throw new InvalidObjectException("Smallest minimum value must be less than largest minimum value");
@@ -368,6 +405,7 @@ public final class ValueRange implements Serializable {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks if this range is equal to another range.
      * <p>
@@ -375,7 +413,9 @@ public final class ValueRange implements Serializable {
      * smallest maximum and maximum.
      * Only objects of type {@code ValueRange} are compared, other types return false.
      *
-     * @param obj  the object to check, null returns false
+     * @param obj
+     *         the object to check, null returns false
+     *
      * @return true if this is equal to the other range
      */
     @Override
@@ -385,8 +425,7 @@ public final class ValueRange implements Serializable {
         }
         if (obj instanceof ValueRange) {
             ValueRange other = (ValueRange) obj;
-           return minSmallest == other.minSmallest && minLargest == other.minLargest &&
-                   maxSmallest == other.maxSmallest && maxLargest == other.maxLargest;
+            return minSmallest == other.minSmallest && minLargest == other.minLargest && maxSmallest == other.maxSmallest && maxLargest == other.maxLargest;
         }
         return false;
     }
@@ -398,12 +437,12 @@ public final class ValueRange implements Serializable {
      */
     @Override
     public int hashCode() {
-        long hash = minSmallest + minLargest << 16 + minLargest >> 48 + maxSmallest << 32 +
-            maxSmallest >> 32 + maxLargest << 48 + maxLargest >> 16;
+        long hash = minSmallest + minLargest << 16 + minLargest >> 48 + maxSmallest << 32 + maxSmallest >> 32 + maxLargest << 48 + maxLargest >> 16;
         return (int) (hash ^ (hash >>> 32));
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Outputs this range as a {@code String}.
      * <p>

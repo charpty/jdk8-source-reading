@@ -23,7 +23,6 @@
  *
  */
 
-
 package java.util.logging;
 
 /**
@@ -37,7 +36,7 @@ package java.util.logging;
  */
 
 public class ErrorManager {
-   private boolean reported = false;
+    private boolean reported = false;
 
     /*
      * We declare standard error codes for important categories of errors.
@@ -76,9 +75,12 @@ public class ErrorManager {
      * behavior in this base class is that the first call is
      * reported to System.err, and subsequent calls are ignored.
      *
-     * @param msg    a descriptive string (may be null)
-     * @param ex     an exception (may be null)
-     * @param code   an error code defined in ErrorManager
+     * @param msg
+     *         a descriptive string (may be null)
+     * @param ex
+     *         an exception (may be null)
+     * @param code
+     *         an error code defined in ErrorManager
      */
     public synchronized void error(String msg, Exception ex, int code) {
         if (reported) {

@@ -38,8 +38,8 @@ package java.util.concurrent;
 /**
  * A handler for tasks that cannot be executed by a {@link ThreadPoolExecutor}.
  *
- * @since 1.5
  * @author Doug Lea
+ * @since 1.5
  */
 public interface RejectedExecutionHandler {
 
@@ -54,9 +54,13 @@ public interface RejectedExecutionHandler {
      * an unchecked {@link RejectedExecutionException}, which will be
      * propagated to the caller of {@code execute}.
      *
-     * @param r the runnable task requested to be executed
-     * @param executor the executor attempting to execute this task
-     * @throws RejectedExecutionException if there is no remedy
+     * @param r
+     *         the runnable task requested to be executed
+     * @param executor
+     *         the executor attempting to execute this task
+     *
+     * @throws RejectedExecutionException
+     *         if there is no remedy
      */
     void rejectedExecution(Runnable r, ThreadPoolExecutor executor);
 }

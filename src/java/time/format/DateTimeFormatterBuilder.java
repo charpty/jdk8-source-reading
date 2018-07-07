@@ -61,16 +61,6 @@
  */
 package java.time.format;
 
-import static java.time.temporal.ChronoField.DAY_OF_MONTH;
-import static java.time.temporal.ChronoField.HOUR_OF_DAY;
-import static java.time.temporal.ChronoField.INSTANT_SECONDS;
-import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
-import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
-import static java.time.temporal.ChronoField.NANO_OF_SECOND;
-import static java.time.temporal.ChronoField.OFFSET_SECONDS;
-import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
-import static java.time.temporal.ChronoField.YEAR;
-
 import java.lang.ref.SoftReference;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -113,10 +103,12 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import sun.util.locale.provider.LocaleProviderAdapter;
 import sun.util.locale.provider.LocaleResources;
 import sun.util.locale.provider.TimeZoneNameUtility;
+
+
+import static java.time.temporal.ChronoField.*;
 
 /**
  * Builder to create date-time formatters.
@@ -143,9 +135,6 @@ import sun.util.locale.provider.TimeZoneNameUtility;
  * Finally, a shorthand pattern, mostly compatible with {@code java.text.SimpleDateFormat SimpleDateFormat}
  * can be used, see {@link #appendPattern(String)}.
  * In practice, this simply parses the pattern and calls other methods on the builder.
- *
- * @implSpec
- * This class is a mutable builder intended for use from a single thread.
  *
  * @since 1.8
  */
@@ -193,30 +182,37 @@ public final class DateTimeFormatterBuilder {
      * The locale and chronology are used to lookup the locale specific format
      * for the requested dateStyle and/or timeStyle.
      *
-     * @param dateStyle  the FormatStyle for the date, null for time-only pattern
-     * @param timeStyle  the FormatStyle for the time, null for date-only pattern
-     * @param chrono  the Chronology, non-null
-     * @param locale  the locale, non-null
+     * @param dateStyle
+     *         the FormatStyle for the date, null for time-only pattern
+     * @param timeStyle
+     *         the FormatStyle for the time, null for date-only pattern
+     * @param chrono
+     *         the Chronology, non-null
+     * @param locale
+     *         the locale, non-null
+     *
      * @return the locale and Chronology specific formatting pattern
-     * @throws IllegalArgumentException if both dateStyle and timeStyle are null
+     *
+     * @throws IllegalArgumentException
+     *         if both dateStyle and timeStyle are null
      */
-    public static String getLocalizedDateTimePattern(FormatStyle dateStyle, FormatStyle timeStyle,
-            Chronology chrono, Locale locale) {
+    public static String getLocalizedDateTimePattern(FormatStyle dateStyle, FormatStyle timeStyle, Chronology chrono, Locale locale) {
         Objects.requireNonNull(locale, "locale");
         Objects.requireNonNull(chrono, "chrono");
         if (dateStyle == null && timeStyle == null) {
             throw new IllegalArgumentException("Either dateStyle or timeStyle must be non-null");
         }
         LocaleResources lr = LocaleProviderAdapter.getResourceBundleBased().getLocaleResources(locale);
-        String pattern = lr.getJavaTimeDateTimePattern(
-                convertStyle(timeStyle), convertStyle(dateStyle), chrono.getCalendarType());
+        String pattern = lr.getJavaTimeDateTimePattern(convertStyle(timeStyle), convertStyle(dateStyle), chrono.getCalendarType());
         return pattern;
     }
 
     /**
      * Converts the given FormatStyle to the java.text.DateFormat style.
      *
-     * @param style  the FormatStyle style
+     * @param style
+     *         the FormatStyle style
+     *
      * @return the int style, or -1 if style is null, indicating un-required
      */
     private static int convertStyle(FormatStyle style) {
@@ -238,8 +234,10 @@ public final class DateTimeFormatterBuilder {
     /**
      * Constructs a new instance of the builder.
      *
-     * @param parent  the parent builder, not null
-     * @param optional  whether the formatter is optional, not null
+     * @param parent
+     *         the parent builder, not null
+     * @param optional
+     *         whether the formatter is optional, not null
      */
     private DateTimeFormatterBuilder(DateTimeFormatterBuilder parent, boolean optional) {
         super();
@@ -248,6 +246,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Changes the parse style to be case sensitive for the remainder of the formatter.
      * <p>
@@ -292,6 +291,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Changes the parse style to be strict for the remainder of the formatter.
      * <p>
@@ -330,6 +330,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Appends a default value for a field to the formatter for use in parsing.
      * <p>
@@ -353,8 +354,11 @@ public final class DateTimeFormatterBuilder {
      * will be visible to any subsequent elements in the formatter.
      * As such, this method is normally called at the end of the builder.
      *
-     * @param field  the field to default the value of, not null
-     * @param value  the value to default the field to
+     * @param field
+     *         the field to default the value of, not null
+     * @param value
+     *         the value to default the field to
+     *
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder parseDefaulting(TemporalField field, long value) {
@@ -364,6 +368,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Appends the value of a date-time field to the formatter using a normal
      * output style.
@@ -379,7 +384,9 @@ public final class DateTimeFormatterBuilder {
      * This behavior can be affected by 'adjacent value parsing'.
      * See {@link #appendValue(java.time.temporal.TemporalField, int)} for full details.
      *
-     * @param field  the field to append, not null
+     * @param field
+     *         the field to append, not null
+     *
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendValue(TemporalField field) {
@@ -431,10 +438,15 @@ public final class DateTimeFormatterBuilder {
      * number of digits in both strict and lenient modes.
      * In addition, no positive or negative sign is permitted.
      *
-     * @param field  the field to append, not null
-     * @param width  the width of the printed field, from 1 to 19
+     * @param field
+     *         the field to append, not null
+     * @param width
+     *         the width of the printed field, from 1 to 19
+     *
      * @return this, for chaining, not null
-     * @throws IllegalArgumentException if the width is invalid
+     *
+     * @throws IllegalArgumentException
+     *         if the width is invalid
      */
     public DateTimeFormatterBuilder appendValue(TemporalField field, int width) {
         Objects.requireNonNull(field, "field");
@@ -470,15 +482,21 @@ public final class DateTimeFormatterBuilder {
      * {@code NOT_NEGATIVE} then it delegates to {@code appendValue(TemporalField,int)}.
      * In this scenario, the formatting and parsing behavior described there occur.
      *
-     * @param field  the field to append, not null
-     * @param minWidth  the minimum field width of the printed field, from 1 to 19
-     * @param maxWidth  the maximum field width of the printed field, from 1 to 19
-     * @param signStyle  the positive/negative output style, not null
+     * @param field
+     *         the field to append, not null
+     * @param minWidth
+     *         the minimum field width of the printed field, from 1 to 19
+     * @param maxWidth
+     *         the maximum field width of the printed field, from 1 to 19
+     * @param signStyle
+     *         the positive/negative output style, not null
+     *
      * @return this, for chaining, not null
-     * @throws IllegalArgumentException if the widths are invalid
+     *
+     * @throws IllegalArgumentException
+     *         if the widths are invalid
      */
-    public DateTimeFormatterBuilder appendValue(
-            TemporalField field, int minWidth, int maxWidth, SignStyle signStyle) {
+    public DateTimeFormatterBuilder appendValue(TemporalField field, int minWidth, int maxWidth, SignStyle signStyle) {
         if (minWidth == maxWidth && signStyle == SignStyle.NOT_NEGATIVE) {
             return appendValue(field, maxWidth);
         }
@@ -491,8 +509,7 @@ public final class DateTimeFormatterBuilder {
             throw new IllegalArgumentException("The maximum width must be from 1 to 19 inclusive but was " + maxWidth);
         }
         if (maxWidth < minWidth) {
-            throw new IllegalArgumentException("The maximum width must exceed or equal the minimum width but " +
-                    maxWidth + " < " + minWidth);
+            throw new IllegalArgumentException("The maximum width must exceed or equal the minimum width but " + maxWidth + " < " + minWidth);
         }
         NumberPrinterParser pp = new NumberPrinterParser(field, minWidth, maxWidth, signStyle);
         appendValue(pp);
@@ -500,6 +517,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Appends the reduced value of a date-time field to the formatter.
      * <p>
@@ -531,15 +549,21 @@ public final class DateTimeFormatterBuilder {
      * is the value within the range where the last two characters are "12".
      * By contrast, parsing the text {@code "1915"} will result in the value {@code 1915}.
      *
-     * @param field  the field to append, not null
-     * @param width  the field width of the printed and parsed field, from 1 to 10
-     * @param maxWidth  the maximum field width of the printed field, from 1 to 10
-     * @param baseValue  the base value of the range of valid values
+     * @param field
+     *         the field to append, not null
+     * @param width
+     *         the field width of the printed and parsed field, from 1 to 10
+     * @param maxWidth
+     *         the maximum field width of the printed field, from 1 to 10
+     * @param baseValue
+     *         the base value of the range of valid values
+     *
      * @return this, for chaining, not null
-     * @throws IllegalArgumentException if the width or base value is invalid
+     *
+     * @throws IllegalArgumentException
+     *         if the width or base value is invalid
      */
-    public DateTimeFormatterBuilder appendValueReduced(TemporalField field,
-            int width, int maxWidth, int baseValue) {
+    public DateTimeFormatterBuilder appendValueReduced(TemporalField field, int width, int maxWidth, int baseValue) {
         Objects.requireNonNull(field, "field");
         ReducedPrinterParser pp = new ReducedPrinterParser(field, width, maxWidth, baseValue, null);
         appendValue(pp);
@@ -590,16 +614,22 @@ public final class DateTimeFormatterBuilder {
      * is the value within the range where the last two characters are "12".
      * By contrast, parsing the text {@code "1915"} will result in the value {@code 1915}.
      *
-     * @param field  the field to append, not null
-     * @param width  the field width of the printed and parsed field, from 1 to 10
-     * @param maxWidth  the maximum field width of the printed field, from 1 to 10
-     * @param baseDate  the base date used to calculate the base value for the range
-     *  of valid values in the parsed chronology, not null
+     * @param field
+     *         the field to append, not null
+     * @param width
+     *         the field width of the printed and parsed field, from 1 to 10
+     * @param maxWidth
+     *         the maximum field width of the printed field, from 1 to 10
+     * @param baseDate
+     *         the base date used to calculate the base value for the range
+     *         of valid values in the parsed chronology, not null
+     *
      * @return this, for chaining, not null
-     * @throws IllegalArgumentException if the width or base value is invalid
+     *
+     * @throws IllegalArgumentException
+     *         if the width or base value is invalid
      */
-    public DateTimeFormatterBuilder appendValueReduced(
-            TemporalField field, int width, int maxWidth, ChronoLocalDate baseDate) {
+    public DateTimeFormatterBuilder appendValueReduced(TemporalField field, int width, int maxWidth, ChronoLocalDate baseDate) {
         Objects.requireNonNull(field, "field");
         Objects.requireNonNull(baseDate, "baseDate");
         ReducedPrinterParser pp = new ReducedPrinterParser(field, width, maxWidth, 0, baseDate);
@@ -618,7 +648,9 @@ public final class DateTimeFormatterBuilder {
      * If the new PrinterParser is variable width, the active PrinterParser is changed
      * to be fixed width and the new PrinterParser becomes the active PP.
      *
-     * @param pp  the printer-parser, not null
+     * @param pp
+     *         the printer-parser, not null
+     *
      * @return this, for chaining, not null
      */
     private DateTimeFormatterBuilder appendValue(NumberPrinterParser pp) {
@@ -650,6 +682,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Appends the fractional value of a date-time field to the formatter.
      * <p>
@@ -674,21 +707,28 @@ public final class DateTimeFormatterBuilder {
      * If the field value in the date-time to be printed is invalid it
      * cannot be printed and an exception will be thrown.
      *
-     * @param field  the field to append, not null
-     * @param minWidth  the minimum width of the field excluding the decimal point, from 0 to 9
-     * @param maxWidth  the maximum width of the field excluding the decimal point, from 1 to 9
-     * @param decimalPoint  whether to output the localized decimal point symbol
+     * @param field
+     *         the field to append, not null
+     * @param minWidth
+     *         the minimum width of the field excluding the decimal point, from 0 to 9
+     * @param maxWidth
+     *         the maximum width of the field excluding the decimal point, from 1 to 9
+     * @param decimalPoint
+     *         whether to output the localized decimal point symbol
+     *
      * @return this, for chaining, not null
-     * @throws IllegalArgumentException if the field has a variable set of valid values or
-     *  either width is invalid
+     *
+     * @throws IllegalArgumentException
+     *         if the field has a variable set of valid values or
+     *         either width is invalid
      */
-    public DateTimeFormatterBuilder appendFraction(
-            TemporalField field, int minWidth, int maxWidth, boolean decimalPoint) {
+    public DateTimeFormatterBuilder appendFraction(TemporalField field, int minWidth, int maxWidth, boolean decimalPoint) {
         appendInternal(new FractionPrinterParser(field, minWidth, maxWidth, decimalPoint));
         return this;
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Appends the text of a date-time field to the formatter using the full
      * text style.
@@ -701,7 +741,9 @@ public final class DateTimeFormatterBuilder {
      * The value will be printed as per the normal format of an integer value.
      * Only negative numbers will be signed. No padding will be added.
      *
-     * @param field  the field to append, not null
+     * @param field
+     *         the field to append, not null
+     *
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendText(TemporalField field) {
@@ -719,8 +761,11 @@ public final class DateTimeFormatterBuilder {
      * The value will be printed as per the normal format of an integer value.
      * Only negative numbers will be signed. No padding will be added.
      *
-     * @param field  the field to append, not null
-     * @param textStyle  the text style to use, not null
+     * @param field
+     *         the field to append, not null
+     * @param textStyle
+     *         the text style to use, not null
+     *
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendText(TemporalField field, TextStyle textStyle) {
@@ -760,8 +805,11 @@ public final class DateTimeFormatterBuilder {
      * If text is not available for the value then it is output as a number.
      * During parsing, the parser will match against the map of text and numeric values.
      *
-     * @param field  the field to append, not null
-     * @param textLookup  the map from the value to the text
+     * @param field
+     *         the field to append, not null
+     * @param textLookup
+     *         the map from the value to the text
+     *
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendText(TemporalField field, Map<Long, String> textLookup) {
@@ -775,6 +823,7 @@ public final class DateTimeFormatterBuilder {
             public String getText(TemporalField field, long value, TextStyle style, Locale locale) {
                 return store.getText(value, style);
             }
+
             @Override
             public Iterator<Entry<String, Long>> getTextIterator(TemporalField field, TextStyle style, Locale locale) {
                 return store.getTextIterator(style);
@@ -785,6 +834,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Appends an instant using ISO-8601 to the formatter, formatting fractional
      * digits in groups of three.
@@ -846,8 +896,10 @@ public final class DateTimeFormatterBuilder {
      * An alternative to this method is to format/parse the instant as a single
      * epoch-seconds value. That is achieved using {@code appendValue(INSTANT_SECONDS)}.
      *
-     * @param fractionalDigits  the number of fractional second digits to format with,
-     *  from 0 to 9, or -1 to use as many digits as necessary
+     * @param fractionalDigits
+     *         the number of fractional second digits to format with,
+     *         from 0 to 9, or -1 to use as many digits as necessary
+     *
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendInstant(int fractionalDigits) {
@@ -859,6 +911,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Appends the zone offset, such as '+01:00', to the formatter.
      * <p>
@@ -906,8 +959,11 @@ public final class DateTimeFormatterBuilder {
      * Three formats are accepted for parsing UTC - the "no offset" text, and the
      * plus and minus versions of zero defined by the pattern.
      *
-     * @param pattern  the pattern to use, not null
-     * @param noOffsetText  the text to use when the offset is zero, not null
+     * @param pattern
+     *         the pattern to use, not null
+     * @param noOffsetText
+     *         the text to use when the offset is zero, not null
+     *
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendOffset(String pattern, String noOffsetText) {
@@ -939,10 +995,15 @@ public final class DateTimeFormatterBuilder {
      * If the offset cannot be parsed then an exception is thrown unless the
      * section of the formatter is optional.
      * <p>
-     * @param style  the format style to use, not null
+     *
+     * @param style
+     *         the format style to use, not null
+     *
      * @return this, for chaining, not null
-     * @throws IllegalArgumentException if style is neither {@link TextStyle#FULL
-     * full} nor {@link TextStyle#SHORT short}
+     *
+     * @throws IllegalArgumentException
+     *         if style is neither {@link TextStyle#FULL
+     *         full} nor {@link TextStyle#SHORT short}
      */
     public DateTimeFormatterBuilder appendLocalizedOffset(TextStyle style) {
         Objects.requireNonNull(style, "style");
@@ -954,6 +1015,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Appends the time-zone ID, such as 'Europe/Paris' or '+02:00', to the formatter.
      * <p>
@@ -998,6 +1060,7 @@ public final class DateTimeFormatterBuilder {
      * </pre>
      *
      * @return this, for chaining, not null
+     *
      * @see #appendZoneRegionId()
      */
     public DateTimeFormatterBuilder appendZoneId() {
@@ -1054,6 +1117,7 @@ public final class DateTimeFormatterBuilder {
      * produce one.
      *
      * @return this, for chaining, not null
+     *
      * @see #appendZoneId()
      */
     public DateTimeFormatterBuilder appendZoneRegionId() {
@@ -1110,6 +1174,7 @@ public final class DateTimeFormatterBuilder {
      * in the mechanism used to obtain the zone.
      *
      * @return this, for chaining, not null
+     *
      * @see #appendZoneId()
      */
     public DateTimeFormatterBuilder appendZoneOrOffsetId() {
@@ -1145,7 +1210,9 @@ public final class DateTimeFormatterBuilder {
      * zone. The {@link #appendZoneText(TextStyle, Set)} may be used
      * to specify a set of preferred {@link ZoneId} in this situation.
      *
-     * @param textStyle  the text style to use, not null
+     * @param textStyle
+     *         the text style to use, not null
+     *
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendZoneText(TextStyle textStyle) {
@@ -1185,18 +1252,21 @@ public final class DateTimeFormatterBuilder {
      * If the zone cannot be parsed then an exception is thrown unless the
      * section of the formatter is optional.
      *
-     * @param textStyle  the text style to use, not null
-     * @param preferredZones  the set of preferred zone ids, not null
+     * @param textStyle
+     *         the text style to use, not null
+     * @param preferredZones
+     *         the set of preferred zone ids, not null
+     *
      * @return this, for chaining, not null
      */
-    public DateTimeFormatterBuilder appendZoneText(TextStyle textStyle,
-                                                   Set<ZoneId> preferredZones) {
+    public DateTimeFormatterBuilder appendZoneText(TextStyle textStyle, Set<ZoneId> preferredZones) {
         Objects.requireNonNull(preferredZones, "preferredZones");
         appendInternal(new ZoneTextPrinterParser(textStyle, preferredZones));
         return this;
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Appends the chronology ID, such as 'ISO' or 'ThaiBuddhist', to the formatter.
      * <p>
@@ -1227,7 +1297,9 @@ public final class DateTimeFormatterBuilder {
      * The calendar system name will be output during a format.
      * If the chronology cannot be obtained then an exception will be thrown.
      *
-     * @param textStyle  the text style to use, not null
+     * @param textStyle
+     *         the text style to use, not null
+     *
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendChronologyText(TextStyle textStyle) {
@@ -1237,6 +1309,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Appends a localized date-time pattern to the formatter.
      * <p>
@@ -1260,10 +1333,15 @@ public final class DateTimeFormatterBuilder {
      * Note that this method provides similar functionality to methods on
      * {@code DateFormat} such as {@link java.text.DateFormat#getDateTimeInstance(int, int)}.
      *
-     * @param dateStyle  the date style to use, null means no date required
-     * @param timeStyle  the time style to use, null means no time required
+     * @param dateStyle
+     *         the date style to use, null means no date required
+     * @param timeStyle
+     *         the time style to use, null means no time required
+     *
      * @return this, for chaining, not null
-     * @throws IllegalArgumentException if both the date and time styles are null
+     *
+     * @throws IllegalArgumentException
+     *         if both the date and time styles are null
      */
     public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle) {
         if (dateStyle == null && timeStyle == null) {
@@ -1274,12 +1352,15 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Appends a character literal to the formatter.
      * <p>
      * This character will be output during a format.
      *
-     * @param literal  the literal to append, not null
+     * @param literal
+     *         the literal to append, not null
+     *
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendLiteral(char literal) {
@@ -1294,7 +1375,9 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * If the literal is empty, nothing is added to the formatter.
      *
-     * @param literal  the literal to append, not null
+     * @param literal
+     *         the literal to append, not null
+     *
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendLiteral(String literal) {
@@ -1310,13 +1393,16 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Appends all the elements of a formatter to the builder.
      * <p>
      * This method has the same effect as appending each of the constituent
      * parts of the formatter directly to this builder.
      *
-     * @param formatter  the formatter to add, not null
+     * @param formatter
+     *         the formatter to add, not null
+     *
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder append(DateTimeFormatter formatter) {
@@ -1335,7 +1421,9 @@ public final class DateTimeFormatterBuilder {
      * The formatter will format if data is available for all the fields contained within it.
      * The formatter will parse if the string matches, otherwise no error is returned.
      *
-     * @param formatter  the formatter to add, not null
+     * @param formatter
+     *         the formatter to add, not null
+     *
      * @return this, for chaining, not null
      */
     public DateTimeFormatterBuilder appendOptional(DateTimeFormatter formatter) {
@@ -1345,6 +1433,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Appends the elements defined by the specified pattern to the builder.
      * <p>
@@ -1561,9 +1650,13 @@ public final class DateTimeFormatterBuilder {
      * Pattern letters 'n', 'A', 'N', and 'p' are added.
      * Number types will reject large numbers.
      *
-     * @param pattern  the pattern to add, not null
+     * @param pattern
+     *         the pattern to add, not null
+     *
      * @return this, for chaining, not null
-     * @throws IllegalArgumentException if the pattern is invalid
+     *
+     * @throws IllegalArgumentException
+     *         if the pattern is invalid
      */
     public DateTimeFormatterBuilder appendPattern(String pattern) {
         Objects.requireNonNull(pattern, "pattern");
@@ -1576,7 +1669,9 @@ public final class DateTimeFormatterBuilder {
             char cur = pattern.charAt(pos);
             if ((cur >= 'A' && cur <= 'Z') || (cur >= 'a' && cur <= 'z')) {
                 int start = pos++;
-                for ( ; pos < pattern.length() && pattern.charAt(pos) == cur; pos++);  // short loop
+                for (; pos < pattern.length() && pattern.charAt(pos) == cur; pos++) {
+                    ;  // short loop
+                }
                 int count = pos - start;
                 // padding
                 if (cur == 'p') {
@@ -1586,13 +1681,14 @@ public final class DateTimeFormatterBuilder {
                         if ((cur >= 'A' && cur <= 'Z') || (cur >= 'a' && cur <= 'z')) {
                             pad = count;
                             start = pos++;
-                            for ( ; pos < pattern.length() && pattern.charAt(pos) == cur; pos++);  // short loop
+                            for (; pos < pattern.length() && pattern.charAt(pos) == cur; pos++) {
+                                ;  // short loop
+                            }
                             count = pos - start;
                         }
                     }
                     if (pad == 0) {
-                        throw new IllegalArgumentException(
-                                "Pad letter 'p' must be followed by valid pad pattern: " + pattern);
+                        throw new IllegalArgumentException("Pad letter 'p' must be followed by valid pad pattern: " + pattern);
                     }
                     padNext(pad); // pad and continue parsing
                 }
@@ -1619,7 +1715,7 @@ public final class DateTimeFormatterBuilder {
                     } else if (count == 4) {
                         appendLocalizedOffset(TextStyle.FULL);
                     } else if (count == 5) {
-                        appendOffset("+HH:MM:ss","Z");
+                        appendOffset("+HH:MM:ss", "Z");
                     } else {
                         throw new IllegalArgumentException("Too many pattern letters: " + cur);
                     }
@@ -1665,7 +1761,7 @@ public final class DateTimeFormatterBuilder {
             } else if (cur == '\'') {
                 // parse literals
                 int start = pos++;
-                for ( ; pos < pattern.length(); pos++) {
+                for (; pos < pattern.length(); pos++) {
                     if (pattern.charAt(pos) == '\'') {
                         if (pos + 1 < pattern.length() && pattern.charAt(pos + 1) == '\'') {
                             pos++;
@@ -1705,127 +1801,128 @@ public final class DateTimeFormatterBuilder {
     private void parseField(char cur, int count, TemporalField field) {
         boolean standalone = false;
         switch (cur) {
-            case 'u':
-            case 'y':
-                if (count == 2) {
-                    appendValueReduced(field, 2, 2, ReducedPrinterParser.BASE_DATE);
-                } else if (count < 4) {
-                    appendValue(field, count, 19, SignStyle.NORMAL);
-                } else {
-                    appendValue(field, count, 19, SignStyle.EXCEEDS_PAD);
-                }
-                break;
-            case 'c':
-                if (count == 2) {
-                    throw new IllegalArgumentException("Invalid pattern \"cc\"");
-                }
-                /*fallthrough*/
-            case 'L':
-            case 'q':
-                standalone = true;
-                /*fallthrough*/
-            case 'M':
-            case 'Q':
-            case 'E':
-            case 'e':
-                switch (count) {
-                    case 1:
-                    case 2:
-                        if (cur == 'c' || cur == 'e') {
-                            appendInternal(new WeekBasedFieldPrinterParser(cur, count));
-                        } else if (cur == 'E') {
-                            appendText(field, TextStyle.SHORT);
-                        } else {
-                            if (count == 1) {
-                                appendValue(field);
-                            } else {
-                                appendValue(field, 2);
-                            }
-                        }
-                        break;
-                    case 3:
-                        appendText(field, standalone ? TextStyle.SHORT_STANDALONE : TextStyle.SHORT);
-                        break;
-                    case 4:
-                        appendText(field, standalone ? TextStyle.FULL_STANDALONE : TextStyle.FULL);
-                        break;
-                    case 5:
-                        appendText(field, standalone ? TextStyle.NARROW_STANDALONE : TextStyle.NARROW);
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Too many pattern letters: " + cur);
-                }
-                break;
-            case 'a':
-                if (count == 1) {
+        case 'u':
+        case 'y':
+            if (count == 2) {
+                appendValueReduced(field, 2, 2, ReducedPrinterParser.BASE_DATE);
+            } else if (count < 4) {
+                appendValue(field, count, 19, SignStyle.NORMAL);
+            } else {
+                appendValue(field, count, 19, SignStyle.EXCEEDS_PAD);
+            }
+            break;
+        case 'c':
+            if (count == 2) {
+                throw new IllegalArgumentException("Invalid pattern \"cc\"");
+            }
+            /*fallthrough*/
+        case 'L':
+        case 'q':
+            standalone = true;
+            /*fallthrough*/
+        case 'M':
+        case 'Q':
+        case 'E':
+        case 'e':
+            switch (count) {
+            case 1:
+            case 2:
+                if (cur == 'c' || cur == 'e') {
+                    appendInternal(new WeekBasedFieldPrinterParser(cur, count));
+                } else if (cur == 'E') {
                     appendText(field, TextStyle.SHORT);
                 } else {
-                    throw new IllegalArgumentException("Too many pattern letters: " + cur);
+                    if (count == 1) {
+                        appendValue(field);
+                    } else {
+                        appendValue(field, 2);
+                    }
                 }
                 break;
-            case 'G':
-                switch (count) {
-                    case 1:
-                    case 2:
-                    case 3:
-                        appendText(field, TextStyle.SHORT);
-                        break;
-                    case 4:
-                        appendText(field, TextStyle.FULL);
-                        break;
-                    case 5:
-                        appendText(field, TextStyle.NARROW);
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Too many pattern letters: " + cur);
-                }
+            case 3:
+                appendText(field, standalone ? TextStyle.SHORT_STANDALONE : TextStyle.SHORT);
                 break;
-            case 'S':
-                appendFraction(NANO_OF_SECOND, count, count, false);
+            case 4:
+                appendText(field, standalone ? TextStyle.FULL_STANDALONE : TextStyle.FULL);
                 break;
-            case 'F':
-                if (count == 1) {
-                    appendValue(field);
-                } else {
-                    throw new IllegalArgumentException("Too many pattern letters: " + cur);
-                }
-                break;
-            case 'd':
-            case 'h':
-            case 'H':
-            case 'k':
-            case 'K':
-            case 'm':
-            case 's':
-                if (count == 1) {
-                    appendValue(field);
-                } else if (count == 2) {
-                    appendValue(field, count);
-                } else {
-                    throw new IllegalArgumentException("Too many pattern letters: " + cur);
-                }
-                break;
-            case 'D':
-                if (count == 1) {
-                    appendValue(field);
-                } else if (count <= 3) {
-                    appendValue(field, count);
-                } else {
-                    throw new IllegalArgumentException("Too many pattern letters: " + cur);
-                }
+            case 5:
+                appendText(field, standalone ? TextStyle.NARROW_STANDALONE : TextStyle.NARROW);
                 break;
             default:
-                if (count == 1) {
-                    appendValue(field);
-                } else {
-                    appendValue(field, count);
-                }
+                throw new IllegalArgumentException("Too many pattern letters: " + cur);
+            }
+            break;
+        case 'a':
+            if (count == 1) {
+                appendText(field, TextStyle.SHORT);
+            } else {
+                throw new IllegalArgumentException("Too many pattern letters: " + cur);
+            }
+            break;
+        case 'G':
+            switch (count) {
+            case 1:
+            case 2:
+            case 3:
+                appendText(field, TextStyle.SHORT);
                 break;
+            case 4:
+                appendText(field, TextStyle.FULL);
+                break;
+            case 5:
+                appendText(field, TextStyle.NARROW);
+                break;
+            default:
+                throw new IllegalArgumentException("Too many pattern letters: " + cur);
+            }
+            break;
+        case 'S':
+            appendFraction(NANO_OF_SECOND, count, count, false);
+            break;
+        case 'F':
+            if (count == 1) {
+                appendValue(field);
+            } else {
+                throw new IllegalArgumentException("Too many pattern letters: " + cur);
+            }
+            break;
+        case 'd':
+        case 'h':
+        case 'H':
+        case 'k':
+        case 'K':
+        case 'm':
+        case 's':
+            if (count == 1) {
+                appendValue(field);
+            } else if (count == 2) {
+                appendValue(field, count);
+            } else {
+                throw new IllegalArgumentException("Too many pattern letters: " + cur);
+            }
+            break;
+        case 'D':
+            if (count == 1) {
+                appendValue(field);
+            } else if (count <= 3) {
+                appendValue(field, count);
+            } else {
+                throw new IllegalArgumentException("Too many pattern letters: " + cur);
+            }
+            break;
+        default:
+            if (count == 1) {
+                appendValue(field);
+            } else {
+                appendValue(field, count);
+            }
+            break;
         }
     }
 
     /** Map of letters to fields. */
     private static final Map<Character, TemporalField> FIELD_MAP = new HashMap<>();
+
     static {
         // SDF = SimpleDateFormat
         FIELD_MAP.put('G', ChronoField.ERA);                       // SDF, LDML (different to both for 1/2 chars)
@@ -1867,6 +1964,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Causes the next added printer/parser to pad to a fixed width using a space.
      * <p>
@@ -1881,9 +1979,13 @@ public final class DateTimeFormatterBuilder {
      * The padding is parsed greedily. Thus, if the decorated element starts with
      * the pad character, it will not be parsed.
      *
-     * @param padWidth  the pad width, 1 or greater
+     * @param padWidth
+     *         the pad width, 1 or greater
+     *
      * @return this, for chaining, not null
-     * @throws IllegalArgumentException if pad width is too small
+     *
+     * @throws IllegalArgumentException
+     *         if pad width is too small
      */
     public DateTimeFormatterBuilder padNext(int padWidth) {
         return padNext(padWidth, ' ');
@@ -1905,10 +2007,15 @@ public final class DateTimeFormatterBuilder {
      * The padding is parsed greedily. Thus, if the decorated element starts with
      * the pad character, it will not be parsed.
      *
-     * @param padWidth  the pad width, 1 or greater
-     * @param padChar  the pad character
+     * @param padWidth
+     *         the pad width, 1 or greater
+     * @param padChar
+     *         the pad character
+     *
      * @return this, for chaining, not null
-     * @throws IllegalArgumentException if pad width is too small
+     *
+     * @throws IllegalArgumentException
+     *         if pad width is too small
      */
     public DateTimeFormatterBuilder padNext(int padWidth, char padChar) {
         if (padWidth < 1) {
@@ -1921,6 +2028,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Mark the start of an optional section.
      * <p>
@@ -1970,7 +2078,9 @@ public final class DateTimeFormatterBuilder {
      * During parsing, the input will be successfully parsed whether the minute is present or not.
      *
      * @return this, for chaining, not null
-     * @throws IllegalStateException if there was no previous call to {@code optionalStart}
+     *
+     * @throws IllegalStateException
+     *         if there was no previous call to {@code optionalStart}
      */
     public DateTimeFormatterBuilder optionalEnd() {
         if (active.parent == null) {
@@ -1987,10 +2097,13 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Appends a printer and/or parser to the internal list handling padding.
      *
-     * @param pp  the printer-parser to add, not null
+     * @param pp
+     *         the printer-parser to add, not null
+     *
      * @return the index into the active parsers list
      */
     private int appendInternal(DateTimePrinterParser pp) {
@@ -2008,6 +2121,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Completes this builder by creating the {@code DateTimeFormatter}
      * using the default locale.
@@ -2042,7 +2156,9 @@ public final class DateTimeFormatterBuilder {
      * This builder can still be used after creating the formatter if desired,
      * although the state may have been changed by calls to {@code optionalEnd}.
      *
-     * @param locale  the locale to use for formatting, not null
+     * @param locale
+     *         the locale to use for formatting, not null
+     *
      * @return the created formatter, not null
      */
     public DateTimeFormatter toFormatter(Locale locale) {
@@ -2053,7 +2169,9 @@ public final class DateTimeFormatterBuilder {
      * Completes this builder by creating the formatter.
      * This uses the default locale.
      *
-     * @param resolverStyle  the resolver style to use, not null
+     * @param resolverStyle
+     *         the resolver style to use, not null
+     *
      * @return the created formatter, not null
      */
     DateTimeFormatter toFormatter(ResolverStyle resolverStyle, Chronology chrono) {
@@ -2063,8 +2181,11 @@ public final class DateTimeFormatterBuilder {
     /**
      * Completes this builder by creating the formatter.
      *
-     * @param locale  the locale to use for formatting, not null
-     * @param chrono  the chronology to use, may be null
+     * @param locale
+     *         the locale to use for formatting, not null
+     * @param chrono
+     *         the chronology to use, may be null
+     *
      * @return the created formatter, not null
      */
     private DateTimeFormatter toFormatter(Locale locale, ResolverStyle resolverStyle, Chronology chrono) {
@@ -2073,11 +2194,11 @@ public final class DateTimeFormatterBuilder {
             optionalEnd();
         }
         CompositePrinterParser pp = new CompositePrinterParser(printerParsers, false);
-        return new DateTimeFormatter(pp, locale, DecimalStyle.STANDARD,
-                resolverStyle, null, chrono, null);
+        return new DateTimeFormatter(pp, locale, DecimalStyle.STANDARD, resolverStyle, null, chrono, null);
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Strategy for formatting/parsing date-time information.
      * <p>
@@ -2095,14 +2216,6 @@ public final class DateTimeFormatterBuilder {
      * the specified index and the return value specifies the new parse position
      * for the next parser. If an error occurs, the returned index will be negative
      * and will have the error position encoded using the complement operator.
-     *
-     * @implSpec
-     * This interface must be implemented with care to ensure other classes operate correctly.
-     * All implementations that can be instantiated must be final, immutable and thread-safe.
-     * <p>
-     * The context is not a thread-safe object and a new instance will be created
-     * for each format that occurs. The context must not be stored in an instance
-     * variable or shared with any other threads.
      */
     interface DateTimePrinterParser {
 
@@ -2114,10 +2227,15 @@ public final class DateTimeFormatterBuilder {
          * <p>
          * The buffer must not be mutated beyond the content controlled by the implementation.
          *
-         * @param context  the context to format using, not null
-         * @param buf  the buffer to append to, not null
+         * @param context
+         *         the context to format using, not null
+         * @param buf
+         *         the buffer to append to, not null
+         *
          * @return false if unable to query the value from the date-time, true otherwise
-         * @throws DateTimeException if the date-time cannot be printed successfully
+         *
+         * @throws DateTimeException
+         *         if the date-time cannot be printed successfully
          */
         boolean format(DateTimePrintContext context, StringBuilder buf);
 
@@ -2127,18 +2245,26 @@ public final class DateTimeFormatterBuilder {
          * The context holds information to use during the parse.
          * It is also used to store the parsed date-time information.
          *
-         * @param context  the context to use and parse into, not null
-         * @param text  the input text to parse, not null
-         * @param position  the position to start parsing at, from 0 to the text length
+         * @param context
+         *         the context to use and parse into, not null
+         * @param text
+         *         the input text to parse, not null
+         * @param position
+         *         the position to start parsing at, from 0 to the text length
+         *
          * @return the new parse position, where negative means an error with the
-         *  error position encoded using the complement ~ operator
-         * @throws NullPointerException if the context or text is null
-         * @throws IndexOutOfBoundsException if the position is invalid
+         * error position encoded using the complement ~ operator
+         *
+         * @throws NullPointerException
+         *         if the context or text is null
+         * @throws IndexOutOfBoundsException
+         *         if the position is invalid
          */
         int parse(DateTimeParseContext context, CharSequence text, int position);
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Composite printer and parser.
      */
@@ -2158,7 +2284,9 @@ public final class DateTimeFormatterBuilder {
         /**
          * Returns a copy of this printer-parser with the optional flag changed.
          *
-         * @param optional  the optional flag to set in the copy
+         * @param optional
+         *         the optional flag to set in the copy
+         *
          * @return the new printer-parser, not null
          */
         public CompositePrinterParser withOptional(boolean optional) {
@@ -2229,6 +2357,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Pads the output to a fixed width.
      */
@@ -2240,9 +2369,12 @@ public final class DateTimeFormatterBuilder {
         /**
          * Constructor.
          *
-         * @param printerParser  the printer, not null
-         * @param padWidth  the width to pad to, 1 or greater
-         * @param padChar  the pad character
+         * @param printerParser
+         *         the printer, not null
+         * @param padWidth
+         *         the width to pad to, 1 or greater
+         * @param padChar
+         *         the pad character
          */
         PadPrinterParserDecorator(DateTimePrinterParser printerParser, int padWidth, char padChar) {
             // input checked by DateTimeFormatterBuilder
@@ -2259,8 +2391,7 @@ public final class DateTimeFormatterBuilder {
             }
             int len = buf.length() - preLen;
             if (len > padWidth) {
-                throw new DateTimeException(
-                    "Cannot print as output of " + len + " characters exceeds pad width of " + padWidth);
+                throw new DateTimeException("Cannot print as output of " + len + " characters exceeds pad width of " + padWidth);
             }
             for (int i = 0; i < padWidth - len; i++) {
                 buf.insert(preLen, padChar);
@@ -2305,14 +2436,12 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Enumeration to apply simple parse settings.
      */
     static enum SettingsParser implements DateTimePrinterParser {
-        SENSITIVE,
-        INSENSITIVE,
-        STRICT,
-        LENIENT;
+        SENSITIVE, INSENSITIVE, STRICT, LENIENT;
 
         @Override
         public boolean format(DateTimePrintContext context, StringBuilder buf) {
@@ -2323,10 +2452,18 @@ public final class DateTimeFormatterBuilder {
         public int parse(DateTimeParseContext context, CharSequence text, int position) {
             // using ordinals to avoid javac synthetic inner class
             switch (ordinal()) {
-                case 0: context.setCaseSensitive(true); break;
-                case 1: context.setCaseSensitive(false); break;
-                case 2: context.setStrict(true); break;
-                case 3: context.setStrict(false); break;
+            case 0:
+                context.setCaseSensitive(true);
+                break;
+            case 1:
+                context.setCaseSensitive(false);
+                break;
+            case 2:
+                context.setStrict(true);
+                break;
+            case 3:
+                context.setStrict(false);
+                break;
             }
             return position;
         }
@@ -2335,16 +2472,21 @@ public final class DateTimeFormatterBuilder {
         public String toString() {
             // using ordinals to avoid javac synthetic inner class
             switch (ordinal()) {
-                case 0: return "ParseCaseSensitive(true)";
-                case 1: return "ParseCaseSensitive(false)";
-                case 2: return "ParseStrict(true)";
-                case 3: return "ParseStrict(false)";
+            case 0:
+                return "ParseCaseSensitive(true)";
+            case 1:
+                return "ParseCaseSensitive(false)";
+            case 2:
+                return "ParseStrict(true)";
+            case 3:
+                return "ParseStrict(false)";
             }
             throw new IllegalStateException("Unreachable");
         }
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Defaults a value into the parse if not currently present.
      */
@@ -2370,6 +2512,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Prints or parses a character literal.
      */
@@ -2394,9 +2537,8 @@ public final class DateTimeFormatterBuilder {
             }
             char ch = text.charAt(position);
             if (ch != literal) {
-                if (context.isCaseSensitive() ||
-                        (Character.toUpperCase(ch) != Character.toUpperCase(literal) &&
-                         Character.toLowerCase(ch) != Character.toLowerCase(literal))) {
+                if (context.isCaseSensitive() || (Character.toUpperCase(ch) != Character.toUpperCase(literal) && Character.toLowerCase(ch) != Character
+                        .toLowerCase(literal))) {
                     return ~position;
                 }
             }
@@ -2413,6 +2555,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Prints or parses a string literal.
      */
@@ -2449,6 +2592,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Prints and parses a numeric date-time field with optional padding.
      */
@@ -2457,19 +2601,7 @@ public final class DateTimeFormatterBuilder {
         /**
          * Array of 10 to the power of n.
          */
-        static final long[] EXCEED_POINTS = new long[] {
-            0L,
-            10L,
-            100L,
-            1000L,
-            10000L,
-            100000L,
-            1000000L,
-            10000000L,
-            100000000L,
-            1000000000L,
-            10000000000L,
-        };
+        static final long[] EXCEED_POINTS = new long[] { 0L, 10L, 100L, 1000L, 10000L, 100000L, 1000000L, 10000000L, 100000000L, 1000000000L, 10000000000L, };
 
         final TemporalField field;
         final int minWidth;
@@ -2480,10 +2612,14 @@ public final class DateTimeFormatterBuilder {
         /**
          * Constructor.
          *
-         * @param field  the field to format, not null
-         * @param minWidth  the minimum field width, from 1 to 19
-         * @param maxWidth  the maximum field width, from minWidth to 19
-         * @param signStyle  the positive/negative sign style, not null
+         * @param field
+         *         the field to format, not null
+         * @param minWidth
+         *         the minimum field width, from 1 to 19
+         * @param maxWidth
+         *         the maximum field width, from minWidth to 19
+         * @param signStyle
+         *         the positive/negative sign style, not null
          */
         NumberPrinterParser(TemporalField field, int minWidth, int maxWidth, SignStyle signStyle) {
             // validated by caller
@@ -2497,12 +2633,17 @@ public final class DateTimeFormatterBuilder {
         /**
          * Constructor.
          *
-         * @param field  the field to format, not null
-         * @param minWidth  the minimum field width, from 1 to 19
-         * @param maxWidth  the maximum field width, from minWidth to 19
-         * @param signStyle  the positive/negative sign style, not null
-         * @param subsequentWidth  the width of subsequent non-negative numbers, 0 or greater,
-         *  -1 if fixed width due to active adjacent parsing
+         * @param field
+         *         the field to format, not null
+         * @param minWidth
+         *         the minimum field width, from 1 to 19
+         * @param maxWidth
+         *         the maximum field width, from minWidth to 19
+         * @param signStyle
+         *         the positive/negative sign style, not null
+         * @param subsequentWidth
+         *         the width of subsequent non-negative numbers, 0 or greater,
+         *         -1 if fixed width due to active adjacent parsing
          */
         protected NumberPrinterParser(TemporalField field, int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth) {
             // validated by caller
@@ -2528,7 +2669,9 @@ public final class DateTimeFormatterBuilder {
         /**
          * Returns a new instance with an updated subsequent width.
          *
-         * @param subsequentWidth  the width of subsequent non-negative numbers, 0 or greater
+         * @param subsequentWidth
+         *         the width of subsequent non-negative numbers, 0 or greater
+         *
          * @return a new updated printer-parser, not null
          */
         NumberPrinterParser withSubsequentWidth(int subsequentWidth) {
@@ -2545,34 +2688,31 @@ public final class DateTimeFormatterBuilder {
             DecimalStyle decimalStyle = context.getDecimalStyle();
             String str = (value == Long.MIN_VALUE ? "9223372036854775808" : Long.toString(Math.abs(value)));
             if (str.length() > maxWidth) {
-                throw new DateTimeException("Field " + field +
-                    " cannot be printed as the value " + value +
-                    " exceeds the maximum print width of " + maxWidth);
+                throw new DateTimeException("Field " + field + " cannot be printed as the value " + value + " exceeds the maximum print width of " + maxWidth);
             }
             str = decimalStyle.convertNumberToI18N(str);
 
             if (value >= 0) {
                 switch (signStyle) {
-                    case EXCEEDS_PAD:
-                        if (minWidth < 19 && value >= EXCEED_POINTS[minWidth]) {
-                            buf.append(decimalStyle.getPositiveSign());
-                        }
-                        break;
-                    case ALWAYS:
+                case EXCEEDS_PAD:
+                    if (minWidth < 19 && value >= EXCEED_POINTS[minWidth]) {
                         buf.append(decimalStyle.getPositiveSign());
-                        break;
+                    }
+                    break;
+                case ALWAYS:
+                    buf.append(decimalStyle.getPositiveSign());
+                    break;
                 }
             } else {
                 switch (signStyle) {
-                    case NORMAL:
-                    case EXCEEDS_PAD:
-                    case ALWAYS:
-                        buf.append(decimalStyle.getNegativeSign());
-                        break;
-                    case NOT_NEGATIVE:
-                        throw new DateTimeException("Field " + field +
-                            " cannot be printed as the value " + value +
-                            " cannot be negative according to the SignStyle");
+                case NORMAL:
+                case EXCEEDS_PAD:
+                case ALWAYS:
+                    buf.append(decimalStyle.getNegativeSign());
+                    break;
+                case NOT_NEGATIVE:
+                    throw new DateTimeException(
+                            "Field " + field + " cannot be printed as the value " + value + " cannot be negative according to the SignStyle");
                 }
             }
             for (int i = 0; i < minWidth - str.length(); i++) {
@@ -2585,8 +2725,11 @@ public final class DateTimeFormatterBuilder {
         /**
          * Gets the value to output.
          *
-         * @param context  the context
-         * @param value  the value of the field, not null
+         * @param context
+         *         the context
+         * @param value
+         *         the value of the field, not null
+         *
          * @return the value
          */
         long getValue(DateTimePrintContext context, long value) {
@@ -2596,13 +2739,16 @@ public final class DateTimeFormatterBuilder {
         /**
          * For NumberPrinterParser, the width is fixed depending on the
          * minWidth, maxWidth, signStyle and whether subsequent fields are fixed.
-         * @param context the context
+         *
+         * @param context
+         *         the context
+         *
          * @return true if the field is fixed width
+         *
          * @see DateTimeFormatterBuilder#appendValue(java.time.temporal.TemporalField, int)
          */
         boolean isFixedWidth(DateTimeParseContext context) {
-            return subsequentWidth == -1 ||
-                (subsequentWidth > 0 && minWidth == maxWidth && signStyle == SignStyle.NOT_NEGATIVE);
+            return subsequentWidth == -1 || (subsequentWidth > 0 && minWidth == maxWidth && signStyle == SignStyle.NOT_NEGATIVE);
         }
 
         @Override
@@ -2710,10 +2856,15 @@ public final class DateTimeFormatterBuilder {
         /**
          * Stores the value.
          *
-         * @param context  the context to store into, not null
-         * @param value  the value
-         * @param errorPos  the position of the field being parsed
-         * @param successPos  the position after the field being parsed
+         * @param context
+         *         the context to store into, not null
+         * @param value
+         *         the value
+         * @param errorPos
+         *         the position of the field being parsed
+         * @param successPos
+         *         the position after the field being parsed
+         *
          * @return the new position
          */
         int setValue(DateTimeParseContext context, long value, int errorPos, int successPos) {
@@ -2733,6 +2884,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Prints and parses a reduced numeric date-time field.
      */
@@ -2748,14 +2900,18 @@ public final class DateTimeFormatterBuilder {
         /**
          * Constructor.
          *
-         * @param field  the field to format, validated not null
-         * @param minWidth  the minimum field width, from 1 to 10
-         * @param maxWidth  the maximum field width, from 1 to 10
-         * @param baseValue  the base value
-         * @param baseDate  the base date
+         * @param field
+         *         the field to format, validated not null
+         * @param minWidth
+         *         the minimum field width, from 1 to 10
+         * @param maxWidth
+         *         the maximum field width, from 1 to 10
+         * @param baseValue
+         *         the base value
+         * @param baseDate
+         *         the base date
          */
-        ReducedPrinterParser(TemporalField field, int minWidth, int maxWidth,
-                int baseValue, ChronoLocalDate baseDate) {
+        ReducedPrinterParser(TemporalField field, int minWidth, int maxWidth, int baseValue, ChronoLocalDate baseDate) {
             this(field, minWidth, maxWidth, baseValue, baseDate, 0);
             if (minWidth < 1 || minWidth > 10) {
                 throw new IllegalArgumentException("The minWidth must be from 1 to 10 inclusive but was " + minWidth);
@@ -2764,8 +2920,7 @@ public final class DateTimeFormatterBuilder {
                 throw new IllegalArgumentException("The maxWidth must be from 1 to 10 inclusive but was " + minWidth);
             }
             if (maxWidth < minWidth) {
-                throw new IllegalArgumentException("Maximum width must exceed or equal the minimum width but " +
-                        maxWidth + " < " + minWidth);
+                throw new IllegalArgumentException("Maximum width must exceed or equal the minimum width but " + maxWidth + " < " + minWidth);
             }
             if (baseDate == null) {
                 if (field.range().isValidValue(baseValue) == false) {
@@ -2781,15 +2936,20 @@ public final class DateTimeFormatterBuilder {
          * Constructor.
          * The arguments have already been checked.
          *
-         * @param field  the field to format, validated not null
-         * @param minWidth  the minimum field width, from 1 to 10
-         * @param maxWidth  the maximum field width, from 1 to 10
-         * @param baseValue  the base value
-         * @param baseDate  the base date
-         * @param subsequentWidth the subsequentWidth for this instance
+         * @param field
+         *         the field to format, validated not null
+         * @param minWidth
+         *         the minimum field width, from 1 to 10
+         * @param maxWidth
+         *         the maximum field width, from 1 to 10
+         * @param baseValue
+         *         the base value
+         * @param baseDate
+         *         the base date
+         * @param subsequentWidth
+         *         the subsequentWidth for this instance
          */
-        private ReducedPrinterParser(TemporalField field, int minWidth, int maxWidth,
-                int baseValue, ChronoLocalDate baseDate, int subsequentWidth) {
+        private ReducedPrinterParser(TemporalField field, int minWidth, int maxWidth, int baseValue, ChronoLocalDate baseDate, int subsequentWidth) {
             super(field, minWidth, maxWidth, SignStyle.NOT_NEGATIVE, subsequentWidth);
             this.baseValue = baseValue;
             this.baseDate = baseDate;
@@ -2820,14 +2980,13 @@ public final class DateTimeFormatterBuilder {
 
                 // In case the Chronology is changed later, add a callback when/if it changes
                 final long initialValue = value;
-                context.addChronoChangedListener(
-                        (_unused) ->  {
-                            /* Repeat the set of the field using the current Chronology
-                             * The success/error position is ignored because the value is
-                             * intentionally being overwritten.
-                             */
-                            setValue(context, initialValue, errorPos, successPos);
-                        });
+                context.addChronoChangedListener((_unused) -> {
+                    /* Repeat the set of the field using the current Chronology
+                     * The success/error position is ignored because the value is
+                     * intentionally being overwritten.
+                     */
+                    setValue(context, initialValue, errorPos, successPos);
+                });
             }
             int parseLen = successPos - errorPos;
             if (parseLen == minWidth && value >= 0) {
@@ -2862,28 +3021,33 @@ public final class DateTimeFormatterBuilder {
         /**
          * Returns a new instance with an updated subsequent width.
          *
-         * @param subsequentWidth  the width of subsequent non-negative numbers, 0 or greater
+         * @param subsequentWidth
+         *         the width of subsequent non-negative numbers, 0 or greater
+         *
          * @return a new updated printer-parser, not null
          */
         @Override
         ReducedPrinterParser withSubsequentWidth(int subsequentWidth) {
-            return new ReducedPrinterParser(field, minWidth, maxWidth, baseValue, baseDate,
-                    this.subsequentWidth + subsequentWidth);
+            return new ReducedPrinterParser(field, minWidth, maxWidth, baseValue, baseDate, this.subsequentWidth + subsequentWidth);
         }
 
         /**
          * For a ReducedPrinterParser, fixed width is false if the mode is strict,
          * otherwise it is set as for NumberPrinterParser.
-         * @param context the context
+         *
+         * @param context
+         *         the context
+         *
          * @return if the field is fixed width
+         *
          * @see DateTimeFormatterBuilder#appendValueReduced(java.time.temporal.TemporalField, int, int, int)
          */
         @Override
         boolean isFixedWidth(DateTimeParseContext context) {
-           if (context.isStrict() == false) {
-               return false;
-           }
-           return super.isFixedWidth(context);
+            if (context.isStrict() == false) {
+                return false;
+            }
+            return super.isFixedWidth(context);
         }
 
         @Override
@@ -2893,6 +3057,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Prints and parses a numeric date-time field with optional padding.
      */
@@ -2905,10 +3070,14 @@ public final class DateTimeFormatterBuilder {
         /**
          * Constructor.
          *
-         * @param field  the field to output, not null
-         * @param minWidth  the minimum width to output, from 0 to 9
-         * @param maxWidth  the maximum width to output, from 0 to 9
-         * @param decimalPoint  whether to output the localized decimal point symbol
+         * @param field
+         *         the field to output, not null
+         * @param minWidth
+         *         the minimum width to output, from 0 to 9
+         * @param maxWidth
+         *         the maximum width to output, from 0 to 9
+         * @param decimalPoint
+         *         whether to output the localized decimal point symbol
          */
         FractionPrinterParser(TemporalField field, int minWidth, int maxWidth, boolean decimalPoint) {
             Objects.requireNonNull(field, "field");
@@ -2922,8 +3091,7 @@ public final class DateTimeFormatterBuilder {
                 throw new IllegalArgumentException("Maximum width must be from 1 to 9 inclusive but was " + maxWidth);
             }
             if (maxWidth < minWidth) {
-                throw new IllegalArgumentException("Maximum width must exceed or equal the minimum width but " +
-                        maxWidth + " < " + minWidth);
+                throw new IllegalArgumentException("Maximum width must exceed or equal the minimum width but " + maxWidth + " < " + minWidth);
             }
             this.field = field;
             this.minWidth = minWidth;
@@ -3013,9 +3181,13 @@ public final class DateTimeFormatterBuilder {
          * For example, the second-of-minute value of 15 would be returned as 0.25,
          * assuming the standard definition of 60 seconds in a minute.
          *
-         * @param value  the value to convert, must be valid for this rule
+         * @param value
+         *         the value to convert, must be valid for this rule
+         *
          * @return the value as a fraction within the range, from 0 to 1, not null
-         * @throws DateTimeException if the value cannot be converted to a fraction
+         *
+         * @throws DateTimeException
+         *         if the value cannot be converted to a fraction
          */
         private BigDecimal convertToFraction(long value) {
             ValueRange range = field.range();
@@ -3040,9 +3212,13 @@ public final class DateTimeFormatterBuilder {
          * For example, the fractional second-of-minute of 0.25 would be converted to 15,
          * assuming the standard definition of 60 seconds in a minute.
          *
-         * @param fraction  the fraction to convert, not null
+         * @param fraction
+         *         the fraction to convert, not null
+         *
          * @return the value of the field, valid for this rule
-         * @throws DateTimeException if the value cannot be converted
+         *
+         * @throws DateTimeException
+         *         if the value cannot be converted
          */
         private long convertFromFraction(BigDecimal fraction) {
             ValueRange range = field.range();
@@ -3060,6 +3236,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Prints or parses field text.
      */
@@ -3076,9 +3253,12 @@ public final class DateTimeFormatterBuilder {
         /**
          * Constructor.
          *
-         * @param field  the field to output, not null
-         * @param textStyle  the text style, not null
-         * @param provider  the text provider, not null
+         * @param field
+         *         the field to output, not null
+         * @param textStyle
+         *         the text style, not null
+         * @param provider
+         *         the text provider, not null
          */
         TextPrinterParser(TemporalField field, TextStyle textStyle, DateTimeTextProvider provider) {
             // validated by caller
@@ -3138,6 +3318,7 @@ public final class DateTimeFormatterBuilder {
 
         /**
          * Create and cache a number printer parser.
+         *
          * @return the number printer parser for this field, not null
          */
         private NumberPrinterParser numberPrinterParser() {
@@ -3157,6 +3338,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Prints or parses an ISO-8601 instant.
      */
@@ -3224,9 +3406,8 @@ public final class DateTimeFormatterBuilder {
             if ((fractionalDigits < 0 && inNano > 0) || fractionalDigits > 0) {
                 buf.append('.');
                 int div = 100_000_000;
-                for (int i = 0; ((fractionalDigits == -1 && inNano > 0) ||
-                                    (fractionalDigits == -2 && (inNano > 0 || (i % 3) != 0)) ||
-                                    i < fractionalDigits); i++) {
+                for (int i = 0; ((fractionalDigits == -1 && inNano > 0) || (fractionalDigits == -2 && (inNano > 0 || (i % 3) != 0))
+                        || i < fractionalDigits); i++) {
                     int digit = inNano / div;
                     buf.append((char) (digit + '0'));
                     inNano = inNano - (digit * div);
@@ -3242,14 +3423,9 @@ public final class DateTimeFormatterBuilder {
             // new context to avoid overwriting fields like year/month/day
             int minDigits = (fractionalDigits < 0 ? 0 : fractionalDigits);
             int maxDigits = (fractionalDigits < 0 ? 9 : fractionalDigits);
-            CompositePrinterParser parser = new DateTimeFormatterBuilder()
-                    .append(DateTimeFormatter.ISO_LOCAL_DATE).appendLiteral('T')
-                    .appendValue(HOUR_OF_DAY, 2).appendLiteral(':')
-                    .appendValue(MINUTE_OF_HOUR, 2).appendLiteral(':')
-                    .appendValue(SECOND_OF_MINUTE, 2)
-                    .appendFraction(NANO_OF_SECOND, minDigits, maxDigits, true)
-                    .appendLiteral('Z')
-                    .toFormatter().toPrinterParser(false);
+            CompositePrinterParser parser = new DateTimeFormatterBuilder().append(DateTimeFormatter.ISO_LOCAL_DATE).appendLiteral('T')
+                    .appendValue(HOUR_OF_DAY, 2).appendLiteral(':').appendValue(MINUTE_OF_HOUR, 2).appendLiteral(':').appendValue(SECOND_OF_MINUTE, 2)
+                    .appendFraction(NANO_OF_SECOND, minDigits, maxDigits, true).appendLiteral('Z').toFormatter().toPrinterParser(false);
             DateTimeParseContext newContext = context.copy();
             int pos = parser.parse(newContext, text, position);
             if (pos < 0) {
@@ -3295,13 +3471,13 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Prints or parses an offset ID.
      */
     static final class OffsetIdPrinterParser implements DateTimePrinterParser {
-        static final String[] PATTERNS = new String[] {
-            "+HH", "+HHmm", "+HH:mm", "+HHMM", "+HH:MM", "+HHMMss", "+HH:MM:ss", "+HHMMSS", "+HH:MM:SS",
-        };  // order used in pattern builder
+        static final String[] PATTERNS = new String[] { "+HH", "+HHmm", "+HH:mm", "+HHMM", "+HH:MM", "+HHMMss", "+HH:MM:ss", "+HHMMSS",
+                "+HH:MM:SS", };  // order used in pattern builder
         static final OffsetIdPrinterParser INSTANCE_ID_Z = new OffsetIdPrinterParser("+HH:MM:ss", "Z");
         static final OffsetIdPrinterParser INSTANCE_ID_ZERO = new OffsetIdPrinterParser("+HH:MM:ss", "0");
 
@@ -3311,8 +3487,10 @@ public final class DateTimeFormatterBuilder {
         /**
          * Constructor.
          *
-         * @param pattern  the pattern
-         * @param noOffsetText  the text to use for UTC, not null
+         * @param pattern
+         *         the pattern
+         * @param noOffsetText
+         *         the text to use for UTC, not null
          */
         OffsetIdPrinterParser(String pattern, String noOffsetText) {
             Objects.requireNonNull(pattern, "pattern");
@@ -3345,15 +3523,12 @@ public final class DateTimeFormatterBuilder {
                 int absSeconds = Math.abs(totalSecs % 60);
                 int bufPos = buf.length();
                 int output = absHours;
-                buf.append(totalSecs < 0 ? "-" : "+")
-                    .append((char) (absHours / 10 + '0')).append((char) (absHours % 10 + '0'));
+                buf.append(totalSecs < 0 ? "-" : "+").append((char) (absHours / 10 + '0')).append((char) (absHours % 10 + '0'));
                 if (type >= 3 || (type >= 1 && absMinutes > 0)) {
-                    buf.append((type % 2) == 0 ? ":" : "")
-                        .append((char) (absMinutes / 10 + '0')).append((char) (absMinutes % 10 + '0'));
+                    buf.append((type % 2) == 0 ? ":" : "").append((char) (absMinutes / 10 + '0')).append((char) (absMinutes % 10 + '0'));
                     output += absMinutes;
                     if (type >= 7 || (type >= 5 && absSeconds > 0)) {
-                        buf.append((type % 2) == 0 ? ":" : "")
-                            .append((char) (absSeconds / 10 + '0')).append((char) (absSeconds % 10 + '0'));
+                        buf.append((type % 2) == 0 ? ":" : "").append((char) (absSeconds / 10 + '0')).append((char) (absSeconds % 10 + '0'));
                         output += absSeconds;
                     }
                 }
@@ -3389,9 +3564,7 @@ public final class DateTimeFormatterBuilder {
                 int negative = (sign == '-' ? -1 : 1);
                 int[] array = new int[4];
                 array[0] = position + 1;
-                if ((parseNumber(array, 1, text, true) ||
-                        parseNumber(array, 2, text, type >=3) ||
-                        parseNumber(array, 3, text, false)) == false) {
+                if ((parseNumber(array, 1, text, true) || parseNumber(array, 2, text, type >= 3) || parseNumber(array, 3, text, false)) == false) {
                     // success
                     long offsetSecs = negative * (array[1] * 3600L + array[2] * 60L + array[3]);
                     return context.setParsedField(OFFSET_SECONDS, offsetSecs, position, array[0]);
@@ -3407,10 +3580,15 @@ public final class DateTimeFormatterBuilder {
         /**
          * Parse a two digit zero-prefixed number.
          *
-         * @param array  the array of parsed data, 0=pos,1=hours,2=mins,3=secs, not null
-         * @param arrayIndex  the index to parse the value into
-         * @param parseText  the offset ID, not null
-         * @param required  whether this number is required
+         * @param array
+         *         the array of parsed data, 0=pos,1=hours,2=mins,3=secs, not null
+         * @param arrayIndex
+         *         the index to parse the value into
+         * @param parseText
+         *         the offset ID, not null
+         * @param required
+         *         whether this number is required
+         *
          * @return true if an error occurred
          */
         private boolean parseNumber(int[] array, int arrayIndex, CharSequence parseText, boolean required) {
@@ -3449,6 +3627,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Prints or parses an offset ID.
      */
@@ -3458,15 +3637,15 @@ public final class DateTimeFormatterBuilder {
         /**
          * Constructor.
          *
-         * @param style  the style, not null
+         * @param style
+         *         the style, not null
          */
         LocalizedOffsetIdPrinterParser(TextStyle style) {
             this.style = style;
         }
 
         private static StringBuilder appendHMS(StringBuilder buf, int t) {
-            return buf.append((char)(t / 10 + '0'))
-                      .append((char)(t % 10 + '0'));
+            return buf.append((char) (t / 10 + '0')).append((char) (t % 10 + '0'));
         }
 
         @Override
@@ -3490,14 +3669,14 @@ public final class DateTimeFormatterBuilder {
                     buf.append(':');
                     appendHMS(buf, absMinutes);
                     if (absSeconds != 0) {
-                       buf.append(':');
-                       appendHMS(buf, absSeconds);
+                        buf.append(':');
+                        appendHMS(buf, absSeconds);
                     }
                 } else {
                     if (absHours >= 10) {
-                        buf.append((char)(absHours / 10 + '0'));
+                        buf.append((char) (absHours / 10 + '0'));
                     }
-                    buf.append((char)(absHours % 10 + '0'));
+                    buf.append((char) (absHours % 10 + '0'));
                     if (absMinutes != 0 || absSeconds != 0) {
                         buf.append(':');
                         appendHMS(buf, absMinutes);
@@ -3575,7 +3754,7 @@ public final class DateTimeFormatterBuilder {
                 }
                 if (pos < end) {
                     int h2 = getDigit(text, pos);
-                    if (h2 >=0) {
+                    if (h2 >= 0) {
                         h = h * 10 + h2;
                         pos++;
                     }
@@ -3592,7 +3771,7 @@ public final class DateTimeFormatterBuilder {
                                     if (s1 >= 0 && s2 >= 0) {
                                         s = s1 * 10 + s2;
                                         pos += 3;
-                                   }
+                                    }
                                 }
                             }
                         }
@@ -3610,6 +3789,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Prints or parses a zone ID.
      */
@@ -3635,8 +3815,7 @@ public final class DateTimeFormatterBuilder {
         private static final int STD = 0;
         private static final int DST = 1;
         private static final int GENERIC = 2;
-        private static final Map<String, SoftReference<Map<Locale, String[]>>> cache =
-            new ConcurrentHashMap<>();
+        private static final Map<String, SoftReference<Map<Locale, String[]>>> cache = new ConcurrentHashMap<>();
 
         private String getDisplayName(String id, int type, Locale locale) {
             if (textStyle == TextStyle.NARROW) {
@@ -3645,20 +3824,17 @@ public final class DateTimeFormatterBuilder {
             String[] names;
             SoftReference<Map<Locale, String[]>> ref = cache.get(id);
             Map<Locale, String[]> perLocale = null;
-            if (ref == null || (perLocale = ref.get()) == null ||
-                (names = perLocale.get(locale)) == null) {
+            if (ref == null || (perLocale = ref.get()) == null || (names = perLocale.get(locale)) == null) {
                 names = TimeZoneNameUtility.retrieveDisplayNames(id, locale);
                 if (names == null) {
                     return null;
                 }
                 names = Arrays.copyOfRange(names, 0, 7);
-                names[5] =
-                    TimeZoneNameUtility.retrieveGenericDisplayName(id, TimeZone.LONG, locale);
+                names[5] = TimeZoneNameUtility.retrieveGenericDisplayName(id, TimeZone.LONG, locale);
                 if (names[5] == null) {
                     names[5] = names[0]; // use the id
                 }
-                names[6] =
-                    TimeZoneNameUtility.retrieveGenericDisplayName(id, TimeZone.SHORT, locale);
+                names[6] = TimeZoneNameUtility.retrieveGenericDisplayName(id, TimeZone.SHORT, locale);
                 if (names[6] == null) {
                     names[6] = names[0];
                 }
@@ -3687,10 +3863,8 @@ public final class DateTimeFormatterBuilder {
             if (!(zone instanceof ZoneOffset)) {
                 TemporalAccessor dt = context.getTemporal();
                 String name = getDisplayName(zname,
-                                             dt.isSupported(ChronoField.INSTANT_SECONDS)
-                                             ? (zone.getRules().isDaylightSavings(Instant.from(dt)) ? DST : STD)
-                                             : GENERIC,
-                                             context.getLocale());
+                        dt.isSupported(ChronoField.INSTANT_SECONDS) ? (zone.getRules().isDaylightSavings(Instant.from(dt)) ? DST : STD) : GENERIC,
+                        context.getLocale());
                 if (name != null) {
                     zname = name;
                 }
@@ -3700,10 +3874,8 @@ public final class DateTimeFormatterBuilder {
         }
 
         // cache per instance for now
-        private final Map<Locale, Entry<Integer, SoftReference<PrefixTree>>>
-            cachedTree = new HashMap<>();
-        private final Map<Locale, Entry<Integer, SoftReference<PrefixTree>>>
-            cachedTreeCI = new HashMap<>();
+        private final Map<Locale, Entry<Integer, SoftReference<PrefixTree>>> cachedTree = new HashMap<>();
+        private final Map<Locale, Entry<Integer, SoftReference<PrefixTree>>> cachedTreeCI = new HashMap<>();
 
         @Override
         protected PrefixTree getTree(DateTimeParseContext context) {
@@ -3715,15 +3887,12 @@ public final class DateTimeFormatterBuilder {
             Set<String> regionIds = ZoneRulesProvider.getAvailableZoneIds();
             int regionIdsSize = regionIds.size();
 
-            Map<Locale, Entry<Integer, SoftReference<PrefixTree>>> cached =
-                isCaseSensitive ? cachedTree : cachedTreeCI;
+            Map<Locale, Entry<Integer, SoftReference<PrefixTree>>> cached = isCaseSensitive ? cachedTree : cachedTreeCI;
 
             Entry<Integer, SoftReference<PrefixTree>> entry = null;
             PrefixTree tree = null;
             String[][] zoneStrings = null;
-            if ((entry = cached.get(locale)) == null ||
-                (entry.getKey() != regionIdsSize ||
-                (tree = entry.getValue().get()) == null)) {
+            if ((entry = cached.get(locale)) == null || (entry.getKey() != regionIdsSize || (tree = entry.getValue().get()) == null)) {
                 tree = PrefixTree.newTree(context);
                 zoneStrings = TimeZoneNameUtility.getZoneStrings(locale);
                 for (String[] names : zoneStrings) {
@@ -3749,7 +3918,7 @@ public final class DateTimeFormatterBuilder {
                         int i = textStyle == TextStyle.FULL ? 1 : 2;
                         for (; i < names.length; i += 2) {
                             tree.add(names[i], zid);
-                       }
+                        }
                     }
                 }
                 cached.put(locale, new SimpleImmutableEntry<>(regionIdsSize, new SoftReference<>(tree)));
@@ -3759,6 +3928,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Prints or parses a zone ID.
      */
@@ -3791,8 +3961,7 @@ public final class DateTimeFormatterBuilder {
             // prepare parse tree
             Set<String> regionIds = ZoneRulesProvider.getAvailableZoneIds();
             final int regionIdsSize = regionIds.size();
-            Entry<Integer, PrefixTree> cached = context.isCaseSensitive()
-                                                ? cachedPrefixTree : cachedPrefixTreeCI;
+            Entry<Integer, PrefixTree> cached = context.isCaseSensitive() ? cachedPrefixTree : cachedPrefixTreeCI;
             if (cached == null || cached.getKey() != regionIdsSize) {
                 synchronized (this) {
                     cached = context.isCaseSensitive() ? cachedPrefixTree : cachedPrefixTreeCI;
@@ -3835,8 +4004,8 @@ public final class DateTimeFormatterBuilder {
                         return parseOffsetBased(context, text, position, position + 3, OffsetIdPrinterParser.INSTANCE_ID_ZERO);
                     }
                     return parseOffsetBased(context, text, position, position + 2, OffsetIdPrinterParser.INSTANCE_ID_ZERO);
-                } else if (context.charEquals(nextChar, 'G') && length >= position + 3 &&
-                        context.charEquals(nextNextChar, 'M') && context.charEquals(text.charAt(position + 2), 'T')) {
+                } else if (context.charEquals(nextChar, 'G') && length >= position + 3 && context.charEquals(nextNextChar, 'M') && context
+                        .charEquals(text.charAt(position + 2), 'T')) {
                     return parseOffsetBased(context, text, position, position + 3, OffsetIdPrinterParser.INSTANCE_ID_ZERO);
                 }
             }
@@ -3861,11 +4030,17 @@ public final class DateTimeFormatterBuilder {
          * To matching the parsing of ZoneId.of the values are not normalized
          * to ZoneOffsets.
          *
-         * @param context the parse context
-         * @param text the input text
-         * @param prefixPos start of the prefix
-         * @param position start of text after the prefix
-         * @param parser parser for the value after the prefix
+         * @param context
+         *         the parse context
+         * @param text
+         *         the input text
+         * @param prefixPos
+         *         start of the prefix
+         * @param position
+         *         start of text after the prefix
+         * @param parser
+         *         parser for the value after the prefix
+         *
          * @return the position after the parse
          */
         private int parseOffsetBased(DateTimeParseContext context, CharSequence text, int prefixPos, int position, OffsetIdPrinterParser parser) {
@@ -3876,8 +4051,7 @@ public final class DateTimeFormatterBuilder {
             }
 
             // '0' or 'Z' after prefix is not part of a valid ZoneId; use bare prefix
-            if (text.charAt(position) == '0' ||
-                context.charEquals(text.charAt(position), 'Z')) {
+            if (text.charAt(position) == '0' || context.charEquals(text.charAt(position), 'Z')) {
                 context.setParsed(ZoneId.of(prefix));
                 return position;
             }
@@ -3908,6 +4082,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * A String based prefix tree for parsing time-zone names.
      */
@@ -3915,7 +4090,7 @@ public final class DateTimeFormatterBuilder {
         protected String key;
         protected String value;
         protected char c0;    // performance optimization to avoid the
-                              // boundary check cost of key.charat(0)
+        // boundary check cost of key.charat(0)
         protected PrefixTree child;
         protected PrefixTree sibling;
 
@@ -3923,7 +4098,7 @@ public final class DateTimeFormatterBuilder {
             this.key = k;
             this.value = v;
             this.child = child;
-            if (k.length() == 0){
+            if (k.length() == 0) {
                 c0 = 0xffff;
             } else {
                 c0 = key.charAt(0);
@@ -3933,7 +4108,9 @@ public final class DateTimeFormatterBuilder {
         /**
          * Creates a new prefix parsing tree based on parse context.
          *
-         * @param context  the parse context
+         * @param context
+         *         the parse context
+         *
          * @return the tree, not null
          */
         public static PrefixTree newTree(DateTimeParseContext context) {
@@ -3949,11 +4126,14 @@ public final class DateTimeFormatterBuilder {
         /**
          * Creates a new prefix parsing tree.
          *
-         * @param keys  a set of strings to build the prefix parsing tree, not null
-         * @param context  the parse context
+         * @param keys
+         *         a set of strings to build the prefix parsing tree, not null
+         * @param context
+         *         the parse context
+         *
          * @return the tree, not null
          */
-        public static  PrefixTree newTree(Set<String> keys, DateTimeParseContext context) {
+        public static PrefixTree newTree(Set<String> keys, DateTimeParseContext context) {
             PrefixTree tree = newTree(context);
             for (String k : keys) {
                 tree.add0(k, k);
@@ -3975,13 +4155,15 @@ public final class DateTimeFormatterBuilder {
             return copy;
         }
 
-
         /**
          * Adds a pair of {key, value} into the prefix tree.
          *
-         * @param k  the key, not null
-         * @param v  the value, not null
-         * @return  true if the pair is added successfully
+         * @param k
+         *         the key, not null
+         * @param v
+         *         the value, not null
+         *
+         * @return true if the pair is added successfully
          */
         public boolean add(String k, String v) {
             return add0(k, v);
@@ -4030,13 +4212,17 @@ public final class DateTimeFormatterBuilder {
         /**
          * Match text with the prefix tree.
          *
-         * @param text  the input text to parse, not null
-         * @param off  the offset position to start parsing at
-         * @param end  the end position to stop parsing
+         * @param text
+         *         the input text to parse, not null
+         * @param off
+         *         the offset position to start parsing at
+         * @param end
+         *         the end position to stop parsing
+         *
          * @return the resulting string, or null if no match found.
          */
         public String match(CharSequence text, int off, int end) {
-            if (!prefixOf(text, off, end)){
+            if (!prefixOf(text, off, end)) {
                 return null;
             }
             if (child != null && (off += key.length()) != end) {
@@ -4058,16 +4244,19 @@ public final class DateTimeFormatterBuilder {
         /**
          * Match text with the prefix tree.
          *
-         * @param text  the input text to parse, not null
-         * @param pos  the position to start parsing at, from 0 to the text
-         *  length. Upon return, position will be updated to the new parse
-         *  position, or unchanged, if no match found.
+         * @param text
+         *         the input text to parse, not null
+         * @param pos
+         *         the position to start parsing at, from 0 to the text
+         *         length. Upon return, position will be updated to the new parse
+         *         position, or unchanged, if no match found.
+         *
          * @return the resulting string, or null if no match found.
          */
         public String match(CharSequence text, ParsePosition pos) {
             int off = pos.getIndex();
             int end = text.length();
-            if (!prefixOf(text, off, end)){
+            if (!prefixOf(text, off, end)) {
                 return null;
             }
             off += key.length();
@@ -4103,7 +4292,7 @@ public final class DateTimeFormatterBuilder {
 
         protected boolean prefixOf(CharSequence text, int off, int end) {
             if (text instanceof String) {
-                return ((String)text).startsWith(key, off);
+                return ((String) text).startsWith(key, off);
             }
             int len = key.length();
             if (len > end - off) {
@@ -4246,6 +4435,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Prints or parses a chronology.
      */
@@ -4306,10 +4496,15 @@ public final class DateTimeFormatterBuilder {
          * if available, or the chronology Id otherwise. The regular ResourceBundle
          * search path is used for looking up the chronology name.
          *
-         * @param chrono  the chronology, not null
-         * @param locale  the locale, not null
+         * @param chrono
+         *         the chronology, not null
+         * @param locale
+         *         the locale, not null
+         *
          * @return the chronology name of chrono in locale, or the id if no name is available
-         * @throws NullPointerException if chrono or locale is null
+         *
+         * @throws NullPointerException
+         *         if chrono or locale is null
          */
         private String getChronologyName(Chronology chrono, Locale locale) {
             String key = "calendarname." + chrono.getCalendarType();
@@ -4319,6 +4514,7 @@ public final class DateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Prints or parses a localized pattern.
      */
@@ -4332,8 +4528,10 @@ public final class DateTimeFormatterBuilder {
         /**
          * Constructor.
          *
-         * @param dateStyle  the date style to use, may be null
-         * @param timeStyle  the time style to use, may be null
+         * @param dateStyle
+         *         the date style to use, may be null
+         * @param timeStyle
+         *         the time style to use, may be null
          */
         LocalizedPrinterParser(FormatStyle dateStyle, FormatStyle timeStyle) {
             // validated by caller
@@ -4359,10 +4557,15 @@ public final class DateTimeFormatterBuilder {
          * The formatter will be the most appropriate to use for the date and time style in the locale.
          * For example, some locales will use the month name while others will use the number.
          *
-         * @param locale  the locale to use, not null
-         * @param chrono  the chronology to use, not null
+         * @param locale
+         *         the locale to use, not null
+         * @param chrono
+         *         the chronology to use, not null
+         *
          * @return the formatter, not null
-         * @throws IllegalArgumentException if the formatter cannot be found
+         *
+         * @throws IllegalArgumentException
+         *         if the formatter cannot be found
          */
         private DateTimeFormatter formatter(Locale locale, Chronology chrono) {
             String key = chrono.getId() + '|' + locale.toString() + '|' + dateStyle + timeStyle;
@@ -4380,12 +4583,12 @@ public final class DateTimeFormatterBuilder {
 
         @Override
         public String toString() {
-            return "Localized(" + (dateStyle != null ? dateStyle : "") + "," +
-                (timeStyle != null ? timeStyle : "") + ")";
+            return "Localized(" + (dateStyle != null ? dateStyle : "") + "," + (timeStyle != null ? timeStyle : "") + ")";
         }
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Prints or parses a localized pattern from a localized field.
      * The specific formatter and parameters is not selected until the
@@ -4400,8 +4603,10 @@ public final class DateTimeFormatterBuilder {
         /**
          * Constructor.
          *
-         * @param chr the pattern format letter that added this PrinterParser.
-         * @param count the repeat count of the format letter
+         * @param chr
+         *         the pattern format letter that added this PrinterParser.
+         * @param count
+         *         the repeat count of the format letter
          */
         WeekBasedFieldPrinterParser(char chr, int count) {
             this.chr = chr;
@@ -4421,34 +4626,37 @@ public final class DateTimeFormatterBuilder {
         /**
          * Gets the printerParser to use based on the field and the locale.
          *
-         * @param locale  the locale to use, not null
+         * @param locale
+         *         the locale to use, not null
+         *
          * @return the formatter, not null
-         * @throws IllegalArgumentException if the formatter cannot be found
+         *
+         * @throws IllegalArgumentException
+         *         if the formatter cannot be found
          */
         private DateTimePrinterParser printerParser(Locale locale) {
             WeekFields weekDef = WeekFields.of(locale);
             TemporalField field = null;
             switch (chr) {
-                case 'Y':
-                    field = weekDef.weekBasedYear();
-                    if (count == 2) {
-                        return new ReducedPrinterParser(field, 2, 2, 0, ReducedPrinterParser.BASE_DATE, 0);
-                    } else {
-                        return new NumberPrinterParser(field, count, 19,
-                                (count < 4) ? SignStyle.NORMAL : SignStyle.EXCEEDS_PAD, -1);
-                    }
-                case 'e':
-                case 'c':
-                    field = weekDef.dayOfWeek();
-                    break;
-                case 'w':
-                    field = weekDef.weekOfWeekBasedYear();
-                    break;
-                case 'W':
-                    field = weekDef.weekOfMonth();
-                    break;
-                default:
-                    throw new IllegalStateException("unreachable");
+            case 'Y':
+                field = weekDef.weekBasedYear();
+                if (count == 2) {
+                    return new ReducedPrinterParser(field, 2, 2, 0, ReducedPrinterParser.BASE_DATE, 0);
+                } else {
+                    return new NumberPrinterParser(field, count, 19, (count < 4) ? SignStyle.NORMAL : SignStyle.EXCEEDS_PAD, -1);
+                }
+            case 'e':
+            case 'c':
+                field = weekDef.dayOfWeek();
+                break;
+            case 'w':
+                field = weekDef.weekOfWeekBasedYear();
+                break;
+            case 'W':
+                field = weekDef.weekOfMonth();
+                break;
+            default:
+                throw new IllegalStateException("unreachable");
             }
             return new NumberPrinterParser(field, (count == 2 ? 2 : 1), 2, SignStyle.NOT_NEGATIVE);
         }
@@ -4463,24 +4671,22 @@ public final class DateTimeFormatterBuilder {
                 } else if (count == 2) {
                     sb.append("ReducedValue(WeekBasedYear,2,2,2000-01-01)");
                 } else {
-                    sb.append("WeekBasedYear,").append(count).append(",")
-                            .append(19).append(",")
-                            .append((count < 4) ? SignStyle.NORMAL : SignStyle.EXCEEDS_PAD);
+                    sb.append("WeekBasedYear,").append(count).append(",").append(19).append(",").append((count < 4) ? SignStyle.NORMAL : SignStyle.EXCEEDS_PAD);
                 }
             } else {
                 switch (chr) {
-                    case 'c':
-                    case 'e':
-                        sb.append("DayOfWeek");
-                        break;
-                    case 'w':
-                        sb.append("WeekOfWeekBasedYear");
-                        break;
-                    case 'W':
-                        sb.append("WeekOfMonth");
-                        break;
-                    default:
-                        break;
+                case 'c':
+                case 'e':
+                    sb.append("DayOfWeek");
+                    break;
+                case 'w':
+                    sb.append("WeekOfWeekBasedYear");
+                    break;
+                case 'W':
+                    sb.append("WeekOfMonth");
+                    break;
+                default:
+                    break;
                 }
                 sb.append(",");
                 sb.append(count);

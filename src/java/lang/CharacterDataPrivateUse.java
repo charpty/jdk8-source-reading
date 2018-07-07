@@ -25,8 +25,10 @@
 
 package java.lang;
 
-/** The CharacterData class encapsulates the large tables found in
-    Java.lang.Character. */
+/**
+ * The CharacterData class encapsulates the large tables found in
+ * Java.lang.Character.
+ */
 
 class CharacterDataPrivateUse extends CharacterData {
 
@@ -35,67 +37,67 @@ class CharacterDataPrivateUse extends CharacterData {
     }
 
     int getType(int ch) {
-	return (ch & 0xFFFE) == 0xFFFE
-	    ? Character.UNASSIGNED
-	    : Character.PRIVATE_USE;
+        return (ch & 0xFFFE) == 0xFFFE ? Character.UNASSIGNED : Character.PRIVATE_USE;
     }
 
     boolean isJavaIdentifierStart(int ch) {
-		return false;
+        return false;
     }
 
     boolean isJavaIdentifierPart(int ch) {
-		return false;
+        return false;
     }
 
     boolean isUnicodeIdentifierStart(int ch) {
-		return false;
+        return false;
     }
 
     boolean isUnicodeIdentifierPart(int ch) {
-		return false;
+        return false;
     }
 
     boolean isIdentifierIgnorable(int ch) {
-		return false;
+        return false;
     }
 
     int toLowerCase(int ch) {
-		return ch;
+        return ch;
     }
 
     int toUpperCase(int ch) {
-		return ch;
+        return ch;
     }
 
     int toTitleCase(int ch) {
-		return ch;
+        return ch;
     }
 
     int digit(int ch, int radix) {
-		return -1;
+        return -1;
     }
 
     int getNumericValue(int ch) {
-		return -1;
+        return -1;
     }
 
     boolean isWhitespace(int ch) {
-		return false;
+        return false;
     }
 
     byte getDirectionality(int ch) {
-	return (ch & 0xFFFE) == 0xFFFE
-	    ? Character.DIRECTIONALITY_UNDEFINED
-	    : Character.DIRECTIONALITY_LEFT_TO_RIGHT;
+        return (ch & 0xFFFE) == 0xFFFE ? Character.DIRECTIONALITY_UNDEFINED : Character.DIRECTIONALITY_LEFT_TO_RIGHT;
     }
 
     boolean isMirrored(int ch) {
-		return false;
+        return false;
     }
 
     static final CharacterData instance = new CharacterDataPrivateUse();
-    private CharacterDataPrivateUse() {};
+
+    private CharacterDataPrivateUse() {
+    }
+
+    ;
 }
 
 	

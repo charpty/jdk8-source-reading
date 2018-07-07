@@ -25,12 +25,9 @@
 
 package java.security;
 
-import java.io.IOException;
-import java.io.EOFException;
-import java.io.InputStream;
 import java.io.FilterInputStream;
-import java.io.PrintStream;
-import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * A transparent stream that updates the associated message digest using
@@ -54,11 +51,9 @@ import java.io.ByteArrayInputStream;
  * retain a handle onto the digest object, and clone it for each
  * digest to be computed, leaving the orginal digest untouched.
  *
- * @see MessageDigest
- *
- * @see DigestOutputStream
- *
  * @author Benjamin Renaud
+ * @see MessageDigest
+ * @see DigestOutputStream
  */
 
 public class DigestInputStream extends FilterInputStream {
@@ -77,9 +72,10 @@ public class DigestInputStream extends FilterInputStream {
      * Creates a digest input stream, using the specified input stream
      * and message digest.
      *
-     * @param stream the input stream.
-     *
-     * @param digest the message digest to associate with this stream.
+     * @param stream
+     *         the input stream.
+     * @param digest
+     *         the message digest to associate with this stream.
      */
     public DigestInputStream(InputStream stream, MessageDigest digest) {
         super(stream);
@@ -90,6 +86,7 @@ public class DigestInputStream extends FilterInputStream {
      * Returns the message digest associated with this stream.
      *
      * @return the message digest associated with this stream.
+     *
      * @see #setMessageDigest(java.security.MessageDigest)
      */
     public MessageDigest getMessageDigest() {
@@ -99,7 +96,9 @@ public class DigestInputStream extends FilterInputStream {
     /**
      * Associates the specified message digest with this stream.
      *
-     * @param digest the message digest to be associated with this stream.
+     * @param digest
+     *         the message digest to be associated with this stream.
+     *
      * @see #getMessageDigest()
      */
     public void setMessageDigest(MessageDigest digest) {
@@ -116,14 +115,14 @@ public class DigestInputStream extends FilterInputStream {
      *
      * @return the byte read.
      *
-     * @exception IOException if an I/O error occurs.
-     *
+     * @throws IOException
+     *         if an I/O error occurs.
      * @see MessageDigest#update(byte)
      */
     public int read() throws IOException {
         int ch = in.read();
         if (on && ch != -1) {
-            digest.update((byte)ch);
+            digest.update((byte) ch);
         }
         return ch;
     }
@@ -139,22 +138,23 @@ public class DigestInputStream extends FilterInputStream {
      * on the message digest associated with this stream, passing it
      * the data.
      *
-     * @param b the array into which the data is read.
+     * @param b
+     *         the array into which the data is read.
+     * @param off
+     *         the starting offset into {@code b} of where the
+     *         data should be placed.
+     * @param len
+     *         the maximum number of bytes to be read from the input
+     *         stream into b, starting at offset {@code off}.
      *
-     * @param off the starting offset into {@code b} of where the
-     * data should be placed.
-     *
-     * @param len the maximum number of bytes to be read from the input
-     * stream into b, starting at offset {@code off}.
-     *
-     * @return  the actual number of bytes read. This is less than
+     * @return the actual number of bytes read. This is less than
      * {@code len} if the end of the stream is reached prior to
      * reading {@code len} bytes. -1 is returned if no bytes were
      * read because the end of the stream had already been reached when
      * the call was made.
      *
-     * @exception IOException if an I/O error occurs.
-     *
+     * @throws IOException
+     *         if an I/O error occurs.
      * @see MessageDigest#update(byte[], int, int)
      */
     public int read(byte[] b, int off, int len) throws IOException {
@@ -171,8 +171,9 @@ public class DigestInputStream extends FilterInputStream {
      * update on the message digest.  But when it is off, the message
      * digest is not updated.
      *
-     * @param on true to turn the digest function on, false to turn
-     * it off.
+     * @param on
+     *         true to turn the digest function on, false to turn
+     *         it off.
      */
     public void on(boolean on) {
         this.on = on;
@@ -182,7 +183,7 @@ public class DigestInputStream extends FilterInputStream {
      * Prints a string representation of this digest input stream and
      * its associated message digest object.
      */
-     public String toString() {
-         return "[Digest Input Stream] " + digest.toString();
-     }
+    public String toString() {
+        return "[Digest Input Stream] " + digest.toString();
+    }
 }

@@ -26,6 +26,8 @@
 package java.text;
 
 import java.util.Calendar;
+
+
 import static java.util.GregorianCalendar.*;
 
 /**
@@ -101,8 +103,7 @@ class CalendarBuilder {
     }
 
     Calendar establish(Calendar cal) {
-        boolean weekDate = isSet(WEEK_YEAR)
-                            && field[WEEK_YEAR] > field[YEAR];
+        boolean weekDate = isSet(WEEK_YEAR) && field[WEEK_YEAR] > field[YEAR];
         if (weekDate && !cal.isWeekDateSupported()) {
             // Use YEAR instead
             if (!isSet(YEAR)) {
@@ -125,8 +126,7 @@ class CalendarBuilder {
 
         if (weekDate) {
             int weekOfYear = isSet(WEEK_OF_YEAR) ? field[MAX_FIELD + WEEK_OF_YEAR] : 1;
-            int dayOfWeek = isSet(DAY_OF_WEEK) ?
-                                field[MAX_FIELD + DAY_OF_WEEK] : cal.getFirstDayOfWeek();
+            int dayOfWeek = isSet(DAY_OF_WEEK) ? field[MAX_FIELD + DAY_OF_WEEK] : cal.getFirstDayOfWeek();
             if (!isValidDayOfWeek(dayOfWeek) && cal.isLenient()) {
                 if (dayOfWeek >= 8) {
                     dayOfWeek--;

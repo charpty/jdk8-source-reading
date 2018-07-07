@@ -47,10 +47,10 @@ package java.lang;
  * unless the programmer intends on modifying or enhancing the fundamental
  * behavior of the class.
  *
- * @author  Arthur van Hoff
- * @see     java.lang.Thread
- * @see     java.util.concurrent.Callable
- * @since   JDK1.0
+ * @author Arthur van Hoff
+ * @see java.lang.Thread
+ * @see java.util.concurrent.Callable
+ * @since JDK1.0
  */
 @FunctionalInterface
 public interface Runnable {
@@ -63,7 +63,7 @@ public interface Runnable {
      * The general contract of the method <code>run</code> is that it may
      * take any action whatsoever.
      *
-     * @see     java.lang.Thread#run()
+     * @see java.lang.Thread#run()
      */
     public abstract void run();
 }

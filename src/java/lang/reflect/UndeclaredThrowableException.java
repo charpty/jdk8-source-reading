@@ -51,16 +51,15 @@ package java.lang.reflect;
  * Throwable#getCause()} method, as well as the aforementioned "legacy
  * method."
  *
- * @author      Peter Jones
- * @see         InvocationHandler
- * @since       1.3
+ * @author Peter Jones
+ * @see InvocationHandler
+ * @since 1.3
  */
 public class UndeclaredThrowableException extends RuntimeException {
     static final long serialVersionUID = 330127114055056639L;
 
     /**
      * the undeclared checked exception that was thrown
-     * @serial
      */
     private Throwable undeclaredThrowable;
 
@@ -68,8 +67,9 @@ public class UndeclaredThrowableException extends RuntimeException {
      * Constructs an {@code UndeclaredThrowableException} with the
      * specified {@code Throwable}.
      *
-     * @param   undeclaredThrowable the undeclared checked exception
-     *          that was thrown
+     * @param undeclaredThrowable
+     *         the undeclared checked exception
+     *         that was thrown
      */
     public UndeclaredThrowableException(Throwable undeclaredThrowable) {
         super((Throwable) null);  // Disallow initCause
@@ -80,13 +80,13 @@ public class UndeclaredThrowableException extends RuntimeException {
      * Constructs an {@code UndeclaredThrowableException} with the
      * specified {@code Throwable} and a detail message.
      *
-     * @param   undeclaredThrowable the undeclared checked exception
-     *          that was thrown
-     * @param   s the detail message
+     * @param undeclaredThrowable
+     *         the undeclared checked exception
+     *         that was thrown
+     * @param s
+     *         the detail message
      */
-    public UndeclaredThrowableException(Throwable undeclaredThrowable,
-                                        String s)
-    {
+    public UndeclaredThrowableException(Throwable undeclaredThrowable, String s) {
         super(s, null);  // Disallow initCause
         this.undeclaredThrowable = undeclaredThrowable;
     }
@@ -110,8 +110,9 @@ public class UndeclaredThrowableException extends RuntimeException {
      * instance wrapped in this {@code UndeclaredThrowableException},
      * which may be {@code null}).
      *
-     * @return  the cause of this exception.
-     * @since   1.4
+     * @return the cause of this exception.
+     *
+     * @since 1.4
      */
     public Throwable getCause() {
         return undeclaredThrowable;

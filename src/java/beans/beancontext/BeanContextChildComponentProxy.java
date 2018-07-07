@@ -25,7 +25,7 @@
 
 package java.beans.beancontext;
 
-import java.awt.Component;
+import java.awt.*;
 
 /**
  * <p>
@@ -35,10 +35,9 @@ import java.awt.Component;
  * </p>
  *
  * @author Laurence P. G. Cable
- * @since 1.2
- *
  * @see java.beans.beancontext.BeanContext
  * @see java.beans.beancontext.BeanContextSupport
+ * @since 1.2
  */
 
 public interface BeanContextChildComponentProxy {
@@ -46,6 +45,7 @@ public interface BeanContextChildComponentProxy {
     /**
      * Gets the <code>java.awt.Component</code> associated with
      * this <code>BeanContextChild</code>.
+     *
      * @return the AWT <code>Component</code> associated with
      * this <code>BeanContextChild</code>
      */

@@ -25,7 +25,12 @@
 
 package java.lang;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+
 import static java.lang.annotation.ElementType.*;
 
 /**
@@ -34,12 +39,11 @@ import static java.lang.annotation.ElementType.*;
  * or because a better alternative exists.  Compilers warn when a
  * deprecated program element is used or overridden in non-deprecated code.
  *
- * @author  Neal Gafter
+ * @author Neal Gafter
  * @since 1.5
- * @jls 9.6.3.6 @Deprecated
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(value={CONSTRUCTOR, FIELD, LOCAL_VARIABLE, METHOD, PACKAGE, PARAMETER, TYPE})
+@Target(value = { CONSTRUCTOR, FIELD, LOCAL_VARIABLE, METHOD, PACKAGE, PARAMETER, TYPE })
 public @interface Deprecated {
 }

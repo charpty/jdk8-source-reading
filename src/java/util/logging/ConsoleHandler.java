@@ -23,7 +23,6 @@
  *
  */
 
-
 package java.util.logging;
 
 /**
@@ -38,17 +37,17 @@ package java.util.logging;
  * (or have invalid values) then the specified default values are used.
  * <ul>
  * <li>   &lt;handler-name&gt;.level
- *        specifies the default level for the <tt>Handler</tt>
- *        (defaults to <tt>Level.INFO</tt>). </li>
+ * specifies the default level for the <tt>Handler</tt>
+ * (defaults to <tt>Level.INFO</tt>). </li>
  * <li>   &lt;handler-name&gt;.filter
- *        specifies the name of a <tt>Filter</tt> class to use
- *        (defaults to no <tt>Filter</tt>). </li>
+ * specifies the name of a <tt>Filter</tt> class to use
+ * (defaults to no <tt>Filter</tt>). </li>
  * <li>   &lt;handler-name&gt;.formatter
- *        specifies the name of a <tt>Formatter</tt> class to use
- *        (defaults to <tt>java.util.logging.SimpleFormatter</tt>). </li>
+ * specifies the name of a <tt>Formatter</tt> class to use
+ * (defaults to <tt>java.util.logging.SimpleFormatter</tt>). </li>
  * <li>   &lt;handler-name&gt;.encoding
- *        the name of the character set encoding to use (defaults to
- *        the default platform encoding). </li>
+ * the name of the character set encoding to use (defaults to
+ * the default platform encoding). </li>
  * </ul>
  * <p>
  * For example, the properties for {@code ConsoleHandler} would be:
@@ -63,6 +62,7 @@ package java.util.logging;
  * <li>   com.foo.MyHandler.formatter=java.util.logging.SimpleFormatter </li>
  * </ul>
  * <p>
+ *
  * @since 1.4
  */
 public class ConsoleHandler extends StreamHandler {
@@ -73,11 +73,11 @@ public class ConsoleHandler extends StreamHandler {
         LogManager manager = LogManager.getLogManager();
         String cname = getClass().getName();
 
-        setLevel(manager.getLevelProperty(cname +".level", Level.INFO));
-        setFilter(manager.getFilterProperty(cname +".filter", null));
-        setFormatter(manager.getFormatterProperty(cname +".formatter", new SimpleFormatter()));
+        setLevel(manager.getLevelProperty(cname + ".level", Level.INFO));
+        setFilter(manager.getFilterProperty(cname + ".filter", null));
+        setFormatter(manager.getFormatterProperty(cname + ".formatter", new SimpleFormatter()));
         try {
-            setEncoding(manager.getStringProperty(cname +".encoding", null));
+            setEncoding(manager.getStringProperty(cname + ".encoding", null));
         } catch (Exception ex) {
             try {
                 setEncoding(null);
@@ -93,7 +93,6 @@ public class ConsoleHandler extends StreamHandler {
      * <p>
      * The <tt>ConsoleHandler</tt> is configured based on
      * <tt>LogManager</tt> properties (or their default values).
-     *
      */
     public ConsoleHandler() {
         sealed = false;
@@ -108,8 +107,10 @@ public class ConsoleHandler extends StreamHandler {
      * The logging request was made initially to a <tt>Logger</tt> object,
      * which initialized the <tt>LogRecord</tt> and forwarded it here.
      * <p>
-     * @param  record  description of the log event. A null record is
-     *                 silently ignored and is not published
+     *
+     * @param record
+     *         description of the log event. A null record is
+     *         silently ignored and is not published
      */
     @Override
     public void publish(LogRecord record) {

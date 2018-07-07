@@ -42,11 +42,8 @@ import java.math.BigInteger;
  * </pre>
  *
  * @author Valerie Peng
- *
- *
  * @see RSAPrivateCrtKeySpec
  * @see java.security.interfaces.RSAMultiPrimePrivateCrtKey
- *
  * @since 1.4
  */
 
@@ -56,35 +53,33 @@ public class RSAOtherPrimeInfo {
     private BigInteger primeExponent;
     private BigInteger crtCoefficient;
 
-
-   /**
-    * Creates a new {@code RSAOtherPrimeInfo}
-    * given the prime, primeExponent, and
-    * crtCoefficient as defined in PKCS#1.
-    *
-    * @param prime the prime factor of n.
-    * @param primeExponent the exponent.
-    * @param crtCoefficient the Chinese Remainder Theorem
-    * coefficient.
-    * @exception NullPointerException if any of the parameters, i.e.
-    * {@code prime}, {@code primeExponent},
-    * {@code crtCoefficient}, is null.
-    *
-    */
-    public RSAOtherPrimeInfo(BigInteger prime,
-                          BigInteger primeExponent,
-                          BigInteger crtCoefficient) {
+    /**
+     * Creates a new {@code RSAOtherPrimeInfo}
+     * given the prime, primeExponent, and
+     * crtCoefficient as defined in PKCS#1.
+     *
+     * @param prime
+     *         the prime factor of n.
+     * @param primeExponent
+     *         the exponent.
+     * @param crtCoefficient
+     *         the Chinese Remainder Theorem
+     *         coefficient.
+     *
+     * @throws NullPointerException
+     *         if any of the parameters, i.e.
+     *         {@code prime}, {@code primeExponent},
+     *         {@code crtCoefficient}, is null.
+     */
+    public RSAOtherPrimeInfo(BigInteger prime, BigInteger primeExponent, BigInteger crtCoefficient) {
         if (prime == null) {
-            throw new NullPointerException("the prime parameter must be " +
-                                            "non-null");
+            throw new NullPointerException("the prime parameter must be " + "non-null");
         }
         if (primeExponent == null) {
-            throw new NullPointerException("the primeExponent parameter " +
-                                            "must be non-null");
+            throw new NullPointerException("the primeExponent parameter " + "must be non-null");
         }
         if (crtCoefficient == null) {
-            throw new NullPointerException("the crtCoefficient parameter " +
-                                            "must be non-null");
+            throw new NullPointerException("the crtCoefficient parameter " + "must be non-null");
         }
         this.prime = prime;
         this.primeExponent = primeExponent;

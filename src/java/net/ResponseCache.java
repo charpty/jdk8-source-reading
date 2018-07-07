@@ -26,8 +26,8 @@
 package java.net;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import sun.security.util.SecurityConstants;
 
 /**
@@ -36,11 +36,11 @@ import sun.security.util.SecurityConstants;
  * ResponseCache.setDefault(ResponseCache), and the system will call
  * this object in order to:
  *
- *    <ul><li>store resource data which has been retrieved from an
- *            external source into the cache</li>
- *         <li>try to fetch a requested resource that may have been
- *            stored in the cache</li>
- *    </ul>
+ * <ul><li>store resource data which has been retrieved from an
+ * external source into the cache</li>
+ * <li>try to fetch a requested resource that may have been
+ * stored in the cache</li>
+ * </ul>
  *
  * The ResponseCache implementation decides which resources
  * should be cached, and for how long they should be cached. If a
@@ -72,15 +72,15 @@ public abstract class ResponseCache {
     /**
      * Gets the system-wide response cache.
      *
-     * @throws  SecurityException
-     *          If a security manager has been installed and it denies
-     * {@link NetPermission}{@code ("getResponseCache")}
-     *
-     * @see #setDefault(ResponseCache)
      * @return the system-wide {@code ResponseCache}
+     *
+     * @throws SecurityException
+     *         If a security manager has been installed and it denies
+     *         {@link NetPermission}{@code ("getResponseCache")}
+     * @see #setDefault(ResponseCache)
      * @since 1.5
      */
-    public synchronized  static ResponseCache getDefault() {
+    public synchronized static ResponseCache getDefault() {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             sm.checkPermission(SecurityConstants.GET_RESPONSECACHE_PERMISSION);
@@ -93,13 +93,13 @@ public abstract class ResponseCache {
      *
      * Note: non-standard procotol handlers may ignore this setting.
      *
-     * @param responseCache The response cache, or
-     *          {@code null} to unset the cache.
+     * @param responseCache
+     *         The response cache, or
+     *         {@code null} to unset the cache.
      *
-     * @throws  SecurityException
-     *          If a security manager has been installed and it denies
-     * {@link NetPermission}{@code ("setResponseCache")}
-     *
+     * @throws SecurityException
+     *         If a security manager has been installed and it denies
+     *         {@link NetPermission}{@code ("setResponseCache")}
      * @see #getDefault()
      * @since 1.5
      */
@@ -118,26 +118,30 @@ public abstract class ResponseCache {
      * to get the network resource. If a cached response is returned,
      * that resource is used instead.
      *
-     * @param uri a {@code URI} used to reference the requested
-     *            network resource
-     * @param rqstMethod a {@code String} representing the request
-     *            method
-     * @param rqstHeaders - a Map from request header
-     *            field names to lists of field values representing
-     *            the current request headers
-     * @return a {@code CacheResponse} instance if available
-     *          from cache, or null otherwise
-     * @throws  IOException if an I/O error occurs
-     * @throws  IllegalArgumentException if any one of the arguments is null
+     * @param uri
+     *         a {@code URI} used to reference the requested
+     *         network resource
+     * @param rqstMethod
+     *         a {@code String} representing the request
+     *         method
+     * @param rqstHeaders
+     *         - a Map from request header
+     *         field names to lists of field values representing
+     *         the current request headers
      *
-     * @see     java.net.URLConnection#setUseCaches(boolean)
-     * @see     java.net.URLConnection#getUseCaches()
-     * @see     java.net.URLConnection#setDefaultUseCaches(boolean)
-     * @see     java.net.URLConnection#getDefaultUseCaches()
+     * @return a {@code CacheResponse} instance if available
+     * from cache, or null otherwise
+     *
+     * @throws IOException
+     *         if an I/O error occurs
+     * @throws IllegalArgumentException
+     *         if any one of the arguments is null
+     * @see java.net.URLConnection#setUseCaches(boolean)
+     * @see java.net.URLConnection#getUseCaches()
+     * @see java.net.URLConnection#setDefaultUseCaches(boolean)
+     * @see java.net.URLConnection#getDefaultUseCaches()
      */
-    public abstract CacheResponse
-        get(URI uri, String rqstMethod, Map<String, List<String>> rqstHeaders)
-        throws IOException;
+    public abstract CacheResponse get(URI uri, String rqstMethod, Map<String, List<String>> rqstHeaders) throws IOException;
 
     /**
      * The protocol handler calls this method after a resource has
@@ -148,16 +152,22 @@ public abstract class ResponseCache {
      * use to write the resource into the cache. If the resource is
      * not to be cached, then put must return null.
      *
-     * @param uri a {@code URI} used to reference the requested
-     *            network resource
-     * @param conn - a URLConnection instance that is used to fetch
-     *            the response to be cached
+     * @param uri
+     *         a {@code URI} used to reference the requested
+     *         network resource
+     * @param conn
+     *         - a URLConnection instance that is used to fetch
+     *         the response to be cached
+     *
      * @return a {@code CacheRequest} for recording the
-     *            response to be cached. Null return indicates that
-     *            the caller does not intend to cache the response.
-     * @throws IOException if an I/O error occurs
-     * @throws IllegalArgumentException if any one of the arguments is
-     *            null
+     * response to be cached. Null return indicates that
+     * the caller does not intend to cache the response.
+     *
+     * @throws IOException
+     *         if an I/O error occurs
+     * @throws IllegalArgumentException
+     *         if any one of the arguments is
+     *         null
      */
-    public abstract CacheRequest put(URI uri, URLConnection conn)  throws IOException;
+    public abstract CacheRequest put(URI uri, URLConnection conn) throws IOException;
 }

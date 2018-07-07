@@ -47,10 +47,10 @@ import java.util.ServiceLoader;
  *
  * <ul>
  *
- * <li>{@link #loadClass(URL,String)}
- * <li>{@link #loadClass(String,String)}
- * <li>{@link #loadClass(String,String,ClassLoader)}
- * <li>{@link #loadProxyClass(String,String[],ClassLoader)}
+ * <li>{@link #loadClass(URL, String)}
+ * <li>{@link #loadClass(String, String)}
+ * <li>{@link #loadClass(String, String, ClassLoader)}
+ * <li>{@link #loadProxyClass(String, String[], ClassLoader)}
  * <li>{@link #getClassLoader(String)}
  * <li>{@link #getClassAnnotation(Class)}
  *
@@ -101,54 +101,53 @@ import java.util.ServiceLoader;
  *
  * </ul>
  *
- * @author      Ann Wollrath
- * @author      Peter Jones
- * @author      Laird Dornin
- * @see         RMIClassLoaderSpi
- * @since       JDK1.1
+ * @author Ann Wollrath
+ * @author Peter Jones
+ * @author Laird Dornin
+ * @see RMIClassLoaderSpi
+ * @since JDK1.1
  */
 public class RMIClassLoader {
 
     /** "default" provider instance */
-    private static final RMIClassLoaderSpi defaultProvider =
-        newDefaultProviderInstance();
+    private static final RMIClassLoaderSpi defaultProvider = newDefaultProviderInstance();
 
     /** provider instance */
-    private static final RMIClassLoaderSpi provider =
-        AccessController.doPrivileged(
-            new PrivilegedAction<RMIClassLoaderSpi>() {
-                public RMIClassLoaderSpi run() { return initializeProvider(); }
-            });
+    private static final RMIClassLoaderSpi provider = AccessController.doPrivileged(new PrivilegedAction<RMIClassLoaderSpi>() {
+        public RMIClassLoaderSpi run() {
+            return initializeProvider();
+        }
+    });
 
     /*
      * Disallow anyone from creating one of these.
      */
-    private RMIClassLoader() {}
+    private RMIClassLoader() {
+    }
 
     /**
      * Loads the class with the specified <code>name</code>.
      *
-     * <p>This method delegates to {@link #loadClass(String,String)},
+     * <p>This method delegates to {@link #loadClass(String, String)},
      * passing <code>null</code> as the first argument and
      * <code>name</code> as the second argument.
      *
-     * @param   name the name of the class to load
+     * @param name
+     *         the name of the class to load
      *
-     * @return  the <code>Class</code> object representing the loaded class
+     * @return the <code>Class</code> object representing the loaded class
      *
-     * @throws MalformedURLException if a provider-specific URL used
-     * to load classes is invalid
-     *
-     * @throws  ClassNotFoundException if a definition for the class
-     * could not be found at the codebase location
-     *
+     * @throws MalformedURLException
+     *         if a provider-specific URL used
+     *         to load classes is invalid
+     * @throws ClassNotFoundException
+     *         if a definition for the class
+     *         could not be found at the codebase location
+     * @see #loadClass(String, String)
      * @deprecated replaced by <code>loadClass(String,String)</code> method
-     * @see #loadClass(String,String)
      */
     @Deprecated
-    public static Class<?> loadClass(String name)
-        throws MalformedURLException, ClassNotFoundException
-    {
+    public static Class<?> loadClass(String name) throws MalformedURLException, ClassNotFoundException {
         return loadClass((String) null, name);
     }
 
@@ -156,66 +155,64 @@ public class RMIClassLoader {
      * Loads a class from a codebase URL.
      *
      * If <code>codebase</code> is <code>null</code>, then this method
-     * will behave the same as {@link #loadClass(String,String)} with a
+     * will behave the same as {@link #loadClass(String, String)} with a
      * <code>null</code> <code>codebase</code> and the given class name.
      *
      * <p>This method delegates to the
-     * {@link RMIClassLoaderSpi#loadClass(String,String,ClassLoader)}
+     * {@link RMIClassLoaderSpi#loadClass(String, String, ClassLoader)}
      * method of the provider instance, passing the result of invoking
      * {@link URL#toString} on the given URL (or <code>null</code> if
      * <code>codebase</code> is null) as the first argument,
      * <code>name</code> as the second argument,
      * and <code>null</code> as the third argument.
      *
-     * @param   codebase the URL to load the class from, or <code>null</code>
+     * @param codebase
+     *         the URL to load the class from, or <code>null</code>
+     * @param name
+     *         the name of the class to load
      *
-     * @param   name the name of the class to load
+     * @return the <code>Class</code> object representing the loaded class
      *
-     * @return  the <code>Class</code> object representing the loaded class
-     *
-     * @throws MalformedURLException if <code>codebase</code> is
-     * <code>null</code> and a provider-specific URL used
-     * to load classes is invalid
-     *
-     * @throws  ClassNotFoundException if a definition for the class
-     * could not be found at the specified URL
+     * @throws MalformedURLException
+     *         if <code>codebase</code> is
+     *         <code>null</code> and a provider-specific URL used
+     *         to load classes is invalid
+     * @throws ClassNotFoundException
+     *         if a definition for the class
+     *         could not be found at the specified URL
      */
-    public static Class<?> loadClass(URL codebase, String name)
-        throws MalformedURLException, ClassNotFoundException
-    {
-        return provider.loadClass(
-            codebase != null ? codebase.toString() : null, name, null);
+    public static Class<?> loadClass(URL codebase, String name) throws MalformedURLException, ClassNotFoundException {
+        return provider.loadClass(codebase != null ? codebase.toString() : null, name, null);
     }
 
     /**
      * Loads a class from a codebase URL path.
      *
      * <p>This method delegates to the
-     * {@link RMIClassLoaderSpi#loadClass(String,String,ClassLoader)}
+     * {@link RMIClassLoaderSpi#loadClass(String, String, ClassLoader)}
      * method of the provider instance, passing <code>codebase</code>
      * as the first argument, <code>name</code> as the second argument,
      * and <code>null</code> as the third argument.
      *
-     * @param   codebase the list of URLs (separated by spaces) to load
-     * the class from, or <code>null</code>
+     * @param codebase
+     *         the list of URLs (separated by spaces) to load
+     *         the class from, or <code>null</code>
+     * @param name
+     *         the name of the class to load
      *
-     * @param   name the name of the class to load
+     * @return the <code>Class</code> object representing the loaded class
      *
-     * @return  the <code>Class</code> object representing the loaded class
-     *
-     * @throws MalformedURLException if <code>codebase</code> is
-     * non-<code>null</code> and contains an invalid URL, or if
-     * <code>codebase</code> is <code>null</code> and a provider-specific
-     * URL used to load classes is invalid
-     *
-     * @throws  ClassNotFoundException if a definition for the class
-     * could not be found at the specified location
-     *
-     * @since   1.2
+     * @throws MalformedURLException
+     *         if <code>codebase</code> is
+     *         non-<code>null</code> and contains an invalid URL, or if
+     *         <code>codebase</code> is <code>null</code> and a provider-specific
+     *         URL used to load classes is invalid
+     * @throws ClassNotFoundException
+     *         if a definition for the class
+     *         could not be found at the specified location
+     * @since 1.2
      */
-    public static Class<?> loadClass(String codebase, String name)
-        throws MalformedURLException, ClassNotFoundException
-    {
+    public static Class<?> loadClass(String codebase, String name) throws MalformedURLException, ClassNotFoundException {
         return provider.loadClass(codebase, name, null);
     }
 
@@ -232,35 +229,33 @@ public class RMIClassLoader {
      * codebase URL path.
      *
      * <p>This method delegates to the
-     * {@link RMIClassLoaderSpi#loadClass(String,String,ClassLoader)}
+     * {@link RMIClassLoaderSpi#loadClass(String, String, ClassLoader)}
      * method of the provider instance, passing <code>codebase</code>
      * as the first argument, <code>name</code> as the second argument,
      * and <code>defaultLoader</code> as the third argument.
      *
-     * @param   codebase the list of URLs (separated by spaces) to load
-     * the class from, or <code>null</code>
+     * @param codebase
+     *         the list of URLs (separated by spaces) to load
+     *         the class from, or <code>null</code>
+     * @param name
+     *         the name of the class to load
+     * @param defaultLoader
+     *         additional contextual class loader
+     *         to use, or <code>null</code>
      *
-     * @param   name the name of the class to load
+     * @return the <code>Class</code> object representing the loaded class
      *
-     * @param   defaultLoader additional contextual class loader
-     * to use, or <code>null</code>
-     *
-     * @return  the <code>Class</code> object representing the loaded class
-     *
-     * @throws MalformedURLException if <code>codebase</code> is
-     * non-<code>null</code> and contains an invalid URL, or if
-     * <code>codebase</code> is <code>null</code> and a provider-specific
-     * URL used to load classes is invalid
-     *
-     * @throws  ClassNotFoundException if a definition for the class
-     * could not be found at the specified location
-     *
-     * @since   1.4
+     * @throws MalformedURLException
+     *         if <code>codebase</code> is
+     *         non-<code>null</code> and contains an invalid URL, or if
+     *         <code>codebase</code> is <code>null</code> and a provider-specific
+     *         URL used to load classes is invalid
+     * @throws ClassNotFoundException
+     *         if a definition for the class
+     *         could not be found at the specified location
+     * @since 1.4
      */
-    public static Class<?> loadClass(String codebase, String name,
-                                     ClassLoader defaultLoader)
-        throws MalformedURLException, ClassNotFoundException
-    {
+    public static Class<?> loadClass(String codebase, String name, ClassLoader defaultLoader) throws MalformedURLException, ClassNotFoundException {
         return provider.loadClass(codebase, name, defaultLoader);
     }
 
@@ -270,44 +265,43 @@ public class RMIClassLoader {
      * from a codebase URL path.
      *
      * <p>The interfaces will be resolved similar to classes loaded via
-     * the {@link #loadClass(String,String)} method using the given
+     * the {@link #loadClass(String, String)} method using the given
      * <code>codebase</code>.
      *
      * <p>This method delegates to the
-     * {@link RMIClassLoaderSpi#loadProxyClass(String,String[],ClassLoader)}
+     * {@link RMIClassLoaderSpi#loadProxyClass(String, String[], ClassLoader)}
      * method of the provider instance, passing <code>codebase</code>
      * as the first argument, <code>interfaces</code> as the second argument,
      * and <code>defaultLoader</code> as the third argument.
      *
-     * @param   codebase the list of URLs (space-separated) to load
-     * classes from, or <code>null</code>
+     * @param codebase
+     *         the list of URLs (space-separated) to load
+     *         classes from, or <code>null</code>
+     * @param interfaces
+     *         the names of the interfaces for the proxy class
+     *         to implement
+     * @param defaultLoader
+     *         additional contextual class loader
+     *         to use, or <code>null</code>
      *
-     * @param   interfaces the names of the interfaces for the proxy class
-     * to implement
+     * @return a dynamic proxy class that implements the named interfaces
      *
-     * @param   defaultLoader additional contextual class loader
-     * to use, or <code>null</code>
-     *
-     * @return  a dynamic proxy class that implements the named interfaces
-     *
-     * @throws  MalformedURLException if <code>codebase</code> is
-     * non-<code>null</code> and contains an invalid URL, or
-     * if <code>codebase</code> is <code>null</code> and a provider-specific
-     * URL used to load classes is invalid
-     *
-     * @throws  ClassNotFoundException if a definition for one of
-     * the named interfaces could not be found at the specified location,
-     * or if creation of the dynamic proxy class failed (such as if
-     * {@link java.lang.reflect.Proxy#getProxyClass(ClassLoader,Class[])}
-     * would throw an <code>IllegalArgumentException</code> for the given
-     * interface list)
-     *
-     * @since   1.4
+     * @throws MalformedURLException
+     *         if <code>codebase</code> is
+     *         non-<code>null</code> and contains an invalid URL, or
+     *         if <code>codebase</code> is <code>null</code> and a provider-specific
+     *         URL used to load classes is invalid
+     * @throws ClassNotFoundException
+     *         if a definition for one of
+     *         the named interfaces could not be found at the specified location,
+     *         or if creation of the dynamic proxy class failed (such as if
+     *         {@link java.lang.reflect.Proxy#getProxyClass(ClassLoader, Class[])}
+     *         would throw an <code>IllegalArgumentException</code> for the given
+     *         interface list)
+     * @since 1.4
      */
-    public static Class<?> loadProxyClass(String codebase, String[] interfaces,
-                                          ClassLoader defaultLoader)
-        throws ClassNotFoundException, MalformedURLException
-    {
+    public static Class<?> loadProxyClass(String codebase, String[] interfaces, ClassLoader defaultLoader)
+            throws ClassNotFoundException, MalformedURLException {
         return provider.loadProxyClass(codebase, interfaces, defaultLoader);
     }
 
@@ -316,7 +310,7 @@ public class RMIClassLoader {
      * URL path.
      *
      * <p>The class loader returned is the class loader that the
-     * {@link #loadClass(String,String)} method would use to load classes
+     * {@link #loadClass(String, String)} method would use to load classes
      * for the same <code>codebase</code> argument.
      *
      * <p>This method delegates to the
@@ -331,27 +325,26 @@ public class RMIClassLoader {
      * security checks to verify that the calling context has permission to
      * connect to all of the URLs in the codebase URL path.
      *
-     * @param   codebase the list of URLs (space-separated) from which
-     * the returned class loader will load classes from, or <code>null</code>
+     * @param codebase
+     *         the list of URLs (space-separated) from which
+     *         the returned class loader will load classes from, or <code>null</code>
      *
      * @return a class loader that loads classes from the given codebase URL
      * path
      *
-     * @throws  MalformedURLException if <code>codebase</code> is
-     * non-<code>null</code> and contains an invalid URL, or
-     * if <code>codebase</code> is <code>null</code> and a provider-specific
-     * URL used to identify the class loader is invalid
-     *
-     * @throws  SecurityException if there is a security manager and the
-     * invocation of its <code>checkPermission</code> method fails, or
-     * if the caller does not have permission to connect to all of the
-     * URLs in the codebase URL path
-     *
-     * @since   1.3
+     * @throws MalformedURLException
+     *         if <code>codebase</code> is
+     *         non-<code>null</code> and contains an invalid URL, or
+     *         if <code>codebase</code> is <code>null</code> and a provider-specific
+     *         URL used to identify the class loader is invalid
+     * @throws SecurityException
+     *         if there is a security manager and the
+     *         invocation of its <code>checkPermission</code> method fails, or
+     *         if the caller does not have permission to connect to all of the
+     *         URLs in the codebase URL path
+     * @since 1.3
      */
-    public static ClassLoader getClassLoader(String codebase)
-        throws MalformedURLException, SecurityException
-    {
+    public static ClassLoader getClassLoader(String codebase) throws MalformedURLException, SecurityException {
         return provider.getClassLoader(codebase);
     }
 
@@ -364,14 +357,15 @@ public class RMIClassLoader {
      * {@link RMIClassLoaderSpi#getClassAnnotation(Class)} method
      * of the provider instance, passing <code>cl</code> as the argument.
      *
-     * @param   cl the class to obtain the annotation for
+     * @param cl
+     *         the class to obtain the annotation for
      *
-     * @return  a string to be used to annotate the given class when
+     * @return a string to be used to annotate the given class when
      * it gets marshalled, or <code>null</code>
      *
-     * @throws  NullPointerException if <code>cl</code> is <code>null</code>
-     *
-     * @since   1.2
+     * @throws NullPointerException
+     *         if <code>cl</code> is <code>null</code>
+     * @since 1.2
      */
     /*
      * REMIND: Should we say that the returned class annotation will or
@@ -390,10 +384,10 @@ public class RMIClassLoader {
      *
      * <ul>
      *
-     * <li>{@link #loadClass(URL,String)}
-     * <li>{@link #loadClass(String,String)}
-     * <li>{@link #loadClass(String,String,ClassLoader)}
-     * <li>{@link #loadProxyClass(String,String[],ClassLoader)}
+     * <li>{@link #loadClass(URL, String)}
+     * <li>{@link #loadClass(String, String)}
+     * <li>{@link #loadClass(String, String, ClassLoader)}
+     * <li>{@link #loadProxyClass(String, String[], ClassLoader)}
      * <li>{@link #getClassLoader(String)}
      * <li>{@link #getClassAnnotation(Class)}
      *
@@ -497,7 +491,7 @@ public class RMIClassLoader {
      * <code>SecurityException</code> will be thrown.
      *
      * <p>The <b>{@link
-     * RMIClassLoaderSpi#loadClass(String,String,ClassLoader)
+     * RMIClassLoaderSpi#loadClass(String, String, ClassLoader)
      * loadClass}</b> method attempts to load the class with the
      * specified name as follows:
      *
@@ -528,7 +522,7 @@ public class RMIClassLoader {
      * </blockquote>
      *
      * <p>The <b>{@link
-     * RMIClassLoaderSpi#loadProxyClass(String,String[],ClassLoader)
+     * RMIClassLoaderSpi#loadProxyClass(String, String[], ClassLoader)
      * loadProxyClass}</b> method attempts to return a dynamic proxy
      * class with the named interface as follows:
      *
@@ -543,7 +537,7 @@ public class RMIClassLoader {
      * <li>if all of the resolved interfaces are <code>public</code>,
      * then it first attempts to obtain a dynamic proxy class (using
      * {@link
-     * java.lang.reflect.Proxy#getProxyClass(ClassLoader,Class[])
+     * java.lang.reflect.Proxy#getProxyClass(ClassLoader, Class[])
      * Proxy.getProxyClass}) for the resolved interfaces defined in
      * the codebase loader; if that attempt throws an
      * <code>IllegalArgumentException</code>, it then attempts to
@@ -593,12 +587,12 @@ public class RMIClassLoader {
      *
      * </blockquote>
      *
-     * @return  the canonical instance of the default service provider
+     * @return the canonical instance of the default service provider
      *
-     * @throws  SecurityException if there is a security manager and the
-     * invocation of its <code>checkPermission</code> method fails
-     *
-     * @since   1.4
+     * @throws SecurityException
+     *         if there is a security manager and the
+     *         invocation of its <code>checkPermission</code> method fails
+     * @since 1.4
      */
     public static RMIClassLoaderSpi getDefaultProviderInstance() {
         SecurityManager sm = System.getSecurityManager();
@@ -611,17 +605,17 @@ public class RMIClassLoader {
     /**
      * Returns the security context of the given class loader.
      *
-     * @param   loader a class loader from which to get the security context
+     * @param loader
+     *         a class loader from which to get the security context
      *
-     * @return  the security context
+     * @return the security context
      *
+     * @see java.lang.SecurityManager#getSecurityContext()
      * @deprecated no replacement.  As of the Java 2 platform v1.2, RMI no
      * longer uses this method to obtain a class loader's security context.
-     * @see java.lang.SecurityManager#getSecurityContext()
      */
     @Deprecated
-    public static Object getSecurityContext(ClassLoader loader)
-    {
+    public static Object getSecurityContext(ClassLoader loader) {
         return sun.rmi.server.LoaderHandler.getSecurityContext(loader);
     }
 
@@ -630,26 +624,16 @@ public class RMIClassLoader {
      */
     private static RMIClassLoaderSpi newDefaultProviderInstance() {
         return new RMIClassLoaderSpi() {
-            public Class<?> loadClass(String codebase, String name,
-                                      ClassLoader defaultLoader)
-                throws MalformedURLException, ClassNotFoundException
-            {
-                return sun.rmi.server.LoaderHandler.loadClass(
-                    codebase, name, defaultLoader);
+            public Class<?> loadClass(String codebase, String name, ClassLoader defaultLoader) throws MalformedURLException, ClassNotFoundException {
+                return sun.rmi.server.LoaderHandler.loadClass(codebase, name, defaultLoader);
             }
 
-            public Class<?> loadProxyClass(String codebase,
-                                           String[] interfaces,
-                                           ClassLoader defaultLoader)
-                throws MalformedURLException, ClassNotFoundException
-            {
-                return sun.rmi.server.LoaderHandler.loadProxyClass(
-                    codebase, interfaces, defaultLoader);
+            public Class<?> loadProxyClass(String codebase, String[] interfaces, ClassLoader defaultLoader)
+                    throws MalformedURLException, ClassNotFoundException {
+                return sun.rmi.server.LoaderHandler.loadProxyClass(codebase, interfaces, defaultLoader);
             }
 
-            public ClassLoader getClassLoader(String codebase)
-                throws MalformedURLException
-            {
+            public ClassLoader getClassLoader(String codebase) throws MalformedURLException {
                 return sun.rmi.server.LoaderHandler.getClassLoader(codebase);
             }
 
@@ -668,8 +652,7 @@ public class RMIClassLoader {
         /*
          * First check for the system property being set:
          */
-        String providerClassName =
-            System.getProperty("java.rmi.server.RMIClassLoaderSpi");
+        String providerClassName = System.getProperty("java.rmi.server.RMIClassLoaderSpi");
 
         if (providerClassName != null) {
             if (providerClassName.equals("default")) {
@@ -677,10 +660,8 @@ public class RMIClassLoader {
             }
 
             try {
-                Class<? extends RMIClassLoaderSpi> providerClass =
-                    Class.forName(providerClassName, false,
-                                  ClassLoader.getSystemClassLoader())
-                    .asSubclass(RMIClassLoaderSpi.class);
+                Class<? extends RMIClassLoaderSpi> providerClass = Class.forName(providerClassName, false, ClassLoader.getSystemClassLoader())
+                        .asSubclass(RMIClassLoaderSpi.class);
                 return providerClass.newInstance();
 
             } catch (ClassNotFoundException e) {
@@ -690,8 +671,7 @@ public class RMIClassLoader {
             } catch (InstantiationException e) {
                 throw new InstantiationError(e.getMessage());
             } catch (ClassCastException e) {
-                Error error = new LinkageError(
-                    "provider class not assignable to RMIClassLoaderSpi");
+                Error error = new LinkageError("provider class not assignable to RMIClassLoaderSpi");
                 error.initCause(e);
                 throw error;
             }
@@ -700,15 +680,12 @@ public class RMIClassLoader {
         /*
          * Next look for a provider configuration file installed:
          */
-        Iterator<RMIClassLoaderSpi> iter =
-            ServiceLoader.load(RMIClassLoaderSpi.class,
-                               ClassLoader.getSystemClassLoader()).iterator();
+        Iterator<RMIClassLoaderSpi> iter = ServiceLoader.load(RMIClassLoaderSpi.class, ClassLoader.getSystemClassLoader()).iterator();
         if (iter.hasNext()) {
             try {
                 return iter.next();
             } catch (ClassCastException e) {
-                Error error = new LinkageError(
-                    "provider class not assignable to RMIClassLoaderSpi");
+                Error error = new LinkageError("provider class not assignable to RMIClassLoaderSpi");
                 error.initCause(e);
                 throw error;
             }

@@ -38,8 +38,8 @@ package java.lang;
  * and may be accessed via the {@link Throwable#getCause()} method, as well
  * as the aforementioned "legacy method."
  *
- * @author  Frank Yellin
- * @since   JDK1.1
+ * @author Frank Yellin
+ * @since JDK1.1
  */
 public class ExceptionInInitializerError extends LinkageError {
     /**
@@ -51,9 +51,6 @@ public class ExceptionInInitializerError extends LinkageError {
      * This field holds the exception if the
      * ExceptionInInitializerError(Throwable thrown) constructor was
      * used to instantiate the object
-     *
-     * @serial
-     *
      */
     private Throwable exception;
 
@@ -73,7 +70,8 @@ public class ExceptionInInitializerError extends LinkageError {
      * later retrieval by the {@link #getException()} method. The detail
      * message string is set to <code>null</code>.
      *
-     * @param thrown The exception thrown
+     * @param thrown
+     *         The exception thrown
      */
     public ExceptionInInitializerError(Throwable thrown) {
         initCause(null);  // Disallow subsequent initCause
@@ -87,8 +85,8 @@ public class ExceptionInInitializerError extends LinkageError {
      * retrieval by the {@link Throwable#getMessage()} method. There is no
      * saved throwable object.
      *
-     *
-     * @param s the detail message
+     * @param s
+     *         the detail message
      */
     public ExceptionInInitializerError(String s) {
         super(s);
@@ -104,9 +102,9 @@ public class ExceptionInInitializerError extends LinkageError {
      * obtaining this information.
      *
      * @return the saved throwable object of this
-     *         <code>ExceptionInInitializerError</code>, or <code>null</code>
-     *         if this <code>ExceptionInInitializerError</code> has no saved
-     *         throwable object.
+     * <code>ExceptionInInitializerError</code>, or <code>null</code>
+     * if this <code>ExceptionInInitializerError</code> has no saved
+     * throwable object.
      */
     public Throwable getException() {
         return exception;
@@ -116,9 +114,10 @@ public class ExceptionInInitializerError extends LinkageError {
      * Returns the cause of this error (the exception that occurred
      * during a static initialization that caused this error to be created).
      *
-     * @return  the cause of this error or <code>null</code> if the
-     *          cause is nonexistent or unknown.
-     * @since   1.4
+     * @return the cause of this error or <code>null</code> if the
+     * cause is nonexistent or unknown.
+     *
+     * @since 1.4
      */
     public Throwable getCause() {
         return exception;

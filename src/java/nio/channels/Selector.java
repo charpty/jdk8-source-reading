@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Set;
 
-
 /**
  * A multiplexor of {@link SelectableChannel} objects.
  *
@@ -50,27 +49,27 @@ import java.util.Set;
  *
  * <ul>
  *
- *   <li><p> The <i>key set</i> contains the keys representing the current
- *   channel registrations of this selector.  This set is returned by the
- *   {@link #keys() keys} method. </p></li>
+ * <li><p> The <i>key set</i> contains the keys representing the current
+ * channel registrations of this selector.  This set is returned by the
+ * {@link #keys() keys} method. </p></li>
  *
- *   <li><p> The <i>selected-key set</i> is the set of keys such that each
- *   key's channel was detected to be ready for at least one of the operations
- *   identified in the key's interest set during a prior selection operation.
- *   This set is returned by the {@link #selectedKeys() selectedKeys} method.
- *   The selected-key set is always a subset of the key set. </p></li>
+ * <li><p> The <i>selected-key set</i> is the set of keys such that each
+ * key's channel was detected to be ready for at least one of the operations
+ * identified in the key's interest set during a prior selection operation.
+ * This set is returned by the {@link #selectedKeys() selectedKeys} method.
+ * The selected-key set is always a subset of the key set. </p></li>
  *
- *   <li><p> The <i>cancelled-key</i> set is the set of keys that have been
- *   cancelled but whose channels have not yet been deregistered.  This set is
- *   not directly accessible.  The cancelled-key set is always a subset of the
- *   key set. </p></li>
+ * <li><p> The <i>cancelled-key</i> set is the set of keys that have been
+ * cancelled but whose channels have not yet been deregistered.  This set is
+ * not directly accessible.  The cancelled-key set is always a subset of the
+ * key set. </p></li>
  *
  * </ul>
  *
  * <p> All three sets are empty in a newly-created selector.
  *
  * <p> A key is added to a selector's key set as a side effect of registering a
- * channel via the channel's {@link SelectableChannel#register(Selector,int)
+ * channel via the channel's {@link SelectableChannel#register(Selector, int)
  * register} method.  Cancelled keys are removed from the key set during
  * selection operations.  The key set itself is not directly modifiable.
  *
@@ -101,39 +100,39 @@ import java.util.Set;
  *
  * <ol>
  *
- *   <li><p> Each key in the cancelled-key set is removed from each key set of
- *   which it is a member, and its channel is deregistered.  This step leaves
- *   the cancelled-key set empty. </p></li>
+ * <li><p> Each key in the cancelled-key set is removed from each key set of
+ * which it is a member, and its channel is deregistered.  This step leaves
+ * the cancelled-key set empty. </p></li>
  *
- *   <li><p> The underlying operating system is queried for an update as to the
- *   readiness of each remaining channel to perform any of the operations
- *   identified by its key's interest set as of the moment that the selection
- *   operation began.  For a channel that is ready for at least one such
- *   operation, one of the following two actions is performed: </p>
+ * <li><p> The underlying operating system is queried for an update as to the
+ * readiness of each remaining channel to perform any of the operations
+ * identified by its key's interest set as of the moment that the selection
+ * operation began.  For a channel that is ready for at least one such
+ * operation, one of the following two actions is performed: </p>
  *
- *   <ol>
+ * <ol>
  *
- *     <li><p> If the channel's key is not already in the selected-key set then
- *     it is added to that set and its ready-operation set is modified to
- *     identify exactly those operations for which the channel is now reported
- *     to be ready.  Any readiness information previously recorded in the ready
- *     set is discarded.  </p></li>
+ * <li><p> If the channel's key is not already in the selected-key set then
+ * it is added to that set and its ready-operation set is modified to
+ * identify exactly those operations for which the channel is now reported
+ * to be ready.  Any readiness information previously recorded in the ready
+ * set is discarded.  </p></li>
  *
- *     <li><p> Otherwise the channel's key is already in the selected-key set,
- *     so its ready-operation set is modified to identify any new operations
- *     for which the channel is reported to be ready.  Any readiness
- *     information previously recorded in the ready set is preserved; in other
- *     words, the ready set returned by the underlying system is
- *     bitwise-disjoined into the key's current ready set. </p></li>
+ * <li><p> Otherwise the channel's key is already in the selected-key set,
+ * so its ready-operation set is modified to identify any new operations
+ * for which the channel is reported to be ready.  Any readiness
+ * information previously recorded in the ready set is preserved; in other
+ * words, the ready set returned by the underlying system is
+ * bitwise-disjoined into the key's current ready set. </p></li>
  *
- *   </ol>
+ * </ol>
  *
- *   If all of the keys in the key set at the start of this step have empty
- *   interest sets then neither the selected-key set nor any of the keys'
- *   ready-operation sets will be updated.
+ * If all of the keys in the key set at the start of this step have empty
+ * interest sets then neither the selected-key set nor any of the keys'
+ * ready-operation sets will be updated.
  *
- *   <li><p> If any keys were added to the cancelled-key set while step (2) was
- *   in progress then they are processed as in step (1). </p></li>
+ * <li><p> If any keys were added to the cancelled-key set while step (2) was
+ * in progress then they are processed as in step (1). </p></li>
  *
  * </ol>
  *
@@ -167,16 +166,16 @@ import java.util.Set;
  *
  * <ul>
  *
- *   <li><p> By invoking the selector's {@link #wakeup wakeup} method,
- *   </p></li>
+ * <li><p> By invoking the selector's {@link #wakeup wakeup} method,
+ * </p></li>
  *
- *   <li><p> By invoking the selector's {@link #close close} method, or
- *   </p></li>
+ * <li><p> By invoking the selector's {@link #close close} method, or
+ * </p></li>
  *
- *   <li><p> By invoking the blocked thread's {@link
- *   java.lang.Thread#interrupt() interrupt} method, in which case its
- *   interrupt status will be set and the selector's {@link #wakeup wakeup}
- *   method will be invoked. </p></li>
+ * <li><p> By invoking the blocked thread's {@link
+ * java.lang.Thread#interrupt() interrupt} method, in which case its
+ * interrupt status will be set and the selector's {@link #wakeup wakeup}
+ * method will be invoked. </p></li>
  *
  * </ul>
  *
@@ -194,13 +193,11 @@ import java.util.Set;
  * iterator's own {@link java.util.Iterator#remove() remove} method, then a
  * {@link java.util.ConcurrentModificationException} will be thrown. </p>
  *
- *
  * @author Mark Reinhold
  * @author JSR-51 Expert Group
- * @since 1.4
- *
  * @see SelectableChannel
  * @see SelectionKey
+ * @since 1.4
  */
 
 public abstract class Selector implements Closeable {
@@ -208,7 +205,8 @@ public abstract class Selector implements Closeable {
     /**
      * Initializes a new instance of this class.
      */
-    protected Selector() { }
+    protected Selector() {
+    }
 
     /**
      * Opens a selector.
@@ -218,10 +216,10 @@ public abstract class Selector implements Closeable {
      * of the system-wide default {@link
      * java.nio.channels.spi.SelectorProvider} object.  </p>
      *
-     * @return  A new selector
+     * @return A new selector
      *
-     * @throws  IOException
-     *          If an I/O error occurs
+     * @throws IOException
+     *         If an I/O error occurs
      */
     public static Selector open() throws IOException {
         return SelectorProvider.provider().openSelector();
@@ -237,7 +235,7 @@ public abstract class Selector implements Closeable {
     /**
      * Returns the provider that created this channel.
      *
-     * @return  The provider that created this channel
+     * @return The provider that created this channel
      */
     public abstract SelectorProvider provider();
 
@@ -251,10 +249,10 @@ public abstract class Selector implements Closeable {
      *
      * <p> The key set is <a href="#ksc">not thread-safe</a>. </p>
      *
-     * @return  This selector's key set
+     * @return This selector's key set
      *
-     * @throws  ClosedSelectorException
-     *          If this selector is closed
+     * @throws ClosedSelectorException
+     *         If this selector is closed
      */
     public abstract Set<SelectionKey> keys();
 
@@ -267,10 +265,10 @@ public abstract class Selector implements Closeable {
      *
      * <p> The selected-key set is <a href="#ksc">not thread-safe</a>. </p>
      *
-     * @return  This selector's selected-key set
+     * @return This selector's selected-key set
      *
-     * @throws  ClosedSelectorException
-     *          If this selector is closed
+     * @throws ClosedSelectorException
+     *         If this selector is closed
      */
     public abstract Set<SelectionKey> selectedKeys();
 
@@ -285,14 +283,13 @@ public abstract class Selector implements Closeable {
      * <p> Invoking this method clears the effect of any previous invocations
      * of the {@link #wakeup wakeup} method.  </p>
      *
-     * @return  The number of keys, possibly zero, whose ready-operation sets
-     *          were updated by the selection operation
+     * @return The number of keys, possibly zero, whose ready-operation sets
+     * were updated by the selection operation
      *
-     * @throws  IOException
-     *          If an I/O error occurs
-     *
-     * @throws  ClosedSelectorException
-     *          If this selector is closed
+     * @throws IOException
+     *         If an I/O error occurs
+     * @throws ClosedSelectorException
+     *         If this selector is closed
      */
     public abstract int selectNow() throws IOException;
 
@@ -309,25 +306,23 @@ public abstract class Selector implements Closeable {
      * <p> This method does not offer real-time guarantees: It schedules the
      * timeout as if by invoking the {@link Object#wait(long)} method. </p>
      *
-     * @param  timeout  If positive, block for up to <tt>timeout</tt>
-     *                  milliseconds, more or less, while waiting for a
-     *                  channel to become ready; if zero, block indefinitely;
-     *                  must not be negative
+     * @param timeout
+     *         If positive, block for up to <tt>timeout</tt>
+     *         milliseconds, more or less, while waiting for a
+     *         channel to become ready; if zero, block indefinitely;
+     *         must not be negative
      *
-     * @return  The number of keys, possibly zero,
-     *          whose ready-operation sets were updated
+     * @return The number of keys, possibly zero,
+     * whose ready-operation sets were updated
      *
-     * @throws  IOException
-     *          If an I/O error occurs
-     *
-     * @throws  ClosedSelectorException
-     *          If this selector is closed
-     *
-     * @throws  IllegalArgumentException
-     *          If the value of the timeout argument is negative
+     * @throws IOException
+     *         If an I/O error occurs
+     * @throws ClosedSelectorException
+     *         If this selector is closed
+     * @throws IllegalArgumentException
+     *         If the value of the timeout argument is negative
      */
-    public abstract int select(long timeout)
-        throws IOException;
+    public abstract int select(long timeout) throws IOException;
 
     /**
      * Selects a set of keys whose corresponding channels are ready for I/O
@@ -338,14 +333,13 @@ public abstract class Selector implements Closeable {
      * this selector's {@link #wakeup wakeup} method is invoked, or the current
      * thread is interrupted, whichever comes first.  </p>
      *
-     * @return  The number of keys, possibly zero,
-     *          whose ready-operation sets were updated
+     * @return The number of keys, possibly zero,
+     * whose ready-operation sets were updated
      *
-     * @throws  IOException
-     *          If an I/O error occurs
-     *
-     * @throws  ClosedSelectorException
-     *          If this selector is closed
+     * @throws IOException
+     *         If an I/O error occurs
+     * @throws ClosedSelectorException
+     *         If this selector is closed
      */
     public abstract int select() throws IOException;
 
@@ -366,7 +360,7 @@ public abstract class Selector implements Closeable {
      * <p> Invoking this method more than once between two successive selection
      * operations has the same effect as invoking it just once.  </p>
      *
-     * @return  This selector
+     * @return This selector
      */
     public abstract Selector wakeup();
 
@@ -388,8 +382,8 @@ public abstract class Selector implements Closeable {
      * invoking this method or the {@link #wakeup wakeup} method, will cause a
      * {@link ClosedSelectorException} to be thrown. </p>
      *
-     * @throws  IOException
-     *          If an I/O error occurs
+     * @throws IOException
+     *         If an I/O error occurs
      */
     public abstract void close() throws IOException;
 

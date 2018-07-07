@@ -33,10 +33,9 @@ package java.security.cert;
  * by the {@link CertPathValidator#validate CertPathValidator.validate}
  * method must implement this interface.
  *
+ * @author Yassir Elley
  * @see CertPathValidator
- *
- * @since       1.4
- * @author      Yassir Elley
+ * @since 1.4
  */
 public interface CertPathValidatorResult extends Cloneable {
 

@@ -30,7 +30,6 @@ package java.nio.channels;
 
 import java.io.IOException;
 
-
 /**
  * A channel that can be asynchronously closed and interrupted.
  *
@@ -56,15 +55,12 @@ import java.io.IOException;
  * if, it implements this interface.  This can be tested at runtime, if
  * necessary, via the <tt>instanceof</tt> operator.
  *
- *
  * @author Mark Reinhold
  * @author JSR-51 Expert Group
  * @since 1.4
  */
 
-public interface InterruptibleChannel
-    extends Channel
-{
+public interface InterruptibleChannel extends Channel {
 
     /**
      * Closes this channel.
@@ -75,7 +71,8 @@ public interface InterruptibleChannel
      * <p> This method otherwise behaves exactly as specified by the {@link
      * Channel#close Channel} interface.  </p>
      *
-     * @throws  IOException  If an I/O error occurs
+     * @throws IOException
+     *         If an I/O error occurs
      */
     public void close() throws IOException;
 

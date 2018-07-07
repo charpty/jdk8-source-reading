@@ -40,11 +40,12 @@ package java.rmi;
  * <code>java.rmi.activation.Activatable</code>.
  *
  * <p>For complete details on RMI, see the <a
- href=../../../platform/rmi/spec/rmiTOC.html>RMI Specification</a> which describes the RMI API and system.
+ * href=../../../platform/rmi/spec/rmiTOC.html>RMI Specification</a> which describes the RMI API and system.
  *
- * @since   JDK1.1
- * @author  Ann Wollrath
- * @see     java.rmi.server.UnicastRemoteObject
- * @see     java.rmi.activation.Activatable
+ * @author Ann Wollrath
+ * @see java.rmi.server.UnicastRemoteObject
+ * @see java.rmi.activation.Activatable
+ * @since JDK1.1
  */
-public interface Remote {}
+public interface Remote {
+}

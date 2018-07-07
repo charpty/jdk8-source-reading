@@ -74,10 +74,6 @@ import java.time.ZoneOffset;
 /**
  * The shared serialization delegate for this package.
  *
- * @implNote
- * This class is mutable and should be created once per serialization.
- *
- * @serial include
  * @since 1.8
  */
 final class Ser implements Externalizable {
@@ -108,8 +104,10 @@ final class Ser implements Externalizable {
     /**
      * Creates an instance for serialization.
      *
-     * @param type  the type
-     * @param object  the object
+     * @param type
+     *         the type
+     * @param object
+     *         the object
      */
     Ser(byte type, Object object) {
         this.type = type;
@@ -117,20 +115,12 @@ final class Ser implements Externalizable {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Implements the {@code Externalizable} interface to write the object.
-     * @serialData
-     * Each serializable class is mapped to a type that is the first byte
-     * in the stream.  Refer to each class {@code writeReplace}
-     * serialized form for the value of the type and sequence of values for the type.
      *
-     * <ul>
-     * <li><a href="../../../serialized-form.html#java.time.zone.ZoneRules">ZoneRules.writeReplace</a>
-     * <li><a href="../../../serialized-form.html#java.time.zone.ZoneOffsetTransition">ZoneOffsetTransition.writeReplace</a>
-     * <li><a href="../../../serialized-form.html#java.time.zone.ZoneOffsetTransitionRule">ZoneOffsetTransitionRule.writeReplace</a>
-     * </ul>
-     *
-     * @param out  the data stream to write to, not null
+     * @param out
+     *         the data stream to write to, not null
      */
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -144,38 +134,27 @@ final class Ser implements Externalizable {
     private static void writeInternal(byte type, Object object, DataOutput out) throws IOException {
         out.writeByte(type);
         switch (type) {
-            case ZRULES:
-                ((ZoneRules) object).writeExternal(out);
-                break;
-            case ZOT:
-                ((ZoneOffsetTransition) object).writeExternal(out);
-                break;
-            case ZOTRULE:
-                ((ZoneOffsetTransitionRule) object).writeExternal(out);
-                break;
-            default:
-                throw new InvalidClassException("Unknown serialized type");
+        case ZRULES:
+            ((ZoneRules) object).writeExternal(out);
+            break;
+        case ZOT:
+            ((ZoneOffsetTransition) object).writeExternal(out);
+            break;
+        case ZOTRULE:
+            ((ZoneOffsetTransitionRule) object).writeExternal(out);
+            break;
+        default:
+            throw new InvalidClassException("Unknown serialized type");
         }
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Implements the {@code Externalizable} interface to read the object.
-     * @serialData
-     * The streamed type and parameters defined by the type's {@code writeReplace}
-     * method are read and passed to the corresponding static factory for the type
-     * to create a new instance.  That instance is returned as the de-serialized
-     * {@code Ser} object.
      *
-     * <ul>
-     * <li><a href="../../../serialized-form.html#java.time.zone.ZoneRules">ZoneRules</a>
-     * - {@code ZoneRules.of(standardTransitions, standardOffsets, savingsInstantTransitions, wallOffsets, lastRules);}
-     * <li><a href="../../../serialized-form.html#java.time.zone.ZoneOffsetTransition">ZoneOffsetTransition</a>
-     * - {@code ZoneOffsetTransition of(LocalDateTime.ofEpochSecond(epochSecond), offsetBefore, offsetAfter);}
-     * <li><a href="../../../serialized-form.html#java.time.zone.ZoneOffsetTransitionRule">ZoneOffsetTransitionRule</a>
-     * - {@code ZoneOffsetTransitionRule.of(month, dom, dow, time, timeEndOfDay, timeDefinition, standardOffset, offsetBefore, offsetAfter);}
-     * </ul>
-     * @param in  the data to read, not null
+     * @param in
+     *         the data to read, not null
      */
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -190,14 +169,14 @@ final class Ser implements Externalizable {
 
     private static Object readInternal(byte type, DataInput in) throws IOException, ClassNotFoundException {
         switch (type) {
-            case ZRULES:
-                return ZoneRules.readExternal(in);
-            case ZOT:
-                return ZoneOffsetTransition.readExternal(in);
-            case ZOTRULE:
-                return ZoneOffsetTransitionRule.readExternal(in);
-            default:
-                throw new StreamCorruptedException("Unknown serialized type");
+        case ZRULES:
+            return ZoneRules.readExternal(in);
+        case ZOT:
+            return ZoneOffsetTransition.readExternal(in);
+        case ZOTRULE:
+            return ZoneOffsetTransitionRule.readExternal(in);
+        default:
+            throw new StreamCorruptedException("Unknown serialized type");
         }
     }
 
@@ -207,16 +186,21 @@ final class Ser implements Externalizable {
      * @return the read object, should never be null
      */
     private Object readResolve() {
-         return object;
+        return object;
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Writes the state to the stream.
      *
-     * @param offset  the offset, not null
-     * @param out  the output stream, not null
-     * @throws IOException if an error occurs
+     * @param offset
+     *         the offset, not null
+     * @param out
+     *         the output stream, not null
+     *
+     * @throws IOException
+     *         if an error occurs
      */
     static void writeOffset(ZoneOffset offset, DataOutput out) throws IOException {
         final int offsetSecs = offset.getTotalSeconds();
@@ -230,9 +214,13 @@ final class Ser implements Externalizable {
     /**
      * Reads the state from the stream.
      *
-     * @param in  the input stream, not null
+     * @param in
+     *         the input stream, not null
+     *
      * @return the created object, not null
-     * @throws IOException if an error occurs
+     *
+     * @throws IOException
+     *         if an error occurs
      */
     static ZoneOffset readOffset(DataInput in) throws IOException {
         int offsetByte = in.readByte();
@@ -240,12 +228,17 @@ final class Ser implements Externalizable {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Writes the state to the stream.
      *
-     * @param epochSec  the epoch seconds, not null
-     * @param out  the output stream, not null
-     * @throws IOException if an error occurs
+     * @param epochSec
+     *         the epoch seconds, not null
+     * @param out
+     *         the output stream, not null
+     *
+     * @throws IOException
+     *         if an error occurs
      */
     static void writeEpochSec(long epochSec, DataOutput out) throws IOException {
         if (epochSec >= -4575744000L && epochSec < 10413792000L && epochSec % 900 == 0) {  // quarter hours between 1825 and 2300
@@ -262,9 +255,13 @@ final class Ser implements Externalizable {
     /**
      * Reads the state from the stream.
      *
-     * @param in  the input stream, not null
+     * @param in
+     *         the input stream, not null
+     *
      * @return the epoch seconds, not null
-     * @throws IOException if an error occurs
+     *
+     * @throws IOException
+     *         if an error occurs
      */
     static long readEpochSec(DataInput in) throws IOException {
         int hiByte = in.readByte() & 255;

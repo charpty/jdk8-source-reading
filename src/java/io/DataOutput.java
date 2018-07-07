@@ -41,21 +41,23 @@ package java.io;
  * a byte cannot be written for any reason,
  * an <code>IOException</code> is thrown.
  *
- * @author  Frank Yellin
- * @see     java.io.DataInput
- * @see     java.io.DataOutputStream
- * @since   JDK1.0
+ * @author Frank Yellin
+ * @see java.io.DataInput
+ * @see java.io.DataOutputStream
+ * @since JDK1.0
  */
-public
-interface DataOutput {
+public interface DataOutput {
     /**
      * Writes to the output stream the eight
      * low-order bits of the argument <code>b</code>.
      * The 24 high-order  bits of <code>b</code>
      * are ignored.
      *
-     * @param      b   the byte to be written.
-     * @throws     IOException  if an I/O error occurs.
+     * @param b
+     *         the byte to be written.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     void write(int b) throws IOException;
 
@@ -69,8 +71,11 @@ interface DataOutput {
      * <code>b[1]</code>, and so on; the last byte
      * written is <code>b[b.length-1]</code>.
      *
-     * @param      b   the data.
-     * @throws     IOException  if an I/O error occurs.
+     * @param b
+     *         the data.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     void write(byte b[]) throws IOException;
 
@@ -89,10 +94,15 @@ interface DataOutput {
      * then <code>b[off+1]</code>, and so on; the
      * last byte written is <code>b[off+len-1]</code>.
      *
-     * @param      b     the data.
-     * @param      off   the start offset in the data.
-     * @param      len   the number of bytes to write.
-     * @throws     IOException  if an I/O error occurs.
+     * @param b
+     *         the data.
+     * @param off
+     *         the start offset in the data.
+     * @param len
+     *         the number of bytes to write.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     void write(byte b[], int off, int len) throws IOException;
 
@@ -108,8 +118,11 @@ interface DataOutput {
      * which will then return a <code>boolean</code>
      * equal to <code>v</code>.
      *
-     * @param      v   the boolean to be written.
-     * @throws     IOException  if an I/O error occurs.
+     * @param v
+     *         the boolean to be written.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     void writeBoolean(boolean v) throws IOException;
 
@@ -125,8 +138,11 @@ interface DataOutput {
      * which will then return a <code>byte</code>
      * equal to <code>(byte)v</code>.
      *
-     * @param      v   the byte value to be written.
-     * @throws     IOException  if an I/O error occurs.
+     * @param v
+     *         the byte value to be written.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     void writeByte(int v) throws IOException;
 
@@ -145,8 +161,11 @@ interface DataOutput {
      * will then return a <code>short</code> equal
      * to <code>(short)v</code>.
      *
-     * @param      v   the <code>short</code> value to be written.
-     * @throws     IOException  if an I/O error occurs.
+     * @param v
+     *         the <code>short</code> value to be written.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     void writeShort(int v) throws IOException;
 
@@ -166,8 +185,11 @@ interface DataOutput {
      * will then return a <code>char</code> equal
      * to <code>(char)v</code>.
      *
-     * @param      v   the <code>char</code> value to be written.
-     * @throws     IOException  if an I/O error occurs.
+     * @param v
+     *         the <code>char</code> value to be written.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     void writeChar(int v) throws IOException;
 
@@ -187,8 +209,11 @@ interface DataOutput {
      * <code>DataInput</code> , which will then
      * return an <code>int</code> equal to <code>v</code>.
      *
-     * @param      v   the <code>int</code> value to be written.
-     * @throws     IOException  if an I/O error occurs.
+     * @param v
+     *         the <code>int</code> value to be written.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     void writeInt(int v) throws IOException;
 
@@ -213,8 +238,11 @@ interface DataOutput {
      * will then return a <code>long</code> equal
      * to <code>v</code>.
      *
-     * @param      v   the <code>long</code> value to be written.
-     * @throws     IOException  if an I/O error occurs.
+     * @param v
+     *         the <code>long</code> value to be written.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     void writeLong(long v) throws IOException;
 
@@ -232,8 +260,11 @@ interface DataOutput {
      * which will then return a <code>float</code>
      * equal to <code>v</code>.
      *
-     * @param      v   the <code>float</code> value to be written.
-     * @throws     IOException  if an I/O error occurs.
+     * @param v
+     *         the <code>float</code> value to be written.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     void writeFloat(float v) throws IOException;
 
@@ -251,8 +282,11 @@ interface DataOutput {
      * which will then return a <code>double</code>
      * equal to <code>v</code>.
      *
-     * @param      v   the <code>double</code> value to be written.
-     * @throws     IOException  if an I/O error occurs.
+     * @param v
+     *         the <code>double</code> value to be written.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     void writeDouble(double v) throws IOException;
 
@@ -273,8 +307,11 @@ interface DataOutput {
      * high-order eight bits of each character
      * in the string are ignored.
      *
-     * @param      s   the string of bytes to be written.
-     * @throws     IOException  if an I/O error occurs.
+     * @param s
+     *         the string of bytes to be written.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     void writeBytes(String s) throws IOException;
 
@@ -293,8 +330,11 @@ interface DataOutput {
      * byte first, in exactly the manner of the
      * <code>writeChar</code> method.
      *
-     * @param      s   the string value to be written.
-     * @throws     IOException  if an I/O error occurs.
+     * @param s
+     *         the string value to be written.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     void writeChars(String s) throws IOException;
 
@@ -347,8 +387,11 @@ interface DataOutput {
      * <code>DataInput</code> , which will then
      * return a <code>String</code> equal to <code>s</code>.
      *
-     * @param      s   the string value to be written.
-     * @throws     IOException  if an I/O error occurs.
+     * @param s
+     *         the string value to be written.
+     *
+     * @throws IOException
+     *         if an I/O error occurs.
      */
     void writeUTF(String s) throws IOException;
 }

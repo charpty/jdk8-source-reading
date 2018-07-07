@@ -61,15 +61,11 @@
  */
 package java.time.chrono;
 
-import static java.time.chrono.JapaneseDate.MEIJI_6_ISODATE;
-import static java.time.temporal.ChronoField.ERA;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
-import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -79,8 +75,11 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Arrays;
 import java.util.Objects;
-
 import sun.util.calendar.CalendarDate;
+
+
+import static java.time.chrono.JapaneseDate.MEIJI_6_ISODATE;
+import static java.time.temporal.ChronoField.ERA;
 
 /**
  * An era in the Japanese Imperial calendar system.
@@ -90,13 +89,9 @@ import sun.util.calendar.CalendarDate;
  * Only Meiji and later eras are supported;
  * dates before Meiji 6, January 1 are not supported.
  *
- * @implSpec
- * This class is immutable and thread-safe.
- *
  * @since 1.8
  */
-public final class JapaneseEra
-        implements Era, Serializable {
+public final class JapaneseEra implements Era, Serializable {
 
     // The offset value to 0-based index from the era value.
     // i.e., getValue() + ERA_OFFSET == 0-based index
@@ -150,11 +145,12 @@ public final class JapaneseEra
             LocalDate isoDate = LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth());
             KNOWN_ERAS[i] = new JapaneseEra(i - ERA_OFFSET + 1, isoDate);
         }
-    };
+    }
+
+    ;
 
     /**
      * The era value.
-     * @serial
      */
     private final transient int eraValue;
 
@@ -164,8 +160,10 @@ public final class JapaneseEra
     /**
      * Creates an instance.
      *
-     * @param eraValue  the era value, validated
-     * @param since  the date representing the first date of the era, validated not null
+     * @param eraValue
+     *         the era value, validated
+     * @param since
+     *         the date representing the first date of the era, validated not null
      */
     private JapaneseEra(int eraValue, LocalDate since) {
         this.eraValue = eraValue;
@@ -173,6 +171,7 @@ public final class JapaneseEra
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns the Sun private Era instance corresponding to this {@code JapaneseEra}.
      *
@@ -183,6 +182,7 @@ public final class JapaneseEra
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code JapaneseEra} from an {@code int} value.
      * <p>
@@ -190,9 +190,13 @@ public final class JapaneseEra
      * Later era is numbered 2 ({@link #HEISEI}). Earlier eras are numbered 0 ({@link #TAISHO}),
      * -1 ({@link #MEIJI}), only Meiji and later eras are supported.
      *
-     * @param japaneseEra  the era to represent
+     * @param japaneseEra
+     *         the era to represent
+     *
      * @return the {@code JapaneseEra} singleton, not null
-     * @throws DateTimeException if the value is invalid
+     *
+     * @throws DateTimeException
+     *         if the value is invalid
      */
     public static JapaneseEra of(int japaneseEra) {
         if (japaneseEra < MEIJI.eraValue || japaneseEra + ERA_OFFSET > KNOWN_ERAS.length) {
@@ -207,9 +211,13 @@ public final class JapaneseEra
      * The string must match exactly the name of the era.
      * (Extraneous whitespace characters are not permitted.)
      *
-     * @param japaneseEra  the japaneseEra name; non-null
+     * @param japaneseEra
+     *         the japaneseEra name; non-null
+     *
      * @return the {@code JapaneseEra} singleton, never null
-     * @throws IllegalArgumentException if there is not JapaneseEra with the specified name
+     *
+     * @throws IllegalArgumentException
+     *         if there is not JapaneseEra with the specified name
      */
     public static JapaneseEra valueOf(String japaneseEra) {
         Objects.requireNonNull(japaneseEra, "japaneseEra");
@@ -237,10 +245,13 @@ public final class JapaneseEra
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code JapaneseEra} from a date.
      *
-     * @param date  the date, not null
+     * @param date
+     *         the date, not null
+     *
      * @return the Era singleton, never null
      */
     static JapaneseEra from(LocalDate date) {
@@ -279,7 +290,9 @@ public final class JapaneseEra
      * Returns the index into the arrays from the Era value.
      * the eraValue is a valid Era number, -1..2.
      *
-     * @param eraValue  the era value to convert to the index
+     * @param eraValue
+     *         the era value to convert to the index
+     *
      * @return the index of the current Era
      */
     private static int ordinal(int eraValue) {
@@ -287,6 +300,7 @@ public final class JapaneseEra
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the numeric era {@code int} value.
      * <p>
@@ -302,6 +316,7 @@ public final class JapaneseEra
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the range of valid values for the specified field.
      * <p>
@@ -322,10 +337,15 @@ public final class JapaneseEra
      * The range of valid Japanese eras can change over time due to the nature
      * of the Japanese calendar system.
      *
-     * @param field  the field to query the range for, not null
+     * @param field
+     *         the field to query the range for, not null
+     *
      * @return the range of valid values for the field, not null
-     * @throws DateTimeException if the range for the field cannot be obtained
-     * @throws UnsupportedTemporalTypeException if the unit is not supported
+     *
+     * @throws DateTimeException
+     *         if the range for the field cannot be obtained
+     * @throws UnsupportedTemporalTypeException
+     *         if the unit is not supported
      */
     @Override  // override as super would return range from 0 to 1
     public ValueRange range(TemporalField field) {
@@ -354,25 +374,25 @@ public final class JapaneseEra
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Defend against malicious streams.
      *
-     * @param s the stream to read
-     * @throws InvalidObjectException always
+     * @param s
+     *         the stream to read
+     *
+     * @throws InvalidObjectException
+     *         always
      */
     private void readObject(ObjectInputStream s) throws InvalidObjectException {
         throw new InvalidObjectException("Deserialization via serialization delegate");
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Writes the object using a
      * <a href="../../../serialized-form.html#java.time.chrono.Ser">dedicated serialized form</a>.
-     * @serialData
-     * <pre>
-     *  out.writeByte(5);        // identifies a JapaneseEra
-     *  out.writeInt(getValue());
-     * </pre>
      *
      * @return the instance of {@code Ser}, not null
      */

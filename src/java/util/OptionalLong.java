@@ -60,9 +60,6 @@ public final class OptionalLong {
 
     /**
      * Construct an empty instance.
-     *
-     * @implNote generally only one empty instance, {@link OptionalLong#EMPTY},
-     * should exist per VM.
      */
     private OptionalLong() {
         this.isPresent = false;
@@ -73,12 +70,7 @@ public final class OptionalLong {
      * Returns an empty {@code OptionalLong} instance.  No value is present for this
      * OptionalLong.
      *
-     * @apiNote Though it may be tempting to do so, avoid testing if an object
-     * is empty by comparing with {@code ==} against instances returned by
-     * {@code Option.empty()}. There is no guarantee that it is a singleton.
-     * Instead, use {@link #isPresent()}.
-     *
-     *  @return an empty {@code OptionalLong}.
+     * @return an empty {@code OptionalLong}.
      */
     public static OptionalLong empty() {
         return EMPTY;
@@ -87,7 +79,8 @@ public final class OptionalLong {
     /**
      * Construct an instance with the value present.
      *
-     * @param value the long value to be present
+     * @param value
+     *         the long value to be present
      */
     private OptionalLong(long value) {
         this.isPresent = true;
@@ -97,7 +90,9 @@ public final class OptionalLong {
     /**
      * Return an {@code OptionalLong} with the specified value present.
      *
-     * @param value the value to be present
+     * @param value
+     *         the value to be present
+     *
      * @return an {@code OptionalLong} with the value present
      */
     public static OptionalLong of(long value) {
@@ -109,8 +104,9 @@ public final class OptionalLong {
      * otherwise throws {@code NoSuchElementException}.
      *
      * @return the value held by this {@code OptionalLong}
-     * @throws NoSuchElementException if there is no value present
      *
+     * @throws NoSuchElementException
+     *         if there is no value present
      * @see OptionalLong#isPresent()
      */
     public long getAsLong() {
@@ -133,19 +129,25 @@ public final class OptionalLong {
      * Have the specified consumer accept the value if a value is present,
      * otherwise do nothing.
      *
-     * @param consumer block to be executed if a value is present
-     * @throws NullPointerException if value is present and {@code consumer} is
-     * null
+     * @param consumer
+     *         block to be executed if a value is present
+     *
+     * @throws NullPointerException
+     *         if value is present and {@code consumer} is
+     *         null
      */
     public void ifPresent(LongConsumer consumer) {
-        if (isPresent)
+        if (isPresent) {
             consumer.accept(value);
+        }
     }
 
     /**
      * Return the value if present, otherwise return {@code other}.
      *
-     * @param other the value to be returned if there is no value present
+     * @param other
+     *         the value to be returned if there is no value present
+     *
      * @return the value, if present, otherwise {@code other}
      */
     public long orElse(long other) {
@@ -156,11 +158,15 @@ public final class OptionalLong {
      * Return the value if present, otherwise invoke {@code other} and return
      * the result of that invocation.
      *
-     * @param other a {@code LongSupplier} whose result is returned if no value
-     * is present
+     * @param other
+     *         a {@code LongSupplier} whose result is returned if no value
+     *         is present
+     *
      * @return the value if present otherwise the result of {@code other.getAsLong()}
-     * @throws NullPointerException if value is not present and {@code other} is
-     * null
+     *
+     * @throws NullPointerException
+     *         if value is not present and {@code other} is
+     *         null
      */
     public long orElseGet(LongSupplier other) {
         return isPresent ? value : other.getAsLong();
@@ -170,19 +176,21 @@ public final class OptionalLong {
      * Return the contained value, if present, otherwise throw an exception
      * to be created by the provided supplier.
      *
-     * @apiNote A method reference to the exception constructor with an empty
-     * argument list can be used as the supplier. For example,
-     * {@code IllegalStateException::new}
+     * @param <X>
+     *         Type of the exception to be thrown
+     * @param exceptionSupplier
+     *         The supplier which will return the exception to
+     *         be thrown
      *
-     * @param <X> Type of the exception to be thrown
-     * @param exceptionSupplier The supplier which will return the exception to
-     * be thrown
      * @return the present value
-     * @throws X if there is no value present
-     * @throws NullPointerException if no value is present and
-     * {@code exceptionSupplier} is null
+     *
+     * @throws X
+     *         if there is no value present
+     * @throws NullPointerException
+     *         if no value is present and
+     *         {@code exceptionSupplier} is null
      */
-    public<X extends Throwable> long orElseThrow(Supplier<X> exceptionSupplier) throws X {
+    public <X extends Throwable> long orElseThrow(Supplier<X> exceptionSupplier) throws X {
         if (isPresent) {
             return value;
         } else {
@@ -199,7 +207,9 @@ public final class OptionalLong {
      * <li>the present values are "equal to" each other via {@code ==}.
      * </ul>
      *
-     * @param obj an object to be tested for equality
+     * @param obj
+     *         an object to be tested for equality
+     *
      * @return {code true} if the other object is "equal to" this object
      * otherwise {@code false}
      */
@@ -214,9 +224,7 @@ public final class OptionalLong {
         }
 
         OptionalLong other = (OptionalLong) obj;
-        return (isPresent && other.isPresent)
-                ? value == other.value
-                : isPresent == other.isPresent;
+        return (isPresent && other.isPresent) ? value == other.value : isPresent == other.isPresent;
     }
 
     /**
@@ -237,16 +245,10 @@ public final class OptionalLong {
      * debugging. The exact presentation format is unspecified and may vary
      * between implementations and versions.
      *
-     * @implSpec If a value is present the result must include its string
-     * representation in the result. Empty and present instances must be
-     * unambiguously differentiable.
-     *
      * @return the string representation of this instance
      */
     @Override
     public String toString() {
-        return isPresent
-                ? String.format("OptionalLong[%s]", value)
-                : "OptionalLong.empty";
+        return isPresent ? String.format("OptionalLong[%s]", value) : "OptionalLong.empty";
     }
 }

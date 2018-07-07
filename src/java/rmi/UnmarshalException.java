@@ -43,8 +43,8 @@ package java.rmi;
  * a remote object's stub when it is unmarshalled.
  * </ul>
  *
- * @author  Ann Wollrath
- * @since   JDK1.1
+ * @author Ann Wollrath
+ * @since JDK1.1
  */
 public class UnmarshalException extends RemoteException {
 
@@ -55,7 +55,9 @@ public class UnmarshalException extends RemoteException {
      * Constructs an <code>UnmarshalException</code> with the specified
      * detail message.
      *
-     * @param s the detail message
+     * @param s
+     *         the detail message
+     *
      * @since JDK1.1
      */
     public UnmarshalException(String s) {
@@ -66,8 +68,11 @@ public class UnmarshalException extends RemoteException {
      * Constructs an <code>UnmarshalException</code> with the specified
      * detail message and nested exception.
      *
-     * @param s the detail message
-     * @param ex the nested exception
+     * @param s
+     *         the detail message
+     * @param ex
+     *         the nested exception
+     *
      * @since JDK1.1
      */
     public UnmarshalException(String s, Exception ex) {

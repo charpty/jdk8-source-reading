@@ -25,7 +25,10 @@
 
 package java.nio.file.attribute;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * An entry in an access control list (ACL).
@@ -36,20 +39,20 @@ import java.util.*;
  * components as follows:
  *
  * <ol>
- *    <li><p> The {@link #type() type} component determines if the entry
- *    grants or denies access. </p></li>
+ * <li><p> The {@link #type() type} component determines if the entry
+ * grants or denies access. </p></li>
  *
- *    <li><p> The {@link #principal() principal} component, sometimes called the
- *    "who" component, is a {@link UserPrincipal} corresponding to the identity
- *    that the entry grants or denies access
- *    </p></li>
+ * <li><p> The {@link #principal() principal} component, sometimes called the
+ * "who" component, is a {@link UserPrincipal} corresponding to the identity
+ * that the entry grants or denies access
+ * </p></li>
  *
- *    <li><p> The {@link #permissions permissions} component is a set of
- *    {@link AclEntryPermission permissions}
- *    </p></li>
+ * <li><p> The {@link #permissions permissions} component is a set of
+ * {@link AclEntryPermission permissions}
+ * </p></li>
  *
- *    <li><p> The {@link #flags flags} component is a set of {@link AclEntryFlag
- *    flags} to indicate how entries are inherited and propagated </p></li>
+ * <li><p> The {@link #flags flags} component is a set of {@link AclEntryFlag
+ * flags} to indicate how entries are inherited and propagated </p></li>
  * </ol>
  *
  * <p> ACL entries are created using an associated {@link Builder} object by
@@ -72,11 +75,7 @@ public final class AclEntry {
     private volatile int hash;
 
     // private constructor
-    private AclEntry(AclEntryType type,
-                     UserPrincipal who,
-                     Set<AclEntryPermission> perms,
-                     Set<AclEntryFlag> flags)
-    {
+    private AclEntry(AclEntryType type, UserPrincipal who, Set<AclEntryPermission> perms, Set<AclEntryFlag> flags) {
         this.type = type;
         this.who = who;
         this.perms = perms;
@@ -101,11 +100,7 @@ public final class AclEntry {
         private Set<AclEntryPermission> perms;
         private Set<AclEntryFlag> flags;
 
-        private Builder(AclEntryType type,
-                        UserPrincipal who,
-                        Set<AclEntryPermission> perms,
-                        Set<AclEntryFlag> flags)
-        {
+        private Builder(AclEntryType type, UserPrincipal who, Set<AclEntryPermission> perms, Set<AclEntryFlag> flags) {
             assert perms != null && flags != null;
             this.type = type;
             this.who = who;
@@ -118,28 +113,33 @@ public final class AclEntry {
          * The type and who components are required to have been set in order
          * to construct an {@code AclEntry}.
          *
-         * @return  a new ACL entry
+         * @return a new ACL entry
          *
-         * @throws  IllegalStateException
-         *          if the type or who component have not been set
+         * @throws IllegalStateException
+         *         if the type or who component have not been set
          */
         public AclEntry build() {
-            if (type == null)
+            if (type == null) {
                 throw new IllegalStateException("Missing type component");
-            if (who == null)
+            }
+            if (who == null) {
                 throw new IllegalStateException("Missing who component");
+            }
             return new AclEntry(type, who, perms, flags);
         }
 
         /**
          * Sets the type component of this builder.
          *
-         * @param   type  the component type
-         * @return  this builder
+         * @param type
+         *         the component type
+         *
+         * @return this builder
          */
         public Builder setType(AclEntryType type) {
-            if (type == null)
+            if (type == null) {
                 throw new NullPointerException();
+            }
             this.type = type;
             return this;
         }
@@ -147,21 +147,25 @@ public final class AclEntry {
         /**
          * Sets the principal component of this builder.
          *
-         * @param   who  the principal component
-         * @return  this builder
+         * @param who
+         *         the principal component
+         *
+         * @return this builder
          */
         public Builder setPrincipal(UserPrincipal who) {
-            if (who == null)
+            if (who == null) {
                 throw new NullPointerException();
+            }
             this.who = who;
             return this;
         }
 
         // check set only contains elements of the given type
         private static void checkSet(Set<?> set, Class<?> type) {
-            for (Object e: set) {
-                if (e == null)
+            for (Object e : set) {
+                if (e == null) {
                     throw new NullPointerException();
+                }
                 type.cast(e);
             }
         }
@@ -170,12 +174,14 @@ public final class AclEntry {
          * Sets the permissions component of this builder. On return, the
          * permissions component of this builder is a copy of the given set.
          *
-         * @param   perms  the permissions component
-         * @return  this builder
+         * @param perms
+         *         the permissions component
          *
-         * @throws  ClassCastException
-         *          if the set contains elements that are not of type {@code
-         *          AclEntryPermission}
+         * @return this builder
+         *
+         * @throws ClassCastException
+         *         if the set contains elements that are not of type {@code
+         *         AclEntryPermission}
          */
         public Builder setPermissions(Set<AclEntryPermission> perms) {
             if (perms.isEmpty()) {
@@ -196,15 +202,18 @@ public final class AclEntry {
          * permissions component of this builder is a copy of the permissions in
          * the given array.
          *
-         * @param   perms  the permissions component
-         * @return  this builder
+         * @param perms
+         *         the permissions component
+         *
+         * @return this builder
          */
         public Builder setPermissions(AclEntryPermission... perms) {
             Set<AclEntryPermission> set = EnumSet.noneOf(AclEntryPermission.class);
             // copy and check for null elements
-            for (AclEntryPermission p: perms) {
-                if (p == null)
+            for (AclEntryPermission p : perms) {
+                if (p == null) {
                     throw new NullPointerException();
+                }
                 set.add(p);
             }
             this.perms = set;
@@ -215,12 +224,14 @@ public final class AclEntry {
          * Sets the flags component of this builder. On return, the flags
          * component of this builder is a copy of the given set.
          *
-         * @param   flags  the flags component
-         * @return  this builder
+         * @param flags
+         *         the flags component
          *
-         * @throws  ClassCastException
-         *          if the set contains elements that are not of type {@code
-         *          AclEntryFlag}
+         * @return this builder
+         *
+         * @throws ClassCastException
+         *         if the set contains elements that are not of type {@code
+         *         AclEntryFlag}
          */
         public Builder setFlags(Set<AclEntryFlag> flags) {
             if (flags.isEmpty()) {
@@ -241,15 +252,18 @@ public final class AclEntry {
          * component of this builder is a copy of the flags in the given
          * array.
          *
-         * @param   flags  the flags component
-         * @return  this builder
+         * @param flags
+         *         the flags component
+         *
+         * @return this builder
          */
         public Builder setFlags(AclEntryFlag... flags) {
             Set<AclEntryFlag> set = EnumSet.noneOf(AclEntryFlag.class);
             // copy and check for null elements
-            for (AclEntryFlag f: flags) {
-                if (f == null)
+            for (AclEntryFlag f : flags) {
+                if (f == null) {
                     throw new NullPointerException();
+                }
                 set.add(f);
             }
             this.flags = set;
@@ -262,7 +276,7 @@ public final class AclEntry {
      * components is {@code null}. The initial value of the permissions and
      * flags components is the empty set.
      *
-     * @return  a new builder
+     * @return a new builder
      */
     public static Builder newBuilder() {
         Set<AclEntryPermission> perms = Collections.emptySet();
@@ -273,8 +287,10 @@ public final class AclEntry {
     /**
      * Constructs a new builder with the components of an existing ACL entry.
      *
-     * @param   entry  an ACL entry
-     * @return  a new builder
+     * @param entry
+     *         an ACL entry
+     *
+     * @return a new builder
      */
     public static Builder newBuilder(AclEntry entry) {
         return new Builder(entry.type, entry.who, entry.perms, entry.flags);
@@ -333,26 +349,33 @@ public final class AclEntry {
      * <p> This method satisfies the general contract of the {@link
      * java.lang.Object#equals(Object) Object.equals} method. </p>
      *
-     * @param   ob   the object to which this object is to be compared
+     * @param ob
+     *         the object to which this object is to be compared
      *
-     * @return  {@code true} if, and only if, the given object is an AclEntry that
-     *          is identical to this AclEntry
+     * @return {@code true} if, and only if, the given object is an AclEntry that
+     * is identical to this AclEntry
      */
     @Override
     public boolean equals(Object ob) {
-        if (ob == this)
+        if (ob == this) {
             return true;
-        if (ob == null || !(ob instanceof AclEntry))
+        }
+        if (ob == null || !(ob instanceof AclEntry)) {
             return false;
-        AclEntry other = (AclEntry)ob;
-        if (this.type != other.type)
+        }
+        AclEntry other = (AclEntry) ob;
+        if (this.type != other.type) {
             return false;
-        if (!this.who.equals(other.who))
+        }
+        if (!this.who.equals(other.who)) {
             return false;
-        if (!this.perms.equals(other.perms))
+        }
+        if (!this.perms.equals(other.perms)) {
             return false;
-        if (!this.flags.equals(other.flags))
+        }
+        if (!this.flags.equals(other.flags)) {
             return false;
+        }
         return true;
     }
 
@@ -369,8 +392,9 @@ public final class AclEntry {
     @Override
     public int hashCode() {
         // return cached hash if available
-        if (hash != 0)
+        if (hash != 0) {
             return hash;
+        }
         int h = type.hashCode();
         h = hash(h, who);
         h = hash(h, perms);
@@ -382,7 +406,7 @@ public final class AclEntry {
     /**
      * Returns the string representation of this ACL entry.
      *
-     * @return  the string representation of this entry
+     * @return the string representation of this entry
      */
     @Override
     public String toString() {
@@ -393,20 +417,20 @@ public final class AclEntry {
         sb.append(':');
 
         // permissions
-        for (AclEntryPermission perm: perms) {
+        for (AclEntryPermission perm : perms) {
             sb.append(perm.name());
             sb.append('/');
         }
-        sb.setLength(sb.length()-1); // drop final slash
+        sb.setLength(sb.length() - 1); // drop final slash
         sb.append(':');
 
         // flags
         if (!flags.isEmpty()) {
-            for (AclEntryFlag flag: flags) {
+            for (AclEntryFlag flag : flags) {
                 sb.append(flag.name());
                 sb.append('/');
             }
-            sb.setLength(sb.length()-1);  // drop final slash
+            sb.setLength(sb.length() - 1);  // drop final slash
             sb.append(':');
         }
 

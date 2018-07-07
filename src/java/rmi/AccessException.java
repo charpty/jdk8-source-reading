@@ -34,22 +34,24 @@ package java.rmi;
  * requested by the method call.  If the method was invoked from a non-local
  * host, then an <code>AccessException</code> is thrown.
  *
- * @author  Ann Wollrath
- * @author  Roger Riggs
- * @since   JDK1.1
- * @see     java.rmi.Naming
- * @see     java.rmi.activation.ActivationSystem
+ * @author Ann Wollrath
+ * @author Roger Riggs
+ * @see java.rmi.Naming
+ * @see java.rmi.activation.ActivationSystem
+ * @since JDK1.1
  */
 public class AccessException extends java.rmi.RemoteException {
 
     /* indicate compatibility with JDK 1.1.x version of class */
-     private static final long serialVersionUID = 6314925228044966088L;
+    private static final long serialVersionUID = 6314925228044966088L;
 
     /**
      * Constructs an <code>AccessException</code> with the specified
      * detail message.
      *
-     * @param s the detail message
+     * @param s
+     *         the detail message
+     *
      * @since JDK1.1
      */
     public AccessException(String s) {
@@ -60,8 +62,11 @@ public class AccessException extends java.rmi.RemoteException {
      * Constructs an <code>AccessException</code> with the specified
      * detail message and nested exception.
      *
-     * @param s the detail message
-     * @param ex the nested exception
+     * @param s
+     *         the detail message
+     * @param ex
+     *         the nested exception
+     *
      * @since JDK1.1
      */
     public AccessException(String s, Exception ex) {

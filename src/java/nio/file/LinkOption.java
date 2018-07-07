@@ -35,7 +35,7 @@ public enum LinkOption implements OpenOption, CopyOption {
     /**
      * Do not follow symbolic links.
      *
-     * @see Files#getFileAttributeView(Path,Class,LinkOption[])
+     * @see Files#getFileAttributeView(Path, Class, LinkOption[])
      * @see Files#copy
      * @see SecureDirectoryStream#newByteChannel
      */

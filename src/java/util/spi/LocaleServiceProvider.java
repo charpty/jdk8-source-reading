@@ -137,7 +137,7 @@ import java.util.Locale;
  * Environment implementation. Specifying "JRE,SPI" is identical to the default
  * behavior, which is compatibile with the prior releases.
  *
- * @since        1.6
+ * @since 1.6
  */
 public abstract class LocaleServiceProvider {
 
@@ -180,9 +180,12 @@ public abstract class LocaleServiceProvider {
      * implementations may not be affected by any particular numbering systems,
      * and in that case, extensions for numbering systems should be ignored.
      *
-     * @param locale a {@code Locale} to be tested
+     * @param locale
+     *         a {@code Locale} to be tested
+     *
      * @return {@code true} if the given {@code locale} is supported by this
-     *         provider; {@code false} otherwise.
+     * provider; {@code false} otherwise.
+     *
      * @throws NullPointerException
      *         if the given {@code locale} is {@code null}
      * @see Locale#hasExtensions()
@@ -194,7 +197,7 @@ public abstract class LocaleServiceProvider {
         for (Locale available : getAvailableLocales()) {
             if (locale.equals(available.stripExtensions())) {
                 return true;
-}
+            }
         }
         return false;
     }

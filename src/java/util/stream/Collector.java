@@ -50,10 +50,10 @@ import java.util.function.Supplier;
  * <p>A {@code Collector} is specified by four functions that work together to
  * accumulate entries into a mutable result container, and optionally perform
  * a final transform on the result.  They are: <ul>
- *     <li>creation of a new result container ({@link #supplier()})</li>
- *     <li>incorporating a new data element into a result container ({@link #accumulator()})</li>
- *     <li>combining two result containers into one ({@link #combiner()})</li>
- *     <li>performing an optional final transform on the container ({@link #finisher()})</li>
+ * <li>creation of a new result container ({@link #supplier()})</li>
+ * <li>incorporating a new data element into a result container ({@link #accumulator()})</li>
+ * <li>combining two result containers into one ({@link #combiner()})</li>
+ * <li>performing an optional final transform on the container ({@link #finisher()})</li>
  * </ul>
  *
  * <p>Collectors also have a set of characteristics, such as
@@ -106,34 +106,34 @@ import java.util.function.Supplier;
  * <p>Libraries that implement reduction based on {@code Collector}, such as
  * {@link Stream#collect(Collector)}, must adhere to the following constraints:
  * <ul>
- *     <li>The first argument passed to the accumulator function, both
- *     arguments passed to the combiner function, and the argument passed to the
- *     finisher function must be the result of a previous invocation of the
- *     result supplier, accumulator, or combiner functions.</li>
- *     <li>The implementation should not do anything with the result of any of
- *     the result supplier, accumulator, or combiner functions other than to
- *     pass them again to the accumulator, combiner, or finisher functions,
- *     or return them to the caller of the reduction operation.</li>
- *     <li>If a result is passed to the combiner or finisher
- *     function, and the same object is not returned from that function, it is
- *     never used again.</li>
- *     <li>Once a result is passed to the combiner or finisher function, it
- *     is never passed to the accumulator function again.</li>
- *     <li>For non-concurrent collectors, any result returned from the result
- *     supplier, accumulator, or combiner functions must be serially
- *     thread-confined.  This enables collection to occur in parallel without
- *     the {@code Collector} needing to implement any additional synchronization.
- *     The reduction implementation must manage that the input is properly
- *     partitioned, that partitions are processed in isolation, and combining
- *     happens only after accumulation is complete.</li>
- *     <li>For concurrent collectors, an implementation is free to (but not
- *     required to) implement reduction concurrently.  A concurrent reduction
- *     is one where the accumulator function is called concurrently from
- *     multiple threads, using the same concurrently-modifiable result container,
- *     rather than keeping the result isolated during accumulation.
- *     A concurrent reduction should only be applied if the collector has the
- *     {@link Characteristics#UNORDERED} characteristics or if the
- *     originating data is unordered.</li>
+ * <li>The first argument passed to the accumulator function, both
+ * arguments passed to the combiner function, and the argument passed to the
+ * finisher function must be the result of a previous invocation of the
+ * result supplier, accumulator, or combiner functions.</li>
+ * <li>The implementation should not do anything with the result of any of
+ * the result supplier, accumulator, or combiner functions other than to
+ * pass them again to the accumulator, combiner, or finisher functions,
+ * or return them to the caller of the reduction operation.</li>
+ * <li>If a result is passed to the combiner or finisher
+ * function, and the same object is not returned from that function, it is
+ * never used again.</li>
+ * <li>Once a result is passed to the combiner or finisher function, it
+ * is never passed to the accumulator function again.</li>
+ * <li>For non-concurrent collectors, any result returned from the result
+ * supplier, accumulator, or combiner functions must be serially
+ * thread-confined.  This enables collection to occur in parallel without
+ * the {@code Collector} needing to implement any additional synchronization.
+ * The reduction implementation must manage that the input is properly
+ * partitioned, that partitions are processed in isolation, and combining
+ * happens only after accumulation is complete.</li>
+ * <li>For concurrent collectors, an implementation is free to (but not
+ * required to) implement reduction concurrently.  A concurrent reduction
+ * is one where the accumulator function is called concurrently from
+ * multiple threads, using the same concurrently-modifiable result container,
+ * rather than keeping the result isolated during accumulation.
+ * A concurrent reduction should only be applied if the collector has the
+ * {@link Characteristics#UNORDERED} characteristics or if the
+ * originating data is unordered.</li>
  * </ul>
  *
  * <p>In addition to the predefined implementations in {@link Collectors}, the
@@ -150,48 +150,16 @@ import java.util.function.Supplier;
  * (This behavior is also implemented by the predefined collector
  * {@link Collectors#toCollection(Supplier)}).
  *
- * @apiNote
- * Performing a reduction operation with a {@code Collector} should produce a
- * result equivalent to:
- * <pre>{@code
- *     R container = collector.supplier().get();
- *     for (T t : data)
- *         collector.accumulator().accept(container, t);
- *     return collector.finisher().apply(container);
- * }</pre>
- *
- * <p>However, the library is free to partition the input, perform the reduction
- * on the partitions, and then use the combiner function to combine the partial
- * results to achieve a parallel reduction.  (Depending on the specific reduction
- * operation, this may perform better or worse, depending on the relative cost
- * of the accumulator and combiner functions.)
- *
- * <p>Collectors are designed to be <em>composed</em>; many of the methods
- * in {@link Collectors} are functions that take a collector and produce
- * a new collector.  For example, given the following collector that computes
- * the sum of the salaries of a stream of employees:
- *
- * <pre>{@code
- *     Collector<Employee, ?, Integer> summingSalaries
- *         = Collectors.summingInt(Employee::getSalary))
- * }</pre>
- *
- * If we wanted to create a collector to tabulate the sum of salaries by
- * department, we could reuse the "sum of salaries" logic using
- * {@link Collectors#groupingBy(Function, Collector)}:
- *
- * <pre>{@code
- *     Collector<Employee, ?, Map<Department, Integer>> summingSalariesByDept
- *         = Collectors.groupingBy(Employee::getDepartment, summingSalaries);
- * }</pre>
+ * @param <T>
+ *         the type of input elements to the reduction operation
+ * @param <A>
+ *         the mutable accumulation type of the reduction operation (often
+ *         hidden as an implementation detail)
+ * @param <R>
+ *         the result type of the reduction operation
  *
  * @see Stream#collect(Collector)
  * @see Collectors
- *
- * @param <T> the type of input elements to the reduction operation
- * @param <A> the mutable accumulation type of the reduction operation (often
- *            hidden as an implementation detail)
- * @param <R> the result type of the reduction operation
  * @since 1.8
  */
 public interface Collector<T, A, R> {
@@ -246,29 +214,35 @@ public interface Collector<T, A, R> {
      * {@code Collector} has the {@code Collector.Characteristics.IDENTITY_FINISH}
      * characteristic.
      *
-     * @param supplier The supplier function for the new collector
-     * @param accumulator The accumulator function for the new collector
-     * @param combiner The combiner function for the new collector
-     * @param characteristics The collector characteristics for the new
-     *                        collector
-     * @param <T> The type of input elements for the new collector
-     * @param <R> The type of intermediate accumulation result, and final result,
-     *           for the new collector
-     * @throws NullPointerException if any argument is null
+     * @param supplier
+     *         The supplier function for the new collector
+     * @param accumulator
+     *         The accumulator function for the new collector
+     * @param combiner
+     *         The combiner function for the new collector
+     * @param characteristics
+     *         The collector characteristics for the new
+     *         collector
+     * @param <T>
+     *         The type of input elements for the new collector
+     * @param <R>
+     *         The type of intermediate accumulation result, and final result,
+     *         for the new collector
+     *
      * @return the new {@code Collector}
+     *
+     * @throws NullPointerException
+     *         if any argument is null
      */
-    public static<T, R> Collector<T, R, R> of(Supplier<R> supplier,
-                                              BiConsumer<R, T> accumulator,
-                                              BinaryOperator<R> combiner,
-                                              Characteristics... characteristics) {
+    public static <T, R> Collector<T, R, R> of(Supplier<R> supplier, BiConsumer<R, T> accumulator, BinaryOperator<R> combiner,
+            Characteristics... characteristics) {
         Objects.requireNonNull(supplier);
         Objects.requireNonNull(accumulator);
         Objects.requireNonNull(combiner);
         Objects.requireNonNull(characteristics);
-        Set<Characteristics> cs = (characteristics.length == 0)
-                                  ? Collectors.CH_ID
-                                  : Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH,
-                                                                           characteristics));
+        Set<Characteristics> cs = (characteristics.length == 0) ?
+                Collectors.CH_ID :
+                Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH, characteristics));
         return new Collectors.CollectorImpl<>(supplier, accumulator, combiner, cs);
     }
 
@@ -276,23 +250,31 @@ public interface Collector<T, A, R> {
      * Returns a new {@code Collector} described by the given {@code supplier},
      * {@code accumulator}, {@code combiner}, and {@code finisher} functions.
      *
-     * @param supplier The supplier function for the new collector
-     * @param accumulator The accumulator function for the new collector
-     * @param combiner The combiner function for the new collector
-     * @param finisher The finisher function for the new collector
-     * @param characteristics The collector characteristics for the new
-     *                        collector
-     * @param <T> The type of input elements for the new collector
-     * @param <A> The intermediate accumulation type of the new collector
-     * @param <R> The final result type of the new collector
-     * @throws NullPointerException if any argument is null
+     * @param supplier
+     *         The supplier function for the new collector
+     * @param accumulator
+     *         The accumulator function for the new collector
+     * @param combiner
+     *         The combiner function for the new collector
+     * @param finisher
+     *         The finisher function for the new collector
+     * @param characteristics
+     *         The collector characteristics for the new
+     *         collector
+     * @param <T>
+     *         The type of input elements for the new collector
+     * @param <A>
+     *         The intermediate accumulation type of the new collector
+     * @param <R>
+     *         The final result type of the new collector
+     *
      * @return the new {@code Collector}
+     *
+     * @throws NullPointerException
+     *         if any argument is null
      */
-    public static<T, A, R> Collector<T, A, R> of(Supplier<A> supplier,
-                                                 BiConsumer<A, T> accumulator,
-                                                 BinaryOperator<A> combiner,
-                                                 Function<A, R> finisher,
-                                                 Characteristics... characteristics) {
+    public static <T, A, R> Collector<T, A, R> of(Supplier<A> supplier, BiConsumer<A, T> accumulator, BinaryOperator<A> combiner, Function<A, R> finisher,
+            Characteristics... characteristics) {
         Objects.requireNonNull(supplier);
         Objects.requireNonNull(accumulator);
         Objects.requireNonNull(combiner);

@@ -27,16 +27,15 @@ package java.util;
 
 import java.io.Serializable;
 import java.util.function.Function;
+import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
-import java.util.function.ToDoubleFunction;
-import java.util.Comparators;
 
 /**
  * A comparison function, which imposes a <i>total ordering</i> on some
  * collection of objects.  Comparators can be passed to a sort method (such
- * as {@link Collections#sort(List,Comparator) Collections.sort} or {@link
- * Arrays#sort(Object[],Comparator) Arrays.sort}) to allow precise control
+ * as {@link Collections#sort(List, Comparator) Collections.sort} or {@link
+ * Arrays#sort(Object[], Comparator) Arrays.sort}) to allow precise control
  * over the sort order.  Comparators can also be used to control the order of
  * certain data structures (such as {@link SortedSet sorted sets} or {@link
  * SortedMap sorted maps}), or to provide an ordering for collections of
@@ -97,10 +96,11 @@ import java.util.Comparators;
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
- * @param <T> the type of objects that may be compared by this comparator
+ * @param <T>
+ *         the type of objects that may be compared by this comparator
  *
- * @author  Josh Bloch
- * @author  Neal Gafter
+ * @author Josh Bloch
+ * @author Neal Gafter
  * @see Comparable
  * @see java.io.Serializable
  * @since 1.2
@@ -137,14 +137,20 @@ public interface Comparator<T> {
      * this fact.  The recommended language is "Note: this comparator
      * imposes orderings that are inconsistent with equals."
      *
-     * @param o1 the first object to be compared.
-     * @param o2 the second object to be compared.
+     * @param o1
+     *         the first object to be compared.
+     * @param o2
+     *         the second object to be compared.
+     *
      * @return a negative integer, zero, or a positive integer as the
-     *         first argument is less than, equal to, or greater than the
-     *         second.
-     * @throws NullPointerException if an argument is null and this
+     * first argument is less than, equal to, or greater than the
+     * second.
+     *
+     * @throws NullPointerException
+     *         if an argument is null and this
      *         comparator does not permit null arguments
-     * @throws ClassCastException if the arguments' types prevent them from
+     * @throws ClassCastException
+     *         if the arguments' types prevent them from
      *         being compared by this comparator.
      */
     int compare(T o1, T o2);
@@ -164,10 +170,13 @@ public interface Comparator<T> {
      * in some cases, improve performance by allowing programs to determine
      * that two distinct comparators impose the same order.
      *
-     * @param   obj   the reference object with which to compare.
-     * @return  <code>true</code> only if the specified object is also
-     *          a comparator and it imposes the same ordering as this
-     *          comparator.
+     * @param obj
+     *         the reference object with which to compare.
+     *
+     * @return <code>true</code> only if the specified object is also
+     * a comparator and it imposes the same ordering as this
+     * comparator.
+     *
      * @see Object#equals(Object)
      * @see Object#hashCode()
      */
@@ -178,7 +187,8 @@ public interface Comparator<T> {
      * comparator.
      *
      * @return a comparator that imposes the reverse ordering of this
-     *         comparator.
+     * comparator.
+     *
      * @since 1.8
      */
     default Comparator<T> reversed() {
@@ -193,21 +203,15 @@ public interface Comparator<T> {
      * <p>The returned comparator is serializable if the specified comparator
      * is also serializable.
      *
-     * @apiNote
-     * For example, to sort a collection of {@code String} based on the length
-     * and then case-insensitive natural ordering, the comparator can be
-     * composed using following code,
-     *
-     * <pre>{@code
-     *     Comparator<String> cmp = Comparator.comparingInt(String::length)
-     *             .thenComparing(String.CASE_INSENSITIVE_ORDER);
-     * }</pre>
-     *
-     * @param  other the other comparator to be used when this comparator
+     * @param other
+     *         the other comparator to be used when this comparator
      *         compares two objects that are equal.
+     *
      * @return a lexicographic-order comparator composed of this and then the
-     *         other comparator
-     * @throws NullPointerException if the argument is null.
+     * other comparator
+     *
+     * @throws NullPointerException
+     *         if the argument is null.
      * @since 1.8
      */
     default Comparator<T> thenComparing(Comparator<? super T> other) {
@@ -222,23 +226,23 @@ public interface Comparator<T> {
      * Returns a lexicographic-order comparator with a function that
      * extracts a key to be compared with the given {@code Comparator}.
      *
-     * @implSpec This default implementation behaves as if {@code
-     *           thenComparing(comparing(keyExtractor, cmp))}.
+     * @param <U>
+     *         the type of the sort key
+     * @param keyExtractor
+     *         the function used to extract the sort key
+     * @param keyComparator
+     *         the {@code Comparator} used to compare the sort key
      *
-     * @param  <U>  the type of the sort key
-     * @param  keyExtractor the function used to extract the sort key
-     * @param  keyComparator the {@code Comparator} used to compare the sort key
      * @return a lexicographic-order comparator composed of this comparator
-     *         and then comparing on the key extracted by the keyExtractor function
-     * @throws NullPointerException if either argument is null.
+     * and then comparing on the key extracted by the keyExtractor function
+     *
+     * @throws NullPointerException
+     *         if either argument is null.
      * @see #comparing(Function, Comparator)
      * @see #thenComparing(Comparator)
      * @since 1.8
      */
-    default <U> Comparator<T> thenComparing(
-            Function<? super T, ? extends U> keyExtractor,
-            Comparator<? super U> keyComparator)
-    {
+    default <U> Comparator<T> thenComparing(Function<? super T, ? extends U> keyExtractor, Comparator<? super U> keyComparator) {
         return thenComparing(comparing(keyExtractor, keyComparator));
     }
 
@@ -246,22 +250,22 @@ public interface Comparator<T> {
      * Returns a lexicographic-order comparator with a function that
      * extracts a {@code Comparable} sort key.
      *
-     * @implSpec This default implementation behaves as if {@code
-     *           thenComparing(comparing(keyExtractor))}.
-     *
-     * @param  <U>  the type of the {@link Comparable} sort key
-     * @param  keyExtractor the function used to extract the {@link
+     * @param <U>
+     *         the type of the {@link Comparable} sort key
+     * @param keyExtractor
+     *         the function used to extract the {@link
      *         Comparable} sort key
+     *
      * @return a lexicographic-order comparator composed of this and then the
-     *         {@link Comparable} sort key.
-     * @throws NullPointerException if the argument is null.
+     * {@link Comparable} sort key.
+     *
+     * @throws NullPointerException
+     *         if the argument is null.
      * @see #comparing(Function)
      * @see #thenComparing(Comparator)
      * @since 1.8
      */
-    default <U extends Comparable<? super U>> Comparator<T> thenComparing(
-            Function<? super T, ? extends U> keyExtractor)
-    {
+    default <U extends Comparable<? super U>> Comparator<T> thenComparing(Function<? super T, ? extends U> keyExtractor) {
         return thenComparing(comparing(keyExtractor));
     }
 
@@ -269,13 +273,14 @@ public interface Comparator<T> {
      * Returns a lexicographic-order comparator with a function that
      * extracts a {@code int} sort key.
      *
-     * @implSpec This default implementation behaves as if {@code
-     *           thenComparing(comparingInt(keyExtractor))}.
+     * @param keyExtractor
+     *         the function used to extract the integer sort key
      *
-     * @param  keyExtractor the function used to extract the integer sort key
      * @return a lexicographic-order comparator composed of this and then the
-     *         {@code int} sort key
-     * @throws NullPointerException if the argument is null.
+     * {@code int} sort key
+     *
+     * @throws NullPointerException
+     *         if the argument is null.
      * @see #comparingInt(ToIntFunction)
      * @see #thenComparing(Comparator)
      * @since 1.8
@@ -288,13 +293,14 @@ public interface Comparator<T> {
      * Returns a lexicographic-order comparator with a function that
      * extracts a {@code long} sort key.
      *
-     * @implSpec This default implementation behaves as if {@code
-     *           thenComparing(comparingLong(keyExtractor))}.
+     * @param keyExtractor
+     *         the function used to extract the long sort key
      *
-     * @param  keyExtractor the function used to extract the long sort key
      * @return a lexicographic-order comparator composed of this and then the
-     *         {@code long} sort key
-     * @throws NullPointerException if the argument is null.
+     * {@code long} sort key
+     *
+     * @throws NullPointerException
+     *         if the argument is null.
      * @see #comparingLong(ToLongFunction)
      * @see #thenComparing(Comparator)
      * @since 1.8
@@ -307,13 +313,14 @@ public interface Comparator<T> {
      * Returns a lexicographic-order comparator with a function that
      * extracts a {@code double} sort key.
      *
-     * @implSpec This default implementation behaves as if {@code
-     *           thenComparing(comparingDouble(keyExtractor))}.
+     * @param keyExtractor
+     *         the function used to extract the double sort key
      *
-     * @param  keyExtractor the function used to extract the double sort key
      * @return a lexicographic-order comparator composed of this and then the
-     *         {@code double} sort key
-     * @throws NullPointerException if the argument is null.
+     * {@code double} sort key
+     *
+     * @throws NullPointerException
+     *         if the argument is null.
      * @see #comparingDouble(ToDoubleFunction)
      * @see #thenComparing(Comparator)
      * @since 1.8
@@ -329,9 +336,12 @@ public interface Comparator<T> {
      * <p>The returned comparator is serializable and throws {@link
      * NullPointerException} when comparing {@code null}.
      *
-     * @param  <T> the {@link Comparable} type of element to be compared
+     * @param <T>
+     *         the {@link Comparable} type of element to be compared
+     *
      * @return a comparator that imposes the reverse of the <i>natural
-     *         ordering</i> on {@code Comparable} objects.
+     * ordering</i> on {@code Comparable} objects.
+     *
      * @see Comparable
      * @since 1.8
      */
@@ -346,9 +356,12 @@ public interface Comparator<T> {
      * <p>The returned comparator is serializable and throws {@link
      * NullPointerException} when comparing {@code null}.
      *
-     * @param  <T> the {@link Comparable} type of element to be compared
+     * @param <T>
+     *         the {@link Comparable} type of element to be compared
+     *
      * @return a comparator that imposes the <i>natural ordering</i> on {@code
-     *         Comparable} objects.
+     * Comparable} objects.
+     *
      * @see Comparable
      * @since 1.8
      */
@@ -367,11 +380,15 @@ public interface Comparator<T> {
      * <p>The returned comparator is serializable if the specified comparator
      * is serializable.
      *
-     * @param  <T> the type of the elements to be compared
-     * @param  comparator a {@code Comparator} for comparing non-null values
+     * @param <T>
+     *         the type of the elements to be compared
+     * @param comparator
+     *         a {@code Comparator} for comparing non-null values
+     *
      * @return a comparator that considers {@code null} to be less than
-     *         non-null, and compares non-null objects with the supplied
-     *         {@code Comparator}.
+     * non-null, and compares non-null objects with the supplied
+     * {@code Comparator}.
+     *
      * @since 1.8
      */
     public static <T> Comparator<T> nullsFirst(Comparator<? super T> comparator) {
@@ -388,11 +405,15 @@ public interface Comparator<T> {
      * <p>The returned comparator is serializable if the specified comparator
      * is serializable.
      *
-     * @param  <T> the type of the elements to be compared
-     * @param  comparator a {@code Comparator} for comparing non-null values
+     * @param <T>
+     *         the type of the elements to be compared
+     * @param comparator
+     *         a {@code Comparator} for comparing non-null values
+     *
      * @return a comparator that considers {@code null} to be greater than
-     *         non-null, and compares non-null objects with the supplied
-     *         {@code Comparator}.
+     * non-null, and compares non-null objects with the supplied
+     * {@code Comparator}.
+     *
      * @since 1.8
      */
     public static <T> Comparator<T> nullsLast(Comparator<? super T> comparator) {
@@ -403,38 +424,30 @@ public interface Comparator<T> {
      * Accepts a function that extracts a sort key from a type {@code T}, and
      * returns a {@code Comparator<T>} that compares by that sort key using
      * the specified {@link Comparator}.
-      *
+     *
      * <p>The returned comparator is serializable if the specified function
      * and comparator are both serializable.
      *
-     * @apiNote
-     * For example, to obtain a {@code Comparator} that compares {@code
-     * Person} objects by their last name ignoring case differences,
+     * @param <T>
+     *         the type of element to be compared
+     * @param <U>
+     *         the type of the sort key
+     * @param keyExtractor
+     *         the function used to extract the sort key
+     * @param keyComparator
+     *         the {@code Comparator} used to compare the sort key
      *
-     * <pre>{@code
-     *     Comparator<Person> cmp = Comparator.comparing(
-     *             Person::getLastName,
-     *             String.CASE_INSENSITIVE_ORDER);
-     * }</pre>
-     *
-     * @param  <T> the type of element to be compared
-     * @param  <U> the type of the sort key
-     * @param  keyExtractor the function used to extract the sort key
-     * @param  keyComparator the {@code Comparator} used to compare the sort key
      * @return a comparator that compares by an extracted key using the
-     *         specified {@code Comparator}
-     * @throws NullPointerException if either argument is null
+     * specified {@code Comparator}
+     *
+     * @throws NullPointerException
+     *         if either argument is null
      * @since 1.8
      */
-    public static <T, U> Comparator<T> comparing(
-            Function<? super T, ? extends U> keyExtractor,
-            Comparator<? super U> keyComparator)
-    {
+    public static <T, U> Comparator<T> comparing(Function<? super T, ? extends U> keyExtractor, Comparator<? super U> keyComparator) {
         Objects.requireNonNull(keyExtractor);
         Objects.requireNonNull(keyComparator);
-        return (Comparator<T> & Serializable)
-            (c1, c2) -> keyComparator.compare(keyExtractor.apply(c1),
-                                              keyExtractor.apply(c2));
+        return (Comparator<T> & Serializable) (c1, c2) -> keyComparator.compare(keyExtractor.apply(c1), keyExtractor.apply(c2));
     }
 
     /**
@@ -445,28 +458,23 @@ public interface Comparator<T> {
      * <p>The returned comparator is serializable if the specified function
      * is also serializable.
      *
-     * @apiNote
-     * For example, to obtain a {@code Comparator} that compares {@code
-     * Person} objects by their last name,
-     *
-     * <pre>{@code
-     *     Comparator<Person> byLastName = Comparator.comparing(Person::getLastName);
-     * }</pre>
-     *
-     * @param  <T> the type of element to be compared
-     * @param  <U> the type of the {@code Comparable} sort key
-     * @param  keyExtractor the function used to extract the {@link
+     * @param <T>
+     *         the type of element to be compared
+     * @param <U>
+     *         the type of the {@code Comparable} sort key
+     * @param keyExtractor
+     *         the function used to extract the {@link
      *         Comparable} sort key
+     *
      * @return a comparator that compares by an extracted key
-     * @throws NullPointerException if the argument is null
+     *
+     * @throws NullPointerException
+     *         if the argument is null
      * @since 1.8
      */
-    public static <T, U extends Comparable<? super U>> Comparator<T> comparing(
-            Function<? super T, ? extends U> keyExtractor)
-    {
+    public static <T, U extends Comparable<? super U>> Comparator<T> comparing(Function<? super T, ? extends U> keyExtractor) {
         Objects.requireNonNull(keyExtractor);
-        return (Comparator<T> & Serializable)
-            (c1, c2) -> keyExtractor.apply(c1).compareTo(keyExtractor.apply(c2));
+        return (Comparator<T> & Serializable) (c1, c2) -> keyExtractor.apply(c1).compareTo(keyExtractor.apply(c2));
     }
 
     /**
@@ -477,17 +485,21 @@ public interface Comparator<T> {
      * <p>The returned comparator is serializable if the specified function
      * is also serializable.
      *
-     * @param  <T> the type of element to be compared
-     * @param  keyExtractor the function used to extract the integer sort key
+     * @param <T>
+     *         the type of element to be compared
+     * @param keyExtractor
+     *         the function used to extract the integer sort key
+     *
      * @return a comparator that compares by an extracted key
+     *
+     * @throws NullPointerException
+     *         if the argument is null
      * @see #comparing(Function)
-     * @throws NullPointerException if the argument is null
      * @since 1.8
      */
     public static <T> Comparator<T> comparingInt(ToIntFunction<? super T> keyExtractor) {
         Objects.requireNonNull(keyExtractor);
-        return (Comparator<T> & Serializable)
-            (c1, c2) -> Integer.compare(keyExtractor.applyAsInt(c1), keyExtractor.applyAsInt(c2));
+        return (Comparator<T> & Serializable) (c1, c2) -> Integer.compare(keyExtractor.applyAsInt(c1), keyExtractor.applyAsInt(c2));
     }
 
     /**
@@ -498,17 +510,21 @@ public interface Comparator<T> {
      * <p>The returned comparator is serializable if the specified function is
      * also serializable.
      *
-     * @param  <T> the type of element to be compared
-     * @param  keyExtractor the function used to extract the long sort key
+     * @param <T>
+     *         the type of element to be compared
+     * @param keyExtractor
+     *         the function used to extract the long sort key
+     *
      * @return a comparator that compares by an extracted key
+     *
+     * @throws NullPointerException
+     *         if the argument is null
      * @see #comparing(Function)
-     * @throws NullPointerException if the argument is null
      * @since 1.8
      */
     public static <T> Comparator<T> comparingLong(ToLongFunction<? super T> keyExtractor) {
         Objects.requireNonNull(keyExtractor);
-        return (Comparator<T> & Serializable)
-            (c1, c2) -> Long.compare(keyExtractor.applyAsLong(c1), keyExtractor.applyAsLong(c2));
+        return (Comparator<T> & Serializable) (c1, c2) -> Long.compare(keyExtractor.applyAsLong(c1), keyExtractor.applyAsLong(c2));
     }
 
     /**
@@ -519,16 +535,20 @@ public interface Comparator<T> {
      * <p>The returned comparator is serializable if the specified function
      * is also serializable.
      *
-     * @param  <T> the type of element to be compared
-     * @param  keyExtractor the function used to extract the double sort key
+     * @param <T>
+     *         the type of element to be compared
+     * @param keyExtractor
+     *         the function used to extract the double sort key
+     *
      * @return a comparator that compares by an extracted key
+     *
+     * @throws NullPointerException
+     *         if the argument is null
      * @see #comparing(Function)
-     * @throws NullPointerException if the argument is null
      * @since 1.8
      */
-    public static<T> Comparator<T> comparingDouble(ToDoubleFunction<? super T> keyExtractor) {
+    public static <T> Comparator<T> comparingDouble(ToDoubleFunction<? super T> keyExtractor) {
         Objects.requireNonNull(keyExtractor);
-        return (Comparator<T> & Serializable)
-            (c1, c2) -> Double.compare(keyExtractor.applyAsDouble(c1), keyExtractor.applyAsDouble(c2));
+        return (Comparator<T> & Serializable) (c1, c2) -> Double.compare(keyExtractor.applyAsDouble(c1), keyExtractor.applyAsDouble(c2));
     }
 }

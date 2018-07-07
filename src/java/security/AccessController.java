@@ -25,9 +25,9 @@
 
 package java.security;
 
-import sun.security.util.Debug;
 import sun.reflect.CallerSensitive;
 import sun.reflect.Reflection;
+import sun.security.util.Debug;
 
 /**
  * <p> The AccessController class is used for access control operations
@@ -73,7 +73,7 @@ import sun.reflect.Reflection;
  * The {@code checkPermission} method determines whether access
  * is granted or denied based on the following algorithm:
  *
- *  <pre> {@code
+ * <pre> {@code
  * for (int i = m; i > 0; i--) {
  *
  *     if (caller i's domain does not have the permission)
@@ -122,7 +122,7 @@ import sun.reflect.Reflection;
  * don't need to return a value from within the "privileged" block, do
  * the following:
  *
- *  <pre> {@code
+ * <pre> {@code
  * somemethod() {
  *     ...normal code here...
  *     AccessController.doPrivileged(new PrivilegedAction<Void>() {
@@ -152,7 +152,7 @@ import sun.reflect.Reflection;
  *
  * <p> If you need to return a value, you can do something like the following:
  *
- *  <pre> {@code
+ * <pre> {@code
  * somemethod() {
  *     ...normal code here...
  *     String user = AccessController.doPrivileged(
@@ -170,7 +170,7 @@ import sun.reflect.Reflection;
  * {@code PrivilegedExceptionAction} interface instead of the
  * {@code PrivilegedAction} interface:
  *
- *  <pre> {@code
+ * <pre> {@code
  * somemethod() throws FileNotFoundException {
  *     ...normal code here...
  *     try {
@@ -233,7 +233,7 @@ import sun.reflect.Reflection;
  * of the privileged code by passing additional {@code Permission}
  * parameters.
  *
- *  <pre> {@code
+ * <pre> {@code
  * somemethod() {
  *     AccessController.doPrivileged(new PrivilegedAction<Object>() {
  *         public Object run() {
@@ -255,10 +255,9 @@ import sun.reflect.Reflection;
  * the code privileges so that checking always continues beyond the caller of
  * that {@code doPrivileged} method.
  *
- * @see AccessControlContext
- *
  * @author Li Gong
  * @author Roland Schemers
+ * @see AccessControlContext
  */
 
 public final class AccessController {
@@ -266,7 +265,8 @@ public final class AccessController {
     /**
      * Don't allow anyone to instantiate an AccessController
      */
-    private AccessController() { }
+    private AccessController() {
+    }
 
     /**
      * Performs the specified {@code PrivilegedAction} with privileges
@@ -279,16 +279,17 @@ public final class AccessController {
      * <p> Note that any DomainCombiner associated with the current
      * AccessControlContext will be ignored while the action is performed.
      *
-     * @param <T> the type of the value returned by the PrivilegedAction's
-     *                  {@code run} method.
-     *
-     * @param action the action to be performed.
+     * @param <T>
+     *         the type of the value returned by the PrivilegedAction's
+     *         {@code run} method.
+     * @param action
+     *         the action to be performed.
      *
      * @return the value returned by the action's {@code run} method.
      *
-     * @exception NullPointerException if the action is {@code null}
-     *
-     * @see #doPrivileged(PrivilegedAction,AccessControlContext)
+     * @throws NullPointerException
+     *         if the action is {@code null}
+     * @see #doPrivileged(PrivilegedAction, AccessControlContext)
      * @see #doPrivileged(PrivilegedExceptionAction)
      * @see #doPrivilegedWithCombiner(PrivilegedAction)
      * @see java.security.DomainCombiner
@@ -308,18 +309,18 @@ public final class AccessController {
      * <p> This method preserves the current AccessControlContext's
      * DomainCombiner (which may be null) while the action is performed.
      *
-     * @param <T> the type of the value returned by the PrivilegedAction's
-     *                  {@code run} method.
-     *
-     * @param action the action to be performed.
+     * @param <T>
+     *         the type of the value returned by the PrivilegedAction's
+     *         {@code run} method.
+     * @param action
+     *         the action to be performed.
      *
      * @return the value returned by the action's {@code run} method.
      *
-     * @exception NullPointerException if the action is {@code null}
-     *
+     * @throws NullPointerException
+     *         if the action is {@code null}
      * @see #doPrivileged(PrivilegedAction)
      * @see java.security.DomainCombiner
-     *
      * @since 1.6
      */
     @CallerSensitive
@@ -329,10 +330,8 @@ public final class AccessController {
             return AccessController.doPrivileged(action);
         }
         DomainCombiner dc = acc.getAssignedCombiner();
-        return AccessController.doPrivileged(action,
-                                             preserveCombiner(dc, Reflection.getCallerClass()));
+        return AccessController.doPrivileged(action, preserveCombiner(dc, Reflection.getCallerClass()));
     }
-
 
     /**
      * Performs the specified {@code PrivilegedAction} with privileges
@@ -351,26 +350,27 @@ public final class AccessController {
      * {@link java.security.SecurityPermission}, then the action is performed
      * with no permissions.
      *
-     * @param <T> the type of the value returned by the PrivilegedAction's
-     *                  {@code run} method.
-     * @param action the action to be performed.
-     * @param context an <i>access control context</i>
-     *                representing the restriction to be applied to the
-     *                caller's domain's privileges before performing
-     *                the specified action.  If the context is
-     *                {@code null}, then no additional restriction is applied.
+     * @param <T>
+     *         the type of the value returned by the PrivilegedAction's
+     *         {@code run} method.
+     * @param action
+     *         the action to be performed.
+     * @param context
+     *         an <i>access control context</i>
+     *         representing the restriction to be applied to the
+     *         caller's domain's privileges before performing
+     *         the specified action.  If the context is
+     *         {@code null}, then no additional restriction is applied.
      *
      * @return the value returned by the action's {@code run} method.
      *
-     * @exception NullPointerException if the action is {@code null}
-     *
+     * @throws NullPointerException
+     *         if the action is {@code null}
      * @see #doPrivileged(PrivilegedAction)
-     * @see #doPrivileged(PrivilegedExceptionAction,AccessControlContext)
+     * @see #doPrivileged(PrivilegedExceptionAction, AccessControlContext)
      */
     @CallerSensitive
-    public static native <T> T doPrivileged(PrivilegedAction<T> action,
-                                            AccessControlContext context);
-
+    public static native <T> T doPrivileged(PrivilegedAction<T> action, AccessControlContext context);
 
     /**
      * Performs the specified {@code PrivilegedAction} with privileges
@@ -393,42 +393,42 @@ public final class AccessController {
      * {@link java.security.SecurityPermission}, then the action is performed
      * with no permissions.
      *
-     * @param <T> the type of the value returned by the PrivilegedAction's
-     *                  {@code run} method.
-     * @param action the action to be performed.
-     * @param context an <i>access control context</i>
-     *                representing the restriction to be applied to the
-     *                caller's domain's privileges before performing
-     *                the specified action.  If the context is
-     *                {@code null},
-     *                then no additional restriction is applied.
-     * @param perms the {@code Permission} arguments which limit the
-     *              scope of the caller's privileges. The number of arguments
-     *              is variable.
+     * @param <T>
+     *         the type of the value returned by the PrivilegedAction's
+     *         {@code run} method.
+     * @param action
+     *         the action to be performed.
+     * @param context
+     *         an <i>access control context</i>
+     *         representing the restriction to be applied to the
+     *         caller's domain's privileges before performing
+     *         the specified action.  If the context is
+     *         {@code null},
+     *         then no additional restriction is applied.
+     * @param perms
+     *         the {@code Permission} arguments which limit the
+     *         scope of the caller's privileges. The number of arguments
+     *         is variable.
      *
      * @return the value returned by the action's {@code run} method.
      *
-     * @throws NullPointerException if action or perms or any element of
+     * @throws NullPointerException
+     *         if action or perms or any element of
      *         perms is {@code null}
-     *
      * @see #doPrivileged(PrivilegedAction)
-     * @see #doPrivileged(PrivilegedExceptionAction,AccessControlContext)
-     *
+     * @see #doPrivileged(PrivilegedExceptionAction, AccessControlContext)
      * @since 1.8
      */
     @CallerSensitive
-    public static <T> T doPrivileged(PrivilegedAction<T> action,
-        AccessControlContext context, Permission... perms) {
+    public static <T> T doPrivileged(PrivilegedAction<T> action, AccessControlContext context, Permission... perms) {
 
         AccessControlContext parent = getContext();
         if (perms == null) {
             throw new NullPointerException("null permissions parameter");
         }
-        Class <?> caller = Reflection.getCallerClass();
-        return AccessController.doPrivileged(action, createWrapper(null,
-            caller, parent, context, perms));
+        Class<?> caller = Reflection.getCallerClass();
+        return AccessController.doPrivileged(action, createWrapper(null, caller, parent, context, perms));
     }
-
 
     /**
      * Performs the specified {@code PrivilegedAction} with privileges
@@ -454,33 +454,35 @@ public final class AccessController {
      * {@link java.security.SecurityPermission}, then the action is performed
      * with no permissions.
      *
-     * @param <T> the type of the value returned by the PrivilegedAction's
-     *                  {@code run} method.
-     * @param action the action to be performed.
-     * @param context an <i>access control context</i>
-     *                representing the restriction to be applied to the
-     *                caller's domain's privileges before performing
-     *                the specified action.  If the context is
-     *                {@code null},
-     *                then no additional restriction is applied.
-     * @param perms the {@code Permission} arguments which limit the
-     *              scope of the caller's privileges. The number of arguments
-     *              is variable.
+     * @param <T>
+     *         the type of the value returned by the PrivilegedAction's
+     *         {@code run} method.
+     * @param action
+     *         the action to be performed.
+     * @param context
+     *         an <i>access control context</i>
+     *         representing the restriction to be applied to the
+     *         caller's domain's privileges before performing
+     *         the specified action.  If the context is
+     *         {@code null},
+     *         then no additional restriction is applied.
+     * @param perms
+     *         the {@code Permission} arguments which limit the
+     *         scope of the caller's privileges. The number of arguments
+     *         is variable.
      *
      * @return the value returned by the action's {@code run} method.
      *
-     * @throws NullPointerException if action or perms or any element of
+     * @throws NullPointerException
+     *         if action or perms or any element of
      *         perms is {@code null}
-     *
      * @see #doPrivileged(PrivilegedAction)
-     * @see #doPrivileged(PrivilegedExceptionAction,AccessControlContext)
+     * @see #doPrivileged(PrivilegedExceptionAction, AccessControlContext)
      * @see java.security.DomainCombiner
-     *
      * @since 1.8
      */
     @CallerSensitive
-    public static <T> T doPrivilegedWithCombiner(PrivilegedAction<T> action,
-        AccessControlContext context, Permission... perms) {
+    public static <T> T doPrivilegedWithCombiner(PrivilegedAction<T> action, AccessControlContext context, Permission... perms) {
 
         AccessControlContext parent = getContext();
         DomainCombiner dc = parent.getCombiner();
@@ -490,9 +492,8 @@ public final class AccessController {
         if (perms == null) {
             throw new NullPointerException("null permissions parameter");
         }
-        Class <?> caller = Reflection.getCallerClass();
-        return AccessController.doPrivileged(action, createWrapper(dc, caller,
-            parent, context, perms));
+        Class<?> caller = Reflection.getCallerClass();
+        return AccessController.doPrivileged(action, createWrapper(dc, caller, parent, context, perms));
     }
 
     /**
@@ -506,27 +507,26 @@ public final class AccessController {
      * <p> Note that any DomainCombiner associated with the current
      * AccessControlContext will be ignored while the action is performed.
      *
-     * @param <T> the type of the value returned by the
-     *                  PrivilegedExceptionAction's {@code run} method.
-     *
-     * @param action the action to be performed
+     * @param <T>
+     *         the type of the value returned by the
+     *         PrivilegedExceptionAction's {@code run} method.
+     * @param action
+     *         the action to be performed
      *
      * @return the value returned by the action's {@code run} method
      *
-     * @exception PrivilegedActionException if the specified action's
+     * @throws PrivilegedActionException
+     *         if the specified action's
      *         {@code run} method threw a <i>checked</i> exception
-     * @exception NullPointerException if the action is {@code null}
-     *
+     * @throws NullPointerException
+     *         if the action is {@code null}
      * @see #doPrivileged(PrivilegedAction)
-     * @see #doPrivileged(PrivilegedExceptionAction,AccessControlContext)
+     * @see #doPrivileged(PrivilegedExceptionAction, AccessControlContext)
      * @see #doPrivilegedWithCombiner(PrivilegedExceptionAction)
      * @see java.security.DomainCombiner
      */
     @CallerSensitive
-    public static native <T> T
-        doPrivileged(PrivilegedExceptionAction<T> action)
-        throws PrivilegedActionException;
-
+    public static native <T> T doPrivileged(PrivilegedExceptionAction<T> action) throws PrivilegedActionException;
 
     /**
      * Performs the specified {@code PrivilegedExceptionAction} with
@@ -539,70 +539,58 @@ public final class AccessController {
      * <p> This method preserves the current AccessControlContext's
      * DomainCombiner (which may be null) while the action is performed.
      *
-     * @param <T> the type of the value returned by the
-     *                  PrivilegedExceptionAction's {@code run} method.
-     *
-     * @param action the action to be performed.
+     * @param <T>
+     *         the type of the value returned by the
+     *         PrivilegedExceptionAction's {@code run} method.
+     * @param action
+     *         the action to be performed.
      *
      * @return the value returned by the action's {@code run} method
      *
-     * @exception PrivilegedActionException if the specified action's
+     * @throws PrivilegedActionException
+     *         if the specified action's
      *         {@code run} method threw a <i>checked</i> exception
-     * @exception NullPointerException if the action is {@code null}
-     *
+     * @throws NullPointerException
+     *         if the action is {@code null}
      * @see #doPrivileged(PrivilegedAction)
-     * @see #doPrivileged(PrivilegedExceptionAction,AccessControlContext)
+     * @see #doPrivileged(PrivilegedExceptionAction, AccessControlContext)
      * @see java.security.DomainCombiner
-     *
      * @since 1.6
      */
     @CallerSensitive
-    public static <T> T doPrivilegedWithCombiner(PrivilegedExceptionAction<T> action)
-        throws PrivilegedActionException
-    {
+    public static <T> T doPrivilegedWithCombiner(PrivilegedExceptionAction<T> action) throws PrivilegedActionException {
         AccessControlContext acc = getStackAccessControlContext();
         if (acc == null) {
             return AccessController.doPrivileged(action);
         }
         DomainCombiner dc = acc.getAssignedCombiner();
-        return AccessController.doPrivileged(action,
-                                             preserveCombiner(dc, Reflection.getCallerClass()));
+        return AccessController.doPrivileged(action, preserveCombiner(dc, Reflection.getCallerClass()));
     }
 
     /**
      * preserve the combiner across the doPrivileged call
      */
-    private static AccessControlContext preserveCombiner(DomainCombiner combiner,
-                                                         Class<?> caller)
-    {
+    private static AccessControlContext preserveCombiner(DomainCombiner combiner, Class<?> caller) {
         return createWrapper(combiner, caller, null, null, null);
     }
 
     /**
      * Create a wrapper to contain the limited privilege scope data.
      */
-    private static AccessControlContext
-        createWrapper(DomainCombiner combiner, Class<?> caller,
-                      AccessControlContext parent, AccessControlContext context,
-                      Permission[] perms)
-    {
+    private static AccessControlContext createWrapper(DomainCombiner combiner, Class<?> caller, AccessControlContext parent, AccessControlContext context,
+            Permission[] perms) {
         ProtectionDomain callerPD = getCallerPD(caller);
         // check if caller is authorized to create context
-        if (context != null && !context.isAuthorized() &&
-            System.getSecurityManager() != null &&
-            !callerPD.impliesCreateAccessControlContext())
-        {
+        if (context != null && !context.isAuthorized() && System.getSecurityManager() != null && !callerPD.impliesCreateAccessControlContext()) {
             ProtectionDomain nullPD = new ProtectionDomain(null, null);
             return new AccessControlContext(new ProtectionDomain[] { nullPD });
         } else {
-            return new AccessControlContext(callerPD, combiner, parent,
-                                            context, perms);
+            return new AccessControlContext(callerPD, combiner, parent, context, perms);
         }
     }
 
-    private static ProtectionDomain getCallerPD(final Class <?> caller) {
-        ProtectionDomain callerPd = doPrivileged
-            (new PrivilegedAction<ProtectionDomain>() {
+    private static ProtectionDomain getCallerPD(final Class<?> caller) {
+        ProtectionDomain callerPd = doPrivileged(new PrivilegedAction<ProtectionDomain>() {
             public ProtectionDomain run() {
                 return caller.getProtectionDomain();
             }
@@ -629,30 +617,30 @@ public final class AccessController {
      * {@link java.security.SecurityPermission}, then the action is performed
      * with no permissions.
      *
-     * @param <T> the type of the value returned by the
-     *                  PrivilegedExceptionAction's {@code run} method.
-     * @param action the action to be performed
-     * @param context an <i>access control context</i>
-     *                representing the restriction to be applied to the
-     *                caller's domain's privileges before performing
-     *                the specified action.  If the context is
-     *                {@code null}, then no additional restriction is applied.
+     * @param <T>
+     *         the type of the value returned by the
+     *         PrivilegedExceptionAction's {@code run} method.
+     * @param action
+     *         the action to be performed
+     * @param context
+     *         an <i>access control context</i>
+     *         representing the restriction to be applied to the
+     *         caller's domain's privileges before performing
+     *         the specified action.  If the context is
+     *         {@code null}, then no additional restriction is applied.
      *
      * @return the value returned by the action's {@code run} method
      *
-     * @exception PrivilegedActionException if the specified action's
+     * @throws PrivilegedActionException
+     *         if the specified action's
      *         {@code run} method threw a <i>checked</i> exception
-     * @exception NullPointerException if the action is {@code null}
-     *
+     * @throws NullPointerException
+     *         if the action is {@code null}
      * @see #doPrivileged(PrivilegedAction)
-     * @see #doPrivileged(PrivilegedAction,AccessControlContext)
+     * @see #doPrivileged(PrivilegedAction, AccessControlContext)
      */
     @CallerSensitive
-    public static native <T> T
-        doPrivileged(PrivilegedExceptionAction<T> action,
-                     AccessControlContext context)
-        throws PrivilegedActionException;
-
+    public static native <T> T doPrivileged(PrivilegedExceptionAction<T> action, AccessControlContext context) throws PrivilegedActionException;
 
     /**
      * Performs the specified {@code PrivilegedExceptionAction} with
@@ -675,44 +663,44 @@ public final class AccessController {
      * {@link java.security.SecurityPermission}, then the action is performed
      * with no permissions.
      *
-     * @param <T> the type of the value returned by the
-     *                  PrivilegedExceptionAction's {@code run} method.
-     * @param action the action to be performed.
-     * @param context an <i>access control context</i>
-     *                representing the restriction to be applied to the
-     *                caller's domain's privileges before performing
-     *                the specified action.  If the context is
-     *                {@code null},
-     *                then no additional restriction is applied.
-     * @param perms the {@code Permission} arguments which limit the
-     *              scope of the caller's privileges. The number of arguments
-     *              is variable.
+     * @param <T>
+     *         the type of the value returned by the
+     *         PrivilegedExceptionAction's {@code run} method.
+     * @param action
+     *         the action to be performed.
+     * @param context
+     *         an <i>access control context</i>
+     *         representing the restriction to be applied to the
+     *         caller's domain's privileges before performing
+     *         the specified action.  If the context is
+     *         {@code null},
+     *         then no additional restriction is applied.
+     * @param perms
+     *         the {@code Permission} arguments which limit the
+     *         scope of the caller's privileges. The number of arguments
+     *         is variable.
      *
      * @return the value returned by the action's {@code run} method.
      *
-     * @throws PrivilegedActionException if the specified action's
+     * @throws PrivilegedActionException
+     *         if the specified action's
      *         {@code run} method threw a <i>checked</i> exception
-     * @throws NullPointerException if action or perms or any element of
+     * @throws NullPointerException
+     *         if action or perms or any element of
      *         perms is {@code null}
-     *
      * @see #doPrivileged(PrivilegedAction)
-     * @see #doPrivileged(PrivilegedAction,AccessControlContext)
-     *
+     * @see #doPrivileged(PrivilegedAction, AccessControlContext)
      * @since 1.8
      */
     @CallerSensitive
-    public static <T> T doPrivileged(PrivilegedExceptionAction<T> action,
-                                     AccessControlContext context, Permission... perms)
-        throws PrivilegedActionException
-    {
+    public static <T> T doPrivileged(PrivilegedExceptionAction<T> action, AccessControlContext context, Permission... perms) throws PrivilegedActionException {
         AccessControlContext parent = getContext();
         if (perms == null) {
             throw new NullPointerException("null permissions parameter");
         }
-        Class <?> caller = Reflection.getCallerClass();
+        Class<?> caller = Reflection.getCallerClass();
         return AccessController.doPrivileged(action, createWrapper(null, caller, parent, context, perms));
     }
-
 
     /**
      * Performs the specified {@code PrivilegedExceptionAction} with
@@ -738,38 +726,39 @@ public final class AccessController {
      * {@link java.security.SecurityPermission}, then the action is performed
      * with no permissions.
      *
-     * @param <T> the type of the value returned by the
-     *                  PrivilegedExceptionAction's {@code run} method.
-     * @param action the action to be performed.
-     * @param context an <i>access control context</i>
-     *                representing the restriction to be applied to the
-     *                caller's domain's privileges before performing
-     *                the specified action.  If the context is
-     *                {@code null},
-     *                then no additional restriction is applied.
-     * @param perms the {@code Permission} arguments which limit the
-     *              scope of the caller's privileges. The number of arguments
-     *              is variable.
+     * @param <T>
+     *         the type of the value returned by the
+     *         PrivilegedExceptionAction's {@code run} method.
+     * @param action
+     *         the action to be performed.
+     * @param context
+     *         an <i>access control context</i>
+     *         representing the restriction to be applied to the
+     *         caller's domain's privileges before performing
+     *         the specified action.  If the context is
+     *         {@code null},
+     *         then no additional restriction is applied.
+     * @param perms
+     *         the {@code Permission} arguments which limit the
+     *         scope of the caller's privileges. The number of arguments
+     *         is variable.
      *
      * @return the value returned by the action's {@code run} method.
      *
-     * @throws PrivilegedActionException if the specified action's
+     * @throws PrivilegedActionException
+     *         if the specified action's
      *         {@code run} method threw a <i>checked</i> exception
-     * @throws NullPointerException if action or perms or any element of
+     * @throws NullPointerException
+     *         if action or perms or any element of
      *         perms is {@code null}
-     *
      * @see #doPrivileged(PrivilegedAction)
-     * @see #doPrivileged(PrivilegedAction,AccessControlContext)
+     * @see #doPrivileged(PrivilegedAction, AccessControlContext)
      * @see java.security.DomainCombiner
-     *
      * @since 1.8
      */
     @CallerSensitive
-    public static <T> T doPrivilegedWithCombiner(PrivilegedExceptionAction<T> action,
-                                                 AccessControlContext context,
-                                                 Permission... perms)
-        throws PrivilegedActionException
-    {
+    public static <T> T doPrivilegedWithCombiner(PrivilegedExceptionAction<T> action, AccessControlContext context, Permission... perms)
+            throws PrivilegedActionException {
         AccessControlContext parent = getContext();
         DomainCombiner dc = parent.getCombiner();
         if (dc == null && context != null) {
@@ -778,9 +767,8 @@ public final class AccessController {
         if (perms == null) {
             throw new NullPointerException("null permissions parameter");
         }
-        Class <?> caller = Reflection.getCallerClass();
-        return AccessController.doPrivileged(action, createWrapper(dc, caller,
-            parent, context, perms));
+        Class<?> caller = Reflection.getCallerClass();
+        return AccessController.doPrivileged(action, createWrapper(dc, caller, parent, context, perms));
     }
 
     /**
@@ -790,11 +778,10 @@ public final class AccessController {
      * ProtectionDomain.
      *
      * @return the access control context based on the current stack or
-     *         null if there was only privileged system code.
+     * null if there was only privileged system code.
      */
 
     private static native AccessControlContext getStackAccessControlContext();
-
 
     /**
      * Returns the "inherited" AccessControl context. This is the context
@@ -810,13 +797,12 @@ public final class AccessController {
      * limited privilege scope, and places it in an AccessControlContext object.
      * This context may then be checked at a later point, possibly in another thread.
      *
-     * @see AccessControlContext
-     *
      * @return the AccessControlContext based on the current context.
+     *
+     * @see AccessControlContext
      */
 
-    public static AccessControlContext getContext()
-    {
+    public static AccessControlContext getContext() {
         AccessControlContext acc = getStackAccessControlContext();
         if (acc == null) {
             // all we had was privileged system code. We don't want
@@ -836,18 +822,19 @@ public final class AccessController {
      * getPermission method of the AccessControlException returns the
      * {@code perm} Permission object instance.
      *
-     * @param perm the requested permission.
+     * @param perm
+     *         the requested permission.
      *
-     * @exception AccessControlException if the specified permission
-     *            is not permitted, based on the current security policy.
-     * @exception NullPointerException if the specified permission
-     *            is {@code null} and is checked based on the
-     *            security policy currently in effect.
+     * @throws AccessControlException
+     *         if the specified permission
+     *         is not permitted, based on the current security policy.
+     * @throws NullPointerException
+     *         if the specified permission
+     *         is {@code null} and is checked based on the
+     *         security policy currently in effect.
      */
 
-    public static void checkPermission(Permission perm)
-        throws AccessControlException
-    {
+    public static void checkPermission(Permission perm) throws AccessControlException {
         //System.err.println("checkPermission "+perm);
         //Thread.currentThread().dumpStack();
 
@@ -862,8 +849,7 @@ public final class AccessController {
             boolean dumpDebug = false;
             if (debug != null) {
                 dumpDebug = !Debug.isOn("codebase=");
-                dumpDebug &= !Debug.isOn("permission=") ||
-                    Debug.isOn("permission=" + perm.getClass().getCanonicalName());
+                dumpDebug &= !Debug.isOn("permission=") || Debug.isOn("permission=" + perm.getClass().getCanonicalName());
             }
 
             if (dumpDebug && Debug.isOn("stack")) {
@@ -875,7 +861,7 @@ public final class AccessController {
             }
 
             if (dumpDebug) {
-                debug.println("access allowed "+perm);
+                debug.println("access allowed " + perm);
             }
             return;
         }

@@ -25,10 +25,11 @@
 
 package java.security;
 
-import java.io.*;
-import java.security.cert.Certificate;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.security.cert.CertPath;
-import java.security.cert.X509Extension;
+import java.security.cert.Certificate;
 import java.util.Date;
 import java.util.List;
 
@@ -38,8 +39,8 @@ import java.util.List;
  * It includes the timestamp's date and time as well as information about the
  * Timestamping Authority (TSA) which generated and signed the timestamp.
  *
- * @since 1.5
  * @author Vincent Ryan
+ * @since 1.5
  */
 
 public final class Timestamp implements Serializable {
@@ -48,15 +49,11 @@ public final class Timestamp implements Serializable {
 
     /**
      * The timestamp's date and time
-     *
-     * @serial
      */
     private Date timestamp;
 
     /**
      * The TSA's certificate path.
-     *
-     * @serial
      */
     private CertPath signerCertPath;
 
@@ -68,9 +65,13 @@ public final class Timestamp implements Serializable {
     /**
      * Constructs a Timestamp.
      *
-     * @param timestamp is the timestamp's date and time. It must not be null.
-     * @param signerCertPath is the TSA's certificate path. It must not be null.
-     * @throws NullPointerException if timestamp or signerCertPath is null.
+     * @param timestamp
+     *         is the timestamp's date and time. It must not be null.
+     * @param signerCertPath
+     *         is the TSA's certificate path. It must not be null.
+     *
+     * @throws NullPointerException
+     *         if timestamp or signerCertPath is null.
      */
     public Timestamp(Date timestamp, CertPath signerCertPath) {
         if (timestamp == null || signerCertPath == null) {
@@ -117,7 +118,8 @@ public final class Timestamp implements Serializable {
      * timestamp. Two timestamps are considered equal if the date and time of
      * their timestamp's and their signer's certificate paths are equal.
      *
-     * @param obj the object to test for equality with this timestamp.
+     * @param obj
+     *         the object to test for equality with this timestamp.
      *
      * @return true if the timestamp are considered equal, false otherwise.
      */
@@ -125,20 +127,19 @@ public final class Timestamp implements Serializable {
         if (obj == null || (!(obj instanceof Timestamp))) {
             return false;
         }
-        Timestamp that = (Timestamp)obj;
+        Timestamp that = (Timestamp) obj;
 
         if (this == that) {
             return true;
         }
-        return (timestamp.equals(that.getTimestamp()) &&
-            signerCertPath.equals(that.getSignerCertPath()));
+        return (timestamp.equals(that.getTimestamp()) && signerCertPath.equals(that.getSignerCertPath()));
     }
 
     /**
      * Returns a string describing this timestamp.
      *
      * @return A string comprising the date and time of the timestamp and
-     *         its signer's certificate.
+     * its signer's certificate.
      */
     public String toString() {
         StringBuffer sb = new StringBuffer();
@@ -155,8 +156,7 @@ public final class Timestamp implements Serializable {
     }
 
     // Explicitly reset hash code value to -1
-    private void readObject(ObjectInputStream ois)
-        throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
         ois.defaultReadObject();
         myhash = -1;
         timestamp = new Date(timestamp.getTime());

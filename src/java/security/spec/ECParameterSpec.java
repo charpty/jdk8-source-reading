@@ -30,10 +30,8 @@ import java.math.BigInteger;
  * This immutable class specifies the set of domain parameters
  * used with elliptic curve cryptography (ECC).
  *
- * @see AlgorithmParameterSpec
- *
  * @author Valerie Peng
- *
+ * @see AlgorithmParameterSpec
  * @since 1.5
  */
 public class ECParameterSpec implements AlgorithmParameterSpec {
@@ -46,18 +44,25 @@ public class ECParameterSpec implements AlgorithmParameterSpec {
     /**
      * Creates elliptic curve domain parameters based on the
      * specified values.
-     * @param curve the elliptic curve which this parameter
-     * defines.
-     * @param g the generator which is also known as the base point.
-     * @param n the order of the generator {@code g}.
-     * @param h the cofactor.
-     * @exception NullPointerException if {@code curve},
-     * {@code g}, or {@code n} is null.
-     * @exception IllegalArgumentException if {@code n}
-     * or {@code h} is not positive.
+     *
+     * @param curve
+     *         the elliptic curve which this parameter
+     *         defines.
+     * @param g
+     *         the generator which is also known as the base point.
+     * @param n
+     *         the order of the generator {@code g}.
+     * @param h
+     *         the cofactor.
+     *
+     * @throws NullPointerException
+     *         if {@code curve},
+     *         {@code g}, or {@code n} is null.
+     * @throws IllegalArgumentException
+     *         if {@code n}
+     *         or {@code h} is not positive.
      */
-    public ECParameterSpec(EllipticCurve curve, ECPoint g,
-                           BigInteger n, int h) {
+    public ECParameterSpec(EllipticCurve curve, ECPoint g, BigInteger n, int h) {
         if (curve == null) {
             throw new NullPointerException("curve is null");
         }
@@ -81,6 +86,7 @@ public class ECParameterSpec implements AlgorithmParameterSpec {
 
     /**
      * Returns the elliptic curve that this parameter defines.
+     *
      * @return the elliptic curve that this parameter defines.
      */
     public EllipticCurve getCurve() {
@@ -89,6 +95,7 @@ public class ECParameterSpec implements AlgorithmParameterSpec {
 
     /**
      * Returns the generator which is also known as the base point.
+     *
      * @return the generator which is also known as the base point.
      */
     public ECPoint getGenerator() {
@@ -97,6 +104,7 @@ public class ECParameterSpec implements AlgorithmParameterSpec {
 
     /**
      * Returns the order of the generator.
+     *
      * @return the order of the generator.
      */
     public BigInteger getOrder() {
@@ -105,6 +113,7 @@ public class ECParameterSpec implements AlgorithmParameterSpec {
 
     /**
      * Returns the cofactor.
+     *
      * @return the cofactor.
      */
     public int getCofactor() {

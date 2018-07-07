@@ -37,56 +37,20 @@ import java.util.concurrent.ForkJoinPool;
  * the {@code Spliterator}) or internal nodes (which split the
  * {@code Spliterator} into multiple child tasks).
  *
- * @implNote
- * <p>This class is based on {@link CountedCompleter}, a form of fork-join task
- * where each task has a semaphore-like count of uncompleted children, and the
- * task is implicitly completed and notified when its last child completes.
- * Internal node tasks will likely override the {@code onCompletion} method from
- * {@code CountedCompleter} to merge the results from child tasks into the
- * current task's result.
+ * @param <P_IN>
+ *         Type of elements input to the pipeline
+ * @param <P_OUT>
+ *         Type of elements output from the pipeline
+ * @param <R>
+ *         Type of intermediate result, which may be different from operation
+ *         result type
+ * @param <K>
+ *         Type of parent, child and sibling tasks
  *
- * <p>Splitting and setting up the child task links is done by {@code compute()}
- * for internal nodes.  At {@code compute()} time for leaf nodes, it is
- * guaranteed that the parent's child-related fields (including sibling links
- * for the parent's children) will be set up for all children.
- *
- * <p>For example, a task that performs a reduce would override {@code doLeaf()}
- * to perform a reduction on that leaf node's chunk using the
- * {@code Spliterator}, and override {@code onCompletion()} to merge the results
- * of the child tasks for internal nodes:
- *
- * <pre>{@code
- *     protected S doLeaf() {
- *         spliterator.forEach(...);
- *         return localReductionResult;
- *     }
- *
- *     public void onCompletion(CountedCompleter caller) {
- *         if (!isLeaf()) {
- *             ReduceTask<P_IN, P_OUT, T, R> child = children;
- *             R result = child.getLocalResult();
- *             child = child.nextSibling;
- *             for (; child != null; child = child.nextSibling)
- *                 result = combine(result, child.getLocalResult());
- *             setLocalResult(result);
- *         }
- *     }
- * }</pre>
- *
- * <p>Serialization is not supported as there is no intention to serialize
- * tasks managed by stream ops.
- *
- * @param <P_IN> Type of elements input to the pipeline
- * @param <P_OUT> Type of elements output from the pipeline
- * @param <R> Type of intermediate result, which may be different from operation
- *        result type
- * @param <K> Type of parent, child and sibling tasks
  * @since 1.8
  */
 @SuppressWarnings("serial")
-abstract class AbstractTask<P_IN, P_OUT, R,
-                            K extends AbstractTask<P_IN, P_OUT, R, K>>
-        extends CountedCompleter<R> {
+abstract class AbstractTask<P_IN, P_OUT, R, K extends AbstractTask<P_IN, P_OUT, R, K>> extends CountedCompleter<R> {
 
     /**
      * Default target factor of leaf tasks for parallel decomposition.
@@ -128,13 +92,14 @@ abstract class AbstractTask<P_IN, P_OUT, R,
     /**
      * Constructor for root nodes.
      *
-     * @param helper The {@code PipelineHelper} describing the stream pipeline
-     *               up to this operation
-     * @param spliterator The {@code Spliterator} describing the source for this
-     *                    pipeline
+     * @param helper
+     *         The {@code PipelineHelper} describing the stream pipeline
+     *         up to this operation
+     * @param spliterator
+     *         The {@code Spliterator} describing the source for this
+     *         pipeline
      */
-    protected AbstractTask(PipelineHelper<P_OUT> helper,
-                           Spliterator<P_IN> spliterator) {
+    protected AbstractTask(PipelineHelper<P_OUT> helper, Spliterator<P_IN> spliterator) {
         super(null);
         this.helper = helper;
         this.spliterator = spliterator;
@@ -144,12 +109,13 @@ abstract class AbstractTask<P_IN, P_OUT, R,
     /**
      * Constructor for non-root nodes.
      *
-     * @param parent this node's parent task
-     * @param spliterator {@code Spliterator} describing the subtree rooted at
-     *        this node, obtained by splitting the parent {@code Spliterator}
+     * @param parent
+     *         this node's parent task
+     * @param spliterator
+     *         {@code Spliterator} describing the subtree rooted at
+     *         this node, obtained by splitting the parent {@code Spliterator}
      */
-    protected AbstractTask(K parent,
-                           Spliterator<P_IN> spliterator) {
+    protected AbstractTask(K parent, Spliterator<P_IN> spliterator) {
         super(parent);
         this.spliterator = spliterator;
         this.helper = parent.helper;
@@ -161,8 +127,10 @@ abstract class AbstractTask<P_IN, P_OUT, R,
      * the AbstractTask(T, Spliterator) constructor with the receiver and the
      * provided Spliterator.
      *
-     * @param spliterator {@code Spliterator} describing the subtree rooted at
-     *        this node, obtained by splitting the parent {@code Spliterator}
+     * @param spliterator
+     *         {@code Spliterator} describing the subtree rooted at
+     *         this node, obtained by splitting the parent {@code Spliterator}
+     *
      * @return newly constructed child node
      */
     protected abstract K makeChild(Spliterator<P_IN> spliterator);
@@ -191,8 +159,7 @@ abstract class AbstractTask<P_IN, P_OUT, R,
      */
     protected final long getTargetSize(long sizeEstimate) {
         long s;
-        return ((s = targetSize) != 0 ? s :
-                (targetSize = suggestTargetSize(sizeEstimate)));
+        return ((s = targetSize) != 0 ? s : (targetSize = suggestTargetSize(sizeEstimate)));
     }
 
     /**
@@ -213,14 +180,16 @@ abstract class AbstractTask<P_IN, P_OUT, R,
      * Does nothing; instead, subclasses should use
      * {@link #setLocalResult(Object)}} to manage results.
      *
-     * @param result must be null, or an exception is thrown (this is a safety
-     *        tripwire to detect when {@code setRawResult()} is being used
-     *        instead of {@code setLocalResult()}
+     * @param result
+     *         must be null, or an exception is thrown (this is a safety
+     *         tripwire to detect when {@code setRawResult()} is being used
+     *         instead of {@code setLocalResult()}
      */
     @Override
     protected void setRawResult(R result) {
-        if (result != null)
+        if (result != null) {
             throw new IllegalStateException();
+        }
     }
 
     /**
@@ -237,7 +206,8 @@ abstract class AbstractTask<P_IN, P_OUT, R,
      * Associates the result with the task, can be retrieved with
      * {@link #getLocalResult}
      *
-     * @param localResult local result for this node
+     * @param localResult
+     *         local result for this node
      */
     protected void setLocalResult(R localResult) {
         this.localResult = localResult;
@@ -293,10 +263,11 @@ abstract class AbstractTask<P_IN, P_OUT, R,
         long sizeEstimate = rs.estimateSize();
         long sizeThreshold = getTargetSize(sizeEstimate);
         boolean forkRight = false;
-        @SuppressWarnings("unchecked") K task = (K) this;
+        @SuppressWarnings("unchecked")
+        K task = (K) this;
         while (sizeEstimate > sizeThreshold && (ls = rs.trySplit()) != null) {
             K leftChild, rightChild, taskToFork;
-            task.leftChild  = leftChild = task.makeChild(ls);
+            task.leftChild = leftChild = task.makeChild(ls);
             task.rightChild = rightChild = task.makeChild(rs);
             task.setPendingCount(1);
             if (forkRight) {
@@ -304,8 +275,7 @@ abstract class AbstractTask<P_IN, P_OUT, R,
                 rs = ls;
                 task = leftChild;
                 taskToFork = rightChild;
-            }
-            else {
+            } else {
                 forkRight = true;
                 task = rightChild;
                 taskToFork = leftChild;
@@ -319,11 +289,6 @@ abstract class AbstractTask<P_IN, P_OUT, R,
 
     /**
      * {@inheritDoc}
-     *
-     * @implNote
-     * Clears spliterator and children fields.  Overriders MUST call
-     * {@code super.onCompletion} as the last thing they do if they want these
-     * cleared.
      */
     @Override
     public void onCompletion(CountedCompleter<?> caller) {
@@ -343,8 +308,9 @@ abstract class AbstractTask<P_IN, P_OUT, R,
         K node = (K) this;
         while (node != null) {
             K parent = node.getParent();
-            if (parent != null && parent.leftChild != node)
+            if (parent != null && parent.leftChild != node) {
                 return false;
+            }
             node = parent;
         }
         return true;

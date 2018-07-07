@@ -31,12 +31,13 @@ package java.util;
  * Formattable Formattables}.  Implementations of {@link Formattable} are
  * responsible for interpreting and validating any flags.
  *
- * @since  1.5
+ * @since 1.5
  */
 public class FormattableFlags {
 
     // Explicit instantiation of this class is prohibited.
-    private FormattableFlags() {}
+    private FormattableFlags() {
+    }
 
     /**
      * Left-justifies the output.  Spaces (<tt>'&#92;u0020'</tt>) will be added
@@ -47,7 +48,7 @@ public class FormattableFlags {
      * <p> This flag corresponds to <tt>'-'</tt> (<tt>'&#92;u002d'</tt>) in
      * the format specifier.
      */
-    public static final int LEFT_JUSTIFY = 1<<0; // '-'
+    public static final int LEFT_JUSTIFY = 1 << 0; // '-'
 
     /**
      * Converts the output to upper case according to the rules of the
@@ -62,7 +63,7 @@ public class FormattableFlags {
      * <p> This flag corresponds to <tt>'S'</tt> (<tt>'&#92;u0053'</tt>) in
      * the format specifier.
      */
-    public static final int UPPERCASE = 1<<1;    // 'S'
+    public static final int UPPERCASE = 1 << 1;    // 'S'
 
     /**
      * Requires the output to use an alternate form.  The definition of the
@@ -71,5 +72,5 @@ public class FormattableFlags {
      * <p> This flag corresponds to <tt>'#'</tt> (<tt>'&#92;u0023'</tt>) in
      * the format specifier.
      */
-    public static final int ALTERNATE = 1<<2;    // '#'
+    public static final int ALTERNATE = 1 << 2;    // '#'
 }

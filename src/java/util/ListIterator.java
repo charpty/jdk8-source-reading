@@ -37,7 +37,7 @@ package java.util;
  * An iterator for a list of length {@code n} has {@code n+1} possible
  * cursor positions, as illustrated by the carets ({@code ^}) below:
  * <PRE>
- *                      Element(0)   Element(1)   Element(2)   ... Element(n-1)
+ * Element(0)   Element(1)   Element(2)   ... Element(n-1)
  * cursor positions:  ^            ^            ^            ^                  ^
  * </PRE>
  * Note that the {@link #remove} and {@link #set(Object)} methods are
@@ -49,13 +49,13 @@ package java.util;
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
- * @author  Josh Bloch
+ * @author Josh Bloch
  * @see Collection
  * @see List
  * @see Iterator
  * @see Enumeration
  * @see List#listIterator()
- * @since   1.2
+ * @since 1.2
  */
 public interface ListIterator<E> extends Iterator<E> {
     // Query Operations
@@ -67,7 +67,7 @@ public interface ListIterator<E> extends Iterator<E> {
      * than throwing an exception.)
      *
      * @return {@code true} if the list iterator has more elements when
-     *         traversing the list in the forward direction
+     * traversing the list in the forward direction
      */
     boolean hasNext();
 
@@ -79,7 +79,9 @@ public interface ListIterator<E> extends Iterator<E> {
      * will return the same element repeatedly.)
      *
      * @return the next element in the list
-     * @throws NoSuchElementException if the iteration has no next element
+     *
+     * @throws NoSuchElementException
+     *         if the iteration has no next element
      */
     E next();
 
@@ -90,7 +92,7 @@ public interface ListIterator<E> extends Iterator<E> {
      * rather than throwing an exception.)
      *
      * @return {@code true} if the list iterator has more elements when
-     *         traversing the list in the reverse direction
+     * traversing the list in the reverse direction
      */
     boolean hasPrevious();
 
@@ -103,7 +105,9 @@ public interface ListIterator<E> extends Iterator<E> {
      * element repeatedly.)
      *
      * @return the previous element in the list
-     * @throws NoSuchElementException if the iteration has no previous
+     *
+     * @throws NoSuchElementException
+     *         if the iteration has no previous
      *         element
      */
     E previous();
@@ -114,8 +118,8 @@ public interface ListIterator<E> extends Iterator<E> {
      * iterator is at the end of the list.)
      *
      * @return the index of the element that would be returned by a
-     *         subsequent call to {@code next}, or list size if the list
-     *         iterator is at the end of the list
+     * subsequent call to {@code next}, or list size if the list
+     * iterator is at the end of the list
      */
     int nextIndex();
 
@@ -125,11 +129,10 @@ public interface ListIterator<E> extends Iterator<E> {
      * iterator is at the beginning of the list.)
      *
      * @return the index of the element that would be returned by a
-     *         subsequent call to {@code previous}, or -1 if the list
-     *         iterator is at the beginning of the list
+     * subsequent call to {@code previous}, or -1 if the list
+     * iterator is at the beginning of the list
      */
     int previousIndex();
-
 
     // Modification Operations
 
@@ -140,9 +143,11 @@ public interface ListIterator<E> extends Iterator<E> {
      * It can be made only if {@link #add} has not been
      * called after the last call to {@code next} or {@code previous}.
      *
-     * @throws UnsupportedOperationException if the {@code remove}
+     * @throws UnsupportedOperationException
+     *         if the {@code remove}
      *         operation is not supported by this list iterator
-     * @throws IllegalStateException if neither {@code next} nor
+     * @throws IllegalStateException
+     *         if neither {@code next} nor
      *         {@code previous} have been called, or {@code remove} or
      *         {@code add} have been called after the last call to
      *         {@code next} or {@code previous}
@@ -156,15 +161,21 @@ public interface ListIterator<E> extends Iterator<E> {
      * #add} have been called after the last call to {@code next} or
      * {@code previous}.
      *
-     * @param e the element with which to replace the last element returned by
-     *          {@code next} or {@code previous}
-     * @throws UnsupportedOperationException if the {@code set} operation
+     * @param e
+     *         the element with which to replace the last element returned by
+     *         {@code next} or {@code previous}
+     *
+     * @throws UnsupportedOperationException
+     *         if the {@code set} operation
      *         is not supported by this list iterator
-     * @throws ClassCastException if the class of the specified element
+     * @throws ClassCastException
+     *         if the class of the specified element
      *         prevents it from being added to this list
-     * @throws IllegalArgumentException if some aspect of the specified
+     * @throws IllegalArgumentException
+     *         if some aspect of the specified
      *         element prevents it from being added to this list
-     * @throws IllegalStateException if neither {@code next} nor
+     * @throws IllegalStateException
+     *         if neither {@code next} nor
      *         {@code previous} have been called, or {@code remove} or
      *         {@code add} have been called after the last call to
      *         {@code next} or {@code previous}
@@ -183,12 +194,17 @@ public interface ListIterator<E> extends Iterator<E> {
      * (This call increases by one the value that would be returned by a
      * call to {@code nextIndex} or {@code previousIndex}.)
      *
-     * @param e the element to insert
-     * @throws UnsupportedOperationException if the {@code add} method is
+     * @param e
+     *         the element to insert
+     *
+     * @throws UnsupportedOperationException
+     *         if the {@code add} method is
      *         not supported by this list iterator
-     * @throws ClassCastException if the class of the specified element
+     * @throws ClassCastException
+     *         if the class of the specified element
      *         prevents it from being added to this list
-     * @throws IllegalArgumentException if some aspect of this element
+     * @throws IllegalArgumentException
+     *         if some aspect of this element
      *         prevents it from being added to this list
      */
     void add(E e);

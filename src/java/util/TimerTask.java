@@ -28,9 +28,9 @@ package java.util;
 /**
  * A task that can be scheduled for one-time or repeated execution by a Timer.
  *
- * @author  Josh Bloch
- * @see     Timer
- * @since   1.3
+ * @author Josh Bloch
+ * @see Timer
+ * @since 1.3
  */
 
 public abstract class TimerTask implements Runnable {
@@ -53,18 +53,18 @@ public abstract class TimerTask implements Runnable {
      * This task is scheduled for execution.  If it is a non-repeating task,
      * it has not yet been executed.
      */
-    static final int SCHEDULED   = 1;
+    static final int SCHEDULED = 1;
 
     /**
      * This non-repeating task has already executed (or is currently
      * executing) and has not been cancelled.
      */
-    static final int EXECUTED    = 2;
+    static final int EXECUTED = 2;
 
     /**
      * This task has been cancelled (with a call to TimerTask.cancel).
      */
-    static final int CANCELLED   = 3;
+    static final int CANCELLED = 3;
 
     /**
      * Next execution time for this task in the format returned by
@@ -106,15 +106,15 @@ public abstract class TimerTask implements Runnable {
      * calls have no effect.
      *
      * @return true if this task is scheduled for one-time execution and has
-     *         not yet run, or this task is scheduled for repeated execution.
-     *         Returns false if the task was scheduled for one-time execution
-     *         and has already run, or if the task was never scheduled, or if
-     *         the task was already cancelled.  (Loosely speaking, this method
-     *         returns <tt>true</tt> if it prevents one or more scheduled
-     *         executions from taking place.)
+     * not yet run, or this task is scheduled for repeated execution.
+     * Returns false if the task was scheduled for one-time execution
+     * and has already run, or if the task was never scheduled, or if
+     * the task was already cancelled.  (Loosely speaking, this method
+     * returns <tt>true</tt> if it prevents one or more scheduled
+     * executions from taking place.)
      */
     public boolean cancel() {
-        synchronized(lock) {
+        synchronized (lock) {
             boolean result = (state == SCHEDULED);
             state = CANCELLED;
             return result;
@@ -144,15 +144,15 @@ public abstract class TimerTask implements Runnable {
      * significant.
      *
      * @return the time at which the most recent execution of this task was
-     *         scheduled to occur, in the format returned by Date.getTime().
-     *         The return value is undefined if the task has yet to commence
-     *         its first execution.
+     * scheduled to occur, in the format returned by Date.getTime().
+     * The return value is undefined if the task has yet to commence
+     * its first execution.
+     *
      * @see Date#getTime()
      */
     public long scheduledExecutionTime() {
-        synchronized(lock) {
-            return (period < 0 ? nextExecutionTime + period
-                               : nextExecutionTime - period);
+        synchronized (lock) {
+            return (period < 0 ? nextExecutionTime + period : nextExecutionTime - period);
         }
     }
 }

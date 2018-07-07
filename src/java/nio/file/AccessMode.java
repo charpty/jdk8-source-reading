@@ -35,12 +35,10 @@ public enum AccessMode {
     /**
      * Test read access.
      */
-    READ,
-    /**
+    READ, /**
      * Test write access.
      */
-    WRITE,
-    /**
+    WRITE, /**
      * Test execute access.
      */
     EXECUTE;

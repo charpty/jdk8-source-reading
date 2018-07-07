@@ -33,7 +33,8 @@ package java.util.function;
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #get()}.
  *
- * @param <T> the type of results supplied by this supplier
+ * @param <T>
+ *         the type of results supplied by this supplier
  *
  * @since 1.8
  */

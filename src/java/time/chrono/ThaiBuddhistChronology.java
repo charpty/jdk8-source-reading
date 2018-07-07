@@ -57,9 +57,6 @@
 package java.time.chrono;
 
 import java.io.InvalidObjectException;
-import static java.time.temporal.ChronoField.PROLEPTIC_MONTH;
-import static java.time.temporal.ChronoField.YEAR;
-
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.time.Clock;
@@ -78,6 +75,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+
+import static java.time.temporal.ChronoField.PROLEPTIC_MONTH;
+import static java.time.temporal.ChronoField.YEAR;
+
 /**
  * The Thai Buddhist calendar system.
  * <p>
@@ -89,20 +90,17 @@ import java.util.Map;
  * <ul>
  * <li>era - There are two eras, the current 'Buddhist' (ERA_BE) and the previous era (ERA_BEFORE_BE).
  * <li>year-of-era - The year-of-era for the current era increases uniformly from the epoch at year one.
- *  For the previous era the year increases from one as time goes backwards.
- *  The value for the current era is equal to the ISO proleptic-year plus 543.
+ * For the previous era the year increases from one as time goes backwards.
+ * The value for the current era is equal to the ISO proleptic-year plus 543.
  * <li>proleptic-year - The proleptic year is the same as the year-of-era for the
- *  current era. For the previous era, years have zero, then negative values.
- *  The value is equal to the ISO proleptic-year plus 543.
+ * current era. For the previous era, years have zero, then negative values.
+ * The value is equal to the ISO proleptic-year plus 543.
  * <li>month-of-year - The ThaiBuddhist month-of-year exactly matches ISO.
  * <li>day-of-month - The ThaiBuddhist day-of-month exactly matches ISO.
  * <li>day-of-year - The ThaiBuddhist day-of-year exactly matches ISO.
  * <li>leap-year - The ThaiBuddhist leap-year pattern exactly matches ISO, such that the two calendars
- *  are never out of step.
+ * are never out of step.
  * </ul>
- *
- * @implSpec
- * This class is immutable and thread-safe.
  *
  * @since 1.8
  */
@@ -141,20 +139,19 @@ public final class ThaiBuddhistChronology extends AbstractChronology implements 
      * Language that has the era names.
      */
     private static final String TARGET_LANGUAGE = "th";
+
     /**
      * Name data.
      */
     static {
-        ERA_NARROW_NAMES.put(FALLBACK_LANGUAGE, new String[]{"BB", "BE"});
-        ERA_NARROW_NAMES.put(TARGET_LANGUAGE, new String[]{"BB", "BE"});
-        ERA_SHORT_NAMES.put(FALLBACK_LANGUAGE, new String[]{"B.B.", "B.E."});
-        ERA_SHORT_NAMES.put(TARGET_LANGUAGE,
-                new String[]{"\u0e1e.\u0e28.",
-                "\u0e1b\u0e35\u0e01\u0e48\u0e2d\u0e19\u0e04\u0e23\u0e34\u0e2a\u0e15\u0e4c\u0e01\u0e32\u0e25\u0e17\u0e35\u0e48"});
-        ERA_FULL_NAMES.put(FALLBACK_LANGUAGE, new String[]{"Before Buddhist", "Budhhist Era"});
-        ERA_FULL_NAMES.put(TARGET_LANGUAGE,
-                new String[]{"\u0e1e\u0e38\u0e17\u0e18\u0e28\u0e31\u0e01\u0e23\u0e32\u0e0a",
-                "\u0e1b\u0e35\u0e01\u0e48\u0e2d\u0e19\u0e04\u0e23\u0e34\u0e2a\u0e15\u0e4c\u0e01\u0e32\u0e25\u0e17\u0e35\u0e48"});
+        ERA_NARROW_NAMES.put(FALLBACK_LANGUAGE, new String[] { "BB", "BE" });
+        ERA_NARROW_NAMES.put(TARGET_LANGUAGE, new String[] { "BB", "BE" });
+        ERA_SHORT_NAMES.put(FALLBACK_LANGUAGE, new String[] { "B.B.", "B.E." });
+        ERA_SHORT_NAMES.put(TARGET_LANGUAGE, new String[] { "\u0e1e.\u0e28.",
+                "\u0e1b\u0e35\u0e01\u0e48\u0e2d\u0e19\u0e04\u0e23\u0e34\u0e2a\u0e15\u0e4c\u0e01\u0e32\u0e25\u0e17\u0e35\u0e48" });
+        ERA_FULL_NAMES.put(FALLBACK_LANGUAGE, new String[] { "Before Buddhist", "Budhhist Era" });
+        ERA_FULL_NAMES.put(TARGET_LANGUAGE, new String[] { "\u0e1e\u0e38\u0e17\u0e18\u0e28\u0e31\u0e01\u0e23\u0e32\u0e0a",
+                "\u0e1b\u0e35\u0e01\u0e48\u0e2d\u0e19\u0e04\u0e23\u0e34\u0e2a\u0e15\u0e4c\u0e01\u0e32\u0e25\u0e17\u0e35\u0e48" });
     }
 
     /**
@@ -164,6 +161,7 @@ public final class ThaiBuddhistChronology extends AbstractChronology implements 
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the ID of the chronology - 'ThaiBuddhist'.
      * <p>
@@ -171,6 +169,7 @@ public final class ThaiBuddhistChronology extends AbstractChronology implements 
      * It can be used to lookup the {@code Chronology} using {@link Chronology#of(String)}.
      *
      * @return the chronology ID - 'ThaiBuddhist'
+     *
      * @see #getCalendarType()
      */
     @Override
@@ -188,6 +187,7 @@ public final class ThaiBuddhistChronology extends AbstractChronology implements 
      * {@link Locale#getUnicodeLocaleType(String)} with the key 'ca'.
      *
      * @return the calendar system type - 'buddhist'
+     *
      * @see #getId()
      */
     @Override
@@ -196,17 +196,26 @@ public final class ThaiBuddhistChronology extends AbstractChronology implements 
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains a local date in Thai Buddhist calendar system from the
      * era, year-of-era, month-of-year and day-of-month fields.
      *
-     * @param era  the Thai Buddhist era, not null
-     * @param yearOfEra  the year-of-era
-     * @param month  the month-of-year
-     * @param dayOfMonth  the day-of-month
+     * @param era
+     *         the Thai Buddhist era, not null
+     * @param yearOfEra
+     *         the year-of-era
+     * @param month
+     *         the month-of-year
+     * @param dayOfMonth
+     *         the day-of-month
+     *
      * @return the Thai Buddhist local date, not null
-     * @throws DateTimeException if unable to create the date
-     * @throws ClassCastException if the {@code era} is not a {@code ThaiBuddhistEra}
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
+     * @throws ClassCastException
+     *         if the {@code era} is not a {@code ThaiBuddhistEra}
      */
     @Override
     public ThaiBuddhistDate date(Era era, int yearOfEra, int month, int dayOfMonth) {
@@ -217,11 +226,17 @@ public final class ThaiBuddhistChronology extends AbstractChronology implements 
      * Obtains a local date in Thai Buddhist calendar system from the
      * proleptic-year, month-of-year and day-of-month fields.
      *
-     * @param prolepticYear  the proleptic-year
-     * @param month  the month-of-year
-     * @param dayOfMonth  the day-of-month
+     * @param prolepticYear
+     *         the proleptic-year
+     * @param month
+     *         the month-of-year
+     * @param dayOfMonth
+     *         the day-of-month
+     *
      * @return the Thai Buddhist local date, not null
-     * @throws DateTimeException if unable to create the date
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
      */
     @Override
     public ThaiBuddhistDate date(int prolepticYear, int month, int dayOfMonth) {
@@ -232,12 +247,19 @@ public final class ThaiBuddhistChronology extends AbstractChronology implements 
      * Obtains a local date in Thai Buddhist calendar system from the
      * era, year-of-era and day-of-year fields.
      *
-     * @param era  the Thai Buddhist era, not null
-     * @param yearOfEra  the year-of-era
-     * @param dayOfYear  the day-of-year
+     * @param era
+     *         the Thai Buddhist era, not null
+     * @param yearOfEra
+     *         the year-of-era
+     * @param dayOfYear
+     *         the day-of-year
+     *
      * @return the Thai Buddhist local date, not null
-     * @throws DateTimeException if unable to create the date
-     * @throws ClassCastException if the {@code era} is not a {@code ThaiBuddhistEra}
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
+     * @throws ClassCastException
+     *         if the {@code era} is not a {@code ThaiBuddhistEra}
      */
     @Override
     public ThaiBuddhistDate dateYearDay(Era era, int yearOfEra, int dayOfYear) {
@@ -248,10 +270,15 @@ public final class ThaiBuddhistChronology extends AbstractChronology implements 
      * Obtains a local date in Thai Buddhist calendar system from the
      * proleptic-year and day-of-year fields.
      *
-     * @param prolepticYear  the proleptic-year
-     * @param dayOfYear  the day-of-year
+     * @param prolepticYear
+     *         the proleptic-year
+     * @param dayOfYear
+     *         the day-of-year
+     *
      * @return the Thai Buddhist local date, not null
-     * @throws DateTimeException if unable to create the date
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
      */
     @Override
     public ThaiBuddhistDate dateYearDay(int prolepticYear, int dayOfYear) {
@@ -261,9 +288,13 @@ public final class ThaiBuddhistChronology extends AbstractChronology implements 
     /**
      * Obtains a local date in the Thai Buddhist calendar system from the epoch-day.
      *
-     * @param epochDay  the epoch day
+     * @param epochDay
+     *         the epoch day
+     *
      * @return the Thai Buddhist local date, not null
-     * @throws DateTimeException if unable to create the date
+     *
+     * @throws DateTimeException
+     *         if unable to create the date
      */
     @Override  // override with covariant return type
     public ThaiBuddhistDate dateEpochDay(long epochDay) {
@@ -296,22 +327,23 @@ public final class ThaiBuddhistChronology extends AbstractChronology implements 
     @Override
     @SuppressWarnings("unchecked")
     public ChronoLocalDateTime<ThaiBuddhistDate> localDateTime(TemporalAccessor temporal) {
-        return (ChronoLocalDateTime<ThaiBuddhistDate>)super.localDateTime(temporal);
+        return (ChronoLocalDateTime<ThaiBuddhistDate>) super.localDateTime(temporal);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public ChronoZonedDateTime<ThaiBuddhistDate> zonedDateTime(TemporalAccessor temporal) {
-        return (ChronoZonedDateTime<ThaiBuddhistDate>)super.zonedDateTime(temporal);
+        return (ChronoZonedDateTime<ThaiBuddhistDate>) super.zonedDateTime(temporal);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public ChronoZonedDateTime<ThaiBuddhistDate> zonedDateTime(Instant instant, ZoneId zone) {
-        return (ChronoZonedDateTime<ThaiBuddhistDate>)super.zonedDateTime(instant, zone);
+        return (ChronoZonedDateTime<ThaiBuddhistDate>) super.zonedDateTime(instant, zone);
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks if the specified year is a leap year.
      * <p>
@@ -319,7 +351,9 @@ public final class ThaiBuddhistChronology extends AbstractChronology implements 
      * This method does not validate the year passed in, and only has a
      * well-defined result for years in the supported range.
      *
-     * @param prolepticYear  the proleptic-year to check, not validated for range
+     * @param prolepticYear
+     *         the proleptic-year to check, not validated for range
+     *
      * @return true if the year is a leap year
      */
     @Override
@@ -349,18 +383,18 @@ public final class ThaiBuddhistChronology extends AbstractChronology implements 
     @Override
     public ValueRange range(ChronoField field) {
         switch (field) {
-            case PROLEPTIC_MONTH: {
-                ValueRange range = PROLEPTIC_MONTH.range();
-                return ValueRange.of(range.getMinimum() + YEARS_DIFFERENCE * 12L, range.getMaximum() + YEARS_DIFFERENCE * 12L);
-            }
-            case YEAR_OF_ERA: {
-                ValueRange range = YEAR.range();
-                return ValueRange.of(1, -(range.getMinimum() + YEARS_DIFFERENCE) + 1, range.getMaximum() + YEARS_DIFFERENCE);
-            }
-            case YEAR: {
-                ValueRange range = YEAR.range();
-                return ValueRange.of(range.getMinimum() + YEARS_DIFFERENCE, range.getMaximum() + YEARS_DIFFERENCE);
-            }
+        case PROLEPTIC_MONTH: {
+            ValueRange range = PROLEPTIC_MONTH.range();
+            return ValueRange.of(range.getMinimum() + YEARS_DIFFERENCE * 12L, range.getMaximum() + YEARS_DIFFERENCE * 12L);
+        }
+        case YEAR_OF_ERA: {
+            ValueRange range = YEAR.range();
+            return ValueRange.of(1, -(range.getMinimum() + YEARS_DIFFERENCE) + 1, range.getMaximum() + YEARS_DIFFERENCE);
+        }
+        case YEAR: {
+            ValueRange range = YEAR.range();
+            return ValueRange.of(range.getMinimum() + YEARS_DIFFERENCE, range.getMaximum() + YEARS_DIFFERENCE);
+        }
         }
         return field.range();
     }
@@ -372,14 +406,10 @@ public final class ThaiBuddhistChronology extends AbstractChronology implements 
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Writes the Chronology using a
      * <a href="../../../serialized-form.html#java.time.chrono.Ser">dedicated serialized form</a>.
-     * @serialData
-     * <pre>
-     *  out.writeByte(1);     // identifies a Chronology
-     *  out.writeUTF(getId());
-     * </pre>
      *
      * @return the instance of {@code Ser}, not null
      */
@@ -391,8 +421,11 @@ public final class ThaiBuddhistChronology extends AbstractChronology implements 
     /**
      * Defend against malicious streams.
      *
-     * @param s the stream to read
-     * @throws InvalidObjectException always
+     * @param s
+     *         the stream to read
+     *
+     * @throws InvalidObjectException
+     *         always
      */
     private void readObject(ObjectInputStream s) throws InvalidObjectException {
         throw new InvalidObjectException("Deserialization via serialization delegate");

@@ -44,7 +44,7 @@ package java.util.concurrent;
  * at other times enqueue elements (via method {@code put}) without
  * waiting for receipt.
  * {@linkplain #tryTransfer(Object) Non-blocking} and
- * {@linkplain #tryTransfer(Object,long,TimeUnit) time-out} versions of
+ * {@linkplain #tryTransfer(Object, long, TimeUnit) time-out} versions of
  * {@code tryTransfer} are also available.
  * A {@code TransferQueue} may also be queried, via {@link
  * #hasWaitingConsumer}, whether there are any threads waiting for
@@ -61,9 +61,11 @@ package java.util.concurrent;
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
- * @since 1.7
+ * @param <E>
+ *         the type of elements held in this collection
+ *
  * @author Doug Lea
- * @param <E> the type of elements held in this collection
+ * @since 1.7
  */
 public interface TransferQueue<E> extends BlockingQueue<E> {
     /**
@@ -71,16 +73,22 @@ public interface TransferQueue<E> extends BlockingQueue<E> {
      *
      * <p>More precisely, transfers the specified element immediately
      * if there exists a consumer already waiting to receive it (in
-     * {@link #take} or timed {@link #poll(long,TimeUnit) poll}),
+     * {@link #take} or timed {@link #poll(long, TimeUnit) poll}),
      * otherwise returning {@code false} without enqueuing the element.
      *
-     * @param e the element to transfer
+     * @param e
+     *         the element to transfer
+     *
      * @return {@code true} if the element was transferred, else
-     *         {@code false}
-     * @throws ClassCastException if the class of the specified element
+     * {@code false}
+     *
+     * @throws ClassCastException
+     *         if the class of the specified element
      *         prevents it from being added to this queue
-     * @throws NullPointerException if the specified element is null
-     * @throws IllegalArgumentException if some property of the specified
+     * @throws NullPointerException
+     *         if the specified element is null
+     * @throws IllegalArgumentException
+     *         if some property of the specified
      *         element prevents it from being added to this queue
      */
     boolean tryTransfer(E e);
@@ -90,16 +98,22 @@ public interface TransferQueue<E> extends BlockingQueue<E> {
      *
      * <p>More precisely, transfers the specified element immediately
      * if there exists a consumer already waiting to receive it (in
-     * {@link #take} or timed {@link #poll(long,TimeUnit) poll}),
+     * {@link #take} or timed {@link #poll(long, TimeUnit) poll}),
      * else waits until the element is received by a consumer.
      *
-     * @param e the element to transfer
-     * @throws InterruptedException if interrupted while waiting,
+     * @param e
+     *         the element to transfer
+     *
+     * @throws InterruptedException
+     *         if interrupted while waiting,
      *         in which case the element is not left enqueued
-     * @throws ClassCastException if the class of the specified element
+     * @throws ClassCastException
+     *         if the class of the specified element
      *         prevents it from being added to this queue
-     * @throws NullPointerException if the specified element is null
-     * @throws IllegalArgumentException if some property of the specified
+     * @throws NullPointerException
+     *         if the specified element is null
+     * @throws IllegalArgumentException
+     *         if some property of the specified
      *         element prevents it from being added to this queue
      */
     void transfer(E e) throws InterruptedException;
@@ -110,34 +124,42 @@ public interface TransferQueue<E> extends BlockingQueue<E> {
      *
      * <p>More precisely, transfers the specified element immediately
      * if there exists a consumer already waiting to receive it (in
-     * {@link #take} or timed {@link #poll(long,TimeUnit) poll}),
+     * {@link #take} or timed {@link #poll(long, TimeUnit) poll}),
      * else waits until the element is received by a consumer,
      * returning {@code false} if the specified wait time elapses
      * before the element can be transferred.
      *
-     * @param e the element to transfer
-     * @param timeout how long to wait before giving up, in units of
-     *        {@code unit}
-     * @param unit a {@code TimeUnit} determining how to interpret the
-     *        {@code timeout} parameter
+     * @param e
+     *         the element to transfer
+     * @param timeout
+     *         how long to wait before giving up, in units of
+     *         {@code unit}
+     * @param unit
+     *         a {@code TimeUnit} determining how to interpret the
+     *         {@code timeout} parameter
+     *
      * @return {@code true} if successful, or {@code false} if
-     *         the specified waiting time elapses before completion,
+     * the specified waiting time elapses before completion,
+     * in which case the element is not left enqueued
+     *
+     * @throws InterruptedException
+     *         if interrupted while waiting,
      *         in which case the element is not left enqueued
-     * @throws InterruptedException if interrupted while waiting,
-     *         in which case the element is not left enqueued
-     * @throws ClassCastException if the class of the specified element
+     * @throws ClassCastException
+     *         if the class of the specified element
      *         prevents it from being added to this queue
-     * @throws NullPointerException if the specified element is null
-     * @throws IllegalArgumentException if some property of the specified
+     * @throws NullPointerException
+     *         if the specified element is null
+     * @throws IllegalArgumentException
+     *         if some property of the specified
      *         element prevents it from being added to this queue
      */
-    boolean tryTransfer(E e, long timeout, TimeUnit unit)
-        throws InterruptedException;
+    boolean tryTransfer(E e, long timeout, TimeUnit unit) throws InterruptedException;
 
     /**
      * Returns {@code true} if there is at least one consumer waiting
      * to receive an element via {@link #take} or
-     * timed {@link #poll(long,TimeUnit) poll}.
+     * timed {@link #poll(long, TimeUnit) poll}.
      * The return value represents a momentary state of affairs.
      *
      * @return {@code true} if there is at least one waiting consumer
@@ -147,7 +169,7 @@ public interface TransferQueue<E> extends BlockingQueue<E> {
     /**
      * Returns an estimate of the number of consumers waiting to
      * receive elements via {@link #take} or timed
-     * {@link #poll(long,TimeUnit) poll}.  The return value is an
+     * {@link #poll(long, TimeUnit) poll}.  The return value is an
      * approximation of a momentary state of affairs, that may be
      * inaccurate if consumers have completed or given up waiting.
      * The value may be useful for monitoring and heuristics, but

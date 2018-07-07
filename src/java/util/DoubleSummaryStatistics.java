@@ -47,17 +47,11 @@ import java.util.stream.Collector;
  * <pre> {@code
  * DoubleSummaryStatistics stats = people.stream()
  *     .collect(Collectors.summarizingDouble(Person::getWeight));
- *}</pre>
+ * }</pre>
  *
  * This computes, in a single pass, the count of people, as well as the minimum,
  * maximum, sum, and average of their weights.
  *
- * @implNote This implementation is not thread safe. However, it is safe to use
- * {@link java.util.stream.Collectors#summarizingDouble(java.util.function.ToDoubleFunction)
- * Collectors.toDoubleStatistics()} on a parallel stream, because the parallel
- * implementation of {@link java.util.stream.Stream#collect Stream.collect()}
- * provides the necessary partitioning, isolation, and merging of results for
- * safe and efficient parallel execution.
  * @since 1.8
  */
 public class DoubleSummaryStatistics implements DoubleConsumer {
@@ -73,12 +67,14 @@ public class DoubleSummaryStatistics implements DoubleConsumer {
      * {@code Double.POSITIVE_INFINITY} min, {@code Double.NEGATIVE_INFINITY}
      * max and zero average.
      */
-    public DoubleSummaryStatistics() { }
+    public DoubleSummaryStatistics() {
+    }
 
     /**
      * Records another value into the summary information.
      *
-     * @param value the input value
+     * @param value
+     *         the input value
      */
     @Override
     public void accept(double value) {
@@ -93,8 +89,11 @@ public class DoubleSummaryStatistics implements DoubleConsumer {
      * Combines the state of another {@code DoubleSummaryStatistics} into this
      * one.
      *
-     * @param other another {@code DoubleSummaryStatistics}
-     * @throws NullPointerException if {@code other} is null
+     * @param other
+     *         another {@code DoubleSummaryStatistics}
+     *
+     * @throws NullPointerException
+     *         if {@code other} is null
      */
     public void combine(DoubleSummaryStatistics other) {
         count += other.count;
@@ -143,22 +142,21 @@ public class DoubleSummaryStatistics implements DoubleConsumer {
      * numerical sum compared to a simple summation of {@code double}
      * values.
      *
-     * @apiNote Values sorted by increasing absolute magnitude tend to yield
-     * more accurate results.
-     *
      * @return the sum of values, or zero if none
      */
     public final double getSum() {
         // Better error bounds to add both terms as the final sum
-        double tmp =  sum + sumCompensation;
+        double tmp = sum + sumCompensation;
         if (Double.isNaN(tmp) && Double.isInfinite(simpleSum))
-            // If the compensated sum is spuriously NaN from
-            // accumulating one or more same-signed infinite values,
-            // return the correctly-signed infinity stored in
-            // simpleSum.
+        // If the compensated sum is spuriously NaN from
+        // accumulating one or more same-signed infinite values,
+        // return the correctly-signed infinity stored in
+        // simpleSum.
+        {
             return simpleSum;
-        else
+        } else {
             return tmp;
+        }
     }
 
     /**
@@ -203,9 +201,6 @@ public class DoubleSummaryStatistics implements DoubleConsumer {
      * other technique to reduce the error bound in the {@link #getSum
      * numerical sum} used to compute the average.
      *
-     * @apiNote Values sorted by increasing absolute magnitude tend to yield
-     * more accurate results.
-     *
      * @return the arithmetic mean of values, or zero if none
      */
     public final double getAverage() {
@@ -221,13 +216,7 @@ public class DoubleSummaryStatistics implements DoubleConsumer {
      */
     @Override
     public String toString() {
-        return String.format(
-            "%s{count=%d, sum=%f, min=%f, average=%f, max=%f}",
-            this.getClass().getSimpleName(),
-            getCount(),
-            getSum(),
-            getMin(),
-            getAverage(),
-            getMax());
+        return String.format("%s{count=%d, sum=%f, min=%f, average=%f, max=%f}", this.getClass().getSimpleName(), getCount(), getSum(), getMin(), getAverage(),
+                getMax());
     }
 }

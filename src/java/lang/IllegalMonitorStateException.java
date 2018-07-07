@@ -30,16 +30,15 @@ package java.lang;
  * object's monitor or to notify other threads waiting on an object's
  * monitor without owning the specified monitor.
  *
- * @author  unascribed
- * @see     java.lang.Object#notify()
- * @see     java.lang.Object#notifyAll()
- * @see     java.lang.Object#wait()
- * @see     java.lang.Object#wait(long)
- * @see     java.lang.Object#wait(long, int)
- * @since   JDK1.0
+ * @author unascribed
+ * @see java.lang.Object#notify()
+ * @see java.lang.Object#notifyAll()
+ * @see java.lang.Object#wait()
+ * @see java.lang.Object#wait(long)
+ * @see java.lang.Object#wait(long, int)
+ * @since JDK1.0
  */
-public
-class IllegalMonitorStateException extends RuntimeException {
+public class IllegalMonitorStateException extends RuntimeException {
     private static final long serialVersionUID = 3713306369498869069L;
 
     /**
@@ -54,7 +53,8 @@ class IllegalMonitorStateException extends RuntimeException {
      * Constructs an <code>IllegalMonitorStateException</code> with the
      * specified detail message.
      *
-     * @param   s   the detail message.
+     * @param s
+     *         the detail message.
      */
     public IllegalMonitorStateException(String s) {
         super(s);

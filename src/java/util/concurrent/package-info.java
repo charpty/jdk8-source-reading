@@ -237,27 +237,27 @@
  * <i>happens-before</i> relationships.  In particular:
  *
  * <ul>
- *   <li>Each action in a thread <i>happens-before</i> every action in that
- *   thread that comes later in the program's order.
+ * <li>Each action in a thread <i>happens-before</i> every action in that
+ * thread that comes later in the program's order.
  *
- *   <li>An unlock ({@code synchronized} block or method exit) of a
- *   monitor <i>happens-before</i> every subsequent lock ({@code synchronized}
- *   block or method entry) of that same monitor.  And because
- *   the <i>happens-before</i> relation is transitive, all actions
- *   of a thread prior to unlocking <i>happen-before</i> all actions
- *   subsequent to any thread locking that monitor.
+ * <li>An unlock ({@code synchronized} block or method exit) of a
+ * monitor <i>happens-before</i> every subsequent lock ({@code synchronized}
+ * block or method entry) of that same monitor.  And because
+ * the <i>happens-before</i> relation is transitive, all actions
+ * of a thread prior to unlocking <i>happen-before</i> all actions
+ * subsequent to any thread locking that monitor.
  *
- *   <li>A write to a {@code volatile} field <i>happens-before</i> every
- *   subsequent read of that same field.  Writes and reads of
- *   {@code volatile} fields have similar memory consistency effects
- *   as entering and exiting monitors, but do <em>not</em> entail
- *   mutual exclusion locking.
+ * <li>A write to a {@code volatile} field <i>happens-before</i> every
+ * subsequent read of that same field.  Writes and reads of
+ * {@code volatile} fields have similar memory consistency effects
+ * as entering and exiting monitors, but do <em>not</em> entail
+ * mutual exclusion locking.
  *
- *   <li>A call to {@code start} on a thread <i>happens-before</i> any
- *   action in the started thread.
+ * <li>A call to {@code start} on a thread <i>happens-before</i> any
+ * action in the started thread.
  *
- *   <li>All actions in a thread <i>happen-before</i> any other thread
- *   successfully returns from a {@code join} on that thread.
+ * <li>All actions in a thread <i>happen-before</i> any other thread
+ * successfully returns from a {@code join} on that thread.
  *
  * </ul>
  *
@@ -268,37 +268,37 @@
  *
  * <ul>
  *
- *   <li>Actions in a thread prior to placing an object into any concurrent
- *   collection <i>happen-before</i> actions subsequent to the access or
- *   removal of that element from the collection in another thread.
+ * <li>Actions in a thread prior to placing an object into any concurrent
+ * collection <i>happen-before</i> actions subsequent to the access or
+ * removal of that element from the collection in another thread.
  *
- *   <li>Actions in a thread prior to the submission of a {@code Runnable}
- *   to an {@code Executor} <i>happen-before</i> its execution begins.
- *   Similarly for {@code Callables} submitted to an {@code ExecutorService}.
+ * <li>Actions in a thread prior to the submission of a {@code Runnable}
+ * to an {@code Executor} <i>happen-before</i> its execution begins.
+ * Similarly for {@code Callables} submitted to an {@code ExecutorService}.
  *
- *   <li>Actions taken by the asynchronous computation represented by a
- *   {@code Future} <i>happen-before</i> actions subsequent to the
- *   retrieval of the result via {@code Future.get()} in another thread.
+ * <li>Actions taken by the asynchronous computation represented by a
+ * {@code Future} <i>happen-before</i> actions subsequent to the
+ * retrieval of the result via {@code Future.get()} in another thread.
  *
- *   <li>Actions prior to "releasing" synchronizer methods such as
- *   {@code Lock.unlock}, {@code Semaphore.release}, and
- *   {@code CountDownLatch.countDown} <i>happen-before</i> actions
- *   subsequent to a successful "acquiring" method such as
- *   {@code Lock.lock}, {@code Semaphore.acquire},
- *   {@code Condition.await}, and {@code CountDownLatch.await} on the
- *   same synchronizer object in another thread.
+ * <li>Actions prior to "releasing" synchronizer methods such as
+ * {@code Lock.unlock}, {@code Semaphore.release}, and
+ * {@code CountDownLatch.countDown} <i>happen-before</i> actions
+ * subsequent to a successful "acquiring" method such as
+ * {@code Lock.lock}, {@code Semaphore.acquire},
+ * {@code Condition.await}, and {@code CountDownLatch.await} on the
+ * same synchronizer object in another thread.
  *
- *   <li>For each pair of threads that successfully exchange objects via
- *   an {@code Exchanger}, actions prior to the {@code exchange()}
- *   in each thread <i>happen-before</i> those subsequent to the
- *   corresponding {@code exchange()} in another thread.
+ * <li>For each pair of threads that successfully exchange objects via
+ * an {@code Exchanger}, actions prior to the {@code exchange()}
+ * in each thread <i>happen-before</i> those subsequent to the
+ * corresponding {@code exchange()} in another thread.
  *
- *   <li>Actions prior to calling {@code CyclicBarrier.await} and
- *   {@code Phaser.awaitAdvance} (as well as its variants)
- *   <i>happen-before</i> actions performed by the barrier action, and
- *   actions performed by the barrier action <i>happen-before</i> actions
- *   subsequent to a successful return from the corresponding {@code await}
- *   in other threads.
+ * <li>Actions prior to calling {@code CyclicBarrier.await} and
+ * {@code Phaser.awaitAdvance} (as well as its variants)
+ * <i>happen-before</i> actions performed by the barrier action, and
+ * actions performed by the barrier action <i>happen-before</i> actions
+ * subsequent to a successful return from the corresponding {@code await}
+ * in other threads.
  *
  * </ul>
  *

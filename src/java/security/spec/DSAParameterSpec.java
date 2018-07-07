@@ -31,15 +31,11 @@ import java.math.BigInteger;
  * This class specifies the set of parameters used with the DSA algorithm.
  *
  * @author Jan Luehe
- *
- *
  * @see AlgorithmParameterSpec
- *
  * @since 1.2
  */
 
-public class DSAParameterSpec implements AlgorithmParameterSpec,
-java.security.interfaces.DSAParams {
+public class DSAParameterSpec implements AlgorithmParameterSpec, java.security.interfaces.DSAParams {
 
     BigInteger p;
     BigInteger q;
@@ -48,11 +44,12 @@ java.security.interfaces.DSAParams {
     /**
      * Creates a new DSAParameterSpec with the specified parameter values.
      *
-     * @param p the prime.
-     *
-     * @param q the sub-prime.
-     *
-     * @param g the base.
+     * @param p
+     *         the prime.
+     * @param q
+     *         the sub-prime.
+     * @param g
+     *         the base.
      */
     public DSAParameterSpec(BigInteger p, BigInteger q, BigInteger g) {
         this.p = p;

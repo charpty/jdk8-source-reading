@@ -25,10 +25,9 @@
 
 package java.security.cert;
 
-import java.util.*;
-
+import java.util.Date;
+import java.util.Set;
 import sun.security.provider.certpath.CertPathHelper;
-
 import sun.security.x509.GeneralNameInterface;
 
 /**
@@ -55,8 +54,7 @@ class CertPathHelperImpl extends CertPathHelper {
         }
     }
 
-    protected void implSetPathToNames(X509CertSelector sel,
-            Set<GeneralNameInterface> names) {
+    protected void implSetPathToNames(X509CertSelector sel, Set<GeneralNameInterface> names) {
         sel.setPathToNamesInternal(names);
     }
 

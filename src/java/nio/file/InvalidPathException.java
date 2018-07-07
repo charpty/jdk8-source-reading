@@ -31,9 +31,7 @@ package java.nio.file;
  * the path string is invalid for other file system specific reasons.
  */
 
-public class InvalidPathException
-    extends IllegalArgumentException
-{
+public class InvalidPathException extends IllegalArgumentException {
     static final long serialVersionUID = 4355821422286746137L;
 
     private String input;
@@ -43,23 +41,27 @@ public class InvalidPathException
      * Constructs an instance from the given input string, reason, and error
      * index.
      *
-     * @param  input   the input string
-     * @param  reason  a string explaining why the input was rejected
-     * @param  index   the index at which the error occurred,
-     *                 or <tt>-1</tt> if the index is not known
+     * @param input
+     *         the input string
+     * @param reason
+     *         a string explaining why the input was rejected
+     * @param index
+     *         the index at which the error occurred,
+     *         or <tt>-1</tt> if the index is not known
      *
-     * @throws  NullPointerException
-     *          if either the input or reason strings are <tt>null</tt>
-     *
-     * @throws  IllegalArgumentException
-     *          if the error index is less than <tt>-1</tt>
+     * @throws NullPointerException
+     *         if either the input or reason strings are <tt>null</tt>
+     * @throws IllegalArgumentException
+     *         if the error index is less than <tt>-1</tt>
      */
     public InvalidPathException(String input, String reason, int index) {
         super(reason);
-        if ((input == null) || (reason == null))
+        if ((input == null) || (reason == null)) {
             throw new NullPointerException();
-        if (index < -1)
+        }
+        if (index < -1) {
             throw new IllegalArgumentException();
+        }
         this.input = input;
         this.index = index;
     }
@@ -68,11 +70,13 @@ public class InvalidPathException
      * Constructs an instance from the given input string and reason.  The
      * resulting object will have an error index of <tt>-1</tt>.
      *
-     * @param  input   the input string
-     * @param  reason  a string explaining why the input was rejected
+     * @param input
+     *         the input string
+     * @param reason
+     *         a string explaining why the input was rejected
      *
-     * @throws  NullPointerException
-     *          if either the input or reason strings are <tt>null</tt>
+     * @throws NullPointerException
+     *         if either the input or reason strings are <tt>null</tt>
      */
     public InvalidPathException(String input, String reason) {
         this(input, reason, -1);
@@ -81,7 +85,7 @@ public class InvalidPathException
     /**
      * Returns the input string.
      *
-     * @return  the input string
+     * @return the input string
      */
     public String getInput() {
         return input;
@@ -90,7 +94,7 @@ public class InvalidPathException
     /**
      * Returns a string explaining why the input string was rejected.
      *
-     * @return  the reason string
+     * @return the reason string
      */
     public String getReason() {
         return super.getMessage();
@@ -100,7 +104,7 @@ public class InvalidPathException
      * Returns an index into the input string of the position at which the
      * error occurred, or <tt>-1</tt> if this position is not known.
      *
-     * @return  the error index
+     * @return the error index
      */
     public int getIndex() {
         return index;
@@ -114,7 +118,7 @@ public class InvalidPathException
      * decimal, is inserted after the reason string and before the colon
      * character.
      *
-     * @return  a string describing the error
+     * @return a string describing the error
      */
     public String getMessage() {
         StringBuffer sb = new StringBuffer();

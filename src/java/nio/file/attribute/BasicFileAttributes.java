@@ -38,9 +38,8 @@ package java.nio.file.attribute;
  *    BasicFileAttributes attrs = Files.readAttributes(file, BasicFileAttributes.class);
  * </pre>
  *
- * @since 1.7
- *
  * @see BasicFileAttributeView
+ * @since 1.7
  */
 
 public interface BasicFileAttributes {
@@ -53,8 +52,8 @@ public interface BasicFileAttributes {
      * implementation specific default value, typically a {@code FileTime}
      * representing the epoch (1970-01-01T00:00:00Z).
      *
-     * @return  a {@code FileTime} representing the time the file was last
-     *          modified
+     * @return a {@code FileTime} representing the time the file was last
+     * modified
      */
     FileTime lastModifiedTime();
 
@@ -67,7 +66,7 @@ public interface BasicFileAttributes {
      * #lastModifiedTime() last-modified-time} or a {@code FileTime}
      * representing the epoch (1970-01-01T00:00:00Z).
      *
-     * @return  a {@code FileTime} representing the time of last access
+     * @return a {@code FileTime} representing the time of last access
      */
     FileTime lastAccessTime();
 
@@ -81,7 +80,7 @@ public interface BasicFileAttributes {
      * #lastModifiedTime() last-modified-time} or a {@code FileTime}
      * representing the epoch (1970-01-01T00:00:00Z).
      *
-     * @return   a {@code FileTime} representing the time the file was created
+     * @return a {@code FileTime} representing the time the file was created
      */
     FileTime creationTime();
 
@@ -111,7 +110,7 @@ public interface BasicFileAttributes {
      * or symbolic link.
      *
      * @return {@code true} if the file something other than a regular file,
-     *         directory or symbolic link
+     * directory or symbolic link
      */
     boolean isOther();
 
@@ -122,7 +121,7 @@ public interface BasicFileAttributes {
      * #isRegularFile regular} files is implementation specific and
      * therefore unspecified.
      *
-     * @return  the file size, in bytes
+     * @return the file size, in bytes
      */
     long size();
 

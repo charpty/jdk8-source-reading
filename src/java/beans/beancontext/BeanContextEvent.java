@@ -27,8 +27,6 @@ package java.beans.beancontext;
 
 import java.util.EventObject;
 
-import java.beans.beancontext.BeanContext;
-
 /**
  * <p>
  * <code>BeanContextEvent</code> is the abstract root event class
@@ -42,9 +40,9 @@ import java.beans.beancontext.BeanContext;
  * of a propagated event.
  * </p>
  *
- * @author      Laurence P. G. Cable
- * @since       1.2
- * @see         java.beans.beancontext.BeanContext
+ * @author Laurence P. G. Cable
+ * @see java.beans.beancontext.BeanContext
+ * @since 1.2
  */
 
 public abstract class BeanContextEvent extends EventObject {
@@ -53,7 +51,8 @@ public abstract class BeanContextEvent extends EventObject {
     /**
      * Contruct a BeanContextEvent
      *
-     * @param bc        The BeanContext source
+     * @param bc
+     *         The BeanContext source
      */
     protected BeanContextEvent(BeanContext bc) {
         super(bc);
@@ -61,14 +60,19 @@ public abstract class BeanContextEvent extends EventObject {
 
     /**
      * Gets the <code>BeanContext</code> associated with this event.
+     *
      * @return the <code>BeanContext</code> associated with this event.
      */
-    public BeanContext getBeanContext() { return (BeanContext)getSource(); }
+    public BeanContext getBeanContext() {
+        return (BeanContext) getSource();
+    }
 
     /**
      * Sets the <code>BeanContext</code> from which this event was propagated.
-     * @param bc the <code>BeanContext</code> from which this event
-     * was propagated
+     *
+     * @param bc
+     *         the <code>BeanContext</code> from which this event
+     *         was propagated
      */
     public synchronized void setPropagatedFrom(BeanContext bc) {
         propagatedFrom = bc;
@@ -76,6 +80,7 @@ public abstract class BeanContextEvent extends EventObject {
 
     /**
      * Gets the <code>BeanContext</code> from which this event was propagated.
+     *
      * @return the <code>BeanContext</code> from which this
      * event was propagated
      */
@@ -86,6 +91,7 @@ public abstract class BeanContextEvent extends EventObject {
     /**
      * Reports whether or not this event is
      * propagated from some other <code>BeanContext</code>.
+     *
      * @return <code>true</code> if propagated, <code>false</code>
      * if not
      */

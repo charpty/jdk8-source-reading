@@ -32,8 +32,8 @@ package java.lang;
  * the <tt>java</tt> command line flags <tt>-enableassertions</tt>
  * (<tt>-ea</tt>) and <tt>-disableassertions</tt> (<tt>-da</tt>).
  *
- * @since  1.4
  * @author Josh Bloch
+ * @since 1.4
  */
 class AssertionStatusDirectives {
     /**

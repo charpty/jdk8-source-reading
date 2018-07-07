@@ -61,15 +61,16 @@
  */
 package java.time.temporal;
 
-import static java.time.temporal.ChronoField.EPOCH_DAY;
-import static java.time.temporal.ChronoUnit.DAYS;
-import static java.time.temporal.ChronoUnit.FOREVER;
-
 import java.time.DateTimeException;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.Chronology;
 import java.time.format.ResolverStyle;
 import java.util.Map;
+
+
+import static java.time.temporal.ChronoField.EPOCH_DAY;
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.FOREVER;
 
 /**
  * A set of date fields that provide access to Julian Days.
@@ -81,9 +82,6 @@ import java.util.Map;
  * The fields are implemented relative to {@link ChronoField#EPOCH_DAY EPOCH_DAY}.
  * The fields are supported, and can be queried and set if {@code EPOCH_DAY} is available.
  * The fields work with all chronologies.
- *
- * @implSpec
- * This is an immutable and thread-safe class.
  *
  * @since 1.8
  */
@@ -212,9 +210,8 @@ public final class JulianFields {
      * Implementation of JulianFields.  Each instance is a singleton.
      */
     private static enum Field implements TemporalField {
-        JULIAN_DAY("JulianDay", DAYS, FOREVER, JULIAN_DAY_OFFSET),
-        MODIFIED_JULIAN_DAY("ModifiedJulianDay", DAYS, FOREVER, 40587L),
-        RATA_DIE("RataDie", DAYS, FOREVER, 719163L);
+        JULIAN_DAY("JulianDay", DAYS, FOREVER, JULIAN_DAY_OFFSET), MODIFIED_JULIAN_DAY("ModifiedJulianDay", DAYS, FOREVER, 40587L), RATA_DIE("RataDie", DAYS,
+                FOREVER, 719163L);
 
         private static final long serialVersionUID = -7501623920830201812L;
 
@@ -288,8 +285,7 @@ public final class JulianFields {
 
         //-----------------------------------------------------------------------
         @Override
-        public ChronoLocalDate resolve(
-                Map<TemporalField, Long> fieldValues, TemporalAccessor partialTemporal, ResolverStyle resolverStyle) {
+        public ChronoLocalDate resolve(Map<TemporalField, Long> fieldValues, TemporalAccessor partialTemporal, ResolverStyle resolverStyle) {
             long value = fieldValues.remove(this);
             Chronology chrono = Chronology.from(partialTemporal);
             if (resolverStyle == ResolverStyle.LENIENT) {

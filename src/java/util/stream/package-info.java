@@ -47,48 +47,48 @@
  * {@code double} types.  Streams differ from collections in several ways:
  *
  * <ul>
- *     <li>No storage.  A stream is not a data structure that stores elements;
- *     instead, it conveys elements from a source such as a data structure,
- *     an array, a generator function, or an I/O channel, through a pipeline of
- *     computational operations.</li>
- *     <li>Functional in nature.  An operation on a stream produces a result,
- *     but does not modify its source.  For example, filtering a {@code Stream}
- *     obtained from a collection produces a new {@code Stream} without the
- *     filtered elements, rather than removing elements from the source
- *     collection.</li>
- *     <li>Laziness-seeking.  Many stream operations, such as filtering, mapping,
- *     or duplicate removal, can be implemented lazily, exposing opportunities
- *     for optimization.  For example, "find the first {@code String} with
- *     three consecutive vowels" need not examine all the input strings.
- *     Stream operations are divided into intermediate ({@code Stream}-producing)
- *     operations and terminal (value- or side-effect-producing) operations.
- *     Intermediate operations are always lazy.</li>
- *     <li>Possibly unbounded.  While collections have a finite size, streams
- *     need not.  Short-circuiting operations such as {@code limit(n)} or
- *     {@code findFirst()} can allow computations on infinite streams to
- *     complete in finite time.</li>
- *     <li>Consumable. The elements of a stream are only visited once during
- *     the life of a stream. Like an {@link java.util.Iterator}, a new stream
- *     must be generated to revisit the same elements of the source.
- *     </li>
+ * <li>No storage.  A stream is not a data structure that stores elements;
+ * instead, it conveys elements from a source such as a data structure,
+ * an array, a generator function, or an I/O channel, through a pipeline of
+ * computational operations.</li>
+ * <li>Functional in nature.  An operation on a stream produces a result,
+ * but does not modify its source.  For example, filtering a {@code Stream}
+ * obtained from a collection produces a new {@code Stream} without the
+ * filtered elements, rather than removing elements from the source
+ * collection.</li>
+ * <li>Laziness-seeking.  Many stream operations, such as filtering, mapping,
+ * or duplicate removal, can be implemented lazily, exposing opportunities
+ * for optimization.  For example, "find the first {@code String} with
+ * three consecutive vowels" need not examine all the input strings.
+ * Stream operations are divided into intermediate ({@code Stream}-producing)
+ * operations and terminal (value- or side-effect-producing) operations.
+ * Intermediate operations are always lazy.</li>
+ * <li>Possibly unbounded.  While collections have a finite size, streams
+ * need not.  Short-circuiting operations such as {@code limit(n)} or
+ * {@code findFirst()} can allow computations on infinite streams to
+ * complete in finite time.</li>
+ * <li>Consumable. The elements of a stream are only visited once during
+ * the life of a stream. Like an {@link java.util.Iterator}, a new stream
+ * must be generated to revisit the same elements of the source.
+ * </li>
  * </ul>
  *
  * Streams can be obtained in a number of ways. Some examples include:
  * <ul>
- *     <li>From a {@link java.util.Collection} via the {@code stream()} and
- *     {@code parallelStream()} methods;</li>
- *     <li>From an array via {@link java.util.Arrays#stream(Object[])};</li>
- *     <li>From static factory methods on the stream classes, such as
- *     {@link java.util.stream.Stream#of(Object[])},
- *     {@link java.util.stream.IntStream#range(int, int)}
- *     or {@link java.util.stream.Stream#iterate(Object, UnaryOperator)};</li>
- *     <li>The lines of a file can be obtained from {@link java.io.BufferedReader#lines()};</li>
- *     <li>Streams of file paths can be obtained from methods in {@link java.nio.file.Files};</li>
- *     <li>Streams of random numbers can be obtained from {@link java.util.Random#ints()};</li>
- *     <li>Numerous other stream-bearing methods in the JDK, including
- *     {@link java.util.BitSet#stream()},
- *     {@link java.util.regex.Pattern#splitAsStream(java.lang.CharSequence)},
- *     and {@link java.util.jar.JarFile#stream()}.</li>
+ * <li>From a {@link java.util.Collection} via the {@code stream()} and
+ * {@code parallelStream()} methods;</li>
+ * <li>From an array via {@link java.util.Arrays#stream(Object[])};</li>
+ * <li>From static factory methods on the stream classes, such as
+ * {@link java.util.stream.Stream#of(Object[])},
+ * {@link java.util.stream.IntStream#range(int, int)}
+ * or {@link java.util.stream.Stream#iterate(Object, UnaryOperator)};</li>
+ * <li>The lines of a file can be obtained from {@link java.io.BufferedReader#lines()};</li>
+ * <li>Streams of file paths can be obtained from methods in {@link java.nio.file.Files};</li>
+ * <li>Streams of random numbers can be obtained from {@link java.util.Random#ints()};</li>
+ * <li>Numerous other stream-bearing methods in the JDK, including
+ * {@link java.util.BitSet#stream()},
+ * {@link java.util.regex.Pattern#splitAsStream(java.lang.CharSequence)},
+ * and {@link java.util.jar.JarFile#stream()}.</li>
  * </ul>
  *
  * <p>Additional stream sources can be provided by third-party libraries using
@@ -712,7 +712,7 @@
  * timing of binding to the data, since the data could change between the time
  * the spliterator is created and the time the stream pipeline is executed.
  * Ideally, a spliterator for a stream would report a characteristic of
-
+ *
  * {@code IMMUTABLE} or {@code CONCURRENT}; if not it should be
  * <a href="../Spliterator.html#binding"><em>late-binding</em></a>. If a source
  * cannot directly supply a recommended spliterator, it may indirectly supply
@@ -736,5 +736,4 @@
  */
 package java.util.stream;
 
-import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;

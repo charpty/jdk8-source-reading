@@ -68,9 +68,6 @@ import java.time.DateTimeException;
  * <p>
  * This exception includes the text being parsed and the error index.
  *
- * @implSpec
- * This class is intended for use in a single thread.
- *
  * @since 1.8
  */
 public class DateTimeParseException extends DateTimeException {
@@ -92,9 +89,12 @@ public class DateTimeParseException extends DateTimeException {
     /**
      * Constructs a new exception with the specified message.
      *
-     * @param message  the message to use for this exception, may be null
-     * @param parsedData  the parsed text, should not be null
-     * @param errorIndex  the index in the parsed string that was invalid, should be a valid index
+     * @param message
+     *         the message to use for this exception, may be null
+     * @param parsedData
+     *         the parsed text, should not be null
+     * @param errorIndex
+     *         the index in the parsed string that was invalid, should be a valid index
      */
     public DateTimeParseException(String message, CharSequence parsedData, int errorIndex) {
         super(message);
@@ -105,10 +105,14 @@ public class DateTimeParseException extends DateTimeException {
     /**
      * Constructs a new exception with the specified message and cause.
      *
-     * @param message  the message to use for this exception, may be null
-     * @param parsedData  the parsed text, should not be null
-     * @param errorIndex  the index in the parsed string that was invalid, should be a valid index
-     * @param cause  the cause exception, may be null
+     * @param message
+     *         the message to use for this exception, may be null
+     * @param parsedData
+     *         the parsed text, should not be null
+     * @param errorIndex
+     *         the index in the parsed string that was invalid, should be a valid index
+     * @param cause
+     *         the cause exception, may be null
      */
     public DateTimeParseException(String message, CharSequence parsedData, int errorIndex, Throwable cause) {
         super(message, cause);
@@ -117,6 +121,7 @@ public class DateTimeParseException extends DateTimeException {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns the string that was being parsed.
      *

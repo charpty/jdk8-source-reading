@@ -25,10 +25,7 @@
 
 package java.io;
 
-import java.security.*;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.StringTokenizer;
+import java.security.BasicPermission;
 
 /**
  * This class is for Serializable permissions. A SerializablePermission
@@ -52,11 +49,11 @@ import java.util.StringTokenizer;
  * </tr>
  *
  * <tr>
- *   <td>enableSubclassImplementation</td>
- *   <td>Subclass implementation of ObjectOutputStream or ObjectInputStream
+ * <td>enableSubclassImplementation</td>
+ * <td>Subclass implementation of ObjectOutputStream or ObjectInputStream
  * to override the default serialization or deserialization, respectively,
  * of objects</td>
- *   <td>Code can use this to serialize or
+ * <td>Code can use this to serialize or
  * deserialize classes in a purposefully malfeasant manner. For example,
  * during serialization, malicious code can use this to
  * purposefully store confidential private field data in a way easily accessible
@@ -65,24 +62,22 @@ import java.util.StringTokenizer;
  * </tr>
  *
  * <tr>
- *   <td>enableSubstitution</td>
- *   <td>Substitution of one object for another during
+ * <td>enableSubstitution</td>
+ * <td>Substitution of one object for another during
  * serialization or deserialization</td>
- *   <td>This is dangerous because malicious code
+ * <td>This is dangerous because malicious code
  * can replace the actual object with one which has incorrect or
  * malignant data.</td>
  * </tr>
  *
  * </table>
  *
+ * @author Joe Fialli
  * @see java.security.BasicPermission
  * @see java.security.Permission
  * @see java.security.Permissions
  * @see java.security.PermissionCollection
  * @see java.lang.SecurityManager
- *
- *
- * @author Joe Fialli
  * @since 1.2
  */
 
@@ -102,13 +97,15 @@ public final class SerializablePermission extends BasicPermission {
      * The name is the symbolic name of the SerializablePermission, such as
      * "enableSubstitution", etc.
      *
-     * @param name the name of the SerializablePermission.
+     * @param name
+     *         the name of the SerializablePermission.
      *
-     * @throws NullPointerException if <code>name</code> is <code>null</code>.
-     * @throws IllegalArgumentException if <code>name</code> is empty.
+     * @throws NullPointerException
+     *         if <code>name</code> is <code>null</code>.
+     * @throws IllegalArgumentException
+     *         if <code>name</code> is empty.
      */
-    public SerializablePermission(String name)
-    {
+    public SerializablePermission(String name) {
         super(name);
     }
 
@@ -117,15 +114,18 @@ public final class SerializablePermission extends BasicPermission {
      * The name is the symbolic name of the SerializablePermission, and the
      * actions String is currently unused and should be null.
      *
-     * @param name the name of the SerializablePermission.
-     * @param actions currently unused and must be set to null
+     * @param name
+     *         the name of the SerializablePermission.
+     * @param actions
+     *         currently unused and must be set to null
      *
-     * @throws NullPointerException if <code>name</code> is <code>null</code>.
-     * @throws IllegalArgumentException if <code>name</code> is empty.
+     * @throws NullPointerException
+     *         if <code>name</code> is <code>null</code>.
+     * @throws IllegalArgumentException
+     *         if <code>name</code> is empty.
      */
 
-    public SerializablePermission(String name, String actions)
-    {
+    public SerializablePermission(String name, String actions) {
         super(name, actions);
     }
 }

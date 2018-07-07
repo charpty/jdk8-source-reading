@@ -25,7 +25,6 @@
 
 package java.lang.reflect;
 
-
 /**
  * ParameterizedType represents a parameterized type such as
  * Collection&lt;String&gt;.
@@ -54,12 +53,15 @@ public interface ParameterizedType extends Type {
      * a parameterized type.
      *
      * @return an array of {@code Type} objects representing the actual type
-     *     arguments to this type
-     * @throws TypeNotPresentException if any of the
-     *     actual type arguments refers to a non-existent type declaration
-     * @throws MalformedParameterizedTypeException if any of the
-     *     actual type parameters refer to a parameterized type that cannot
-     *     be instantiated for any reason
+     * arguments to this type
+     *
+     * @throws TypeNotPresentException
+     *         if any of the
+     *         actual type arguments refers to a non-existent type declaration
+     * @throws MalformedParameterizedTypeException
+     *         if any of the
+     *         actual type parameters refer to a parameterized type that cannot
+     *         be instantiated for any reason
      * @since 1.5
      */
     Type[] getActualTypeArguments();
@@ -69,7 +71,8 @@ public interface ParameterizedType extends Type {
      * that declared this type.
      *
      * @return the {@code Type} object representing the class or interface
-     *     that declared this type
+     * that declared this type
+     *
      * @since 1.5
      */
     Type getRawType();
@@ -82,13 +85,16 @@ public interface ParameterizedType extends Type {
      * <p>If this type is a top-level type, {@code null} is returned.
      *
      * @return a {@code Type} object representing the type that
-     *     this type is a member of. If this type is a top-level type,
-     *     {@code null} is returned
-     * @throws TypeNotPresentException if the owner type
-     *     refers to a non-existent type declaration
-     * @throws MalformedParameterizedTypeException if the owner type
-     *     refers to a parameterized type that cannot be instantiated
-     *     for any reason
+     * this type is a member of. If this type is a top-level type,
+     * {@code null} is returned
+     *
+     * @throws TypeNotPresentException
+     *         if the owner type
+     *         refers to a non-existent type declaration
+     * @throws MalformedParameterizedTypeException
+     *         if the owner type
+     *         refers to a parameterized type that cannot be instantiated
+     *         for any reason
      * @since 1.5
      */
     Type getOwnerType();

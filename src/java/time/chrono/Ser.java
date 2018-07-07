@@ -62,31 +62,10 @@ import java.io.InvalidClassException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.StreamCorruptedException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * The shared serialization delegate for this package.
  *
- * @implNote
- * This class wraps the object being serialized, and takes a byte representing the type of the class to
- * be serialized.  This byte can also be used for versioning the serialization format.  In this case another
- * byte flag would be used in order to specify an alternative version of the type format.
- * For example {@code CHRONO_TYPE_VERSION_2 = 21}
- * <p>
- * In order to serialize the object it writes its byte and then calls back to the appropriate class where
- * the serialization is performed.  In order to deserialize the object it read in the type byte, switching
- * in order to select which class to call back into.
- * <p>
- * The serialization format is determined on a per class basis.  In the case of field based classes each
- * of the fields is written out with an appropriate size format in descending order of the field's size.  For
- * example in the case of {@link LocalDate} year is written before month.  Composite classes, such as
- * {@link LocalDateTime} are serialized as one object.  Enum classes are serialized using the index of their
- * element.
- * <p>
- * This class is mutable and should be created once per serialization.
- *
- * @serial include
  * @since 1.8
  */
 final class Ser implements Externalizable {
@@ -120,8 +99,10 @@ final class Ser implements Externalizable {
     /**
      * Creates an instance for serialization.
      *
-     * @param type  the type
-     * @param object  the object
+     * @param type
+     *         the type
+     * @param object
+     *         the object
      */
     Ser(byte type, Object object) {
         this.type = type;
@@ -129,28 +110,12 @@ final class Ser implements Externalizable {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Implements the {@code Externalizable} interface to write the object.
-     * @serialData
-     * Each serializable class is mapped to a type that is the first byte
-     * in the stream.  Refer to each class {@code writeReplace}
-     * serialized form for the value of the type and sequence of values for the type.
-     * <ul>
-     * <li><a href="../../../serialized-form.html#java.time.chrono.HijrahChronology">HijrahChronology.writeReplace</a>
-     * <li><a href="../../../serialized-form.html#java.time.chrono.IsoChronology">IsoChronology.writeReplace</a>
-     * <li><a href="../../../serialized-form.html#java.time.chrono.JapaneseChronology">JapaneseChronology.writeReplace</a>
-     * <li><a href="../../../serialized-form.html#java.time.chrono.MinguoChronology">MinguoChronology.writeReplace</a>
-     * <li><a href="../../../serialized-form.html#java.time.chrono.ThaiBuddhistChronology">ThaiBuddhistChronology.writeReplace</a>
-     * <li><a href="../../../serialized-form.html#java.time.chrono.ChronoLocalDateTimeImpl">ChronoLocalDateTime.writeReplace</a>
-     * <li><a href="../../../serialized-form.html#java.time.chrono.ChronoZonedDateTimeImpl">ChronoZonedDateTime.writeReplace</a>
-     * <li><a href="../../../serialized-form.html#java.time.chrono.JapaneseDate">JapaneseDate.writeReplace</a>
-     * <li><a href="../../../serialized-form.html#java.time.chrono.JapaneseEra">JapaneseEra.writeReplace</a>
-     * <li><a href="../../../serialized-form.html#java.time.chrono.HijrahDate">HijrahDate.writeReplace</a>
-     * <li><a href="../../../serialized-form.html#java.time.chrono.MinguoDate">MinguoDate.writeReplace</a>
-     * <li><a href="../../../serialized-form.html#java.time.chrono.ThaiBuddhistDate">ThaiBuddhistDate.writeReplace</a>
-     * </ul>
      *
-     * @param out  the data stream to write to, not null
+     * @param out
+     *         the data stream to write to, not null
      */
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -160,63 +125,45 @@ final class Ser implements Externalizable {
     private static void writeInternal(byte type, Object object, ObjectOutput out) throws IOException {
         out.writeByte(type);
         switch (type) {
-            case CHRONO_TYPE:
-                ((AbstractChronology) object).writeExternal(out);
-                break;
-            case CHRONO_LOCAL_DATE_TIME_TYPE:
-                ((ChronoLocalDateTimeImpl<?>) object).writeExternal(out);
-                break;
-            case CHRONO_ZONE_DATE_TIME_TYPE:
-                ((ChronoZonedDateTimeImpl<?>) object).writeExternal(out);
-                break;
-            case JAPANESE_DATE_TYPE:
-                ((JapaneseDate) object).writeExternal(out);
-                break;
-            case JAPANESE_ERA_TYPE:
-                ((JapaneseEra) object).writeExternal(out);
-                break;
-            case HIJRAH_DATE_TYPE:
-                ((HijrahDate) object).writeExternal(out);
-                break;
-            case MINGUO_DATE_TYPE:
-                ((MinguoDate) object).writeExternal(out);
-                break;
-            case THAIBUDDHIST_DATE_TYPE:
-                ((ThaiBuddhistDate) object).writeExternal(out);
-                break;
-            case CHRONO_PERIOD_TYPE:
-                ((ChronoPeriodImpl) object).writeExternal(out);
-                break;
-            default:
-                throw new InvalidClassException("Unknown serialized type");
+        case CHRONO_TYPE:
+            ((AbstractChronology) object).writeExternal(out);
+            break;
+        case CHRONO_LOCAL_DATE_TIME_TYPE:
+            ((ChronoLocalDateTimeImpl<?>) object).writeExternal(out);
+            break;
+        case CHRONO_ZONE_DATE_TIME_TYPE:
+            ((ChronoZonedDateTimeImpl<?>) object).writeExternal(out);
+            break;
+        case JAPANESE_DATE_TYPE:
+            ((JapaneseDate) object).writeExternal(out);
+            break;
+        case JAPANESE_ERA_TYPE:
+            ((JapaneseEra) object).writeExternal(out);
+            break;
+        case HIJRAH_DATE_TYPE:
+            ((HijrahDate) object).writeExternal(out);
+            break;
+        case MINGUO_DATE_TYPE:
+            ((MinguoDate) object).writeExternal(out);
+            break;
+        case THAIBUDDHIST_DATE_TYPE:
+            ((ThaiBuddhistDate) object).writeExternal(out);
+            break;
+        case CHRONO_PERIOD_TYPE:
+            ((ChronoPeriodImpl) object).writeExternal(out);
+            break;
+        default:
+            throw new InvalidClassException("Unknown serialized type");
         }
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Implements the {@code Externalizable} interface to read the object.
-     * @serialData
-     * The streamed type and parameters defined by the type's {@code writeReplace}
-     * method are read and passed to the corresponding static factory for the type
-     * to create a new instance.  That instance is returned as the de-serialized
-     * {@code Ser} object.
      *
-     * <ul>
-     * <li><a href="../../../serialized-form.html#java.time.chrono.HijrahChronology">HijrahChronology</a> - Chronology.of(id)
-     * <li><a href="../../../serialized-form.html#java.time.chrono.IsoChronology">IsoChronology</a> - Chronology.of(id)
-     * <li><a href="../../../serialized-form.html#java.time.chrono.JapaneseChronology">JapaneseChronology</a> - Chronology.of(id)
-     * <li><a href="../../../serialized-form.html#java.time.chrono.MinguoChronology">MinguoChronology</a> - Chronology.of(id)
-     * <li><a href="../../../serialized-form.html#java.time.chrono.ThaiBuddhistChronology">ThaiBuddhistChronology</a> - Chronology.of(id)
-     * <li><a href="../../../serialized-form.html#java.time.chrono.ChronoLocalDateTimeImpl">ChronoLocalDateTime</a> - date.atTime(time)
-     * <li><a href="../../../serialized-form.html#java.time.chrono.ChronoZonedDateTimeImpl">ChronoZonedDateTime</a> - dateTime.atZone(offset).withZoneSameLocal(zone)
-     * <li><a href="../../../serialized-form.html#java.time.chrono.JapaneseDate">JapaneseDate</a> - JapaneseChronology.INSTANCE.date(year, month, dayOfMonth)
-     * <li><a href="../../../serialized-form.html#java.time.chrono.JapaneseEra">JapaneseEra</a> - JapaneseEra.of(eraValue)
-     * <li><a href="../../../serialized-form.html#java.time.chrono.HijrahDate">HijrahDate</a> - HijrahChronology chrono.date(year, month, dayOfMonth)
-     * <li><a href="../../../serialized-form.html#java.time.chrono.MinguoDate">MinguoDate</a> - MinguoChronology.INSTANCE.date(year, month, dayOfMonth)
-     * <li><a href="../../../serialized-form.html#java.time.chrono.ThaiBuddhistDate">ThaiBuddhistDate</a> - ThaiBuddhistChronology.INSTANCE.date(year, month, dayOfMonth)
-     * </ul>
-     *
-     * @param in  the data stream to read from, not null
+     * @param in
+     *         the data stream to read from, not null
      */
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -231,16 +178,26 @@ final class Ser implements Externalizable {
 
     private static Object readInternal(byte type, ObjectInput in) throws IOException, ClassNotFoundException {
         switch (type) {
-            case CHRONO_TYPE: return AbstractChronology.readExternal(in);
-            case CHRONO_LOCAL_DATE_TIME_TYPE: return ChronoLocalDateTimeImpl.readExternal(in);
-            case CHRONO_ZONE_DATE_TIME_TYPE: return ChronoZonedDateTimeImpl.readExternal(in);
-            case JAPANESE_DATE_TYPE:  return JapaneseDate.readExternal(in);
-            case JAPANESE_ERA_TYPE: return JapaneseEra.readExternal(in);
-            case HIJRAH_DATE_TYPE: return HijrahDate.readExternal(in);
-            case MINGUO_DATE_TYPE: return MinguoDate.readExternal(in);
-            case THAIBUDDHIST_DATE_TYPE: return ThaiBuddhistDate.readExternal(in);
-            case CHRONO_PERIOD_TYPE: return ChronoPeriodImpl.readExternal(in);
-            default: throw new StreamCorruptedException("Unknown serialized type");
+        case CHRONO_TYPE:
+            return AbstractChronology.readExternal(in);
+        case CHRONO_LOCAL_DATE_TIME_TYPE:
+            return ChronoLocalDateTimeImpl.readExternal(in);
+        case CHRONO_ZONE_DATE_TIME_TYPE:
+            return ChronoZonedDateTimeImpl.readExternal(in);
+        case JAPANESE_DATE_TYPE:
+            return JapaneseDate.readExternal(in);
+        case JAPANESE_ERA_TYPE:
+            return JapaneseEra.readExternal(in);
+        case HIJRAH_DATE_TYPE:
+            return HijrahDate.readExternal(in);
+        case MINGUO_DATE_TYPE:
+            return MinguoDate.readExternal(in);
+        case THAIBUDDHIST_DATE_TYPE:
+            return ThaiBuddhistDate.readExternal(in);
+        case CHRONO_PERIOD_TYPE:
+            return ChronoPeriodImpl.readExternal(in);
+        default:
+            throw new StreamCorruptedException("Unknown serialized type");
         }
     }
 
@@ -250,7 +207,7 @@ final class Ser implements Externalizable {
      * @return the read object, should never be null
      */
     private Object readResolve() {
-         return object;
+        return object;
     }
 
 }

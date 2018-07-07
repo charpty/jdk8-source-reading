@@ -38,7 +38,6 @@
 package java.text;
 
 import sun.text.normalizer.NormalizerBase;
-import sun.text.normalizer.NormalizerImpl;
 
 /**
  * This class provides the method <code>normalize</code> which transforms Unicode
@@ -108,7 +107,10 @@ import sun.text.normalizer.NormalizerImpl;
  */
 public final class Normalizer {
 
-   private Normalizer() {};
+    private Normalizer() {
+    }
+
+    ;
 
     /**
      * This enum provides constants of the four Unicode normalization forms
@@ -146,15 +148,21 @@ public final class Normalizer {
      * Normalize a sequence of char values.
      * The sequence will be normalized according to the specified normalization
      * from.
-     * @param src        The sequence of char values to normalize.
-     * @param form       The normalization form; one of
-     *                   {@link java.text.Normalizer.Form#NFC},
-     *                   {@link java.text.Normalizer.Form#NFD},
-     *                   {@link java.text.Normalizer.Form#NFKC},
-     *                   {@link java.text.Normalizer.Form#NFKD}
+     *
+     * @param src
+     *         The sequence of char values to normalize.
+     * @param form
+     *         The normalization form; one of
+     *         {@link java.text.Normalizer.Form#NFC},
+     *         {@link java.text.Normalizer.Form#NFD},
+     *         {@link java.text.Normalizer.Form#NFKC},
+     *         {@link java.text.Normalizer.Form#NFKD}
+     *
      * @return The normalized String
-     * @throws NullPointerException If <code>src</code> or <code>form</code>
-     * is null.
+     *
+     * @throws NullPointerException
+     *         If <code>src</code> or <code>form</code>
+     *         is null.
      */
     public static String normalize(CharSequence src, Form form) {
         return NormalizerBase.normalize(src.toString(), form);
@@ -162,16 +170,22 @@ public final class Normalizer {
 
     /**
      * Determines if the given sequence of char values is normalized.
-     * @param src        The sequence of char values to be checked.
-     * @param form       The normalization form; one of
-     *                   {@link java.text.Normalizer.Form#NFC},
-     *                   {@link java.text.Normalizer.Form#NFD},
-     *                   {@link java.text.Normalizer.Form#NFKC},
-     *                   {@link java.text.Normalizer.Form#NFKD}
+     *
+     * @param src
+     *         The sequence of char values to be checked.
+     * @param form
+     *         The normalization form; one of
+     *         {@link java.text.Normalizer.Form#NFC},
+     *         {@link java.text.Normalizer.Form#NFD},
+     *         {@link java.text.Normalizer.Form#NFKC},
+     *         {@link java.text.Normalizer.Form#NFKD}
+     *
      * @return true if the sequence of char values is normalized;
      * false otherwise.
-     * @throws NullPointerException If <code>src</code> or <code>form</code>
-     * is null.
+     *
+     * @throws NullPointerException
+     *         If <code>src</code> or <code>form</code>
+     *         is null.
      */
     public static boolean isNormalized(CharSequence src, Form form) {
         return NormalizerBase.isNormalized(src.toString(), form);

@@ -29,9 +29,8 @@ package java.lang;
  * Thrown to indicate that the Java Virtual Machine is broken or has
  * run out of resources necessary for it to continue operating.
  *
- *
- * @author  Frank Yellin
- * @since   JDK1.0
+ * @author Frank Yellin
+ * @since JDK1.0
  */
 abstract public class VirtualMachineError extends Error {
     private static final long serialVersionUID = 4161983926571568670L;
@@ -47,7 +46,8 @@ abstract public class VirtualMachineError extends Error {
      * Constructs a <code>VirtualMachineError</code> with the specified
      * detail message.
      *
-     * @param   message   the detail message.
+     * @param message
+     *         the detail message.
      */
     public VirtualMachineError(String message) {
         super(message);
@@ -59,13 +59,16 @@ abstract public class VirtualMachineError extends Error {
      * associated with {@code cause} is <i>not</i> automatically
      * incorporated in this error's detail message.
      *
-     * @param  message the detail message (which is saved for later retrieval
+     * @param message
+     *         the detail message (which is saved for later retrieval
      *         by the {@link #getMessage()} method).
-     * @param  cause the cause (which is saved for later retrieval by the
+     * @param cause
+     *         the cause (which is saved for later retrieval by the
      *         {@link #getCause()} method).  (A {@code null} value is
      *         permitted, and indicates that the cause is nonexistent or
      *         unknown.)
-     * @since  1.8
+     *
+     * @since 1.8
      */
     public VirtualMachineError(String message, Throwable cause) {
         super(message, cause);
@@ -77,11 +80,13 @@ abstract public class VirtualMachineError extends Error {
      * cause.toString())} (which typically contains the class and
      * detail message of {@code cause}).
      *
-     * @param  cause the cause (which is saved for later retrieval by the
+     * @param cause
+     *         the cause (which is saved for later retrieval by the
      *         {@link #getCause()} method).  (A {@code null} value is
      *         permitted, and indicates that the cause is nonexistent or
      *         unknown.)
-     * @since  1.8
+     *
+     * @since 1.8
      */
     public VirtualMachineError(Throwable cause) {
         super(cause);

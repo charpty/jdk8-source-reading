@@ -37,16 +37,14 @@ package java.nio.file;
  * @since 1.7
  */
 
-public class AccessDeniedException
-    extends FileSystemException
-{
+public class AccessDeniedException extends FileSystemException {
     private static final long serialVersionUID = 4943049599949219617L;
 
     /**
      * Constructs an instance of this class.
      *
-     * @param   file
-     *          a string identifying the file or {@code null} if not known
+     * @param file
+     *         a string identifying the file or {@code null} if not known
      */
     public AccessDeniedException(String file) {
         super(file);
@@ -55,12 +53,12 @@ public class AccessDeniedException
     /**
      * Constructs an instance of this class.
      *
-     * @param   file
-     *          a string identifying the file or {@code null} if not known
-     * @param   other
-     *          a string identifying the other file or {@code null} if not known
-     * @param   reason
-     *          a reason message with additional information or {@code null}
+     * @param file
+     *         a string identifying the file or {@code null} if not known
+     * @param other
+     *         a string identifying the other file or {@code null} if not known
+     * @param reason
+     *         a reason message with additional information or {@code null}
      */
     public AccessDeniedException(String file, String other, String reason) {
         super(file, other, reason);

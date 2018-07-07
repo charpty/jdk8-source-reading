@@ -25,10 +25,16 @@
 
 package java.util.jar;
 
-import java.util.zip.*;
-import java.io.*;
-import sun.security.util.ManifestEntryVerifier;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipInputStream;
 import sun.misc.JarIndex;
+import sun.security.util.ManifestEntryVerifier;
 
 /**
  * The <code>JarInputStream</code> class is used to read the contents of
@@ -37,13 +43,12 @@ import sun.misc.JarIndex;
  * an optional <code>Manifest</code> entry. The <code>Manifest</code>
  * can be used to store meta-information about the JAR file and its entries.
  *
- * @author  David Connelly
- * @see     Manifest
- * @see     java.util.zip.ZipInputStream
- * @since   1.2
+ * @author David Connelly
+ * @see Manifest
+ * @see java.util.zip.ZipInputStream
+ * @since 1.2
  */
-public
-class JarInputStream extends ZipInputStream {
+public class JarInputStream extends ZipInputStream {
     private Manifest man;
     private JarEntry first;
     private JarVerifier jv;
@@ -55,8 +60,12 @@ class JarInputStream extends ZipInputStream {
      * Creates a new <code>JarInputStream</code> and reads the optional
      * manifest. If a manifest is present, also attempts to verify
      * the signatures if the JarInputStream is signed.
-     * @param in the actual input stream
-     * @exception IOException if an I/O error has occurred
+     *
+     * @param in
+     *         the actual input stream
+     *
+     * @throws IOException
+     *         if an I/O error has occurred
      */
     public JarInputStream(InputStream in) throws IOException {
         this(in, true);
@@ -67,10 +76,14 @@ class JarInputStream extends ZipInputStream {
      * manifest. If a manifest is present and verify is true, also attempts
      * to verify the signatures if the JarInputStream is signed.
      *
-     * @param in the actual input stream
-     * @param verify whether or not to verify the JarInputStream if
-     * it is signed.
-     * @exception IOException if an I/O error has occurred
+     * @param in
+     *         the actual input stream
+     * @param verify
+     *         whether or not to verify the JarInputStream if
+     *         it is signed.
+     *
+     * @throws IOException
+     *         if an I/O error has occurred
      */
     public JarInputStream(InputStream in, boolean verify) throws IOException {
         super(in);
@@ -80,15 +93,14 @@ class JarInputStream extends ZipInputStream {
         // should be either the first or the second entry (when preceded
         // by the dir META-INF/). It skips the META-INF/ and then
         // "consumes" the MANIFEST.MF to initialize the Manifest object.
-        JarEntry e = (JarEntry)super.getNextEntry();
-        if (e != null && e.getName().equalsIgnoreCase("META-INF/"))
-            e = (JarEntry)super.getNextEntry();
+        JarEntry e = (JarEntry) super.getNextEntry();
+        if (e != null && e.getName().equalsIgnoreCase("META-INF/")) {
+            e = (JarEntry) super.getNextEntry();
+        }
         first = checkManifest(e);
     }
 
-    private JarEntry checkManifest(JarEntry e)
-        throws IOException
-    {
+    private JarEntry checkManifest(JarEntry e) throws IOException {
         if (e != null && JarFile.MANIFEST_NAME.equalsIgnoreCase(e.getName())) {
             man = new Manifest();
             byte bytes[] = getBytes(new BufferedInputStream(this));
@@ -98,14 +110,12 @@ class JarInputStream extends ZipInputStream {
                 jv = new JarVerifier(bytes);
                 mev = new ManifestEntryVerifier(man);
             }
-            return (JarEntry)super.getNextEntry();
+            return (JarEntry) super.getNextEntry();
         }
         return e;
     }
 
-    private byte[] getBytes(InputStream is)
-        throws IOException
-    {
+    private byte[] getBytes(InputStream is) throws IOException {
         byte[] buffer = new byte[8192];
         ByteArrayOutputStream baos = new ByteArrayOutputStream(2048);
         int n;
@@ -120,7 +130,7 @@ class JarInputStream extends ZipInputStream {
      * <code>null</code> if none.
      *
      * @return the <code>Manifest</code> for this JAR file, or
-     *         <code>null</code> if none.
+     * <code>null</code> if none.
      */
     public Manifest getManifest() {
         return man;
@@ -131,23 +141,28 @@ class JarInputStream extends ZipInputStream {
      * beginning of the entry data. If verification has been enabled,
      * any invalid signature detected while positioning the stream for
      * the next entry will result in an exception.
-     * @exception ZipException if a ZIP file error has occurred
-     * @exception IOException if an I/O error has occurred
-     * @exception SecurityException if any of the jar file entries
+     *
+     * @throws ZipException
+     *         if a ZIP file error has occurred
+     * @throws IOException
+     *         if an I/O error has occurred
+     * @throws SecurityException
+     *         if any of the jar file entries
      *         are incorrectly signed.
      */
     public ZipEntry getNextEntry() throws IOException {
         JarEntry e;
         if (first == null) {
-            e = (JarEntry)super.getNextEntry();
+            e = (JarEntry) super.getNextEntry();
             if (tryManifest) {
                 e = checkManifest(e);
                 tryManifest = false;
             }
         } else {
             e = first;
-            if (first.getName().equalsIgnoreCase(JarIndex.INDEX_NAME))
+            if (first.getName().equalsIgnoreCase(JarIndex.INDEX_NAME)) {
                 tryManifest = true;
+            }
             first = null;
         }
         if (jv != null && e != null) {
@@ -169,14 +184,19 @@ class JarInputStream extends ZipInputStream {
      * beginning of the entry data. If verification has been enabled,
      * any invalid signature detected while positioning the stream for
      * the next entry will result in an exception.
+     *
      * @return the next JAR file entry, or null if there are no more entries
-     * @exception ZipException if a ZIP file error has occurred
-     * @exception IOException if an I/O error has occurred
-     * @exception SecurityException if any of the jar file entries
+     *
+     * @throws ZipException
+     *         if a ZIP file error has occurred
+     * @throws IOException
+     *         if an I/O error has occurred
+     * @throws SecurityException
+     *         if any of the jar file entries
      *         are incorrectly signed.
      */
     public JarEntry getNextJarEntry() throws IOException {
-        return (JarEntry)getNextEntry();
+        return (JarEntry) getNextEntry();
     }
 
     /**
@@ -187,18 +207,29 @@ class JarInputStream extends ZipInputStream {
      * If verification has been enabled, any invalid signature
      * on the current entry will be reported at some point before the
      * end of the entry is reached.
-     * @param b the buffer into which the data is read
-     * @param off the start offset in the destination array <code>b</code>
-     * @param len the maximum number of bytes to read
+     *
+     * @param b
+     *         the buffer into which the data is read
+     * @param off
+     *         the start offset in the destination array <code>b</code>
+     * @param len
+     *         the maximum number of bytes to read
+     *
      * @return the actual number of bytes read, or -1 if the end of the
-     *         entry is reached
-     * @exception  NullPointerException If <code>b</code> is <code>null</code>.
-     * @exception  IndexOutOfBoundsException If <code>off</code> is negative,
-     * <code>len</code> is negative, or <code>len</code> is greater than
-     * <code>b.length - off</code>
-     * @exception ZipException if a ZIP file error has occurred
-     * @exception IOException if an I/O error has occurred
-     * @exception SecurityException if any of the jar file entries
+     * entry is reached
+     *
+     * @throws NullPointerException
+     *         If <code>b</code> is <code>null</code>.
+     * @throws IndexOutOfBoundsException
+     *         If <code>off</code> is negative,
+     *         <code>len</code> is negative, or <code>len</code> is greater than
+     *         <code>b.length - off</code>
+     * @throws ZipException
+     *         if a ZIP file error has occurred
+     * @throws IOException
+     *         if an I/O error has occurred
+     * @throws SecurityException
+     *         if any of the jar file entries
      *         are incorrectly signed.
      */
     public int read(byte[] b, int off, int len) throws IOException {
@@ -220,7 +251,9 @@ class JarInputStream extends ZipInputStream {
      * the specified JAR file entry name will be copied to the new
      * <CODE>JarEntry</CODE>.
      *
-     * @param name the name of the JAR/ZIP file entry
+     * @param name
+     *         the name of the JAR/ZIP file entry
+     *
      * @return the <code>JarEntry</code> object just created
      */
     protected ZipEntry createZipEntry(String name) {

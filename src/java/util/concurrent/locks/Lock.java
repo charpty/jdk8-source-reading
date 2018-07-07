@@ -34,6 +34,7 @@
  */
 
 package java.util.concurrent.locks;
+
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -77,7 +78,7 @@ import java.util.concurrent.TimeUnit;
  * methods and statements. In most cases, the following idiom
  * should be used:
  *
- *  <pre> {@code
+ * <pre> {@code
  * Lock l = ...;
  * l.lock();
  * try {
@@ -157,12 +158,11 @@ import java.util.concurrent.TimeUnit;
  * shown that the interrupt occurred after another action may have unblocked
  * the thread. An implementation should document this behavior.
  *
+ * @author Doug Lea
  * @see ReentrantLock
  * @see Condition
  * @see ReadWriteLock
- *
  * @since 1.5
- * @author Doug Lea
  */
 public interface Lock {
 
@@ -225,7 +225,8 @@ public interface Lock {
      * circumstances.  The circumstances and the exception type must
      * be documented by that {@code Lock} implementation.
      *
-     * @throws InterruptedException if the current thread is
+     * @throws InterruptedException
+     *         if the current thread is
      *         interrupted while acquiring the lock (and interruption
      *         of lock acquisition is supported)
      */
@@ -240,7 +241,7 @@ public interface Lock {
      * immediately with the value {@code false}.
      *
      * <p>A typical usage idiom for this method would be:
-     *  <pre> {@code
+     * <pre> {@code
      * Lock lock = ...;
      * if (lock.tryLock()) {
      *   try {
@@ -256,7 +257,7 @@ public interface Lock {
      * doesn't try to unlock if the lock was not acquired.
      *
      * @return {@code true} if the lock was acquired and
-     *         {@code false} otherwise
+     * {@code false} otherwise
      */
     boolean tryLock();
 
@@ -309,12 +310,16 @@ public interface Lock {
      * The circumstances and the exception type must be documented by that
      * {@code Lock} implementation.
      *
-     * @param time the maximum time to wait for the lock
-     * @param unit the time unit of the {@code time} argument
-     * @return {@code true} if the lock was acquired and {@code false}
-     *         if the waiting time elapsed before the lock was acquired
+     * @param time
+     *         the maximum time to wait for the lock
+     * @param unit
+     *         the time unit of the {@code time} argument
      *
-     * @throws InterruptedException if the current thread is interrupted
+     * @return {@code true} if the lock was acquired and {@code false}
+     * if the waiting time elapsed before the lock was acquired
+     *
+     * @throws InterruptedException
+     *         if the current thread is interrupted
      *         while acquiring the lock (and interruption of lock
      *         acquisition is supported)
      */
@@ -350,7 +355,9 @@ public interface Lock {
      * implementation.
      *
      * @return A new {@link Condition} instance for this {@code Lock} instance
-     * @throws UnsupportedOperationException if this {@code Lock}
+     *
+     * @throws UnsupportedOperationException
+     *         if this {@code Lock}
      *         implementation does not support conditions
      */
     Condition newCondition();

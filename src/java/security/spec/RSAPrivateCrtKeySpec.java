@@ -33,8 +33,6 @@ import java.math.BigInteger;
  * efficiency.
  *
  * @author Jan Luehe
- *
- *
  * @see java.security.Key
  * @see java.security.KeyFactory
  * @see KeySpec
@@ -52,32 +50,32 @@ public class RSAPrivateCrtKeySpec extends RSAPrivateKeySpec {
     private final BigInteger primeExponentQ;
     private final BigInteger crtCoefficient;
 
-
-
-   /**
-    * Creates a new {@code RSAPrivateCrtKeySpec}
-    * given the modulus, publicExponent, privateExponent,
-    * primeP, primeQ, primeExponentP, primeExponentQ, and
-    * crtCoefficient as defined in PKCS#1.
-    *
-    * @param modulus the modulus n
-    * @param publicExponent the public exponent e
-    * @param privateExponent the private exponent d
-    * @param primeP the prime factor p of n
-    * @param primeQ the prime factor q of n
-    * @param primeExponentP this is d mod (p-1)
-    * @param primeExponentQ this is d mod (q-1)
-    * @param crtCoefficient the Chinese Remainder Theorem
-    * coefficient q-1 mod p
-    */
-    public RSAPrivateCrtKeySpec(BigInteger modulus,
-                                BigInteger publicExponent,
-                                BigInteger privateExponent,
-                                BigInteger primeP,
-                                BigInteger primeQ,
-                                BigInteger primeExponentP,
-                                BigInteger primeExponentQ,
-                                BigInteger crtCoefficient) {
+    /**
+     * Creates a new {@code RSAPrivateCrtKeySpec}
+     * given the modulus, publicExponent, privateExponent,
+     * primeP, primeQ, primeExponentP, primeExponentQ, and
+     * crtCoefficient as defined in PKCS#1.
+     *
+     * @param modulus
+     *         the modulus n
+     * @param publicExponent
+     *         the public exponent e
+     * @param privateExponent
+     *         the private exponent d
+     * @param primeP
+     *         the prime factor p of n
+     * @param primeQ
+     *         the prime factor q of n
+     * @param primeExponentP
+     *         this is d mod (p-1)
+     * @param primeExponentQ
+     *         this is d mod (q-1)
+     * @param crtCoefficient
+     *         the Chinese Remainder Theorem
+     *         coefficient q-1 mod p
+     */
+    public RSAPrivateCrtKeySpec(BigInteger modulus, BigInteger publicExponent, BigInteger privateExponent, BigInteger primeP, BigInteger primeQ,
+            BigInteger primeExponentP, BigInteger primeExponentQ, BigInteger crtCoefficient) {
         super(modulus, privateExponent);
         this.publicExponent = publicExponent;
         this.primeP = primeP;
@@ -98,7 +96,7 @@ public class RSAPrivateCrtKeySpec extends RSAPrivateKeySpec {
 
     /**
      * Returns the primeP.
-
+     *
      * @return the primeP
      */
     public BigInteger getPrimeP() {

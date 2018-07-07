@@ -60,9 +60,11 @@ import sun.reflect.Reflection;
  * guarantee atomicity only with respect to other invocations of
  * {@code compareAndSet} and {@code set} on the same updater.
  *
- * @since 1.5
+ * @param <T>
+ *         The type of the object holding the updatable field
+ *
  * @author Doug Lea
- * @param <T> The type of the object holding the updatable field
+ * @since 1.5
  */
 public abstract class AtomicLongFieldUpdater<T> {
     /**
@@ -70,25 +72,32 @@ public abstract class AtomicLongFieldUpdater<T> {
      * The Class argument is needed to check that reflective types and
      * generic types match.
      *
-     * @param tclass the class of the objects holding the field
-     * @param fieldName the name of the field to be updated
-     * @param <U> the type of instances of tclass
+     * @param tclass
+     *         the class of the objects holding the field
+     * @param fieldName
+     *         the name of the field to be updated
+     * @param <U>
+     *         the type of instances of tclass
+     *
      * @return the updater
-     * @throws IllegalArgumentException if the field is not a
-     * volatile long type
-     * @throws RuntimeException with a nested reflection-based
-     * exception if the class does not hold field or is the wrong type,
-     * or the field is inaccessible to the caller according to Java language
-     * access control
+     *
+     * @throws IllegalArgumentException
+     *         if the field is not a
+     *         volatile long type
+     * @throws RuntimeException
+     *         with a nested reflection-based
+     *         exception if the class does not hold field or is the wrong type,
+     *         or the field is inaccessible to the caller according to Java language
+     *         access control
      */
     @CallerSensitive
-    public static <U> AtomicLongFieldUpdater<U> newUpdater(Class<U> tclass,
-                                                           String fieldName) {
+    public static <U> AtomicLongFieldUpdater<U> newUpdater(Class<U> tclass, String fieldName) {
         Class<?> caller = Reflection.getCallerClass();
-        if (AtomicLong.VM_SUPPORTS_LONG_CAS)
+        if (AtomicLong.VM_SUPPORTS_LONG_CAS) {
             return new CASUpdater<U>(tclass, fieldName, caller);
-        else
+        } else {
             return new LockedUpdater<U>(tclass, fieldName, caller);
+        }
     }
 
     /**
@@ -104,12 +113,18 @@ public abstract class AtomicLongFieldUpdater<T> {
      * other calls to {@code compareAndSet} and {@code set}, but not
      * necessarily with respect to other changes in the field.
      *
-     * @param obj An object whose field to conditionally set
-     * @param expect the expected value
-     * @param update the new value
+     * @param obj
+     *         An object whose field to conditionally set
+     * @param expect
+     *         the expected value
+     * @param update
+     *         the new value
+     *
      * @return {@code true} if successful
-     * @throws ClassCastException if {@code obj} is not an instance
-     * of the class possessing the field established in the constructor
+     *
+     * @throws ClassCastException
+     *         if {@code obj} is not an instance
+     *         of the class possessing the field established in the constructor
      */
     public abstract boolean compareAndSet(T obj, long expect, long update);
 
@@ -124,12 +139,18 @@ public abstract class AtomicLongFieldUpdater<T> {
      * spuriously and does not provide ordering guarantees</a>, so is
      * only rarely an appropriate alternative to {@code compareAndSet}.
      *
-     * @param obj An object whose field to conditionally set
-     * @param expect the expected value
-     * @param update the new value
+     * @param obj
+     *         An object whose field to conditionally set
+     * @param expect
+     *         the expected value
+     * @param update
+     *         the new value
+     *
      * @return {@code true} if successful
-     * @throws ClassCastException if {@code obj} is not an instance
-     * of the class possessing the field established in the constructor
+     *
+     * @throws ClassCastException
+     *         if {@code obj} is not an instance
+     *         of the class possessing the field established in the constructor
      */
     public abstract boolean weakCompareAndSet(T obj, long expect, long update);
 
@@ -138,8 +159,10 @@ public abstract class AtomicLongFieldUpdater<T> {
      * given updated value. This operation is guaranteed to act as a volatile
      * store with respect to subsequent invocations of {@code compareAndSet}.
      *
-     * @param obj An object whose field to set
-     * @param newValue the new value
+     * @param obj
+     *         An object whose field to set
+     * @param newValue
+     *         the new value
      */
     public abstract void set(T obj, long newValue);
 
@@ -147,8 +170,11 @@ public abstract class AtomicLongFieldUpdater<T> {
      * Eventually sets the field of the given object managed by this
      * updater to the given updated value.
      *
-     * @param obj An object whose field to set
-     * @param newValue the new value
+     * @param obj
+     *         An object whose field to set
+     * @param newValue
+     *         the new value
+     *
      * @since 1.6
      */
     public abstract void lazySet(T obj, long newValue);
@@ -157,7 +183,9 @@ public abstract class AtomicLongFieldUpdater<T> {
      * Gets the current value held in the field of the given object managed
      * by this updater.
      *
-     * @param obj An object whose field to get
+     * @param obj
+     *         An object whose field to get
+     *
      * @return the current value
      */
     public abstract long get(T obj);
@@ -166,8 +194,11 @@ public abstract class AtomicLongFieldUpdater<T> {
      * Atomically sets the field of the given object managed by this updater
      * to the given value and returns the old value.
      *
-     * @param obj An object whose field to get and set
-     * @param newValue the new value
+     * @param obj
+     *         An object whose field to get and set
+     * @param newValue
+     *         the new value
+     *
      * @return the previous value
      */
     public long getAndSet(T obj, long newValue) {
@@ -182,7 +213,9 @@ public abstract class AtomicLongFieldUpdater<T> {
      * Atomically increments by one the current value of the field of the
      * given object managed by this updater.
      *
-     * @param obj An object whose field to get and set
+     * @param obj
+     *         An object whose field to get and set
+     *
      * @return the previous value
      */
     public long getAndIncrement(T obj) {
@@ -198,7 +231,9 @@ public abstract class AtomicLongFieldUpdater<T> {
      * Atomically decrements by one the current value of the field of the
      * given object managed by this updater.
      *
-     * @param obj An object whose field to get and set
+     * @param obj
+     *         An object whose field to get and set
+     *
      * @return the previous value
      */
     public long getAndDecrement(T obj) {
@@ -214,8 +249,11 @@ public abstract class AtomicLongFieldUpdater<T> {
      * Atomically adds the given value to the current value of the field of
      * the given object managed by this updater.
      *
-     * @param obj An object whose field to get and set
-     * @param delta the value to add
+     * @param obj
+     *         An object whose field to get and set
+     * @param delta
+     *         the value to add
+     *
      * @return the previous value
      */
     public long getAndAdd(T obj, long delta) {
@@ -231,7 +269,9 @@ public abstract class AtomicLongFieldUpdater<T> {
      * Atomically increments by one the current value of the field of the
      * given object managed by this updater.
      *
-     * @param obj An object whose field to get and set
+     * @param obj
+     *         An object whose field to get and set
+     *
      * @return the updated value
      */
     public long incrementAndGet(T obj) {
@@ -247,7 +287,9 @@ public abstract class AtomicLongFieldUpdater<T> {
      * Atomically decrements by one the current value of the field of the
      * given object managed by this updater.
      *
-     * @param obj An object whose field to get and set
+     * @param obj
+     *         An object whose field to get and set
+     *
      * @return the updated value
      */
     public long decrementAndGet(T obj) {
@@ -263,8 +305,11 @@ public abstract class AtomicLongFieldUpdater<T> {
      * Atomically adds the given value to the current value of the field of
      * the given object managed by this updater.
      *
-     * @param obj An object whose field to get and set
-     * @param delta the value to add
+     * @param obj
+     *         An object whose field to get and set
+     * @param delta
+     *         the value to add
+     *
      * @return the updated value
      */
     public long addAndGet(T obj, long delta) {
@@ -282,9 +327,13 @@ public abstract class AtomicLongFieldUpdater<T> {
      * value. The function should be side-effect-free, since it may be
      * re-applied when attempted updates fail due to contention among threads.
      *
-     * @param obj An object whose field to get and set
-     * @param updateFunction a side-effect-free function
+     * @param obj
+     *         An object whose field to get and set
+     * @param updateFunction
+     *         a side-effect-free function
+     *
      * @return the previous value
+     *
      * @since 1.8
      */
     public final long getAndUpdate(T obj, LongUnaryOperator updateFunction) {
@@ -302,9 +351,13 @@ public abstract class AtomicLongFieldUpdater<T> {
      * value. The function should be side-effect-free, since it may be
      * re-applied when attempted updates fail due to contention among threads.
      *
-     * @param obj An object whose field to get and set
-     * @param updateFunction a side-effect-free function
+     * @param obj
+     *         An object whose field to get and set
+     * @param updateFunction
+     *         a side-effect-free function
+     *
      * @return the updated value
+     *
      * @since 1.8
      */
     public final long updateAndGet(T obj, LongUnaryOperator updateFunction) {
@@ -325,14 +378,18 @@ public abstract class AtomicLongFieldUpdater<T> {
      * function is applied with the current value as its first argument,
      * and the given update as the second argument.
      *
-     * @param obj An object whose field to get and set
-     * @param x the update value
-     * @param accumulatorFunction a side-effect-free function of two arguments
+     * @param obj
+     *         An object whose field to get and set
+     * @param x
+     *         the update value
+     * @param accumulatorFunction
+     *         a side-effect-free function of two arguments
+     *
      * @return the previous value
+     *
      * @since 1.8
      */
-    public final long getAndAccumulate(T obj, long x,
-                                       LongBinaryOperator accumulatorFunction) {
+    public final long getAndAccumulate(T obj, long x, LongBinaryOperator accumulatorFunction) {
         long prev, next;
         do {
             prev = get(obj);
@@ -350,14 +407,18 @@ public abstract class AtomicLongFieldUpdater<T> {
      * function is applied with the current value as its first argument,
      * and the given update as the second argument.
      *
-     * @param obj An object whose field to get and set
-     * @param x the update value
-     * @param accumulatorFunction a side-effect-free function of two arguments
+     * @param obj
+     *         An object whose field to get and set
+     * @param x
+     *         the update value
+     * @param accumulatorFunction
+     *         a side-effect-free function of two arguments
+     *
      * @return the updated value
+     *
      * @since 1.8
      */
-    public final long accumulateAndGet(T obj, long x,
-                                       LongBinaryOperator accumulatorFunction) {
+    public final long accumulateAndGet(T obj, long x, LongBinaryOperator accumulatorFunction) {
         long prev, next;
         do {
             prev = get(obj);
@@ -377,24 +438,20 @@ public abstract class AtomicLongFieldUpdater<T> {
         /** class holding the field */
         private final Class<T> tclass;
 
-        CASUpdater(final Class<T> tclass, final String fieldName,
-                   final Class<?> caller) {
+        CASUpdater(final Class<T> tclass, final String fieldName, final Class<?> caller) {
             final Field field;
             final int modifiers;
             try {
-                field = AccessController.doPrivileged(
-                    new PrivilegedExceptionAction<Field>() {
-                        public Field run() throws NoSuchFieldException {
-                            return tclass.getDeclaredField(fieldName);
-                        }
-                    });
+                field = AccessController.doPrivileged(new PrivilegedExceptionAction<Field>() {
+                    public Field run() throws NoSuchFieldException {
+                        return tclass.getDeclaredField(fieldName);
+                    }
+                });
                 modifiers = field.getModifiers();
-                sun.reflect.misc.ReflectUtil.ensureMemberAccess(
-                    caller, tclass, null, modifiers);
+                sun.reflect.misc.ReflectUtil.ensureMemberAccess(caller, tclass, null, modifiers);
                 ClassLoader cl = tclass.getClassLoader();
                 ClassLoader ccl = caller.getClassLoader();
-                if ((ccl != null) && (ccl != cl) &&
-                    ((cl == null) || !isAncestor(cl, ccl))) {
+                if ((ccl != null) && (ccl != cl) && ((cl == null) || !isAncestor(cl, ccl))) {
                     sun.reflect.misc.ReflectUtil.checkPackageAccess(tclass);
                 }
             } catch (PrivilegedActionException pae) {
@@ -403,11 +460,13 @@ public abstract class AtomicLongFieldUpdater<T> {
                 throw new RuntimeException(ex);
             }
 
-            if (field.getType() != long.class)
+            if (field.getType() != long.class) {
                 throw new IllegalArgumentException("Must be long type");
+            }
 
-            if (!Modifier.isVolatile(modifiers))
+            if (!Modifier.isVolatile(modifiers)) {
                 throw new IllegalArgumentException("Must be volatile type");
+            }
 
             // Access to protected field members is restricted to receivers only
             // of the accessing class, or one of its subclasses, and the
@@ -416,10 +475,7 @@ public abstract class AtomicLongFieldUpdater<T> {
             // If the updater refers to a protected field of a declaring class
             // outside the current package, the receiver argument will be
             // narrowed to the type of the accessing class.
-            this.cclass = (Modifier.isProtected(modifiers) &&
-                           tclass.isAssignableFrom(caller) &&
-                           !isSamePackage(tclass, caller))
-                          ? caller : tclass;
+            this.cclass = (Modifier.isProtected(modifiers) && tclass.isAssignableFrom(caller) && !isSamePackage(tclass, caller)) ? caller : tclass;
             this.tclass = tclass;
             this.offset = U.objectFieldOffset(field);
         }
@@ -429,8 +485,9 @@ public abstract class AtomicLongFieldUpdater<T> {
          * failure, throws cause.
          */
         private final void accessCheck(T obj) {
-            if (!cclass.isInstance(obj))
+            if (!cclass.isInstance(obj)) {
                 throwAccessCheckException(obj);
+            }
         }
 
         /**
@@ -438,17 +495,13 @@ public abstract class AtomicLongFieldUpdater<T> {
          * protected access, else ClassCastException.
          */
         private final void throwAccessCheckException(T obj) {
-            if (cclass == tclass)
+            if (cclass == tclass) {
                 throw new ClassCastException();
-            else
-                throw new RuntimeException(
-                    new IllegalAccessException(
-                        "Class " +
-                        cclass.getName() +
-                        " can not access a protected member of class " +
-                        tclass.getName() +
-                        " using an instance of " +
-                        obj.getClass().getName()));
+            } else {
+                throw new RuntimeException(new IllegalAccessException(
+                        "Class " + cclass.getName() + " can not access a protected member of class " + tclass.getName() + " using an instance of " + obj
+                                .getClass().getName()));
+            }
         }
 
         public final boolean compareAndSet(T obj, long expect, long update) {
@@ -518,24 +571,20 @@ public abstract class AtomicLongFieldUpdater<T> {
         /** class holding the field */
         private final Class<T> tclass;
 
-        LockedUpdater(final Class<T> tclass, final String fieldName,
-                      final Class<?> caller) {
+        LockedUpdater(final Class<T> tclass, final String fieldName, final Class<?> caller) {
             Field field = null;
             int modifiers = 0;
             try {
-                field = AccessController.doPrivileged(
-                    new PrivilegedExceptionAction<Field>() {
-                        public Field run() throws NoSuchFieldException {
-                            return tclass.getDeclaredField(fieldName);
-                        }
-                    });
+                field = AccessController.doPrivileged(new PrivilegedExceptionAction<Field>() {
+                    public Field run() throws NoSuchFieldException {
+                        return tclass.getDeclaredField(fieldName);
+                    }
+                });
                 modifiers = field.getModifiers();
-                sun.reflect.misc.ReflectUtil.ensureMemberAccess(
-                    caller, tclass, null, modifiers);
+                sun.reflect.misc.ReflectUtil.ensureMemberAccess(caller, tclass, null, modifiers);
                 ClassLoader cl = tclass.getClassLoader();
                 ClassLoader ccl = caller.getClassLoader();
-                if ((ccl != null) && (ccl != cl) &&
-                    ((cl == null) || !isAncestor(cl, ccl))) {
+                if ((ccl != null) && (ccl != cl) && ((cl == null) || !isAncestor(cl, ccl))) {
                     sun.reflect.misc.ReflectUtil.checkPackageAccess(tclass);
                 }
             } catch (PrivilegedActionException pae) {
@@ -544,11 +593,13 @@ public abstract class AtomicLongFieldUpdater<T> {
                 throw new RuntimeException(ex);
             }
 
-            if (field.getType() != long.class)
+            if (field.getType() != long.class) {
                 throw new IllegalArgumentException("Must be long type");
+            }
 
-            if (!Modifier.isVolatile(modifiers))
+            if (!Modifier.isVolatile(modifiers)) {
                 throw new IllegalArgumentException("Must be volatile type");
+            }
 
             // Access to protected field members is restricted to receivers only
             // of the accessing class, or one of its subclasses, and the
@@ -557,10 +608,7 @@ public abstract class AtomicLongFieldUpdater<T> {
             // If the updater refers to a protected field of a declaring class
             // outside the current package, the receiver argument will be
             // narrowed to the type of the accessing class.
-            this.cclass = (Modifier.isProtected(modifiers) &&
-                           tclass.isAssignableFrom(caller) &&
-                           !isSamePackage(tclass, caller))
-                          ? caller : tclass;
+            this.cclass = (Modifier.isProtected(modifiers) && tclass.isAssignableFrom(caller) && !isSamePackage(tclass, caller)) ? caller : tclass;
             this.tclass = tclass;
             this.offset = U.objectFieldOffset(field);
         }
@@ -570,8 +618,9 @@ public abstract class AtomicLongFieldUpdater<T> {
          * failure, throws cause.
          */
         private final void accessCheck(T obj) {
-            if (!cclass.isInstance(obj))
+            if (!cclass.isInstance(obj)) {
                 throw accessCheckException(obj);
+            }
         }
 
         /**
@@ -579,25 +628,22 @@ public abstract class AtomicLongFieldUpdater<T> {
          * protected access, else ClassCastException.
          */
         private final RuntimeException accessCheckException(T obj) {
-            if (cclass == tclass)
+            if (cclass == tclass) {
                 return new ClassCastException();
-            else
-                return new RuntimeException(
-                    new IllegalAccessException(
-                        "Class " +
-                        cclass.getName() +
-                        " can not access a protected member of class " +
-                        tclass.getName() +
-                        " using an instance of " +
-                        obj.getClass().getName()));
+            } else {
+                return new RuntimeException(new IllegalAccessException(
+                        "Class " + cclass.getName() + " can not access a protected member of class " + tclass.getName() + " using an instance of " + obj
+                                .getClass().getName()));
+            }
         }
 
         public final boolean compareAndSet(T obj, long expect, long update) {
             accessCheck(obj);
             synchronized (this) {
                 long v = U.getLong(obj, offset);
-                if (v != expect)
+                if (v != expect) {
                     return false;
+                }
                 U.putLong(obj, offset, update);
                 return true;
             }
@@ -647,9 +693,8 @@ public abstract class AtomicLongFieldUpdater<T> {
      * package qualifier
      */
     private static boolean isSamePackage(Class<?> class1, Class<?> class2) {
-        return class1.getClassLoader() == class2.getClassLoader()
-               && Objects.equals(getPackageName(class1), getPackageName(class2));
-}
+        return class1.getClassLoader() == class2.getClassLoader() && Objects.equals(getPackageName(class1), getPackageName(class2));
+    }
 
     private static String getPackageName(Class<?> cls) {
         String cn = cls.getName();

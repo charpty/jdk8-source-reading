@@ -38,19 +38,22 @@ import java.util.Spliterator;
  * of the operation relative to a given stream source and set of intermediate
  * operations.
  *
- * @param <E_IN> the type of input elements
- * @param <R>    the type of the result
+ * @param <E_IN>
+ *         the type of input elements
+ * @param <R>
+ *         the type of the result
+ *
  * @since 1.8
  */
 interface TerminalOp<E_IN, R> {
     /**
      * Gets the shape of the input type of this operation.
      *
-     * @implSpec The default returns {@code StreamShape.REFERENCE}.
-     *
      * @return StreamShape of the input type of this operation
      */
-    default StreamShape inputShape() { return StreamShape.REFERENCE; }
+    default StreamShape inputShape() {
+        return StreamShape.REFERENCE;
+    }
 
     /**
      * Gets the stream flags of the operation.  Terminal operations may set a
@@ -58,29 +61,30 @@ interface TerminalOp<E_IN, R> {
      * these flags are combined with the previously combined stream and
      * intermediate operation flags for the pipeline.
      *
-     * @implSpec The default implementation returns zero.
-     *
      * @return the stream flags for this operation
+     *
      * @see StreamOpFlag
      */
-    default int getOpFlags() { return 0; }
+    default int getOpFlags() {
+        return 0;
+    }
 
     /**
      * Performs a parallel evaluation of the operation using the specified
      * {@code PipelineHelper}, which describes the upstream intermediate
      * operations.
      *
-     * @implSpec The default performs a sequential evaluation of the operation
-     * using the specified {@code PipelineHelper}.
+     * @param helper
+     *         the pipeline helper
+     * @param spliterator
+     *         the source spliterator
      *
-     * @param helper the pipeline helper
-     * @param spliterator the source spliterator
      * @return the result of the evaluation
      */
-    default <P_IN> R evaluateParallel(PipelineHelper<E_IN> helper,
-                                      Spliterator<P_IN> spliterator) {
-        if (Tripwire.ENABLED)
+    default <P_IN> R evaluateParallel(PipelineHelper<E_IN> helper, Spliterator<P_IN> spliterator) {
+        if (Tripwire.ENABLED) {
             Tripwire.trip(getClass(), "{0} triggering TerminalOp.evaluateParallel serial default");
+        }
         return evaluateSequential(helper, spliterator);
     }
 
@@ -89,10 +93,12 @@ interface TerminalOp<E_IN, R> {
      * {@code PipelineHelper}, which describes the upstream intermediate
      * operations.
      *
-     * @param helper the pipeline helper
-     * @param spliterator the source spliterator
+     * @param helper
+     *         the pipeline helper
+     * @param spliterator
+     *         the source spliterator
+     *
      * @return the result of the evaluation
      */
-    <P_IN> R evaluateSequential(PipelineHelper<E_IN> helper,
-                                Spliterator<P_IN> spliterator);
+    <P_IN> R evaluateSequential(PipelineHelper<E_IN> helper, Spliterator<P_IN> spliterator);
 }

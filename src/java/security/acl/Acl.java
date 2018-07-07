@@ -25,8 +25,8 @@
 
 package java.security.acl;
 
-import java.util.Enumeration;
 import java.security.Principal;
+import java.util.Enumeration;
 
 /**
  * Interface representing an Access Control List (ACL).  An Access
@@ -81,11 +81,10 @@ import java.security.Principal;
  * call the ACL's {@code addEntry} method to add a new ACL entry
  * to the ACL.
  *
+ * @author Satish Dharmaraj
  * @see java.security.acl.AclEntry
  * @see java.security.acl.Owner
  * @see java.security.acl.Acl#getPermissions
- *
- * @author Satish Dharmaraj
  */
 
 public interface Acl extends Owner {
@@ -93,18 +92,18 @@ public interface Acl extends Owner {
     /**
      * Sets the name of this ACL.
      *
-     * @param caller the principal invoking this method. It must be an
-     * owner of this ACL.
+     * @param caller
+     *         the principal invoking this method. It must be an
+     *         owner of this ACL.
+     * @param name
+     *         the name to be given to this ACL.
      *
-     * @param name the name to be given to this ACL.
-     *
-     * @exception NotOwnerException if the caller principal
-     * is not an owner of this ACL.
-     *
+     * @throws NotOwnerException
+     *         if the caller principal
+     *         is not an owner of this ACL.
      * @see #getName
      */
-    public void setName(Principal caller, String name)
-      throws NotOwnerException;
+    public void setName(Principal caller, String name) throws NotOwnerException;
 
     /**
      * Returns the name of this ACL.
@@ -124,36 +123,38 @@ public interface Acl extends Owner {
      * denied). If there is already an ACL entry of the same type
      * (negative or positive) already in the ACL, false is returned.
      *
-     * @param caller the principal invoking this method. It must be an
-     * owner of this ACL.
-     *
-     * @param entry the ACL entry to be added to this ACL.
+     * @param caller
+     *         the principal invoking this method. It must be an
+     *         owner of this ACL.
+     * @param entry
+     *         the ACL entry to be added to this ACL.
      *
      * @return true on success, false if an entry of the same type
      * (positive or negative) for the same principal is already
      * present in this ACL.
      *
-     * @exception NotOwnerException if the caller principal
-     *  is not an owner of this ACL.
+     * @throws NotOwnerException
+     *         if the caller principal
+     *         is not an owner of this ACL.
      */
-    public boolean addEntry(Principal caller, AclEntry entry)
-      throws NotOwnerException;
+    public boolean addEntry(Principal caller, AclEntry entry) throws NotOwnerException;
 
     /**
      * Removes an ACL entry from this ACL.
      *
-     * @param caller the principal invoking this method. It must be an
-     * owner of this ACL.
-     *
-     * @param entry the ACL entry to be removed from this ACL.
+     * @param caller
+     *         the principal invoking this method. It must be an
+     *         owner of this ACL.
+     * @param entry
+     *         the ACL entry to be removed from this ACL.
      *
      * @return true on success, false if the entry is not part of this ACL.
      *
-     * @exception NotOwnerException if the caller principal is not
-     * an owner of this Acl.
+     * @throws NotOwnerException
+     *         if the caller principal is not
+     *         an owner of this Acl.
      */
-    public boolean removeEntry(Principal caller, AclEntry entry)
-          throws NotOwnerException;
+    public boolean removeEntry(Principal caller, AclEntry entry) throws NotOwnerException;
 
     /**
      * Returns an enumeration for the set of allowed permissions for the
@@ -195,7 +196,8 @@ public interface Acl extends Owner {
      *
      * </ul>
      *
-     * @param user the principal whose permission set is to be returned.
+     * @param user
+     *         the principal whose permission set is to be returned.
      *
      * @return the permission set specifying the permissions the principal
      * is allowed.
@@ -219,10 +221,11 @@ public interface Acl extends Owner {
      * The allowed permission set is determined by the same algorithm as is
      * used by the {@code getPermissions} method.
      *
-     * @param principal the principal, assumed to be a valid authenticated
-     * Principal.
-     *
-     * @param permission the permission to be checked for.
+     * @param principal
+     *         the principal, assumed to be a valid authenticated
+     *         Principal.
+     * @param permission
+     *         the permission to be checked for.
      *
      * @return true if the principal has the specified permission, false
      * otherwise.

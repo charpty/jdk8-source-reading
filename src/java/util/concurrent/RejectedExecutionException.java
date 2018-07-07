@@ -39,8 +39,8 @@ package java.util.concurrent;
  * Exception thrown by an {@link Executor} when a task cannot be
  * accepted for execution.
  *
- * @since 1.5
  * @author Doug Lea
+ * @since 1.5
  */
 public class RejectedExecutionException extends RuntimeException {
     private static final long serialVersionUID = -375805702767069545L;
@@ -50,7 +50,8 @@ public class RejectedExecutionException extends RuntimeException {
      * The cause is not initialized, and may subsequently be
      * initialized by a call to {@link #initCause(Throwable) initCause}.
      */
-    public RejectedExecutionException() { }
+    public RejectedExecutionException() {
+    }
 
     /**
      * Constructs a {@code RejectedExecutionException} with the
@@ -58,7 +59,8 @@ public class RejectedExecutionException extends RuntimeException {
      * subsequently be initialized by a call to {@link
      * #initCause(Throwable) initCause}.
      *
-     * @param message the detail message
+     * @param message
+     *         the detail message
      */
     public RejectedExecutionException(String message) {
         super(message);
@@ -68,8 +70,10 @@ public class RejectedExecutionException extends RuntimeException {
      * Constructs a {@code RejectedExecutionException} with the
      * specified detail message and cause.
      *
-     * @param  message the detail message
-     * @param  cause the cause (which is saved for later retrieval by the
+     * @param message
+     *         the detail message
+     * @param cause
+     *         the cause (which is saved for later retrieval by the
      *         {@link #getCause()} method)
      */
     public RejectedExecutionException(String message, Throwable cause) {
@@ -82,7 +86,8 @@ public class RejectedExecutionException extends RuntimeException {
      * null ? null : cause.toString())} (which typically contains
      * the class and detail message of {@code cause}).
      *
-     * @param  cause the cause (which is saved for later retrieval by the
+     * @param cause
+     *         the cause (which is saved for later retrieval by the
      *         {@link #getCause()} method)
      */
     public RejectedExecutionException(Throwable cause) {

@@ -69,9 +69,6 @@ package java.time.format;
  * Phase 2 resolves the parsed field-value pairs into date and/or time objects.
  * This style is used to control how phase 2, resolving, happens.
  *
- * @implSpec
- * This is an immutable and thread-safe enum.
- *
  * @since 1.8
  */
 public enum ResolverStyle {
@@ -87,8 +84,7 @@ public enum ResolverStyle {
      * system using strict mode will ensure that the day-of-month is valid
      * for the year-month, rejecting invalid values.
      */
-    STRICT,
-    /**
+    STRICT, /**
      * Style to resolve dates and times in a smart, or intelligent, manner.
      * <p>
      * Using smart resolution will perform the sensible default for each
@@ -100,8 +96,7 @@ public enum ResolverStyle {
      * 1 to 31, converting any value beyond the last valid day-of-month to be
      * the last valid day-of-month.
      */
-    SMART,
-    /**
+    SMART, /**
      * Style to resolve dates and times leniently.
      * <p>
      * Using lenient resolution will resolve the values in an appropriate

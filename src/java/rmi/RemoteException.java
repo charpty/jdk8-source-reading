@@ -43,8 +43,8 @@ package java.rmi;
  * instance of <code>RemoteException</code> always throws {@link
  * IllegalStateException}.
  *
- * @author  Ann Wollrath
- * @since   JDK1.1
+ * @author Ann Wollrath
+ * @since JDK1.1
  */
 public class RemoteException extends java.io.IOException {
 
@@ -57,8 +57,6 @@ public class RemoteException extends java.io.IOException {
      * <p>This field predates the general-purpose exception chaining facility.
      * The {@link Throwable#getCause()} method is now the preferred means of
      * obtaining this information.
-     *
-     * @serial
      */
     public Throwable detail;
 
@@ -73,7 +71,8 @@ public class RemoteException extends java.io.IOException {
      * Constructs a <code>RemoteException</code> with the specified
      * detail message.
      *
-     * @param s the detail message
+     * @param s
+     *         the detail message
      */
     public RemoteException(String s) {
         super(s);
@@ -85,8 +84,10 @@ public class RemoteException extends java.io.IOException {
      * message and cause.  This constructor sets the {@link #detail}
      * field to the specified <code>Throwable</code>.
      *
-     * @param s the detail message
-     * @param cause the cause
+     * @param s
+     *         the detail message
+     * @param cause
+     *         the cause
      */
     public RemoteException(String s, Throwable cause) {
         super(s);
@@ -104,8 +105,7 @@ public class RemoteException extends java.io.IOException {
         if (detail == null) {
             return super.getMessage();
         } else {
-            return super.getMessage() + "; nested exception is: \n\t" +
-                detail.toString();
+            return super.getMessage() + "; nested exception is: \n\t" + detail.toString();
         }
     }
 
@@ -113,8 +113,9 @@ public class RemoteException extends java.io.IOException {
      * Returns the cause of this exception.  This method returns the value
      * of the {@link #detail} field.
      *
-     * @return  the cause, which may be <tt>null</tt>.
-     * @since   1.4
+     * @return the cause, which may be <tt>null</tt>.
+     *
+     * @since 1.4
      */
     public Throwable getCause() {
         return detail;

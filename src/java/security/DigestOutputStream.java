@@ -25,12 +25,9 @@
 
 package java.security;
 
-import java.io.IOException;
-import java.io.EOFException;
-import java.io.OutputStream;
 import java.io.FilterOutputStream;
-import java.io.PrintStream;
-import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * A transparent stream that updates the associated message digest using
@@ -47,10 +44,9 @@ import java.io.ByteArrayOutputStream;
  * an update on the message digest.  But when it is off, the message
  * digest is not updated. The default is for the stream to be on.
  *
+ * @author Benjamin Renaud
  * @see MessageDigest
  * @see DigestInputStream
- *
- * @author Benjamin Renaud
  */
 public class DigestOutputStream extends FilterOutputStream {
 
@@ -65,9 +61,10 @@ public class DigestOutputStream extends FilterOutputStream {
      * Creates a digest output stream, using the specified output stream
      * and message digest.
      *
-     * @param stream the output stream.
-     *
-     * @param digest the message digest to associate with this stream.
+     * @param stream
+     *         the output stream.
+     * @param digest
+     *         the message digest to associate with this stream.
      */
     public DigestOutputStream(OutputStream stream, MessageDigest digest) {
         super(stream);
@@ -78,6 +75,7 @@ public class DigestOutputStream extends FilterOutputStream {
      * Returns the message digest associated with this stream.
      *
      * @return the message digest associated with this stream.
+     *
      * @see #setMessageDigest(java.security.MessageDigest)
      */
     public MessageDigest getMessageDigest() {
@@ -87,7 +85,9 @@ public class DigestOutputStream extends FilterOutputStream {
     /**
      * Associates the specified message digest with this stream.
      *
-     * @param digest the message digest to be associated with this stream.
+     * @param digest
+     *         the message digest to be associated with this stream.
+     *
      * @see #getMessageDigest()
      */
     public void setMessageDigest(MessageDigest digest) {
@@ -104,17 +104,18 @@ public class DigestOutputStream extends FilterOutputStream {
      * writes the byte to the output stream, blocking until the byte
      * is actually written.
      *
-     * @param b the byte to be used for updating and writing to the
-     * output stream.
+     * @param b
+     *         the byte to be used for updating and writing to the
+     *         output stream.
      *
-     * @exception IOException if an I/O error occurs.
-     *
+     * @throws IOException
+     *         if an I/O error occurs.
      * @see MessageDigest#update(byte)
      */
     public void write(int b) throws IOException {
         out.write(b);
         if (on) {
-            digest.update((byte)b);
+            digest.update((byte) b);
         }
     }
 
@@ -128,17 +129,18 @@ public class DigestOutputStream extends FilterOutputStream {
      * bytes to the output stream, blocking until the bytes are actually
      * written.
      *
-     * @param b the array containing the subarray to be used for updating
-     * and writing to the output stream.
+     * @param b
+     *         the array containing the subarray to be used for updating
+     *         and writing to the output stream.
+     * @param off
+     *         the offset into {@code b} of the first byte to
+     *         be updated and written.
+     * @param len
+     *         the number of bytes of data to be updated and written
+     *         from {@code b}, starting at offset {@code off}.
      *
-     * @param off the offset into {@code b} of the first byte to
-     * be updated and written.
-     *
-     * @param len the number of bytes of data to be updated and written
-     * from {@code b}, starting at offset {@code off}.
-     *
-     * @exception IOException if an I/O error occurs.
-     *
+     * @throws IOException
+     *         if an I/O error occurs.
      * @see MessageDigest#update(byte[], int, int)
      */
     public void write(byte[] b, int off, int len) throws IOException {
@@ -154,8 +156,9 @@ public class DigestOutputStream extends FilterOutputStream {
      * update on the message digest.  But when it is off, the message
      * digest is not updated.
      *
-     * @param on true to turn the digest function on, false to turn it
-     * off.
+     * @param on
+     *         true to turn the digest function on, false to turn it
+     *         off.
      */
     public void on(boolean on) {
         this.on = on;
@@ -165,7 +168,7 @@ public class DigestOutputStream extends FilterOutputStream {
      * Prints a string representation of this digest output stream and
      * its associated message digest object.
      */
-     public String toString() {
-         return "[Digest Output Stream] " + digest.toString();
-     }
+    public String toString() {
+        return "[Digest Output Stream] " + digest.toString();
+    }
 }

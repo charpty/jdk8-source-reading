@@ -50,7 +50,8 @@ public class NoSuchProviderException extends GeneralSecurityException {
      * message. A detail message is a String that describes this
      * particular exception.
      *
-     * @param msg the detail message.
+     * @param msg
+     *         the detail message.
      */
     public NoSuchProviderException(String msg) {
         super(msg);

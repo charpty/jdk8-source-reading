@@ -33,8 +33,8 @@ package java.sql;
  * <code>SQLInput</code> methods. The <i>reader</i> methods
  * (<code>readLong</code>, <code>readBytes</code>, and so on)
  * provide a way  for an implementation of the <code>SQLData</code>
- *  interface to read the values in an <code>SQLInput</code> object.
- *  And as described in <code>SQLData</code>, calls to reader methods must
+ * interface to read the values in an <code>SQLInput</code> object.
+ * And as described in <code>SQLData</code>, calls to reader methods must
  * be made in the order that their corresponding attributes appear in the
  * SQL definition of the type.
  * The method <code>wasNull</code> is used to determine whether
@@ -50,11 +50,11 @@ package java.sql;
  * calls the <code>SQLInput</code> reader methods
  * in its implementation for reading the
  * attributes from the input stream.
+ *
  * @since 1.2
  */
 
 public interface SQLInput {
-
 
     //================================================================
     // Methods for reading attributes from the stream of SQL data.
@@ -67,9 +67,12 @@ public interface SQLInput {
      * in the Java programming language.
      *
      * @return the attribute; if the value is SQL <code>NULL</code>, returns <code>null</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     String readString() throws SQLException;
@@ -79,9 +82,12 @@ public interface SQLInput {
      * in the Java programming language.
      *
      * @return the attribute; if the value is SQL <code>NULL</code>, returns <code>false</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     boolean readBoolean() throws SQLException;
@@ -91,9 +97,12 @@ public interface SQLInput {
      * in the Java programming language.
      *
      * @return the attribute; if the value is SQL <code>NULL</code>, returns <code>0</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     byte readByte() throws SQLException;
@@ -103,9 +112,12 @@ public interface SQLInput {
      * in the Java programming language.
      *
      * @return the attribute; if the value is SQL <code>NULL</code>, returns <code>0</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     short readShort() throws SQLException;
@@ -115,9 +127,12 @@ public interface SQLInput {
      * in the Java programming language.
      *
      * @return the attribute; if the value is SQL <code>NULL</code>, returns <code>0</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     int readInt() throws SQLException;
@@ -127,9 +142,12 @@ public interface SQLInput {
      * in the Java programming language.
      *
      * @return the attribute; if the value is SQL <code>NULL</code>, returns <code>0</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     long readLong() throws SQLException;
@@ -139,9 +157,12 @@ public interface SQLInput {
      * in the Java programming language.
      *
      * @return the attribute; if the value is SQL <code>NULL</code>, returns <code>0</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     float readFloat() throws SQLException;
@@ -151,9 +172,12 @@ public interface SQLInput {
      * in the Java programming language.
      *
      * @return the attribute; if the value is SQL <code>NULL</code>, returns <code>0</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     double readDouble() throws SQLException;
@@ -163,9 +187,12 @@ public interface SQLInput {
      * object in the Java programming language.
      *
      * @return the attribute; if the value is SQL <code>NULL</code>, returns <code>null</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     java.math.BigDecimal readBigDecimal() throws SQLException;
@@ -175,9 +202,12 @@ public interface SQLInput {
      * in the Java programming language.
      *
      * @return the attribute; if the value is SQL <code>NULL</code>, returns <code>null</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     byte[] readBytes() throws SQLException;
@@ -186,9 +216,12 @@ public interface SQLInput {
      * Reads the next attribute in the stream and returns it as a <code>java.sql.Date</code> object.
      *
      * @return the attribute; if the value is SQL <code>NULL</code>, returns <code>null</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     java.sql.Date readDate() throws SQLException;
@@ -197,9 +230,12 @@ public interface SQLInput {
      * Reads the next attribute in the stream and returns it as a <code>java.sql.Time</code> object.
      *
      * @return the attribute; if the value is SQL <code>NULL</code>, returns <code>null</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     java.sql.Time readTime() throws SQLException;
@@ -208,9 +244,12 @@ public interface SQLInput {
      * Reads the next attribute in the stream and returns it as a <code>java.sql.Timestamp</code> object.
      *
      * @return the attribute; if the value is SQL <code>NULL</code>, returns <code>null</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     java.sql.Timestamp readTimestamp() throws SQLException;
@@ -219,9 +258,12 @@ public interface SQLInput {
      * Reads the next attribute in the stream and returns it as a stream of Unicode characters.
      *
      * @return the attribute; if the value is SQL <code>NULL</code>, returns <code>null</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     java.io.Reader readCharacterStream() throws SQLException;
@@ -230,9 +272,12 @@ public interface SQLInput {
      * Reads the next attribute in the stream and returns it as a stream of ASCII characters.
      *
      * @return the attribute; if the value is SQL <code>NULL</code>, returns <code>null</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     java.io.InputStream readAsciiStream() throws SQLException;
@@ -242,9 +287,12 @@ public interface SQLInput {
      * bytes.
      *
      * @return the attribute; if the value is SQL <code>NULL</code>, returns <code>null</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     java.io.InputStream readBinaryStream() throws SQLException;
@@ -272,9 +320,12 @@ public interface SQLInput {
      *
      * @return the datum at the head of the stream as an <code>Object</code> in the
      * Java programming language;<code>null</code> if the datum is SQL <code>NULL</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     Object readObject() throws SQLException;
@@ -286,9 +337,12 @@ public interface SQLInput {
      * @return a <code>Ref</code> object representing the SQL <code>REF</code> value
      * at the head of the stream; <code>null</code> if the value read is
      * SQL <code>NULL</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     Ref readRef() throws SQLException;
@@ -300,9 +354,12 @@ public interface SQLInput {
      * @return a <code>Blob</code> object representing data of the SQL <code>BLOB</code> value
      * at the head of the stream; <code>null</code> if the value read is
      * SQL <code>NULL</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     Blob readBlob() throws SQLException;
@@ -314,9 +371,12 @@ public interface SQLInput {
      * @return a <code>Clob</code> object representing data of the SQL <code>CLOB</code> value
      * at the head of the stream; <code>null</code> if the value read is
      * SQL <code>NULL</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     Clob readClob() throws SQLException;
@@ -328,9 +388,12 @@ public interface SQLInput {
      * @return an <code>Array</code> object representing data of the SQL
      * <code>ARRAY</code> value at the head of the stream; <code>null</code>
      * if the value read is SQL <code>NULL</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     Array readArray() throws SQLException;
@@ -340,10 +403,12 @@ public interface SQLInput {
      *
      * @return <code>true</code> if the most recently read SQL value was SQL
      * <code>NULL</code>; <code>false</code> otherwise
-     * @exception SQLException if a database access error occurs
      *
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.2
      */
     boolean wasNull() throws SQLException;
@@ -355,15 +420,18 @@ public interface SQLInput {
      * <code>java.net.URL</code> object in the Java programming language.
      *
      * @return a <code>java.net.URL</code> object.
-     * @exception SQLException if a database access error occurs,
-     *            or if a URL is malformed
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs,
+     *         or if a URL is malformed
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.4
      */
     java.net.URL readURL() throws SQLException;
 
-     //---------------------------- JDBC 4.0 -------------------------
+    //---------------------------- JDBC 4.0 -------------------------
 
     /**
      * Reads an SQL <code>NCLOB</code> value from the stream and returns it as a
@@ -372,9 +440,12 @@ public interface SQLInput {
      * @return a <code>NClob</code> object representing data of the SQL <code>NCLOB</code> value
      * at the head of the stream; <code>null</code> if the value read is
      * SQL <code>NULL</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.6
      */
     NClob readNClob() throws SQLException;
@@ -386,9 +457,12 @@ public interface SQLInput {
      * and <code>LONGNVARCHAR</code> columns.
      *
      * @return the attribute; if the value is SQL <code>NULL</code>, returns <code>null</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.6
      */
     String readNString() throws SQLException;
@@ -400,9 +474,12 @@ public interface SQLInput {
      * @return a <code>SQLXML</code> object representing data of the SQL <code>XML</code> value
      * at the head of the stream; <code>null</code> if the value read is
      * SQL <code>NULL</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.6
      */
     SQLXML readSQLXML() throws SQLException;
@@ -414,9 +491,12 @@ public interface SQLInput {
      * @return a <code>RowId</code> object representing data of the SQL <code>ROWID</code> value
      * at the head of the stream; <code>null</code> if the value read is
      * SQL <code>NULL</code>
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.6
      */
     RowId readRowId() throws SQLException;
@@ -441,19 +521,25 @@ public interface SQLInput {
      * constructs an object of the appropriate class and calls the method
      * {@code SQLData.readSQL} on that object, which reads additional data from the
      * stream, using the protocol described for that method.
-     *<p>
+     * <p>
      * The default implementation will throw {@code SQLFeatureNotSupportedException}
      *
-     * @param <T> the type of the class modeled by this Class object
-     * @param type Class representing the Java data type to convert the attribute to.
+     * @param <T>
+     *         the type of the class modeled by this Class object
+     * @param type
+     *         Class representing the Java data type to convert the attribute to.
+     *
      * @return the attribute at the head of the stream as an {@code Object} in the
      * Java programming language;{@code null} if the attribute is SQL {@code NULL}
-     * @exception SQLException if a database access error occurs
-     * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
-     * this method
+     *
+     * @throws SQLException
+     *         if a database access error occurs
+     * @throws SQLFeatureNotSupportedException
+     *         if the JDBC driver does not support
+     *         this method
      * @since 1.8
      */
     default <T> T readObject(Class<T> type) throws SQLException {
-       throw new SQLFeatureNotSupportedException();
+        throw new SQLFeatureNotSupportedException();
     }
 }

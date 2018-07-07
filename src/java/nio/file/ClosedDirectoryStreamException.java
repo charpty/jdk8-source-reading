@@ -32,9 +32,7 @@ package java.nio.file;
  * @since 1.7
  */
 
-public class ClosedDirectoryStreamException
-    extends IllegalStateException
-{
+public class ClosedDirectoryStreamException extends IllegalStateException {
     static final long serialVersionUID = 4228386650900895400L;
 
     /**

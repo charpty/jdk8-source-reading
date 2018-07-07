@@ -32,7 +32,7 @@ import java.io.IOException;
  * attributes common to many file systems. The basic set of file attributes
  * consist of <em>mandatory</em> and <em>optional</em> file attributes as
  * defined by the {@link BasicFileAttributes} interface.
-
+ *
  * <p> The file attributes are retrieved from the file system as a <em>bulk
  * operation</em> by invoking the {@link #readAttributes() readAttributes} method.
  * This class also defines the {@link #setTimes setTimes} method to update the
@@ -41,47 +41,47 @@ import java.io.IOException;
  * <p> Where dynamic access to file attributes is required, the attributes
  * supported by this attribute view have the following names and types:
  * <blockquote>
- *  <table border="1" cellpadding="8" summary="Supported attributes">
- *   <tr>
- *     <th> Name </th>
- *     <th> Type </th>
- *   </tr>
- *  <tr>
- *     <td> "lastModifiedTime" </td>
- *     <td> {@link FileTime} </td>
- *   </tr>
- *   <tr>
- *     <td> "lastAccessTime" </td>
- *     <td> {@link FileTime} </td>
- *   </tr>
- *   <tr>
- *     <td> "creationTime" </td>
- *     <td> {@link FileTime} </td>
- *   </tr>
- *   <tr>
- *     <td> "size" </td>
- *     <td> {@link Long} </td>
- *   </tr>
- *   <tr>
- *     <td> "isRegularFile" </td>
- *     <td> {@link Boolean} </td>
- *   </tr>
- *   <tr>
- *     <td> "isDirectory" </td>
- *     <td> {@link Boolean} </td>
- *   </tr>
- *   <tr>
- *     <td> "isSymbolicLink" </td>
- *     <td> {@link Boolean} </td>
- *   </tr>
- *   <tr>
- *     <td> "isOther" </td>
- *     <td> {@link Boolean} </td>
- *   </tr>
- *   <tr>
- *     <td> "fileKey" </td>
- *     <td> {@link Object} </td>
- *   </tr>
+ * <table border="1" cellpadding="8" summary="Supported attributes">
+ * <tr>
+ * <th> Name </th>
+ * <th> Type </th>
+ * </tr>
+ * <tr>
+ * <td> "lastModifiedTime" </td>
+ * <td> {@link FileTime} </td>
+ * </tr>
+ * <tr>
+ * <td> "lastAccessTime" </td>
+ * <td> {@link FileTime} </td>
+ * </tr>
+ * <tr>
+ * <td> "creationTime" </td>
+ * <td> {@link FileTime} </td>
+ * </tr>
+ * <tr>
+ * <td> "size" </td>
+ * <td> {@link Long} </td>
+ * </tr>
+ * <tr>
+ * <td> "isRegularFile" </td>
+ * <td> {@link Boolean} </td>
+ * </tr>
+ * <tr>
+ * <td> "isDirectory" </td>
+ * <td> {@link Boolean} </td>
+ * </tr>
+ * <tr>
+ * <td> "isSymbolicLink" </td>
+ * <td> {@link Boolean} </td>
+ * </tr>
+ * <tr>
+ * <td> "isOther" </td>
+ * <td> {@link Boolean} </td>
+ * </tr>
+ * <tr>
+ * <td> "fileKey" </td>
+ * <td> {@link Object} </td>
+ * </tr>
  * </table>
  * </blockquote>
  *
@@ -96,9 +96,7 @@ import java.io.IOException;
  * @since 1.7
  */
 
-public interface BasicFileAttributeView
-    extends FileAttributeView
-{
+public interface BasicFileAttributeView extends FileAttributeView {
     /**
      * Returns the name of the attribute view. Attribute views of this type
      * have the name {@code "basic"}.
@@ -112,14 +110,14 @@ public interface BasicFileAttributeView
      * <p> It is implementation specific if all file attributes are read as an
      * atomic operation with respect to other file system operations.
      *
-     * @return  the file attributes
+     * @return the file attributes
      *
-     * @throws  IOException
-     *          if an I/O error occurs
-     * @throws  SecurityException
-     *          In the case of the default provider, a security manager is
-     *          installed, its {@link SecurityManager#checkRead(String) checkRead}
-     *          method is invoked to check read access to the file
+     * @throws IOException
+     *         if an I/O error occurs
+     * @throws SecurityException
+     *         In the case of the default provider, a security manager is
+     *         installed, its {@link SecurityManager#checkRead(String) checkRead}
+     *         method is invoked to check read access to the file
      */
     BasicFileAttributes readAttributes() throws IOException;
 
@@ -154,24 +152,21 @@ public interface BasicFileAttributeView
      *    Files.getFileAttributeView(path, BasicFileAttributeView.class).setTimes(null, time, null);
      * </pre>
      *
-     * @param   lastModifiedTime
-     *          the new last modified time, or {@code null} to not change the
-     *          value
-     * @param   lastAccessTime
-     *          the last access time, or {@code null} to not change the value
-     * @param   createTime
-     *          the file's create time, or {@code null} to not change the value
+     * @param lastModifiedTime
+     *         the new last modified time, or {@code null} to not change the
+     *         value
+     * @param lastAccessTime
+     *         the last access time, or {@code null} to not change the value
+     * @param createTime
+     *         the file's create time, or {@code null} to not change the value
      *
-     * @throws  IOException
-     *          if an I/O error occurs
-     * @throws  SecurityException
-     *          In the case of the default provider, a security manager is
-     *          installed, its  {@link SecurityManager#checkWrite(String) checkWrite}
-     *          method is invoked to check write access to the file
-     *
+     * @throws IOException
+     *         if an I/O error occurs
+     * @throws SecurityException
+     *         In the case of the default provider, a security manager is
+     *         installed, its  {@link SecurityManager#checkWrite(String) checkWrite}
+     *         method is invoked to check write access to the file
      * @see java.nio.file.Files#setLastModifiedTime
      */
-    void setTimes(FileTime lastModifiedTime,
-                  FileTime lastAccessTime,
-                  FileTime createTime) throws IOException;
+    void setTimes(FileTime lastModifiedTime, FileTime lastAccessTime, FileTime createTime) throws IOException;
 }

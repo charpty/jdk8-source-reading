@@ -91,17 +91,15 @@ import java.util.Iterator;
  * <p> Implementations of this interface are immutable and safe for use by
  * multiple concurrent threads.
  *
- * @since 1.7
  * @see Paths
+ * @since 1.7
  */
 
-public interface Path
-    extends Comparable<Path>, Iterable<Path>, Watchable
-{
+public interface Path extends Comparable<Path>, Iterable<Path>, Watchable {
     /**
      * Returns the file system that created this object.
      *
-     * @return  the file system that created this object
+     * @return the file system that created this object
      */
     FileSystem getFileSystem();
 
@@ -111,7 +109,7 @@ public interface Path
      * <p> An absolute path is complete in that it doesn't need to be combined
      * with other path information in order to locate a file.
      *
-     * @return  {@code true} if, and only if, this path is absolute
+     * @return {@code true} if, and only if, this path is absolute
      */
     boolean isAbsolute();
 
@@ -119,8 +117,8 @@ public interface Path
      * Returns the root component of this path as a {@code Path} object,
      * or {@code null} if this path does not have a root component.
      *
-     * @return  a path representing the root component of this path,
-     *          or {@code null}
+     * @return a path representing the root component of this path,
+     * or {@code null}
      */
     Path getRoot();
 
@@ -129,8 +127,8 @@ public interface Path
      * {@code Path} object. The file name is the <em>farthest</em> element from
      * the root in the directory hierarchy.
      *
-     * @return  a path representing the name of the file or directory, or
-     *          {@code null} if this path has zero elements
+     * @return a path representing the name of the file or directory, or
+     * {@code null} if this path has zero elements
      */
     Path getFileName();
 
@@ -155,15 +153,15 @@ public interface Path
      * subpath(0,&nbsp;getNameCount()-1);
      * </pre></blockquote>
      *
-     * @return  a path representing the path's parent
+     * @return a path representing the path's parent
      */
     Path getParent();
 
     /**
      * Returns the number of name elements in the path.
      *
-     * @return  the number of elements in the path, or {@code 0} if this path
-     *          only represents a root component
+     * @return the number of elements in the path, or {@code 0} if this path
+     * only represents a root component
      */
     int getNameCount();
 
@@ -175,15 +173,15 @@ public interface Path
      * has index {@code 0}. The element that is <em>farthest</em> from the root
      * has index {@link #getNameCount count}{@code -1}.
      *
-     * @param   index
-     *          the index of the element
+     * @param index
+     *         the index of the element
      *
-     * @return  the name element
+     * @return the name element
      *
-     * @throws  IllegalArgumentException
-     *          if {@code index} is negative, {@code index} is greater than or
-     *          equal to the number of elements, or this path has zero name
-     *          elements
+     * @throws IllegalArgumentException
+     *         if {@code index} is negative, {@code index} is greater than or
+     *         equal to the number of elements, or this path has zero name
+     *         elements
      */
     Path getName(int index);
 
@@ -199,18 +197,18 @@ public interface Path
      * that begin at {@code beginIndex} and extend to the element at index {@code
      * endIndex-1}.
      *
-     * @param   beginIndex
-     *          the index of the first element, inclusive
-     * @param   endIndex
-     *          the index of the last element, exclusive
+     * @param beginIndex
+     *         the index of the first element, inclusive
+     * @param endIndex
+     *         the index of the last element, exclusive
      *
-     * @return  a new {@code Path} object that is a subsequence of the name
-     *          elements in this {@code Path}
+     * @return a new {@code Path} object that is a subsequence of the name
+     * elements in this {@code Path}
      *
-     * @throws  IllegalArgumentException
-     *          if {@code beginIndex} is negative, or greater than or equal to
-     *          the number of elements. If {@code endIndex} is less than or
-     *          equal to {@code beginIndex}, or larger than the number of elements.
+     * @throws IllegalArgumentException
+     *         if {@code beginIndex} is negative, or greater than or equal to
+     *         the number of elements. If {@code endIndex} is less than or
+     *         equal to {@code beginIndex}, or larger than the number of elements.
      */
     Path subpath(int beginIndex, int endIndex);
 
@@ -231,11 +229,11 @@ public interface Path
      * <p> If the given path is associated with a different {@code FileSystem}
      * to this path then {@code false} is returned.
      *
-     * @param   other
-     *          the given path
+     * @param other
+     *         the given path
      *
-     * @return  {@code true} if this path starts with the given path; otherwise
-     *          {@code false}
+     * @return {@code true} if this path starts with the given path; otherwise
+     * {@code false}
      */
     boolean startsWith(Path other);
 
@@ -246,14 +244,14 @@ public interface Path
      * "{@code foo/bar}" starts with "{@code foo}" and "{@code foo/bar}". It
      * does not start with "{@code f}" or "{@code fo}".
      *
-     * @param   other
-     *          the given path string
+     * @param other
+     *         the given path string
      *
-     * @return  {@code true} if this path starts with the given path; otherwise
-     *          {@code false}
+     * @return {@code true} if this path starts with the given path; otherwise
+     * {@code false}
      *
-     * @throws  InvalidPathException
-     *          If the path string cannot be converted to a Path.
+     * @throws InvalidPathException
+     *         If the path string cannot be converted to a Path.
      */
     boolean startsWith(String other);
 
@@ -276,11 +274,11 @@ public interface Path
      * <p> If the given path is associated with a different {@code FileSystem}
      * to this path then {@code false} is returned.
      *
-     * @param   other
-     *          the given path
+     * @param other
+     *         the given path
      *
-     * @return  {@code true} if this path ends with the given path; otherwise
-     *          {@code false}
+     * @return {@code true} if this path ends with the given path; otherwise
+     * {@code false}
      */
     boolean endsWith(Path other);
 
@@ -294,14 +292,14 @@ public interface Path
      * Path}"{@code foo/bar}" with the {@code String} "{@code bar/}" returns
      * {@code true}.
      *
-     * @param   other
-     *          the given path string
+     * @param other
+     *         the given path string
      *
-     * @return  {@code true} if this path ends with the given path; otherwise
-     *          {@code false}
+     * @return {@code true} if this path ends with the given path; otherwise
+     * {@code false}
      *
-     * @throws  InvalidPathException
-     *          If the path string cannot be converted to a Path.
+     * @throws InvalidPathException
+     *         If the path string cannot be converted to a Path.
      */
     boolean endsWith(String other);
 
@@ -323,9 +321,9 @@ public interface Path
      * path may result in the path that locates a different file than the original
      * path. This can arise when the preceding name is a symbolic link.
      *
-     * @return  the resulting path or this path if it does not contain
-     *          redundant name elements; an empty path is returned if this path
-     *          does have a root component and all name elements are redundant
+     * @return the resulting path or this path if it does not contain
+     * redundant name elements; an empty path is returned if this path
+     * does have a root component and all name elements are redundant
      *
      * @see #getParent
      * @see #toRealPath
@@ -348,10 +346,10 @@ public interface Path
      * a root component then resolution is highly implementation dependent and
      * therefore unspecified.
      *
-     * @param   other
-     *          the path to resolve against this path
+     * @param other
+     *         the path to resolve against this path
      *
-     * @return  the resulting path
+     * @return the resulting path
      *
      * @see #relativize
      */
@@ -365,14 +363,13 @@ public interface Path
      * invoking this method with the path string "{@code gus}" will result in
      * the {@code Path} "{@code foo/bar/gus}".
      *
-     * @param   other
-     *          the path string to resolve against this path
+     * @param other
+     *         the path string to resolve against this path
      *
-     * @return  the resulting path
+     * @return the resulting path
      *
-     * @throws  InvalidPathException
-     *          if the path string cannot be converted to a Path.
-     *
+     * @throws InvalidPathException
+     *         if the path string cannot be converted to a Path.
      * @see FileSystem#getPath
      */
     Path resolve(String other);
@@ -389,10 +386,10 @@ public interface Path
      * returns this path's parent, or where this path doesn't have a parent, the
      * empty path.
      *
-     * @param   other
-     *          the path to resolve against this path's parent
+     * @param other
+     *         the path to resolve against this path's parent
      *
-     * @return  the resulting path
+     * @return the resulting path
      *
      * @see #resolve(Path)
      */
@@ -403,14 +400,13 @@ public interface Path
      * this path's {@link #getParent parent} path in exactly the manner
      * specified by the {@link #resolveSibling(Path) resolveSibling} method.
      *
-     * @param   other
-     *          the path string to resolve against this path's parent
+     * @param other
+     *         the path string to resolve against this path's parent
      *
-     * @return  the resulting path
+     * @return the resulting path
      *
-     * @throws  InvalidPathException
-     *          if the path string cannot be converted to a Path.
-     *
+     * @throws InvalidPathException
+     *         if the path string cannot be converted to a Path.
      * @see FileSystem#getPath
      */
     Path resolveSibling(String other);
@@ -434,7 +430,7 @@ public interface Path
      * <p> For any two {@link #normalize normalized} paths <i>p</i> and
      * <i>q</i>, where <i>q</i> does not have a root component,
      * <blockquote>
-     *   <i>p</i><tt>.relativize(</tt><i>p</i><tt>.resolve(</tt><i>q</i><tt>)).equals(</tt><i>q</i><tt>)</tt>
+     * <i>p</i><tt>.relativize(</tt><i>p</i><tt>.resolve(</tt><i>q</i><tt>)).equals(</tt><i>q</i><tt>)</tt>
      * </blockquote>
      *
      * <p> When symbolic links are supported, then whether the resulting path,
@@ -445,15 +441,15 @@ public interface Path
      * "../x"}. If {@code "b"} is a symbolic link then is implementation
      * dependent if {@code "a/b/../x"} would locate the same file as {@code "/a/x"}.
      *
-     * @param   other
-     *          the path to relativize against this path
+     * @param other
+     *         the path to relativize against this path
      *
-     * @return  the resulting relative path, or an empty path if both paths are
-     *          equal
+     * @return the resulting relative path, or an empty path if both paths are
+     * equal
      *
-     * @throws  IllegalArgumentException
-     *          if {@code other} is not a {@code Path} that can be relativized
-     *          against this path
+     * @throws IllegalArgumentException
+     *         if {@code other} is not a {@code Path} that can be relativized
+     *         against this path
      */
     Path relativize(Path other);
 
@@ -495,18 +491,17 @@ public interface Path
      * A format for compound URIs is not defined in this release; such a scheme
      * may be added in a future release.
      *
-     * @return  the URI representing this path
+     * @return the URI representing this path
      *
-     * @throws  java.io.IOError
-     *          if an I/O error occurs obtaining the absolute path, or where a
-     *          file system is constructed to access the contents of a file as
-     *          a file system, and the URI of the enclosing file system cannot be
-     *          obtained
-     *
-     * @throws  SecurityException
-     *          In the case of the default provider, and a security manager
-     *          is installed, the {@link #toAbsolutePath toAbsolutePath} method
-     *          throws a security exception.
+     * @throws java.io.IOError
+     *         if an I/O error occurs obtaining the absolute path, or where a
+     *         file system is constructed to access the contents of a file as
+     *         a file system, and the URI of the enclosing file system cannot be
+     *         obtained
+     * @throws SecurityException
+     *         In the case of the default provider, and a security manager
+     *         is installed, the {@link #toAbsolutePath toAbsolutePath} method
+     *         throws a security exception.
      */
     URI toUri();
 
@@ -520,16 +515,16 @@ public interface Path
      * against a file system default directory. Depending on the implementation,
      * this method may throw an I/O error if the file system is not accessible.
      *
-     * @return  a {@code Path} object representing the absolute path
+     * @return a {@code Path} object representing the absolute path
      *
-     * @throws  java.io.IOError
-     *          if an I/O error occurs
-     * @throws  SecurityException
-     *          In the case of the default provider, a security manager
-     *          is installed, and this path is not absolute, then the security
-     *          manager's {@link SecurityManager#checkPropertyAccess(String)
-     *          checkPropertyAccess} method is invoked to check access to the
-     *          system property {@code user.dir}
+     * @throws java.io.IOError
+     *         if an I/O error occurs
+     * @throws SecurityException
+     *         In the case of the default provider, a security manager
+     *         is installed, and this path is not absolute, then the security
+     *         manager's {@link SecurityManager#checkPropertyAccess(String)
+     *         checkPropertyAccess} method is invoked to check access to the
+     *         system property {@code user.dir}
      */
     Path toAbsolutePath();
 
@@ -561,21 +556,21 @@ public interface Path
      * then the names are only removed if it guaranteed that the resulting path
      * will locate the same file as this path.
      *
-     * @param   options
-     *          options indicating how symbolic links are handled
+     * @param options
+     *         options indicating how symbolic links are handled
      *
-     * @return  an absolute path represent the <em>real</em> path of the file
-     *          located by this object
+     * @return an absolute path represent the <em>real</em> path of the file
+     * located by this object
      *
-     * @throws  IOException
-     *          if the file does not exist or an I/O error occurs
-     * @throws  SecurityException
-     *          In the case of the default provider, and a security manager
-     *          is installed, its {@link SecurityManager#checkRead(String) checkRead}
-     *          method is invoked to check read access to the file, and where
-     *          this path is not absolute, its {@link SecurityManager#checkPropertyAccess(String)
-     *          checkPropertyAccess} method is invoked to check access to the
-     *          system property {@code user.dir}
+     * @throws IOException
+     *         if the file does not exist or an I/O error occurs
+     * @throws SecurityException
+     *         In the case of the default provider, and a security manager
+     *         is installed, its {@link SecurityManager#checkRead(String) checkRead}
+     *         method is invoked to check read access to the file, and where
+     *         this path is not absolute, its {@link SecurityManager#checkPropertyAccess(String)
+     *         checkPropertyAccess} method is invoked to check access to the
+     *         system property {@code user.dir}
      */
     Path toRealPath(LinkOption... options) throws IOException;
 
@@ -590,10 +585,10 @@ public interface Path
      * File} object returned by this method is {@link #equals equal} to the
      * original {@code File}.
      *
-     * @return  a {@code File} object representing this path
+     * @return a {@code File} object representing this path
      *
-     * @throws  UnsupportedOperationException
-     *          if this {@code Path} is not associated with the default provider
+     * @throws UnsupportedOperationException
+     *         if this {@code Path} is not associated with the default provider
      */
     File toFile();
 
@@ -607,12 +602,12 @@ public interface Path
      * directory can be watched. The {@code events} parameter is the events to
      * register and may contain the following events:
      * <ul>
-     *   <li>{@link StandardWatchEventKinds#ENTRY_CREATE ENTRY_CREATE} -
-     *       entry created or moved into the directory</li>
-     *   <li>{@link StandardWatchEventKinds#ENTRY_DELETE ENTRY_DELETE} -
-     *        entry deleted or moved out of the directory</li>
-     *   <li>{@link StandardWatchEventKinds#ENTRY_MODIFY ENTRY_MODIFY} -
-     *        entry in directory was modified</li>
+     * <li>{@link StandardWatchEventKinds#ENTRY_CREATE ENTRY_CREATE} -
+     * entry created or moved into the directory</li>
+     * <li>{@link StandardWatchEventKinds#ENTRY_DELETE ENTRY_DELETE} -
+     * entry deleted or moved out of the directory</li>
+     * <li>{@link StandardWatchEventKinds#ENTRY_MODIFY ENTRY_MODIFY} -
+     * entry in directory was modified</li>
      * </ul>
      *
      * <p> The {@link WatchEvent#context context} for these events is the
@@ -631,37 +626,34 @@ public interface Path
      * link then it is implementation specific if the watch continues to depend
      * on the existence of the symbolic link after it is registered.
      *
-     * @param   watcher
-     *          the watch service to which this object is to be registered
-     * @param   events
-     *          the events for which this object should be registered
-     * @param   modifiers
-     *          the modifiers, if any, that modify how the object is registered
+     * @param watcher
+     *         the watch service to which this object is to be registered
+     * @param events
+     *         the events for which this object should be registered
+     * @param modifiers
+     *         the modifiers, if any, that modify how the object is registered
      *
-     * @return  a key representing the registration of this object with the
-     *          given watch service
+     * @return a key representing the registration of this object with the
+     * given watch service
      *
-     * @throws  UnsupportedOperationException
-     *          if unsupported events or modifiers are specified
-     * @throws  IllegalArgumentException
-     *          if an invalid combination of events or modifiers is specified
-     * @throws  ClosedWatchServiceException
-     *          if the watch service is closed
-     * @throws  NotDirectoryException
-     *          if the file is registered to watch the entries in a directory
-     *          and the file is not a directory  <i>(optional specific exception)</i>
-     * @throws  IOException
-     *          if an I/O error occurs
-     * @throws  SecurityException
-     *          In the case of the default provider, and a security manager is
-     *          installed, the {@link SecurityManager#checkRead(String) checkRead}
-     *          method is invoked to check read access to the file.
+     * @throws UnsupportedOperationException
+     *         if unsupported events or modifiers are specified
+     * @throws IllegalArgumentException
+     *         if an invalid combination of events or modifiers is specified
+     * @throws ClosedWatchServiceException
+     *         if the watch service is closed
+     * @throws NotDirectoryException
+     *         if the file is registered to watch the entries in a directory
+     *         and the file is not a directory  <i>(optional specific exception)</i>
+     * @throws IOException
+     *         if an I/O error occurs
+     * @throws SecurityException
+     *         In the case of the default provider, and a security manager is
+     *         installed, the {@link SecurityManager#checkRead(String) checkRead}
+     *         method is invoked to check read access to the file.
      */
     @Override
-    WatchKey register(WatchService watcher,
-                      WatchEvent.Kind<?>[] events,
-                      WatchEvent.Modifier... modifiers)
-        throws IOException;
+    WatchKey register(WatchService watcher, WatchEvent.Kind<?>[] events, WatchEvent.Modifier... modifiers) throws IOException;
 
     /**
      * Registers the file located by this path with a watch service.
@@ -669,7 +661,7 @@ public interface Path
      * <p> An invocation of this method behaves in exactly the same way as the
      * invocation
      * <pre>
-     *     watchable.{@link #register(WatchService,WatchEvent.Kind[],WatchEvent.Modifier[]) register}(watcher, events, new WatchEvent.Modifier[0]);
+     *     watchable.{@link #register(WatchService, WatchEvent.Kind[], WatchEvent.Modifier[]) register}(watcher, events, new WatchEvent.Modifier[0]);
      * </pre>
      *
      * <p> <b>Usage Example:</b>
@@ -681,34 +673,33 @@ public interface Path
      *
      *     WatchKey key = dir.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
      * </pre>
-     * @param   watcher
-     *          The watch service to which this object is to be registered
-     * @param   events
-     *          The events for which this object should be registered
      *
-     * @return  A key representing the registration of this object with the
-     *          given watch service
+     * @param watcher
+     *         The watch service to which this object is to be registered
+     * @param events
+     *         The events for which this object should be registered
      *
-     * @throws  UnsupportedOperationException
-     *          If unsupported events are specified
-     * @throws  IllegalArgumentException
-     *          If an invalid combination of events is specified
-     * @throws  ClosedWatchServiceException
-     *          If the watch service is closed
-     * @throws  NotDirectoryException
-     *          If the file is registered to watch the entries in a directory
-     *          and the file is not a directory  <i>(optional specific exception)</i>
-     * @throws  IOException
-     *          If an I/O error occurs
-     * @throws  SecurityException
-     *          In the case of the default provider, and a security manager is
-     *          installed, the {@link SecurityManager#checkRead(String) checkRead}
-     *          method is invoked to check read access to the file.
+     * @return A key representing the registration of this object with the
+     * given watch service
+     *
+     * @throws UnsupportedOperationException
+     *         If unsupported events are specified
+     * @throws IllegalArgumentException
+     *         If an invalid combination of events is specified
+     * @throws ClosedWatchServiceException
+     *         If the watch service is closed
+     * @throws NotDirectoryException
+     *         If the file is registered to watch the entries in a directory
+     *         and the file is not a directory  <i>(optional specific exception)</i>
+     * @throws IOException
+     *         If an I/O error occurs
+     * @throws SecurityException
+     *         In the case of the default provider, and a security manager is
+     *         installed, the {@link SecurityManager#checkRead(String) checkRead}
+     *         method is invoked to check read access to the file.
      */
     @Override
-    WatchKey register(WatchService watcher,
-                      WatchEvent.Kind<?>... events)
-        throws IOException;
+    WatchKey register(WatchService watcher, WatchEvent.Kind<?>... events) throws IOException;
 
     // -- Iterable --
 
@@ -721,7 +712,7 @@ public interface Path
      * is the name of the file or directory denoted by this path. The {@link
      * #getRoot root} component, if present, is not returned by the iterator.
      *
-     * @return  an iterator over the name elements of this path.
+     * @return an iterator over the name elements of this path.
      */
     @Override
     Iterator<Path> iterator();
@@ -737,15 +728,16 @@ public interface Path
      * <p> This method may not be used to compare paths that are associated
      * with different file system providers.
      *
-     * @param   other  the path compared to this path.
+     * @param other
+     *         the path compared to this path.
      *
-     * @return  zero if the argument is {@link #equals equal} to this path, a
-     *          value less than zero if this path is lexicographically less than
-     *          the argument, or a value greater than zero if this path is
-     *          lexicographically greater than the argument
+     * @return zero if the argument is {@link #equals equal} to this path, a
+     * value less than zero if this path is lexicographically less than
+     * the argument, or a value greater than zero if this path is
+     * lexicographically greater than the argument
      *
-     * @throws  ClassCastException
-     *          if the paths are associated with different providers
+     * @throws ClassCastException
+     *         if the paths are associated with different providers
      */
     @Override
     int compareTo(Path other);
@@ -766,11 +758,11 @@ public interface Path
      * <p> This method satisfies the general contract of the {@link
      * java.lang.Object#equals(Object) Object.equals} method. </p>
      *
-     * @param   other
-     *          the object to which this object is to be compared
+     * @param other
+     *         the object to which this object is to be compared
      *
-     * @return  {@code true} if, and only if, the given object is a {@code Path}
-     *          that is identical to this {@code Path}
+     * @return {@code true} if, and only if, the given object is a {@code Path}
+     * that is identical to this {@code Path}
      */
     boolean equals(Object other);
 
@@ -781,7 +773,7 @@ public interface Path
      * satisfies the general contract of the {@link Object#hashCode
      * Object.hashCode} method.
      *
-     * @return  the hash-code value for this path
+     * @return the hash-code value for this path
      */
     int hashCode();
 
@@ -795,7 +787,7 @@ public interface Path
      * <p> The returned path string uses the default name {@link
      * FileSystem#getSeparator separator} to separate names in the path.
      *
-     * @return  the string representation of this path
+     * @return the string representation of this path
      */
     String toString();
 }

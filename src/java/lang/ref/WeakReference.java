@@ -25,7 +25,6 @@
 
 package java.lang.ref;
 
-
 /**
  * Weak reference objects, which do not prevent their referents from being
  * made finalizable, finalized, and then reclaimed.  Weak references are most
@@ -41,8 +40,8 @@ package java.lang.ref;
  * later time it will enqueue those newly-cleared weak references that are
  * registered with reference queues.
  *
- * @author   Mark Reinhold
- * @since    1.2
+ * @author Mark Reinhold
+ * @since 1.2
  */
 
 public class WeakReference<T> extends Reference<T> {
@@ -51,7 +50,8 @@ public class WeakReference<T> extends Reference<T> {
      * Creates a new weak reference that refers to the given object.  The new
      * reference is not registered with any queue.
      *
-     * @param referent object the new weak reference will refer to
+     * @param referent
+     *         object the new weak reference will refer to
      */
     public WeakReference(T referent) {
         super(referent);
@@ -61,9 +61,11 @@ public class WeakReference<T> extends Reference<T> {
      * Creates a new weak reference that refers to the given object and is
      * registered with the given queue.
      *
-     * @param referent object the new weak reference will refer to
-     * @param q the queue with which the reference is to be registered,
-     *          or <tt>null</tt> if registration is not required
+     * @param referent
+     *         object the new weak reference will refer to
+     * @param q
+     *         the queue with which the reference is to be registered,
+     *         or <tt>null</tt> if registration is not required
      */
     public WeakReference(T referent, ReferenceQueue<? super T> q) {
         super(referent, q);

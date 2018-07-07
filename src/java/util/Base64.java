@@ -26,8 +26,8 @@
 package java.util;
 
 import java.io.FilterOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -43,49 +43,50 @@ import java.nio.charset.StandardCharsets;
  * <ul>
  * <li><a name="basic"><b>Basic</b></a>
  * <p> Uses "The Base64 Alphabet" as specified in Table 1 of
- *     RFC 4648 and RFC 2045 for encoding and decoding operation.
- *     The encoder does not add any line feed (line separator)
- *     character. The decoder rejects data that contains characters
- *     outside the base64 alphabet.</p></li>
+ * RFC 4648 and RFC 2045 for encoding and decoding operation.
+ * The encoder does not add any line feed (line separator)
+ * character. The decoder rejects data that contains characters
+ * outside the base64 alphabet.</p></li>
  *
  * <li><a name="url"><b>URL and Filename safe</b></a>
  * <p> Uses the "URL and Filename safe Base64 Alphabet" as specified
- *     in Table 2 of RFC 4648 for encoding and decoding. The
- *     encoder does not add any line feed (line separator) character.
- *     The decoder rejects data that contains characters outside the
- *     base64 alphabet.</p></li>
+ * in Table 2 of RFC 4648 for encoding and decoding. The
+ * encoder does not add any line feed (line separator) character.
+ * The decoder rejects data that contains characters outside the
+ * base64 alphabet.</p></li>
  *
  * <li><a name="mime"><b>MIME</b></a>
  * <p> Uses the "The Base64 Alphabet" as specified in Table 1 of
- *     RFC 2045 for encoding and decoding operation. The encoded output
- *     must be represented in lines of no more than 76 characters each
- *     and uses a carriage return {@code '\r'} followed immediately by
- *     a linefeed {@code '\n'} as the line separator. No line separator
- *     is added to the end of the encoded output. All line separators
- *     or other characters not found in the base64 alphabet table are
- *     ignored in decoding operation.</p></li>
+ * RFC 2045 for encoding and decoding operation. The encoded output
+ * must be represented in lines of no more than 76 characters each
+ * and uses a carriage return {@code '\r'} followed immediately by
+ * a linefeed {@code '\n'} as the line separator. No line separator
+ * is added to the end of the encoded output. All line separators
+ * or other characters not found in the base64 alphabet table are
+ * ignored in decoding operation.</p></li>
  * </ul>
  *
  * <p> Unless otherwise noted, passing a {@code null} argument to a
  * method of this class will cause a {@link java.lang.NullPointerException
  * NullPointerException} to be thrown.
  *
- * @author  Xueming Shen
- * @since   1.8
+ * @author Xueming Shen
+ * @since 1.8
  */
 
 public class Base64 {
 
-    private Base64() {}
+    private Base64() {
+    }
 
     /**
      * Returns a {@link Encoder} that encodes using the
      * <a href="#basic">Basic</a> type base64 encoding scheme.
      *
-     * @return  A Base64 encoder.
+     * @return A Base64 encoder.
      */
     public static Encoder getEncoder() {
-         return Encoder.RFC4648;
+        return Encoder.RFC4648;
     }
 
     /**
@@ -93,17 +94,17 @@ public class Base64 {
      * <a href="#url">URL and Filename safe</a> type base64
      * encoding scheme.
      *
-     * @return  A Base64 encoder.
+     * @return A Base64 encoder.
      */
     public static Encoder getUrlEncoder() {
-         return Encoder.RFC4648_URLSAFE;
+        return Encoder.RFC4648_URLSAFE;
     }
 
     /**
      * Returns a {@link Encoder} that encodes using the
      * <a href="#mime">MIME</a> type base64 encoding scheme.
      *
-     * @return  A Base64 encoder.
+     * @return A Base64 encoder.
      */
     public static Encoder getMimeEncoder() {
         return Encoder.RFC2045;
@@ -114,41 +115,42 @@ public class Base64 {
      * <a href="#mime">MIME</a> type base64 encoding scheme
      * with specified line length and line separators.
      *
-     * @param   lineLength
-     *          the length of each output line (rounded down to nearest multiple
-     *          of 4). If {@code lineLength <= 0} the output will not be separated
-     *          in lines
-     * @param   lineSeparator
-     *          the line separator for each output line
+     * @param lineLength
+     *         the length of each output line (rounded down to nearest multiple
+     *         of 4). If {@code lineLength <= 0} the output will not be separated
+     *         in lines
+     * @param lineSeparator
+     *         the line separator for each output line
      *
-     * @return  A Base64 encoder.
+     * @return A Base64 encoder.
      *
-     * @throws  IllegalArgumentException if {@code lineSeparator} includes any
-     *          character of "The Base64 Alphabet" as specified in Table 1 of
-     *          RFC 2045.
+     * @throws IllegalArgumentException
+     *         if {@code lineSeparator} includes any
+     *         character of "The Base64 Alphabet" as specified in Table 1 of
+     *         RFC 2045.
      */
     public static Encoder getMimeEncoder(int lineLength, byte[] lineSeparator) {
-         Objects.requireNonNull(lineSeparator);
-         int[] base64 = Decoder.fromBase64;
-         for (byte b : lineSeparator) {
-             if (base64[b & 0xff] != -1)
-                 throw new IllegalArgumentException(
-                     "Illegal base64 line separator character 0x" + Integer.toString(b, 16));
-         }
-         if (lineLength <= 0) {
-             return Encoder.RFC4648;
-         }
-         return new Encoder(false, lineSeparator, lineLength >> 2 << 2, true);
+        Objects.requireNonNull(lineSeparator);
+        int[] base64 = Decoder.fromBase64;
+        for (byte b : lineSeparator) {
+            if (base64[b & 0xff] != -1) {
+                throw new IllegalArgumentException("Illegal base64 line separator character 0x" + Integer.toString(b, 16));
+            }
+        }
+        if (lineLength <= 0) {
+            return Encoder.RFC4648;
+        }
+        return new Encoder(false, lineSeparator, lineLength >> 2 << 2, true);
     }
 
     /**
      * Returns a {@link Decoder} that decodes using the
      * <a href="#basic">Basic</a> type base64 encoding scheme.
      *
-     * @return  A Base64 decoder.
+     * @return A Base64 decoder.
      */
     public static Decoder getDecoder() {
-         return Decoder.RFC4648;
+        return Decoder.RFC4648;
     }
 
     /**
@@ -156,20 +158,20 @@ public class Base64 {
      * <a href="#url">URL and Filename safe</a> type base64
      * encoding scheme.
      *
-     * @return  A Base64 decoder.
+     * @return A Base64 decoder.
      */
     public static Decoder getUrlDecoder() {
-         return Decoder.RFC4648_URLSAFE;
+        return Decoder.RFC4648_URLSAFE;
     }
 
     /**
      * Returns a {@link Decoder} that decodes using the
      * <a href="#mime">MIME</a> type base64 decoding scheme.
      *
-     * @return  A Base64 decoder.
+     * @return A Base64 decoder.
      */
     public static Decoder getMimeDecoder() {
-         return Decoder.RFC2045;
+        return Decoder.RFC2045;
     }
 
     /**
@@ -184,8 +186,8 @@ public class Base64 {
      * {@link java.lang.NullPointerException NullPointerException} to
      * be thrown.
      *
-     * @see     Decoder
-     * @since   1.8
+     * @see Decoder
+     * @since 1.8
      */
     public static class Encoder {
 
@@ -206,29 +208,21 @@ public class Base64 {
          * index values into their "Base64 Alphabet" equivalents as specified
          * in "Table 1: The Base64 Alphabet" of RFC 2045 (and RFC 4648).
          */
-        private static final char[] toBase64 = {
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
-        };
+        private static final char[] toBase64 = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
+                'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y',
+                'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/' };
 
         /**
          * It's the lookup table for "URL and Filename safe Base64" as specified
          * in Table 2 of the RFC 4648, with the '+' and '/' changed to '-' and
          * '_'. This table is used when BASE64_URL is specified.
          */
-        private static final char[] toBase64URL = {
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_'
-        };
+        private static final char[] toBase64URL = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
+                'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
+                'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_' };
 
         private static final int MIMELINEMAX = 76;
-        private static final byte[] CRLF = new byte[] {'\r', '\n'};
+        private static final byte[] CRLF = new byte[] { '\r', '\n' };
 
         static final Encoder RFC4648 = new Encoder(false, null, -1, true);
         static final Encoder RFC4648_URLSAFE = new Encoder(true, null, -1, true);
@@ -243,7 +237,9 @@ public class Base64 {
                 len = 4 * (srclen / 3) + (n == 0 ? 0 : n + 1);
             }
             if (linemax > 0)                                  // line separators
+            {
                 len += (len - 1) / linemax * newline.length;
+            }
             return len;
         }
 
@@ -252,17 +248,19 @@ public class Base64 {
          * byte array using the {@link Base64} encoding scheme. The returned byte
          * array is of the length of the resulting bytes.
          *
-         * @param   src
-         *          the byte array to encode
-         * @return  A newly-allocated byte array containing the resulting
-         *          encoded bytes.
+         * @param src
+         *         the byte array to encode
+         *
+         * @return A newly-allocated byte array containing the resulting
+         * encoded bytes.
          */
         public byte[] encode(byte[] src) {
             int len = outLength(src.length);          // dst array size
             byte[] dst = new byte[len];
             int ret = encode0(src, 0, src.length, dst);
-            if (ret != dst.length)
-                 return Arrays.copyOf(dst, ret);
+            if (ret != dst.length) {
+                return Arrays.copyOf(dst, ret);
+            }
             return dst;
         }
 
@@ -276,20 +274,22 @@ public class Base64 {
          * all bytes from the input byte array. No bytes will be written to the
          * output byte array if the output byte array is not big enough.
          *
-         * @param   src
-         *          the byte array to encode
-         * @param   dst
-         *          the output byte array
-         * @return  The number of bytes written to the output byte array
+         * @param src
+         *         the byte array to encode
+         * @param dst
+         *         the output byte array
          *
-         * @throws  IllegalArgumentException if {@code dst} does not have enough
-         *          space for encoding all input bytes.
+         * @return The number of bytes written to the output byte array
+         *
+         * @throws IllegalArgumentException
+         *         if {@code dst} does not have enough
+         *         space for encoding all input bytes.
          */
         public int encode(byte[] src, byte[] dst) {
             int len = outLength(src.length);         // dst array size
-            if (dst.length < len)
-                throw new IllegalArgumentException(
-                    "Output byte array is too small for encoding all input bytes");
+            if (dst.length < len) {
+                throw new IllegalArgumentException("Output byte array is too small for encoding all input bytes");
+            }
             return encode0(src, 0, src.length, dst);
         }
 
@@ -306,9 +306,10 @@ public class Base64 {
          * effect as invoking
          * {@code new String(encode(src), StandardCharsets.ISO_8859_1)}.
          *
-         * @param   src
-         *          the byte array to encode
-         * @return  A String containing the resulting Base64 encoded characters
+         * @param src
+         *         the byte array to encode
+         *
+         * @return A String containing the resulting Base64 encoded characters
          */
         @SuppressWarnings("deprecation")
         public String encodeToString(byte[] src) {
@@ -326,27 +327,26 @@ public class Base64 {
          * output buffer's position will be zero and its limit will be the
          * number of resulting encoded bytes.
          *
-         * @param   buffer
-         *          the source ByteBuffer to encode
-         * @return  A newly-allocated byte buffer containing the encoded bytes.
+         * @param buffer
+         *         the source ByteBuffer to encode
+         *
+         * @return A newly-allocated byte buffer containing the encoded bytes.
          */
         public ByteBuffer encode(ByteBuffer buffer) {
             int len = outLength(buffer.remaining());
             byte[] dst = new byte[len];
             int ret = 0;
             if (buffer.hasArray()) {
-                ret = encode0(buffer.array(),
-                              buffer.arrayOffset() + buffer.position(),
-                              buffer.arrayOffset() + buffer.limit(),
-                              dst);
+                ret = encode0(buffer.array(), buffer.arrayOffset() + buffer.position(), buffer.arrayOffset() + buffer.limit(), dst);
                 buffer.position(buffer.limit());
             } else {
                 byte[] src = new byte[buffer.remaining()];
                 buffer.get(src);
                 ret = encode0(src, 0, src.length, dst);
             }
-            if (ret != dst.length)
-                 dst = Arrays.copyOf(dst, ret);
+            if (ret != dst.length) {
+                dst = Arrays.copyOf(dst, ret);
+            }
             return ByteBuffer.wrap(dst);
         }
 
@@ -359,15 +359,15 @@ public class Base64 {
          * output stream. Closing the returned output stream will close the underlying
          * output stream.
          *
-         * @param   os
-         *          the output stream.
-         * @return  the output stream for encoding the byte data into the
-         *          specified Base64 encoded format
+         * @param os
+         *         the output stream.
+         *
+         * @return the output stream for encoding the byte data into the
+         * specified Base64 encoded format
          */
         public OutputStream wrap(OutputStream os) {
             Objects.requireNonNull(os);
-            return new EncOutputStream(os, isURL ? toBase64URL : toBase64,
-                                       newline, linemax, doPadding);
+            return new EncOutputStream(os, isURL ? toBase64URL : toBase64, newline, linemax, doPadding);
         }
 
         /**
@@ -380,11 +380,12 @@ public class Base64 {
          * non-padding encoding operation.
          *
          * @return an equivalent encoder that encodes without adding any
-         *         padding character at the end
+         * padding character at the end
          */
         public Encoder withoutPadding() {
-            if (!doPadding)
+            if (!doPadding) {
                 return this;
+            }
             return new Encoder(isURL, newline, linemax, false);
         }
 
@@ -393,42 +394,41 @@ public class Base64 {
             int sp = off;
             int slen = (end - off) / 3 * 3;
             int sl = off + slen;
-            if (linemax > 0 && slen  > linemax / 4 * 3)
+            if (linemax > 0 && slen > linemax / 4 * 3) {
                 slen = linemax / 4 * 3;
+            }
             int dp = 0;
             while (sp < sl) {
                 int sl0 = Math.min(sp + slen, sl);
-                for (int sp0 = sp, dp0 = dp ; sp0 < sl0; ) {
-                    int bits = (src[sp0++] & 0xff) << 16 |
-                               (src[sp0++] & 0xff) <<  8 |
-                               (src[sp0++] & 0xff);
-                    dst[dp0++] = (byte)base64[(bits >>> 18) & 0x3f];
-                    dst[dp0++] = (byte)base64[(bits >>> 12) & 0x3f];
-                    dst[dp0++] = (byte)base64[(bits >>> 6)  & 0x3f];
-                    dst[dp0++] = (byte)base64[bits & 0x3f];
+                for (int sp0 = sp, dp0 = dp; sp0 < sl0; ) {
+                    int bits = (src[sp0++] & 0xff) << 16 | (src[sp0++] & 0xff) << 8 | (src[sp0++] & 0xff);
+                    dst[dp0++] = (byte) base64[(bits >>> 18) & 0x3f];
+                    dst[dp0++] = (byte) base64[(bits >>> 12) & 0x3f];
+                    dst[dp0++] = (byte) base64[(bits >>> 6) & 0x3f];
+                    dst[dp0++] = (byte) base64[bits & 0x3f];
                 }
                 int dlen = (sl0 - sp) / 3 * 4;
                 dp += dlen;
                 sp = sl0;
                 if (dlen == linemax && sp < end) {
-                    for (byte b : newline){
+                    for (byte b : newline) {
                         dst[dp++] = b;
                     }
                 }
             }
             if (sp < end) {               // 1 or 2 leftover bytes
                 int b0 = src[sp++] & 0xff;
-                dst[dp++] = (byte)base64[b0 >> 2];
+                dst[dp++] = (byte) base64[b0 >> 2];
                 if (sp == end) {
-                    dst[dp++] = (byte)base64[(b0 << 4) & 0x3f];
+                    dst[dp++] = (byte) base64[(b0 << 4) & 0x3f];
                     if (doPadding) {
                         dst[dp++] = '=';
                         dst[dp++] = '=';
                     }
                 } else {
                     int b1 = src[sp++] & 0xff;
-                    dst[dp++] = (byte)base64[(b0 << 4) & 0x3f | (b1 >> 4)];
-                    dst[dp++] = (byte)base64[(b1 << 2) & 0x3f];
+                    dst[dp++] = (byte) base64[(b0 << 4) & 0x3f | (b1 >> 4)];
+                    dst[dp++] = (byte) base64[(b1 << 2) & 0x3f];
                     if (doPadding) {
                         dst[dp++] = '=';
                     }
@@ -461,8 +461,8 @@ public class Base64 {
      * {@link java.lang.NullPointerException NullPointerException} to
      * be thrown.
      *
-     * @see     Encoder
-     * @since   1.8
+     * @see Encoder
+     * @since 1.8
      */
     public static class Decoder {
 
@@ -480,13 +480,14 @@ public class Base64 {
          * their 6-bit positive integer equivalents.  Characters that
          * are not in the Base64 alphabet but fall within the bounds of
          * the array are encoded to -1.
-         *
          */
         private static final int[] fromBase64 = new int[256];
+
         static {
             Arrays.fill(fromBase64, -1);
-            for (int i = 0; i < Encoder.toBase64.length; i++)
+            for (int i = 0; i < Encoder.toBase64.length; i++) {
                 fromBase64[Encoder.toBase64[i]] = i;
+            }
             fromBase64['='] = -2;
         }
 
@@ -498,14 +499,15 @@ public class Base64 {
 
         static {
             Arrays.fill(fromBase64URL, -1);
-            for (int i = 0; i < Encoder.toBase64URL.length; i++)
+            for (int i = 0; i < Encoder.toBase64URL.length; i++) {
                 fromBase64URL[Encoder.toBase64URL[i]] = i;
+            }
             fromBase64URL['='] = -2;
         }
 
-        static final Decoder RFC4648         = new Decoder(false, false);
+        static final Decoder RFC4648 = new Decoder(false, false);
         static final Decoder RFC4648_URLSAFE = new Decoder(true, false);
-        static final Decoder RFC2045         = new Decoder(false, true);
+        static final Decoder RFC2045 = new Decoder(false, true);
 
         /**
          * Decodes all bytes from the input byte array using the {@link Base64}
@@ -513,13 +515,13 @@ public class Base64 {
          * byte array. The returned byte array is of the length of the resulting
          * bytes.
          *
-         * @param   src
-         *          the byte array to decode
+         * @param src
+         *         the byte array to decode
          *
-         * @return  A newly-allocated byte array containing the decoded bytes.
+         * @return A newly-allocated byte array containing the decoded bytes.
          *
-         * @throws  IllegalArgumentException
-         *          if {@code src} is not in valid Base64 scheme
+         * @throws IllegalArgumentException
+         *         if {@code src} is not in valid Base64 scheme
          */
         public byte[] decode(byte[] src) {
             byte[] dst = new byte[outLength(src, 0, src.length)];
@@ -537,13 +539,13 @@ public class Base64 {
          * <p> An invocation of this method has exactly the same effect as invoking
          * {@code decode(src.getBytes(StandardCharsets.ISO_8859_1))}
          *
-         * @param   src
-         *          the string to decode
+         * @param src
+         *         the string to decode
          *
-         * @return  A newly-allocated byte array containing the decoded bytes.
+         * @return A newly-allocated byte array containing the decoded bytes.
          *
-         * @throws  IllegalArgumentException
-         *          if {@code src} is not in valid Base64 scheme
+         * @throws IllegalArgumentException
+         *         if {@code src} is not in valid Base64 scheme
          */
         public byte[] decode(String src) {
             return decode(src.getBytes(StandardCharsets.ISO_8859_1));
@@ -563,22 +565,22 @@ public class Base64 {
          * then some bytes may have been written to the output byte array before
          * IllegalargumentException is thrown.
          *
-         * @param   src
-         *          the byte array to decode
-         * @param   dst
-         *          the output byte array
+         * @param src
+         *         the byte array to decode
+         * @param dst
+         *         the output byte array
          *
-         * @return  The number of bytes written to the output byte array
+         * @return The number of bytes written to the output byte array
          *
-         * @throws  IllegalArgumentException
-         *          if {@code src} is not in valid Base64 scheme, or {@code dst}
-         *          does not have enough space for decoding all input bytes.
+         * @throws IllegalArgumentException
+         *         if {@code src} is not in valid Base64 scheme, or {@code dst}
+         *         does not have enough space for decoding all input bytes.
          */
         public int decode(byte[] src, byte[] dst) {
             int len = outLength(src, 0, src.length);
-            if (dst.length < len)
-                throw new IllegalArgumentException(
-                    "Output byte array is too small for decoding all input bytes");
+            if (dst.length < len) {
+                throw new IllegalArgumentException("Output byte array is too small for decoding all input bytes");
+            }
             return decode0(src, 0, src.length, dst);
         }
 
@@ -595,13 +597,13 @@ public class Base64 {
          * is not in valid Base64 encoding scheme. The position of the input
          * buffer will not be advanced in this case.
          *
-         * @param   buffer
-         *          the ByteBuffer to decode
+         * @param buffer
+         *         the ByteBuffer to decode
          *
-         * @return  A newly-allocated byte buffer containing the decoded bytes
+         * @return A newly-allocated byte buffer containing the decoded bytes
          *
-         * @throws  IllegalArgumentException
-         *          if {@code src} is not in valid Base64 scheme.
+         * @throws IllegalArgumentException
+         *         if {@code src} is not in valid Base64 scheme.
          */
         public ByteBuffer decode(ByteBuffer buffer) {
             int pos0 = buffer.position();
@@ -636,11 +638,11 @@ public class Base64 {
          * <p> Closing the returned input stream will close the underlying
          * input stream.
          *
-         * @param   is
-         *          the input stream
+         * @param is
+         *         the input stream
          *
-         * @return  the input stream for decoding the specified Base64 encoded
-         *          byte stream
+         * @return the input stream for decoding the specified Base64 encoded
+         * byte stream
          */
         public InputStream wrap(InputStream is) {
             Objects.requireNonNull(is);
@@ -651,13 +653,14 @@ public class Base64 {
             int[] base64 = isURL ? fromBase64URL : fromBase64;
             int paddings = 0;
             int len = sl - sp;
-            if (len == 0)
+            if (len == 0) {
                 return 0;
+            }
             if (len < 2) {
-                if (isMIME && base64[0] == -1)
+                if (isMIME && base64[0] == -1) {
                     return 0;
-                throw new IllegalArgumentException(
-                    "Input byte[] should at least have 2 bytes for base64 bytes");
+                }
+                throw new IllegalArgumentException("Input byte[] should at least have 2 bytes for base64 bytes");
             }
             if (isMIME) {
                 // scan all bytes to fill out all non-alphabet. a performance
@@ -669,19 +672,22 @@ public class Base64 {
                         len -= (sl - sp + 1);
                         break;
                     }
-                    if ((b = base64[b]) == -1)
+                    if ((b = base64[b]) == -1) {
                         n++;
+                    }
                 }
                 len -= n;
             } else {
                 if (src[sl - 1] == '=') {
                     paddings++;
-                    if (src[sl - 2] == '=')
+                    if (src[sl - 2] == '=') {
                         paddings++;
+                    }
                 }
             }
-            if (paddings == 0 && (len & 0x3) !=  0)
+            if (paddings == 0 && (len & 0x3) != 0) {
                 paddings = 4 - (len & 0x3);
+            }
             return 3 * ((len + 3) / 4) - paddings;
         }
 
@@ -699,48 +705,45 @@ public class Base64 {
                         // x     to be handled together with non-padding case
                         // xx=   shiftto==6&&sp==sl missing last =
                         // xx=y  shiftto==6 last is not =
-                        if (shiftto == 6 && (sp == sl || src[sp++] != '=') ||
-                            shiftto == 18) {
-                            throw new IllegalArgumentException(
-                                "Input byte array has wrong 4-byte ending unit");
+                        if (shiftto == 6 && (sp == sl || src[sp++] != '=') || shiftto == 18) {
+                            throw new IllegalArgumentException("Input byte array has wrong 4-byte ending unit");
                         }
                         break;
                     }
                     if (isMIME)    // skip if for rfc2045
+                    {
                         continue;
-                    else
-                        throw new IllegalArgumentException(
-                            "Illegal base64 character " +
-                            Integer.toString(src[sp - 1], 16));
+                    } else {
+                        throw new IllegalArgumentException("Illegal base64 character " + Integer.toString(src[sp - 1], 16));
+                    }
                 }
                 bits |= (b << shiftto);
                 shiftto -= 6;
                 if (shiftto < 0) {
-                    dst[dp++] = (byte)(bits >> 16);
-                    dst[dp++] = (byte)(bits >>  8);
-                    dst[dp++] = (byte)(bits);
+                    dst[dp++] = (byte) (bits >> 16);
+                    dst[dp++] = (byte) (bits >> 8);
+                    dst[dp++] = (byte) (bits);
                     shiftto = 18;
                     bits = 0;
                 }
             }
             // reached end of byte array or hit padding '=' characters.
             if (shiftto == 6) {
-                dst[dp++] = (byte)(bits >> 16);
+                dst[dp++] = (byte) (bits >> 16);
             } else if (shiftto == 0) {
-                dst[dp++] = (byte)(bits >> 16);
-                dst[dp++] = (byte)(bits >>  8);
+                dst[dp++] = (byte) (bits >> 16);
+                dst[dp++] = (byte) (bits >> 8);
             } else if (shiftto == 12) {
                 // dangling single "x", incorrectly encoded.
-                throw new IllegalArgumentException(
-                    "Last unit does not have enough valid bits");
+                throw new IllegalArgumentException("Last unit does not have enough valid bits");
             }
             // anything left is invalid, if is not MIME.
             // if MIME, ignore all non-base64 character
             while (sp < sl) {
-                if (isMIME && base64[src[sp++]] < 0)
+                if (isMIME && base64[src[sp++]] < 0) {
                     continue;
-                throw new IllegalArgumentException(
-                    "Input byte array has incorrect ending byte at " + sp);
+                }
+                throw new IllegalArgumentException("Input byte array has incorrect ending byte at " + sp);
             }
             return dp;
         }
@@ -761,8 +764,7 @@ public class Base64 {
         private final boolean doPadding;// whether or not to pad
         private int linepos = 0;
 
-        EncOutputStream(OutputStream os, char[] base64,
-                        byte[] newline, int linemax, boolean doPadding) {
+        EncOutputStream(OutputStream os, char[] base64, byte[] newline, int linemax, boolean doPadding) {
             super(os);
             this.base64 = base64;
             this.newline = newline;
@@ -773,7 +775,7 @@ public class Base64 {
         @Override
         public void write(int b) throws IOException {
             byte[] buf = new byte[1];
-            buf[0] = (byte)(b & 0xff);
+            buf[0] = (byte) (b & 0xff);
             write(buf, 0, 1);
         }
 
@@ -786,12 +788,15 @@ public class Base64 {
 
         @Override
         public void write(byte[] b, int off, int len) throws IOException {
-            if (closed)
+            if (closed) {
                 throw new IOException("Stream is closed");
-            if (off < 0 || len < 0 || off + len > b.length)
+            }
+            if (off < 0 || len < 0 || off + len > b.length) {
                 throw new ArrayIndexOutOfBoundsException();
-            if (len == 0)
+            }
+            if (len == 0) {
                 return;
+            }
             if (leftover != 0) {
                 if (leftover == 1) {
                     b1 = b[off++] & 0xff;
@@ -814,15 +819,13 @@ public class Base64 {
             leftover = len - (nBits24 * 3);
             while (nBits24-- > 0) {
                 checkNewline();
-                int bits = (b[off++] & 0xff) << 16 |
-                           (b[off++] & 0xff) <<  8 |
-                           (b[off++] & 0xff);
+                int bits = (b[off++] & 0xff) << 16 | (b[off++] & 0xff) << 8 | (b[off++] & 0xff);
                 out.write(base64[(bits >>> 18) & 0x3f]);
                 out.write(base64[(bits >>> 12) & 0x3f]);
-                out.write(base64[(bits >>> 6)  & 0x3f]);
+                out.write(base64[(bits >>> 6) & 0x3f]);
                 out.write(base64[bits & 0x3f]);
                 linepos += 4;
-           }
+            }
             if (leftover == 1) {
                 b0 = b[off++] & 0xff;
             } else if (leftover == 2) {
@@ -849,7 +852,7 @@ public class Base64 {
                     out.write(base64[(b0 << 4) & 0x3f | (b1 >> 4)]);
                     out.write(base64[(b1 << 2) & 0x3f]);
                     if (doPadding) {
-                       out.write('=');
+                        out.write('=');
                     }
                 }
                 leftover = 0;
@@ -868,9 +871,9 @@ public class Base64 {
         private final int[] base64;      // base64 -> byte mapping
         private int bits = 0;            // 24-bit buffer for decoding
         private int nextin = 18;         // next available "off" in "bits" for input;
-                                         // -> 18, 12, 6, 0
+        // -> 18, 12, 6, 0
         private int nextout = -8;        // next available "off" in "bits" for output;
-                                         // -> 8, 0, -8 (no byte for output)
+        // -> 8, 0, -8 (no byte for output)
         private boolean eof = false;
         private boolean closed = false;
 
@@ -889,18 +892,23 @@ public class Base64 {
 
         @Override
         public int read(byte[] b, int off, int len) throws IOException {
-            if (closed)
+            if (closed) {
                 throw new IOException("Stream is closed");
+            }
             if (eof && nextout < 0)    // eof and no leftover
+            {
                 return -1;
-            if (off < 0 || len < 0 || len > b.length - off)
+            }
+            if (off < 0 || len < 0 || len > b.length - off) {
                 throw new IndexOutOfBoundsException();
+            }
             int oldOff = off;
             if (nextout >= 0) {       // leftover output byte(s) in bits buf
                 do {
-                    if (len == 0)
+                    if (len == 0) {
                         return off - oldOff;
-                    b[off++] = (byte)(bits >> nextout);
+                    }
+                    b[off++] = (byte) (bits >> nextout);
                     len--;
                     nextout -= 8;
                 } while (nextout >= 0);
@@ -911,43 +919,44 @@ public class Base64 {
                 if (v == -1) {
                     eof = true;
                     if (nextin != 18) {
-                        if (nextin == 12)
+                        if (nextin == 12) {
                             throw new IOException("Base64 stream has one un-decoded dangling byte.");
+                        }
                         // treat ending xx/xxx without padding character legal.
                         // same logic as v == '=' below
-                        b[off++] = (byte)(bits >> (16));
+                        b[off++] = (byte) (bits >> (16));
                         len--;
                         if (nextin == 0) {           // only one padding byte
                             if (len == 0) {          // no enough output space
                                 bits >>= 8;          // shift to lowest byte
                                 nextout = 0;
                             } else {
-                                b[off++] = (byte) (bits >>  8);
+                                b[off++] = (byte) (bits >> 8);
                             }
                         }
                     }
-                    if (off == oldOff)
+                    if (off == oldOff) {
                         return -1;
-                    else
+                    } else {
                         return off - oldOff;
+                    }
                 }
                 if (v == '=') {                  // padding byte(s)
                     // =     shiftto==18 unnecessary padding
                     // x=    shiftto==12 dangling x, invalid unit
                     // xx=   shiftto==6 && missing last '='
                     // xx=y  or last is not '='
-                    if (nextin == 18 || nextin == 12 ||
-                        nextin == 6 && is.read() != '=') {
+                    if (nextin == 18 || nextin == 12 || nextin == 6 && is.read() != '=') {
                         throw new IOException("Illegal base64 ending sequence:" + nextin);
                     }
-                    b[off++] = (byte)(bits >> (16));
+                    b[off++] = (byte) (bits >> (16));
                     len--;
                     if (nextin == 0) {           // only one padding byte
                         if (len == 0) {          // no enough output space
                             bits >>= 8;          // shift to lowest byte
                             nextout = 0;
                         } else {
-                            b[off++] = (byte) (bits >>  8);
+                            b[off++] = (byte) (bits >> 8);
                         }
                     }
                     eof = true;
@@ -955,17 +964,18 @@ public class Base64 {
                 }
                 if ((v = base64[v]) == -1) {
                     if (isMIME)                 // skip if for rfc2045
+                    {
                         continue;
-                    else
-                        throw new IOException("Illegal base64 character " +
-                            Integer.toString(v, 16));
+                    } else {
+                        throw new IOException("Illegal base64 character " + Integer.toString(v, 16));
+                    }
                 }
                 bits |= (v << nextin);
                 if (nextin == 0) {
                     nextin = 18;    // clear for next
                     nextout = 16;
                     while (nextout >= 0) {
-                        b[off++] = (byte)(bits >> nextout);
+                        b[off++] = (byte) (bits >> nextout);
                         len--;
                         nextout -= 8;
                         if (len == 0 && nextout >= 0) {  // don't clean "bits"
@@ -982,8 +992,9 @@ public class Base64 {
 
         @Override
         public int available() throws IOException {
-            if (closed)
+            if (closed) {
                 throw new IOException("Stream is closed");
+            }
             return is.available();   // TBD:
         }
 

@@ -28,8 +28,8 @@ package java.io;
 /**
  * Superclass of all exceptions specific to Object Stream classes.
  *
- * @author  unascribed
- * @since   JDK1.1
+ * @author unascribed
+ * @since JDK1.1
  */
 public abstract class ObjectStreamException extends IOException {
 
@@ -38,7 +38,8 @@ public abstract class ObjectStreamException extends IOException {
     /**
      * Create an ObjectStreamException with the specified argument.
      *
-     * @param classname the detailed message for the exception
+     * @param classname
+     *         the detailed message for the exception
      */
     protected ObjectStreamException(String classname) {
         super(classname);

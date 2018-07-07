@@ -47,7 +47,7 @@ package java.beans.beancontext;
  * BeanContextChild bcc = o.getBeanContextProxy();
  *
  * if (bcc instanceof BeanContext) {
- *      // ...
+ * // ...
  * }
  * </code>
  * or
@@ -56,9 +56,9 @@ package java.beans.beancontext;
  * BeanContext      bc  = null;
  *
  * try {
- *     bc = (BeanContext)bcc;
+ * bc = (BeanContext)bcc;
  * } catch (ClassCastException cce) {
- *     // cast failed, bcc is not an instanceof BeanContext
+ * // cast failed, bcc is not an instanceof BeanContext
  * }
  * </code>
  * </p>
@@ -66,11 +66,11 @@ package java.beans.beancontext;
  * The return value is a constant for the lifetime of the implementing
  * instance
  * </p>
- * @author Laurence P. G. Cable
- * @since 1.2
  *
+ * @author Laurence P. G. Cable
  * @see java.beans.beancontext.BeanContextChild
  * @see java.beans.beancontext.BeanContextChildSupport
+ * @since 1.2
  */
 
 public interface BeanContextProxy {
@@ -78,6 +78,7 @@ public interface BeanContextProxy {
     /**
      * Gets the <code>BeanContextChild</code> (or subinterface)
      * associated with this object.
+     *
      * @return the <code>BeanContextChild</code> (or subinterface)
      * associated with this object
      */

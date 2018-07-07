@@ -33,9 +33,9 @@ import java.net.URL;
  * environment or applet viewer environment in which the application
  * is running.
  *
- * @author      Arthur van Hoff
- * @see         java.applet.Applet#setStub(java.applet.AppletStub)
- * @since       JDK1.0
+ * @author Arthur van Hoff
+ * @see java.applet.Applet#setStub(java.applet.AppletStub)
+ * @since JDK1.0
  */
 public interface AppletStub {
     /**
@@ -43,11 +43,10 @@ public interface AppletStub {
      * before its <code>start</code> method is called. It becomes
      * inactive just before its <code>stop</code> method is called.
      *
-     * @return  <code>true</code> if the applet is active;
-     *          <code>false</code> otherwise.
+     * @return <code>true</code> if the applet is active;
+     * <code>false</code> otherwise.
      */
     boolean isActive();
-
 
     /**
      * Gets the URL of the document in which the applet is embedded.
@@ -61,18 +60,20 @@ public interface AppletStub {
      *    http://www.oracle.com/technetwork/java/index.html
      * </pre></blockquote>
      *
-     * @return  the {@link java.net.URL} of the document that contains the
-     *          applet.
-     * @see     java.applet.AppletStub#getCodeBase()
+     * @return the {@link java.net.URL} of the document that contains the
+     * applet.
+     *
+     * @see java.applet.AppletStub#getCodeBase()
      */
     URL getDocumentBase();
 
     /**
      * Gets the base URL. This is the URL of the directory which contains the applet.
      *
-     * @return  the base {@link java.net.URL} of
-     *          the directory which contains the applet.
-     * @see     java.applet.AppletStub#getDocumentBase()
+     * @return the base {@link java.net.URL} of
+     * the directory which contains the applet.
+     *
+     * @see java.applet.AppletStub#getDocumentBase()
      */
     URL getCodeBase();
 
@@ -88,8 +89,10 @@ public interface AppletStub {
      * then a call to <code>getParameter("Color")</code> returns the
      * value <code>"blue"</code>.
      *
-     * @param   name   a parameter name.
-     * @return  the value of the named parameter,
+     * @param name
+     *         a parameter name.
+     *
+     * @return the value of the named parameter,
      * or <tt>null</tt> if not set.
      */
     String getParameter(String name);
@@ -97,15 +100,17 @@ public interface AppletStub {
     /**
      * Returns the applet's context.
      *
-     * @return  the applet's context.
+     * @return the applet's context.
      */
     AppletContext getAppletContext();
 
     /**
      * Called when the applet wants to be resized.
      *
-     * @param   width    the new requested width for the applet.
-     * @param   height   the new requested height for the applet.
+     * @param width
+     *         the new requested width for the applet.
+     * @param height
+     *         the new requested height for the applet.
      */
     void appletResize(int width, int height);
 }

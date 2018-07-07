@@ -42,8 +42,8 @@ import javax.management.openmbean.CompositeData;
  * <p>The <tt>ObjectName</tt> for uniquely identifying the MXBean for
  * the memory system within an MBeanServer is:
  * <blockquote>
- *    {@link ManagementFactory#MEMORY_MXBEAN_NAME
- *           <tt>java.lang:type=Memory</tt>}
+ * {@link ManagementFactory#MEMORY_MXBEAN_NAME
+ * <tt>java.lang:type=Memory</tt>}
  * </blockquote>
  *
  * It can be obtained by calling the
@@ -110,17 +110,17 @@ import javax.management.openmbean.CompositeData;
  * Memory usage is a very important monitoring attribute for the memory system.
  * The memory usage, for example, could indicate:
  * <ul>
- *   <li>the memory usage of an application,</li>
- *   <li>the workload being imposed on the automatic memory management system,</li>
- *   <li>potential memory leakage.</li>
+ * <li>the memory usage of an application,</li>
+ * <li>the workload being imposed on the automatic memory management system,</li>
+ * <li>potential memory leakage.</li>
  * </ul>
  *
  * <p>
  * The memory usage can be monitored in three ways:
  * <ul>
- *   <li>Polling</li>
- *   <li>Usage Threshold Notification</li>
- *   <li>Collection Usage Threshold Notification</li>
+ * <li>Polling</li>
+ * <li>Usage Threshold Notification</li>
+ * <li>Collection Usage Threshold Notification</li>
  * </ul>
  *
  * Details are specified in the {@link MemoryPoolMXBean} interface.
@@ -143,19 +143,19 @@ import javax.management.openmbean.CompositeData;
  * {@link MemoryPoolMXBean#isUsageThresholdSupported} and
  * {@link MemoryPoolMXBean#isCollectionUsageThresholdSupported} methods.
  * <ul>
- *   <li>{@link MemoryNotificationInfo#MEMORY_THRESHOLD_EXCEEDED
- *       usage threshold exceeded notification} - for notifying that
- *       the memory usage of a memory pool is increased and has reached
- *       or exceeded its
- *       <a href="MemoryPoolMXBean.html#UsageThreshold"> usage threshold</a> value.
- *       </li>
- *   <li>{@link MemoryNotificationInfo#MEMORY_COLLECTION_THRESHOLD_EXCEEDED
- *       collection usage threshold exceeded notification} - for notifying that
- *       the memory usage of a memory pool is greater than or equal to its
- *       <a href="MemoryPoolMXBean.html#CollectionThreshold">
- *       collection usage threshold</a> after the Java virtual machine
- *       has expended effort in recycling unused objects in that
- *       memory pool.</li>
+ * <li>{@link MemoryNotificationInfo#MEMORY_THRESHOLD_EXCEEDED
+ * usage threshold exceeded notification} - for notifying that
+ * the memory usage of a memory pool is increased and has reached
+ * or exceeded its
+ * <a href="MemoryPoolMXBean.html#UsageThreshold"> usage threshold</a> value.
+ * </li>
+ * <li>{@link MemoryNotificationInfo#MEMORY_COLLECTION_THRESHOLD_EXCEEDED
+ * collection usage threshold exceeded notification} - for notifying that
+ * the memory usage of a memory pool is greater than or equal to its
+ * <a href="MemoryPoolMXBean.html#CollectionThreshold">
+ * collection usage threshold</a> after the Java virtual machine
+ * has expended effort in recycling unused objects in that
+ * memory pool.</li>
  * </ul>
  *
  * <p>
@@ -193,14 +193,13 @@ import javax.management.openmbean.CompositeData;
  * emitter.addNotificationListener(listener, null, null);
  * </pre></blockquote>
  *
+ * @author Mandy Chung
  * @see ManagementFactory#getPlatformMXBeans(Class)
  * @see <a href="../../../javax/management/package-summary.html">
- *      JMX Specification.</a>
+ * JMX Specification.</a>
  * @see <a href="package-summary.html#examples">
- *      Ways to Access MXBeans</a>
- *
- * @author  Mandy Chung
- * @since   1.5
+ * Ways to Access MXBeans</a>
+ * @since 1.5
  */
 public interface MemoryMXBean extends PlatformManagedObject {
     /**
@@ -280,12 +279,14 @@ public interface MemoryMXBean extends PlatformManagedObject {
      * Each invocation of this method enables or disables verbose
      * output globally.
      *
-     * @param value <tt>true</tt> to enable verbose output;
-     *              <tt>false</tt> to disable.
+     * @param value
+     *         <tt>true</tt> to enable verbose output;
+     *         <tt>false</tt> to disable.
      *
-     * @exception  java.lang.SecurityException if a security manager
-     *             exists and the caller does not have
-     *             ManagementPermission("control").
+     * @throws java.lang.SecurityException
+     *         if a security manager
+     *         exists and the caller does not have
+     *         ManagementPermission("control").
      */
     public void setVerbose(boolean value);
 
@@ -297,7 +298,7 @@ public interface MemoryMXBean extends PlatformManagedObject {
      * System.gc()
      * </pre></blockquote>
      *
-     * @see     java.lang.System#gc()
+     * @see java.lang.System#gc()
      */
     public void gc();
 

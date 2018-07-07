@@ -29,8 +29,6 @@ package java.security;
  * This is the generic KeyStore exception.
  *
  * @author Jan Luehe
- *
- *
  * @since 1.2
  */
 
@@ -52,21 +50,25 @@ public class KeyStoreException extends GeneralSecurityException {
      * message.  (A detail message is a String that describes this
      * particular exception.)
      *
-     * @param msg the detail message.
+     * @param msg
+     *         the detail message.
      */
-   public KeyStoreException(String msg) {
-       super(msg);
+    public KeyStoreException(String msg) {
+        super(msg);
     }
 
     /**
      * Creates a {@code KeyStoreException} with the specified
      * detail message and cause.
      *
-     * @param message the detail message (which is saved for later retrieval
-     *        by the {@link #getMessage()} method).
-     * @param cause the cause (which is saved for later retrieval by the
-     *        {@link #getCause()} method).  (A {@code null} value is permitted,
-     *        and indicates that the cause is nonexistent or unknown.)
+     * @param message
+     *         the detail message (which is saved for later retrieval
+     *         by the {@link #getMessage()} method).
+     * @param cause
+     *         the cause (which is saved for later retrieval by the
+     *         {@link #getCause()} method).  (A {@code null} value is permitted,
+     *         and indicates that the cause is nonexistent or unknown.)
+     *
      * @since 1.5
      */
     public KeyStoreException(String message, Throwable cause) {
@@ -79,9 +81,11 @@ public class KeyStoreException extends GeneralSecurityException {
      * (which typically contains the class and detail message of
      * {@code cause}).
      *
-     * @param cause the cause (which is saved for later retrieval by the
-     *        {@link #getCause()} method).  (A {@code null} value is permitted,
-     *        and indicates that the cause is nonexistent or unknown.)
+     * @param cause
+     *         the cause (which is saved for later retrieval by the
+     *         {@link #getCause()} method).  (A {@code null} value is permitted,
+     *         and indicates that the cause is nonexistent or unknown.)
+     *
      * @since 1.5
      */
     public KeyStoreException(Throwable cause) {

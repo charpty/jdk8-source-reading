@@ -39,7 +39,9 @@ public class LambdaConversionException extends Exception {
 
     /**
      * Constructs a {@code LambdaConversionException} with a message.
-     * @param message the detail message
+     *
+     * @param message
+     *         the detail message
      */
     public LambdaConversionException(String message) {
         super(message);
@@ -47,8 +49,11 @@ public class LambdaConversionException extends Exception {
 
     /**
      * Constructs a {@code LambdaConversionException} with a message and cause.
-     * @param message the detail message
-     * @param cause the cause
+     *
+     * @param message
+     *         the detail message
+     * @param cause
+     *         the cause
      */
     public LambdaConversionException(String message, Throwable cause) {
         super(message, cause);
@@ -56,7 +61,9 @@ public class LambdaConversionException extends Exception {
 
     /**
      * Constructs a {@code LambdaConversionException} with a cause.
-     * @param cause the cause
+     *
+     * @param cause
+     *         the cause
      */
     public LambdaConversionException(Throwable cause) {
         super(cause);
@@ -65,10 +72,15 @@ public class LambdaConversionException extends Exception {
     /**
      * Constructs a {@code LambdaConversionException} with a message,
      * cause, and other settings.
-     * @param message the detail message
-     * @param cause the cause
-     * @param enableSuppression whether or not suppressed exceptions are enabled
-     * @param writableStackTrace whether or not the stack trace is writable
+     *
+     * @param message
+     *         the detail message
+     * @param cause
+     *         the cause
+     * @param enableSuppression
+     *         whether or not suppressed exceptions are enabled
+     * @param writableStackTrace
+     *         whether or not the stack trace is writable
      */
     public LambdaConversionException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);

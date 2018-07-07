@@ -81,11 +81,12 @@ public abstract class ProxySelector {
     /**
      * Gets the system-wide proxy selector.
      *
-     * @throws  SecurityException
-     *          If a security manager has been installed and it denies
-     * {@link NetPermission}{@code ("getProxySelector")}
-     * @see #setDefault(ProxySelector)
      * @return the system-wide {@code ProxySelector}
+     *
+     * @throws SecurityException
+     *         If a security manager has been installed and it denies
+     *         {@link NetPermission}{@code ("getProxySelector")}
+     * @see #setDefault(ProxySelector)
      * @since 1.5
      */
     public static ProxySelector getDefault() {
@@ -101,13 +102,13 @@ public abstract class ProxySelector {
      *
      * Note: non-standard protocol handlers may ignore this setting.
      *
-     * @param ps The HTTP proxy selector, or
-     *          {@code null} to unset the proxy selector.
+     * @param ps
+     *         The HTTP proxy selector, or
+     *         {@code null} to unset the proxy selector.
      *
-     * @throws  SecurityException
-     *          If a security manager has been installed and it denies
-     * {@link NetPermission}{@code ("setProxySelector")}
-     *
+     * @throws SecurityException
+     *         If a security manager has been installed and it denies
+     *         {@link NetPermission}{@code ("setProxySelector")}
      * @see #getDefault()
      * @since 1.5
      */
@@ -128,20 +129,22 @@ public abstract class ProxySelector {
      * <LI>http URI for http connections</LI>
      * <LI>https URI for https connections
      * <LI>{@code socket://host:port}<br>
-     *     for tcp client sockets connections</LI>
+     * for tcp client sockets connections</LI>
      * </UL>
      *
-     * @param   uri
-     *          The URI that a connection is required to
+     * @param uri
+     *         The URI that a connection is required to
      *
-     * @return  a List of Proxies. Each element in the
-     *          the List is of type
-     *          {@link java.net.Proxy Proxy};
-     *          when no proxy is available, the list will
-     *          contain one element of type
-     *          {@link java.net.Proxy Proxy}
-     *          that represents a direct connection.
-     * @throws IllegalArgumentException if the argument is null
+     * @return a List of Proxies. Each element in the
+     * the List is of type
+     * {@link java.net.Proxy Proxy};
+     * when no proxy is available, the list will
+     * contain one element of type
+     * {@link java.net.Proxy Proxy}
+     * that represents a direct connection.
+     *
+     * @throws IllegalArgumentException
+     *         if the argument is null
      */
     public abstract List<Proxy> select(URI uri);
 
@@ -152,14 +155,15 @@ public abstract class ProxySelector {
      * proxies returned by {@link #select(URI)}, using the address
      * and the IOException caught when trying to connect.
      *
-     * @param   uri
-     *          The URI that the proxy at sa failed to serve.
-     * @param   sa
-     *          The socket address of the proxy/SOCKS server
+     * @param uri
+     *         The URI that the proxy at sa failed to serve.
+     * @param sa
+     *         The socket address of the proxy/SOCKS server
+     * @param ioe
+     *         The I/O exception thrown when the connect failed.
      *
-     * @param   ioe
-     *          The I/O exception thrown when the connect failed.
-     * @throws IllegalArgumentException if either argument is null
+     * @throws IllegalArgumentException
+     *         if either argument is null
      */
     public abstract void connectFailed(URI uri, SocketAddress sa, IOException ioe);
 }

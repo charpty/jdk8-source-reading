@@ -30,10 +30,9 @@ package java.lang;
  * Java Virtual Machine.
  *
  * @author unascribed
- * @since   JDK1.0
+ * @since JDK1.0
  */
-public
-class UnknownError extends VirtualMachineError {
+public class UnknownError extends VirtualMachineError {
     private static final long serialVersionUID = 2524784860676771849L;
 
     /**
@@ -47,7 +46,8 @@ class UnknownError extends VirtualMachineError {
      * Constructs an <code>UnknownError</code> with the specified detail
      * message.
      *
-     * @param   s   the detail message.
+     * @param s
+     *         the detail message.
      */
     public UnknownError(String s) {
         super(s);

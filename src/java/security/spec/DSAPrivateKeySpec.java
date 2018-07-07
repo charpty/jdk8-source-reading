@@ -31,14 +31,11 @@ import java.math.BigInteger;
  * This class specifies a DSA private key with its associated parameters.
  *
  * @author Jan Luehe
- *
- *
  * @see java.security.Key
  * @see java.security.KeyFactory
  * @see KeySpec
  * @see DSAPublicKeySpec
  * @see PKCS8EncodedKeySpec
- *
  * @since 1.2
  */
 
@@ -52,16 +49,16 @@ public class DSAPrivateKeySpec implements KeySpec {
     /**
      * Creates a new DSAPrivateKeySpec with the specified parameter values.
      *
-     * @param x the private key.
-     *
-     * @param p the prime.
-     *
-     * @param q the sub-prime.
-     *
-     * @param g the base.
+     * @param x
+     *         the private key.
+     * @param p
+     *         the prime.
+     * @param q
+     *         the sub-prime.
+     * @param g
+     *         the base.
      */
-    public DSAPrivateKeySpec(BigInteger x, BigInteger p, BigInteger q,
-                             BigInteger g) {
+    public DSAPrivateKeySpec(BigInteger x, BigInteger p, BigInteger q, BigInteger g) {
         this.x = x;
         this.p = p;
         this.q = q;

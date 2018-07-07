@@ -29,7 +29,6 @@
 
 package java.nio.channels;
 
-
 /**
  * Checked exception received by a thread when another thread interrupts it
  * while it is blocked in an I/O operation upon a channel.  Before this
@@ -39,15 +38,14 @@ package java.nio.channels;
  * @since 1.4
  */
 
-public class ClosedByInterruptException
-    extends AsynchronousCloseException
-{
+public class ClosedByInterruptException extends AsynchronousCloseException {
 
     private static final long serialVersionUID = -4488191543534286750L;
 
     /**
      * Constructs an instance of this class.
      */
-    public ClosedByInterruptException() { }
+    public ClosedByInterruptException() {
+    }
 
 }

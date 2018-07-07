@@ -91,11 +91,8 @@ import java.time.DateTimeException;
  * {@code LocalDate::from} and {@code ZoneId::from}.
  * Additional common queries are provided as static methods in {@link TemporalQueries}.
  *
- * @implSpec
- * This interface places no restrictions on the mutability of implementations,
- * however immutability is strongly recommended.
- *
- * @param <R> the type returned from the query
+ * @param <R>
+ *         the type returned from the query
  *
  * @since 1.8
  */
@@ -121,24 +118,15 @@ public interface TemporalQuery<R> {
      * It is recommended to use the second approach, {@code query(TemporalQuery)},
      * as it is a lot clearer to read in code.
      *
-     * @implSpec
-     * The implementation must take the input object and query it.
-     * The implementation defines the logic of the query and is responsible for
-     * documenting that logic.
-     * It may use any method on {@code TemporalAccessor} to determine the result.
-     * The input object must not be altered.
-     * <p>
-     * The input temporal object may be in a calendar system other than ISO.
-     * Implementations may choose to document compatibility with other calendar systems,
-     * or reject non-ISO temporal objects by {@link TemporalQueries#chronology() querying the chronology}.
-     * <p>
-     * This method may be called from multiple threads in parallel.
-     * It must be thread-safe when invoked.
+     * @param temporal
+     *         the temporal object to query, not null
      *
-     * @param temporal  the temporal object to query, not null
      * @return the queried value, may return null to indicate not found
-     * @throws DateTimeException if unable to query
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if unable to query
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     R queryFrom(TemporalAccessor temporal);
 

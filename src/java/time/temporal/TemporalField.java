@@ -62,7 +62,6 @@
 package java.time.temporal;
 
 import java.time.DateTimeException;
-import java.time.chrono.Chronology;
 import java.time.format.ResolverStyle;
 import java.util.Locale;
 import java.util.Map;
@@ -83,12 +82,6 @@ import java.util.Objects;
  * If it is, then the date-time must handle it.
  * Otherwise, the method call is re-dispatched to the matching method in this interface.
  *
- * @implSpec
- * This interface must be implemented with care to ensure other classes operate correctly.
- * All implementations that can be instantiated must be final, immutable and thread-safe.
- * Implementations should be {@code Serializable} where possible.
- * An enum is as effective implementation choice.
- *
  * @since 1.8
  */
 public interface TemporalField {
@@ -101,7 +94,9 @@ public interface TemporalField {
      * The default implementation must check the locale is not null
      * and return {@code toString()}.
      *
-     * @param locale  the locale to use, not null
+     * @param locale
+     *         the locale to use, not null
+     *
      * @return the display name for the locale or a suitable default, not null
      */
     default String getDisplayName(Locale locale) {
@@ -150,6 +145,7 @@ public interface TemporalField {
     ValueRange range();
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks if this field represents a component of a date.
      * <p>
@@ -175,6 +171,7 @@ public interface TemporalField {
     boolean isTimeBased();
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks if this field is supported by the temporal object.
      * <p>
@@ -195,7 +192,9 @@ public interface TemporalField {
      * Implementations should determine whether they are supported using the fields
      * available in {@link ChronoField}.
      *
-     * @param temporal  the temporal object to query, not null
+     * @param temporal
+     *         the temporal object to query, not null
+     *
      * @return true if the date-time can be queried for this field, false if not
      */
     boolean isSupportedBy(TemporalAccessor temporal);
@@ -226,10 +225,15 @@ public interface TemporalField {
      * available in {@link ChronoField}.
      * If the field is not supported an {@code UnsupportedTemporalTypeException} must be thrown.
      *
-     * @param temporal  the temporal object used to refine the result, not null
+     * @param temporal
+     *         the temporal object used to refine the result, not null
+     *
      * @return the range of valid values for this field, not null
-     * @throws DateTimeException if the range for the field cannot be obtained
-     * @throws UnsupportedTemporalTypeException if the field is not supported by the temporal
+     *
+     * @throws DateTimeException
+     *         if the range for the field cannot be obtained
+     * @throws UnsupportedTemporalTypeException
+     *         if the field is not supported by the temporal
      */
     ValueRange rangeRefinedBy(TemporalAccessor temporal);
 
@@ -254,11 +258,17 @@ public interface TemporalField {
      * available in {@link ChronoField}.
      * If the field is not supported an {@code UnsupportedTemporalTypeException} must be thrown.
      *
-     * @param temporal  the temporal object to query, not null
+     * @param temporal
+     *         the temporal object to query, not null
+     *
      * @return the value of this field, not null
-     * @throws DateTimeException if a value for the field cannot be obtained
-     * @throws UnsupportedTemporalTypeException if the field is not supported by the temporal
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if a value for the field cannot be obtained
+     * @throws UnsupportedTemporalTypeException
+     *         if the field is not supported by the temporal
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     long getFrom(TemporalAccessor temporal);
 
@@ -295,13 +305,21 @@ public interface TemporalField {
      * Instead, an adjusted copy of the original must be returned.
      * This provides equivalent, safe behavior for immutable and mutable implementations.
      *
-     * @param <R>  the type of the Temporal object
-     * @param temporal the temporal object to adjust, not null
-     * @param newValue the new value of the field
+     * @param <R>
+     *         the type of the Temporal object
+     * @param temporal
+     *         the temporal object to adjust, not null
+     * @param newValue
+     *         the new value of the field
+     *
      * @return the adjusted temporal object, not null
-     * @throws DateTimeException if the field cannot be set
-     * @throws UnsupportedTemporalTypeException if the field is not supported by the temporal
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if the field cannot be set
+     * @throws UnsupportedTemporalTypeException
+     *         if the field is not supported by the temporal
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     <R extends Temporal> R adjustInto(R temporal, long newValue);
 
@@ -314,67 +332,24 @@ public interface TemporalField {
      * <p>
      * Applications should not normally invoke this method directly.
      *
-     * @implSpec
-     * If an implementation represents a field that can be simplified, or
-     * combined with others, then this method must be implemented.
-     * <p>
-     * The specified map contains the current state of the parse.
-     * The map is mutable and must be mutated to resolve the field and
-     * any related fields. This method will only be invoked during parsing
-     * if the map contains this field, and implementations should therefore
-     * assume this field is present.
-     * <p>
-     * Resolving a field will consist of looking at the value of this field,
-     * and potentially other fields, and either updating the map with a
-     * simpler value, such as a {@code ChronoField}, or returning a
-     * complete {@code ChronoLocalDate}. If a resolve is successful,
-     * the code must remove all the fields that were resolved from the map,
-     * including this field.
-     * <p>
-     * For example, the {@code IsoFields} class contains the quarter-of-year
-     * and day-of-quarter fields. The implementation of this method in that class
-     * resolves the two fields plus the {@link ChronoField#YEAR YEAR} into a
-     * complete {@code LocalDate}. The resolve method will remove all three
-     * fields from the map before returning the {@code LocalDate}.
-     * <p>
-     * A partially complete temporal is used to allow the chronology and zone
-     * to be queried. In general, only the chronology will be needed.
-     * Querying items other than the zone or chronology is undefined and
-     * must not be relied on.
-     * The behavior of other methods such as {@code get}, {@code getLong},
-     * {@code range} and {@code isSupported} is unpredictable and the results undefined.
-     * <p>
-     * If resolution should be possible, but the data is invalid, the resolver
-     * style should be used to determine an appropriate level of leniency, which
-     * may require throwing a {@code DateTimeException} or {@code ArithmeticException}.
-     * If no resolution is possible, the resolve method must return null.
-     * <p>
-     * When resolving time fields, the map will be altered and null returned.
-     * When resolving date fields, the date is normally returned from the method,
-     * with the map altered to remove the resolved fields. However, it would also
-     * be acceptable for the date fields to be resolved into other {@code ChronoField}
-     * instances that can produce a date, such as {@code EPOCH_DAY}.
-     * <p>
-     * Not all {@code TemporalAccessor} implementations are accepted as return values.
-     * Implementations that call this method must accept {@code ChronoLocalDate},
-     * {@code ChronoLocalDateTime}, {@code ChronoZonedDateTime} and {@code LocalTime}.
-     * <p>
-     * The default implementation must return null.
+     * @param fieldValues
+     *         the map of fields to values, which can be updated, not null
+     * @param partialTemporal
+     *         the partially complete temporal to query for zone and
+     *         chronology; querying for other things is undefined and not recommended, not null
+     * @param resolverStyle
+     *         the requested type of resolve, not null
      *
-     * @param fieldValues  the map of fields to values, which can be updated, not null
-     * @param partialTemporal  the partially complete temporal to query for zone and
-     *  chronology; querying for other things is undefined and not recommended, not null
-     * @param resolverStyle  the requested type of resolve, not null
      * @return the resolved temporal object; null if resolving only
-     *  changed the map, or no resolve occurred
-     * @throws ArithmeticException if numeric overflow occurs
-     * @throws DateTimeException if resolving results in an error. This must not be thrown
-     *  by querying a field on the temporal without first checking if it is supported
+     * changed the map, or no resolve occurred
+     *
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
+     * @throws DateTimeException
+     *         if resolving results in an error. This must not be thrown
+     *         by querying a field on the temporal without first checking if it is supported
      */
-    default TemporalAccessor resolve(
-            Map<TemporalField, Long> fieldValues,
-            TemporalAccessor partialTemporal,
-            ResolverStyle resolverStyle) {
+    default TemporalAccessor resolve(Map<TemporalField, Long> fieldValues, TemporalAccessor partialTemporal, ResolverStyle resolverStyle) {
         return null;
     }
 
@@ -389,6 +364,5 @@ public interface TemporalField {
      */
     @Override
     String toString();
-
 
 }

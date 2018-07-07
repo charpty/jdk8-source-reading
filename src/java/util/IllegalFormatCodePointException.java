@@ -46,7 +46,7 @@ public class IllegalFormatCodePointException extends IllegalFormatException {
      * Constructs an instance of this class with the specified illegal code
      * point as defined by {@link Character#isValidCodePoint}.
      *
-     * @param  c
+     * @param c
      *         The illegal Unicode code point
      */
     public IllegalFormatCodePointException(int c) {
@@ -57,7 +57,7 @@ public class IllegalFormatCodePointException extends IllegalFormatException {
      * Returns the illegal code point as defined by {@link
      * Character#isValidCodePoint}.
      *
-     * @return  The illegal Unicode code point
+     * @return The illegal Unicode code point
      */
     public int getCodePoint() {
         return c;

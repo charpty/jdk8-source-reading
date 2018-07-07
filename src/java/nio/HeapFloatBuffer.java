@@ -27,21 +27,11 @@
 
 package java.nio;
 
-
 /**
-
  * A read/write HeapFloatBuffer.
-
-
-
-
-
-
  */
 
-class HeapFloatBuffer
-    extends FloatBuffer
-{
+class HeapFloatBuffer extends FloatBuffer {
 
     // For speed these fields are actually declared in X-Buffer;
     // these declarations are here as documentation
@@ -60,9 +50,6 @@ class HeapFloatBuffer
         offset = 0;
         */
 
-
-
-
     }
 
     HeapFloatBuffer(float[] buf, int off, int len) { // package-private
@@ -73,15 +60,9 @@ class HeapFloatBuffer
         offset = 0;
         */
 
-
-
-
     }
 
-    protected HeapFloatBuffer(float[] buf,
-                                   int mark, int pos, int lim, int cap,
-                                   int off)
-    {
+    protected HeapFloatBuffer(float[] buf, int mark, int pos, int lim, int cap, int off) {
 
         super(mark, pos, lim, cap, buf, off);
         /*
@@ -89,43 +70,21 @@ class HeapFloatBuffer
         offset = off;
         */
 
-
-
-
     }
 
     public FloatBuffer slice() {
-        return new HeapFloatBuffer(hb,
-                                        -1,
-                                        0,
-                                        this.remaining(),
-                                        this.remaining(),
-                                        this.position() + offset);
+        return new HeapFloatBuffer(hb, -1, 0, this.remaining(), this.remaining(), this.position() + offset);
     }
 
     public FloatBuffer duplicate() {
-        return new HeapFloatBuffer(hb,
-                                        this.markValue(),
-                                        this.position(),
-                                        this.limit(),
-                                        this.capacity(),
-                                        offset);
+        return new HeapFloatBuffer(hb, this.markValue(), this.position(), this.limit(), this.capacity(), offset);
     }
 
     public FloatBuffer asReadOnlyBuffer() {
 
-        return new HeapFloatBufferR(hb,
-                                     this.markValue(),
-                                     this.position(),
-                                     this.limit(),
-                                     this.capacity(),
-                                     offset);
-
-
+        return new HeapFloatBufferR(hb, this.markValue(), this.position(), this.limit(), this.capacity(), offset);
 
     }
-
-
 
     protected int ix(int i) {
         return i + offset;
@@ -139,16 +98,11 @@ class HeapFloatBuffer
         return hb[ix(checkIndex(i))];
     }
 
-
-
-
-
-
-
     public FloatBuffer get(float[] dst, int offset, int length) {
         checkBounds(offset, length, dst.length);
-        if (length > remaining())
+        if (length > remaining()) {
             throw new BufferUnderflowException();
+        }
         System.arraycopy(hb, ix(position()), dst, offset, length);
         position(position() + length);
         return this;
@@ -157,8 +111,6 @@ class HeapFloatBuffer
     public boolean isDirect() {
         return false;
     }
-
-
 
     public boolean isReadOnly() {
         return false;
@@ -169,8 +121,6 @@ class HeapFloatBuffer
         hb[ix(nextPutIndex())] = x;
         return this;
 
-
-
     }
 
     public FloatBuffer put(int i, float x) {
@@ -178,48 +128,45 @@ class HeapFloatBuffer
         hb[ix(checkIndex(i))] = x;
         return this;
 
-
-
     }
 
     public FloatBuffer put(float[] src, int offset, int length) {
 
         checkBounds(offset, length, src.length);
-        if (length > remaining())
+        if (length > remaining()) {
             throw new BufferOverflowException();
+        }
         System.arraycopy(src, offset, hb, ix(position()), length);
         position(position() + length);
         return this;
-
-
 
     }
 
     public FloatBuffer put(FloatBuffer src) {
 
         if (src instanceof HeapFloatBuffer) {
-            if (src == this)
+            if (src == this) {
                 throw new IllegalArgumentException();
-            HeapFloatBuffer sb = (HeapFloatBuffer)src;
+            }
+            HeapFloatBuffer sb = (HeapFloatBuffer) src;
             int n = sb.remaining();
-            if (n > remaining())
+            if (n > remaining()) {
                 throw new BufferOverflowException();
-            System.arraycopy(sb.hb, sb.ix(sb.position()),
-                             hb, ix(position()), n);
+            }
+            System.arraycopy(sb.hb, sb.ix(sb.position()), hb, ix(position()), n);
             sb.position(sb.position() + n);
             position(position() + n);
         } else if (src.isDirect()) {
             int n = src.remaining();
-            if (n > remaining())
+            if (n > remaining()) {
                 throw new BufferOverflowException();
+            }
             src.get(hb, ix(position()), n);
             position(position() + n);
         } else {
             super.put(src);
         }
         return this;
-
-
 
     }
 
@@ -231,371 +178,10 @@ class HeapFloatBuffer
         discardMark();
         return this;
 
-
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public ByteOrder order() {
         return ByteOrder.nativeOrder();
     }
-
-
 
 }

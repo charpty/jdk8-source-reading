@@ -27,23 +27,15 @@
 
 package java.nio;
 
-
 class ByteBufferAsCharBufferB                  // package-private
-    extends CharBuffer
-{
-
-
+        extends CharBuffer {
 
     protected final ByteBuffer bb;
     protected final int offset;
 
-
-
     ByteBufferAsCharBufferB(ByteBuffer bb) {   // package-private
 
-        super(-1, 0,
-              bb.remaining() >> 1,
-              bb.remaining() >> 1);
+        super(-1, 0, bb.remaining() >> 1, bb.remaining() >> 1);
         this.bb = bb;
         // enforce limit == capacity
         int cap = this.capacity();
@@ -52,20 +44,13 @@ class ByteBufferAsCharBufferB                  // package-private
         assert (pos <= cap);
         offset = pos;
 
-
-
     }
 
-    ByteBufferAsCharBufferB(ByteBuffer bb,
-                                     int mark, int pos, int lim, int cap,
-                                     int off)
-    {
+    ByteBufferAsCharBufferB(ByteBuffer bb, int mark, int pos, int lim, int cap, int off) {
 
         super(mark, pos, lim, cap);
         this.bb = bb;
         offset = off;
-
-
 
     }
 
@@ -80,28 +65,14 @@ class ByteBufferAsCharBufferB                  // package-private
     }
 
     public CharBuffer duplicate() {
-        return new ByteBufferAsCharBufferB(bb,
-                                                    this.markValue(),
-                                                    this.position(),
-                                                    this.limit(),
-                                                    this.capacity(),
-                                                    offset);
+        return new ByteBufferAsCharBufferB(bb, this.markValue(), this.position(), this.limit(), this.capacity(), offset);
     }
 
     public CharBuffer asReadOnlyBuffer() {
 
-        return new ByteBufferAsCharBufferRB(bb,
-                                                 this.markValue(),
-                                                 this.position(),
-                                                 this.limit(),
-                                                 this.capacity(),
-                                                 offset);
-
-
+        return new ByteBufferAsCharBufferRB(bb, this.markValue(), this.position(), this.limit(), this.capacity(), offset);
 
     }
-
-
 
     protected int ix(int i) {
         return (i << 1) + offset;
@@ -115,20 +86,14 @@ class ByteBufferAsCharBufferB                  // package-private
         return Bits.getCharB(bb, ix(checkIndex(i)));
     }
 
-
-   char getUnchecked(int i) {
+    char getUnchecked(int i) {
         return Bits.getCharB(bb, ix(i));
     }
-
-
-
 
     public CharBuffer put(char x) {
 
         Bits.putCharB(bb, ix(nextPutIndex()), x);
         return this;
-
-
 
     }
 
@@ -136,8 +101,6 @@ class ByteBufferAsCharBufferB                  // package-private
 
         Bits.putCharB(bb, ix(checkIndex(i)), x);
         return this;
-
-
 
     }
 
@@ -159,8 +122,6 @@ class ByteBufferAsCharBufferB                  // package-private
         discardMark();
         return this;
 
-
-
     }
 
     public boolean isDirect() {
@@ -171,11 +132,10 @@ class ByteBufferAsCharBufferB                  // package-private
         return false;
     }
 
-
-
     public String toString(int start, int end) {
-        if ((end > limit()) || (start > end))
+        if ((end > limit()) || (start > end)) {
             throw new IndexOutOfBoundsException();
+        }
         try {
             int len = end - start;
             char[] ca = new char[len];
@@ -190,7 +150,6 @@ class ByteBufferAsCharBufferB                  // package-private
         }
     }
 
-
     // --- Methods to support CharSequence ---
 
     public CharBuffer subSequence(int start, int end) {
@@ -200,25 +159,15 @@ class ByteBufferAsCharBufferB                  // package-private
         pos = (pos <= lim ? pos : lim);
         int len = lim - pos;
 
-        if ((start < 0) || (end > len) || (start > end))
+        if ((start < 0) || (end > len) || (start > end)) {
             throw new IndexOutOfBoundsException();
-        return new ByteBufferAsCharBufferB(bb,
-                                                  -1,
-                                                  pos + start,
-                                                  pos + end,
-                                                  capacity(),
-                                                  offset);
+        }
+        return new ByteBufferAsCharBufferB(bb, -1, pos + start, pos + end, capacity(), offset);
     }
-
-
-
 
     public ByteOrder order() {
 
         return ByteOrder.BIG_ENDIAN;
-
-
-
 
     }
 

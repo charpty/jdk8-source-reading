@@ -34,11 +34,11 @@ import java.util.List;
  * <p> A watch key is created when a watchable object is registered with a watch
  * service. The key remains {@link #isValid valid} until:
  * <ol>
- *   <li> It is cancelled, explicitly, by invoking its {@link #cancel cancel}
- *     method, or</li>
- *   <li> Cancelled implicitly, because the object is no longer accessible,
- *     or </li>
- *   <li> By {@link WatchService#close closing} the watch service. </li>
+ * <li> It is cancelled, explicitly, by invoking its {@link #cancel cancel}
+ * method, or</li>
+ * <li> Cancelled implicitly, because the object is no longer accessible,
+ * or </li>
+ * <li> By {@link WatchService#close closing} the watch service. </li>
  * </ol>
  *
  * <p> A watch key has a state. When initially created the key is said to be
@@ -89,7 +89,7 @@ public interface WatchKey {
      * <p> A watch key is valid upon creation and remains until it is cancelled,
      * or its watch service is closed.
      *
-     * @return  {@code true} if, and only if, this watch key is valid
+     * @return {@code true} if, and only if, this watch key is valid
      */
     boolean isValid();
 
@@ -99,7 +99,7 @@ public interface WatchKey {
      *
      * <p> Note that this method does not wait if there are no events pending.
      *
-     * @return  the list of the events retrieved; may be empty
+     * @return the list of the events retrieved; may be empty
      */
     List<WatchEvent<?>> pollEvents();
 
@@ -113,9 +113,9 @@ public interface WatchKey {
      * events then the watch key is put into the ready state and will remain in
      * that state until an event is detected or the watch key is cancelled.
      *
-     * @return  {@code true} if the watch key is valid and has been reset, and
-     *          {@code false} if the watch key could not be reset because it is
-     *          no longer {@link #isValid valid}
+     * @return {@code true} if the watch key is valid and has been reset, and
+     * {@code false} if the watch key could not be reset because it is
+     * no longer {@link #isValid valid}
      */
     boolean reset();
 

@@ -61,9 +61,6 @@
  */
 package java.time.zone;
 
-import static java.time.temporal.TemporalAdjusters.nextOrSame;
-import static java.time.temporal.TemporalAdjusters.previousOrSame;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -79,6 +76,10 @@ import java.time.ZoneOffset;
 import java.time.chrono.IsoChronology;
 import java.util.Objects;
 
+
+import static java.time.temporal.TemporalAdjusters.nextOrSame;
+import static java.time.temporal.TemporalAdjusters.previousOrSame;
+
 /**
  * A rule expressing how to create a transition.
  * <p>
@@ -91,9 +92,6 @@ import java.util.Objects;
  * <li>the last Sunday in February
  * </ul>
  * These different rule types can be expressed and queried.
- *
- * @implSpec
- * This class is immutable and thread-safe.
  *
  * @since 1.8
  */
@@ -153,31 +151,36 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * Applications should normally obtain an instance from {@link ZoneRules}.
      * This factory is only intended for use when creating {@link ZoneRules}.
      *
-     * @param month  the month of the month-day of the first day of the cutover week, not null
-     * @param dayOfMonthIndicator  the day of the month-day of the cutover week, positive if the week is that
-     *  day or later, negative if the week is that day or earlier, counting from the last day of the month,
-     *  from -28 to 31 excluding 0
-     * @param dayOfWeek  the required day-of-week, null if the month-day should not be changed
-     * @param time  the cutover time in the 'before' offset, not null
-     * @param timeEndOfDay  whether the time is midnight at the end of day
-     * @param timeDefnition  how to interpret the cutover
-     * @param standardOffset  the standard offset in force at the cutover, not null
-     * @param offsetBefore  the offset before the cutover, not null
-     * @param offsetAfter  the offset after the cutover, not null
+     * @param month
+     *         the month of the month-day of the first day of the cutover week, not null
+     * @param dayOfMonthIndicator
+     *         the day of the month-day of the cutover week, positive if the week is that
+     *         day or later, negative if the week is that day or earlier, counting from the last day of the month,
+     *         from -28 to 31 excluding 0
+     * @param dayOfWeek
+     *         the required day-of-week, null if the month-day should not be changed
+     * @param time
+     *         the cutover time in the 'before' offset, not null
+     * @param timeEndOfDay
+     *         whether the time is midnight at the end of day
+     * @param timeDefnition
+     *         how to interpret the cutover
+     * @param standardOffset
+     *         the standard offset in force at the cutover, not null
+     * @param offsetBefore
+     *         the offset before the cutover, not null
+     * @param offsetAfter
+     *         the offset after the cutover, not null
+     *
      * @return the rule, not null
-     * @throws IllegalArgumentException if the day of month indicator is invalid
-     * @throws IllegalArgumentException if the end of day flag is true when the time is not midnight
+     *
+     * @throws IllegalArgumentException
+     *         if the day of month indicator is invalid
+     * @throws IllegalArgumentException
+     *         if the end of day flag is true when the time is not midnight
      */
-    public static ZoneOffsetTransitionRule of(
-            Month month,
-            int dayOfMonthIndicator,
-            DayOfWeek dayOfWeek,
-            LocalTime time,
-            boolean timeEndOfDay,
-            TimeDefinition timeDefnition,
-            ZoneOffset standardOffset,
-            ZoneOffset offsetBefore,
-            ZoneOffset offsetAfter) {
+    public static ZoneOffsetTransitionRule of(Month month, int dayOfMonthIndicator, DayOfWeek dayOfWeek, LocalTime time, boolean timeEndOfDay,
+            TimeDefinition timeDefnition, ZoneOffset standardOffset, ZoneOffset offsetBefore, ZoneOffset offsetAfter) {
         Objects.requireNonNull(month, "month");
         Objects.requireNonNull(time, "time");
         Objects.requireNonNull(timeDefnition, "timeDefnition");
@@ -190,36 +193,41 @@ public final class ZoneOffsetTransitionRule implements Serializable {
         if (timeEndOfDay && time.equals(LocalTime.MIDNIGHT) == false) {
             throw new IllegalArgumentException("Time must be midnight when end of day flag is true");
         }
-        return new ZoneOffsetTransitionRule(month, dayOfMonthIndicator, dayOfWeek, time, timeEndOfDay, timeDefnition, standardOffset, offsetBefore, offsetAfter);
+        return new ZoneOffsetTransitionRule(month, dayOfMonthIndicator, dayOfWeek, time, timeEndOfDay, timeDefnition, standardOffset, offsetBefore,
+                offsetAfter);
     }
 
     /**
      * Creates an instance defining the yearly rule to create transitions between two offsets.
      *
-     * @param month  the month of the month-day of the first day of the cutover week, not null
-     * @param dayOfMonthIndicator  the day of the month-day of the cutover week, positive if the week is that
-     *  day or later, negative if the week is that day or earlier, counting from the last day of the month,
-     *  from -28 to 31 excluding 0
-     * @param dayOfWeek  the required day-of-week, null if the month-day should not be changed
-     * @param time  the cutover time in the 'before' offset, not null
-     * @param timeEndOfDay  whether the time is midnight at the end of day
-     * @param timeDefnition  how to interpret the cutover
-     * @param standardOffset  the standard offset in force at the cutover, not null
-     * @param offsetBefore  the offset before the cutover, not null
-     * @param offsetAfter  the offset after the cutover, not null
-     * @throws IllegalArgumentException if the day of month indicator is invalid
-     * @throws IllegalArgumentException if the end of day flag is true when the time is not midnight
+     * @param month
+     *         the month of the month-day of the first day of the cutover week, not null
+     * @param dayOfMonthIndicator
+     *         the day of the month-day of the cutover week, positive if the week is that
+     *         day or later, negative if the week is that day or earlier, counting from the last day of the month,
+     *         from -28 to 31 excluding 0
+     * @param dayOfWeek
+     *         the required day-of-week, null if the month-day should not be changed
+     * @param time
+     *         the cutover time in the 'before' offset, not null
+     * @param timeEndOfDay
+     *         whether the time is midnight at the end of day
+     * @param timeDefnition
+     *         how to interpret the cutover
+     * @param standardOffset
+     *         the standard offset in force at the cutover, not null
+     * @param offsetBefore
+     *         the offset before the cutover, not null
+     * @param offsetAfter
+     *         the offset after the cutover, not null
+     *
+     * @throws IllegalArgumentException
+     *         if the day of month indicator is invalid
+     * @throws IllegalArgumentException
+     *         if the end of day flag is true when the time is not midnight
      */
-    ZoneOffsetTransitionRule(
-            Month month,
-            int dayOfMonthIndicator,
-            DayOfWeek dayOfWeek,
-            LocalTime time,
-            boolean timeEndOfDay,
-            TimeDefinition timeDefnition,
-            ZoneOffset standardOffset,
-            ZoneOffset offsetBefore,
-            ZoneOffset offsetAfter) {
+    ZoneOffsetTransitionRule(Month month, int dayOfMonthIndicator, DayOfWeek dayOfWeek, LocalTime time, boolean timeEndOfDay, TimeDefinition timeDefnition,
+            ZoneOffset standardOffset, ZoneOffset offsetBefore, ZoneOffset offsetAfter) {
         this.month = month;
         this.dom = (byte) dayOfMonthIndicator;
         this.dow = dayOfWeek;
@@ -232,11 +240,15 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Defend against malicious streams.
      *
-     * @param s the stream to read
-     * @throws InvalidObjectException always
+     * @param s
+     *         the stream to read
+     *
+     * @throws InvalidObjectException
+     *         always
      */
     private void readObject(ObjectInputStream s) throws InvalidObjectException {
         throw new InvalidObjectException("Deserialization via serialization delegate");
@@ -245,45 +257,6 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     /**
      * Writes the object using a
      * <a href="../../../serialized-form.html#java.time.zone.Ser">dedicated serialized form</a>.
-     * @serialData
-     * Refer to the serialized form of
-     * <a href="../../../serialized-form.html#java.time.zone.ZoneRules">ZoneRules.writeReplace</a>
-     * for the encoding of epoch seconds and offsets.
-     * <pre style="font-size:1.0em">{@code
-     *
-     *      out.writeByte(3);                // identifies a ZoneOffsetTransition
-     *      final int timeSecs = (timeEndOfDay ? 86400 : time.toSecondOfDay());
-     *      final int stdOffset = standardOffset.getTotalSeconds();
-     *      final int beforeDiff = offsetBefore.getTotalSeconds() - stdOffset;
-     *      final int afterDiff = offsetAfter.getTotalSeconds() - stdOffset;
-     *      final int timeByte = (timeSecs % 3600 == 0 ? (timeEndOfDay ? 24 : time.getHour()) : 31);
-     *      final int stdOffsetByte = (stdOffset % 900 == 0 ? stdOffset / 900 + 128 : 255);
-     *      final int beforeByte = (beforeDiff == 0 || beforeDiff == 1800 || beforeDiff == 3600 ? beforeDiff / 1800 : 3);
-     *      final int afterByte = (afterDiff == 0 || afterDiff == 1800 || afterDiff == 3600 ? afterDiff / 1800 : 3);
-     *      final int dowByte = (dow == null ? 0 : dow.getValue());
-     *      int b = (month.getValue() << 28) +          // 4 bits
-     *              ((dom + 32) << 22) +                // 6 bits
-     *              (dowByte << 19) +                   // 3 bits
-     *              (timeByte << 14) +                  // 5 bits
-     *              (timeDefinition.ordinal() << 12) +  // 2 bits
-     *              (stdOffsetByte << 4) +              // 8 bits
-     *              (beforeByte << 2) +                 // 2 bits
-     *              afterByte;                          // 2 bits
-     *      out.writeInt(b);
-     *      if (timeByte == 31) {
-     *          out.writeInt(timeSecs);
-     *      }
-     *      if (stdOffsetByte == 255) {
-     *          out.writeInt(stdOffset);
-     *      }
-     *      if (beforeByte == 3) {
-     *          out.writeInt(offsetBefore.getTotalSeconds());
-     *      }
-     *      if (afterByte == 3) {
-     *          out.writeInt(offsetAfter.getTotalSeconds());
-     *      }
-     * }
-     * </pre>
      *
      * @return the replacing object, not null
      */
@@ -294,8 +267,11 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     /**
      * Writes the state to the stream.
      *
-     * @param out  the output stream, not null
-     * @throws IOException if an error occurs
+     * @param out
+     *         the output stream, not null
+     *
+     * @throws IOException
+     *         if an error occurs
      */
     void writeExternal(DataOutput out) throws IOException {
         final int timeSecs = (timeEndOfDay ? 86400 : time.toSecondOfDay());
@@ -333,9 +309,13 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     /**
      * Reads the state from the stream.
      *
-     * @param in  the input stream, not null
+     * @param in
+     *         the input stream, not null
+     *
      * @return the created object, not null
-     * @throws IOException if an error occurs
+     *
+     * @throws IOException
+     *         if an error occurs
      */
     static ZoneOffsetTransitionRule readExternal(DataInput in) throws IOException {
         int data = in.readInt();
@@ -356,6 +336,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the month of the transition.
      * <p>
@@ -471,12 +452,15 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Creates a transition instance for the specified year.
      * <p>
      * Calculations are performed using the ISO-8601 chronology.
      *
-     * @param year  the year to create a transition for, not null
+     * @param year
+     *         the year to create a transition for, not null
+     *
      * @return the transition instance, not null
      */
     public ZoneOffsetTransition createTransition(int year) {
@@ -501,12 +485,15 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks if this object equals another.
      * <p>
      * The entire state of the object is compared.
      *
-     * @param otherRule  the other object to compare to, null returns false
+     * @param otherRule
+     *         the other object to compare to, null returns false
+     *
      * @return true if equal
      */
     @Override
@@ -516,13 +503,9 @@ public final class ZoneOffsetTransitionRule implements Serializable {
         }
         if (otherRule instanceof ZoneOffsetTransitionRule) {
             ZoneOffsetTransitionRule other = (ZoneOffsetTransitionRule) otherRule;
-            return month == other.month && dom == other.dom && dow == other.dow &&
-                timeDefinition == other.timeDefinition &&
-                time.equals(other.time) &&
-                timeEndOfDay == other.timeEndOfDay &&
-                standardOffset.equals(other.standardOffset) &&
-                offsetBefore.equals(other.offsetBefore) &&
-                offsetAfter.equals(other.offsetAfter);
+            return month == other.month && dom == other.dom && dow == other.dow && timeDefinition == other.timeDefinition && time.equals(other.time)
+                    && timeEndOfDay == other.timeEndOfDay && standardOffset.equals(other.standardOffset) && offsetBefore.equals(other.offsetBefore)
+                    && offsetAfter.equals(other.offsetAfter);
         }
         return false;
     }
@@ -534,14 +517,14 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      */
     @Override
     public int hashCode() {
-        int hash = ((time.toSecondOfDay() + (timeEndOfDay ? 1 : 0)) << 15) +
-                (month.ordinal() << 11) + ((dom + 32) << 5) +
-                ((dow == null ? 7 : dow.ordinal()) << 2) + (timeDefinition.ordinal());
-        return hash ^ standardOffset.hashCode() ^
-                offsetBefore.hashCode() ^ offsetAfter.hashCode();
+        int hash =
+                ((time.toSecondOfDay() + (timeEndOfDay ? 1 : 0)) << 15) + (month.ordinal() << 11) + ((dom + 32) << 5) + ((dow == null ? 7 : dow.ordinal()) << 2)
+                        + (timeDefinition.ordinal());
+        return hash ^ standardOffset.hashCode() ^ offsetBefore.hashCode() ^ offsetAfter.hashCode();
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns a string describing this object.
      *
@@ -550,9 +533,8 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        buf.append("TransitionRule[")
-            .append(offsetBefore.compareTo(offsetAfter) > 0 ? "Gap " : "Overlap ")
-            .append(offsetBefore).append(" to ").append(offsetAfter).append(", ");
+        buf.append("TransitionRule[").append(offsetBefore.compareTo(offsetAfter) > 0 ? "Gap " : "Overlap ").append(offsetBefore).append(" to ")
+                .append(offsetAfter).append(", ");
         if (dow != null) {
             if (dom == -1) {
                 buf.append(dow.name()).append(" on or before last day of ").append(month.name());
@@ -564,14 +546,13 @@ public final class ZoneOffsetTransitionRule implements Serializable {
         } else {
             buf.append(month.name()).append(' ').append(dom);
         }
-        buf.append(" at ").append(timeEndOfDay ? "24:00" : time.toString())
-            .append(" ").append(timeDefinition)
-            .append(", standard offset ").append(standardOffset)
-            .append(']');
+        buf.append(" at ").append(timeEndOfDay ? "24:00" : time.toString()).append(" ").append(timeDefinition).append(", standard offset ")
+                .append(standardOffset).append(']');
         return buf.toString();
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * A definition of the way a local time can be converted to the actual
      * transition date-time.
@@ -585,10 +566,8 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      */
     public static enum TimeDefinition {
         /** The local date-time is expressed in terms of the UTC offset. */
-        UTC,
-        /** The local date-time is expressed in terms of the wall offset. */
-        WALL,
-        /** The local date-time is expressed in terms of the standard offset. */
+        UTC, /** The local date-time is expressed in terms of the wall offset. */
+        WALL, /** The local date-time is expressed in terms of the standard offset. */
         STANDARD;
 
         /**
@@ -603,23 +582,27 @@ public final class ZoneOffsetTransitionRule implements Serializable {
          * The WALL type returns the input date-time.
          * The result is intended for use with the wall-offset.
          *
-         * @param dateTime  the local date-time, not null
-         * @param standardOffset  the standard offset, not null
-         * @param wallOffset  the wall offset, not null
+         * @param dateTime
+         *         the local date-time, not null
+         * @param standardOffset
+         *         the standard offset, not null
+         * @param wallOffset
+         *         the wall offset, not null
+         *
          * @return the date-time relative to the wall/before offset, not null
          */
         public LocalDateTime createDateTime(LocalDateTime dateTime, ZoneOffset standardOffset, ZoneOffset wallOffset) {
             switch (this) {
-                case UTC: {
-                    int difference = wallOffset.getTotalSeconds() - ZoneOffset.UTC.getTotalSeconds();
-                    return dateTime.plusSeconds(difference);
-                }
-                case STANDARD: {
-                    int difference = wallOffset.getTotalSeconds() - standardOffset.getTotalSeconds();
-                    return dateTime.plusSeconds(difference);
-                }
-                default:  // WALL
-                    return dateTime;
+            case UTC: {
+                int difference = wallOffset.getTotalSeconds() - ZoneOffset.UTC.getTotalSeconds();
+                return dateTime.plusSeconds(difference);
+            }
+            case STANDARD: {
+                int difference = wallOffset.getTotalSeconds() - standardOffset.getTotalSeconds();
+                return dateTime.plusSeconds(difference);
+            }
+            default:  // WALL
+                return dateTime;
             }
         }
     }

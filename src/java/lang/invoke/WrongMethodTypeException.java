@@ -54,7 +54,8 @@ public class WrongMethodTypeException extends RuntimeException {
      * Constructs a {@code WrongMethodTypeException} with the specified
      * detail message.
      *
-     * @param s the detail message.
+     * @param s
+     *         the detail message.
      */
     public WrongMethodTypeException(String s) {
         super(s);
@@ -64,8 +65,10 @@ public class WrongMethodTypeException extends RuntimeException {
      * Constructs a {@code WrongMethodTypeException} with the specified
      * detail message and cause.
      *
-     * @param s the detail message.
-     * @param cause the cause of the exception, or null.
+     * @param s
+     *         the detail message.
+     * @param cause
+     *         the cause of the exception, or null.
      */
     //FIXME: make this public in MR1
     /*non-public*/ WrongMethodTypeException(String s, Throwable cause) {
@@ -76,7 +79,8 @@ public class WrongMethodTypeException extends RuntimeException {
      * Constructs a {@code WrongMethodTypeException} with the specified
      * cause.
      *
-     * @param cause the cause of the exception, or null.
+     * @param cause
+     *         the cause of the exception, or null.
      */
     //FIXME: make this public in MR1
     /*non-public*/ WrongMethodTypeException(Throwable cause) {

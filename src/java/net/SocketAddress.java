@@ -24,9 +24,7 @@
  */
 package java.net;
 
-
 /**
- *
  * This class represents a Socket Address with no protocol attachment.
  * As an abstract class, it is meant to be subclassed with a specific,
  * protocol dependent, implementation.

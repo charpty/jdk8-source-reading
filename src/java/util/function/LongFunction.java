@@ -32,7 +32,8 @@ package java.util.function;
  * <p>This is a <a href="package-summary.html">functional interface</a>
  * whose functional method is {@link #apply(long)}.
  *
- * @param <R> the type of the result of the function
+ * @param <R>
+ *         the type of the result of the function
  *
  * @see Function
  * @since 1.8
@@ -43,7 +44,9 @@ public interface LongFunction<R> {
     /**
      * Applies this function to the given argument.
      *
-     * @param value the function argument
+     * @param value
+     *         the function argument
+     *
      * @return the function result
      */
     R apply(long value);

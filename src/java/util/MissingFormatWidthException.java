@@ -44,19 +44,20 @@ public class MissingFormatWidthException extends IllegalFormatException {
      * Constructs an instance of this class with the specified format
      * specifier.
      *
-     * @param  s
+     * @param s
      *         The format specifier which does not have a width
      */
     public MissingFormatWidthException(String s) {
-        if (s == null)
+        if (s == null) {
             throw new NullPointerException();
+        }
         this.s = s;
     }
 
     /**
      * Returns the format specifier which does not have a width.
      *
-     * @return  The format specifier which does not have a width
+     * @return The format specifier which does not have a width
      */
     public String getFormatSpecifier() {
         return s;

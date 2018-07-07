@@ -43,9 +43,7 @@ import java.util.EventListenerProxy;
  * @see PropertyChangeSupport#getPropertyChangeListeners
  * @since 1.4
  */
-public class PropertyChangeListenerProxy
-        extends EventListenerProxy<PropertyChangeListener>
-        implements PropertyChangeListener {
+public class PropertyChangeListenerProxy extends EventListenerProxy<PropertyChangeListener> implements PropertyChangeListener {
 
     private final String propertyName;
 
@@ -53,8 +51,10 @@ public class PropertyChangeListenerProxy
      * Constructor which binds the {@code PropertyChangeListener}
      * to a specific property.
      *
-     * @param propertyName  the name of the property to listen on
-     * @param listener      the listener object
+     * @param propertyName
+     *         the name of the property to listen on
+     * @param listener
+     *         the listener object
      */
     public PropertyChangeListenerProxy(String propertyName, PropertyChangeListener listener) {
         super(listener);
@@ -64,7 +64,8 @@ public class PropertyChangeListenerProxy
     /**
      * Forwards the property change event to the listener delegate.
      *
-     * @param event  the property change event
+     * @param event
+     *         the property change event
      */
     public void propertyChange(PropertyChangeEvent event) {
         getListener().propertyChange(event);

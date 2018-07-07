@@ -30,11 +30,9 @@ import java.math.BigInteger;
  * This immutable class specifies an elliptic curve private key with
  * its associated parameters.
  *
+ * @author Valerie Peng
  * @see KeySpec
  * @see ECParameterSpec
- *
- * @author Valerie Peng
- *
  * @since 1.5
  */
 public class ECPrivateKeySpec implements KeySpec {
@@ -45,11 +43,16 @@ public class ECPrivateKeySpec implements KeySpec {
     /**
      * Creates a new ECPrivateKeySpec with the specified
      * parameter values.
-     * @param s the private value.
-     * @param params the associated elliptic curve domain
-     * parameters.
-     * @exception NullPointerException if {@code s}
-     * or {@code params} is null.
+     *
+     * @param s
+     *         the private value.
+     * @param params
+     *         the associated elliptic curve domain
+     *         parameters.
+     *
+     * @throws NullPointerException
+     *         if {@code s}
+     *         or {@code params} is null.
      */
     public ECPrivateKeySpec(BigInteger s, ECParameterSpec params) {
         if (s == null) {
@@ -64,6 +67,7 @@ public class ECPrivateKeySpec implements KeySpec {
 
     /**
      * Returns the private value S.
+     *
      * @return the private value S.
      */
     public BigInteger getS() {
@@ -73,6 +77,7 @@ public class ECPrivateKeySpec implements KeySpec {
     /**
      * Returns the associated elliptic curve domain
      * parameters.
+     *
      * @return the EC domain parameters.
      */
     public ECParameterSpec getParams() {

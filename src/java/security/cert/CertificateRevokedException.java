@@ -25,15 +25,14 @@
 
 package java.security.cert;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.security.auth.x500.X500Principal;
-
 import sun.security.util.ObjectIdentifier;
 import sun.security.x509.InvalidityDateExtension;
 
@@ -44,8 +43,8 @@ import sun.security.x509.InvalidityDateExtension;
  * certificate was revoked and the reason it was revoked.
  *
  * @author Sean Mullan
- * @since 1.7
  * @see CertPathValidatorException
+ * @since 1.7
  */
 public class CertificateRevokedException extends CertificateException {
 
@@ -72,31 +71,34 @@ public class CertificateRevokedException extends CertificateException {
      * the specified revocation date, reason code, authority name, and map
      * of extensions.
      *
-     * @param revocationDate the date on which the certificate was revoked. The
-     *    date is copied to protect against subsequent modification.
-     * @param reason the revocation reason
-     * @param extensions a map of X.509 Extensions. Each key is an OID String
-     *    that maps to the corresponding Extension. The map is copied to
-     *    prevent subsequent modification.
-     * @param authority the {@code X500Principal} that represents the name
-     *    of the authority that signed the certificate's revocation status
-     *    information
-     * @throws NullPointerException if {@code revocationDate},
-     *    {@code reason}, {@code authority}, or
-     *    {@code extensions} is {@code null}
+     * @param revocationDate
+     *         the date on which the certificate was revoked. The
+     *         date is copied to protect against subsequent modification.
+     * @param reason
+     *         the revocation reason
+     * @param extensions
+     *         a map of X.509 Extensions. Each key is an OID String
+     *         that maps to the corresponding Extension. The map is copied to
+     *         prevent subsequent modification.
+     * @param authority
+     *         the {@code X500Principal} that represents the name
+     *         of the authority that signed the certificate's revocation status
+     *         information
+     *
+     * @throws NullPointerException
+     *         if {@code revocationDate},
+     *         {@code reason}, {@code authority}, or
+     *         {@code extensions} is {@code null}
      */
-    public CertificateRevokedException(Date revocationDate, CRLReason reason,
-        X500Principal authority, Map<String, Extension> extensions) {
-        if (revocationDate == null || reason == null || authority == null ||
-            extensions == null) {
+    public CertificateRevokedException(Date revocationDate, CRLReason reason, X500Principal authority, Map<String, Extension> extensions) {
+        if (revocationDate == null || reason == null || authority == null || extensions == null) {
             throw new NullPointerException();
         }
         this.revocationDate = new Date(revocationDate.getTime());
         this.reason = reason;
         this.authority = authority;
         // make sure Map only contains correct types
-        this.extensions = Collections.checkedMap(new HashMap<>(),
-                                                 String.class, Extension.class);
+        this.extensions = Collections.checkedMap(new HashMap<>(), String.class, Extension.class);
         this.extensions.putAll(extensions);
     }
 
@@ -125,7 +127,7 @@ public class CertificateRevokedException extends CertificateException {
      * revocation status information.
      *
      * @return the {@code X500Principal} that represents the name of the
-     *     authority that signed the certificate's revocation status information
+     * authority that signed the certificate's revocation status information
      */
     public X500Principal getAuthorityName() {
         return authority;
@@ -165,7 +167,7 @@ public class CertificateRevokedException extends CertificateException {
      * Extension.
      *
      * @return an unmodifiable map of X.509 extensions, or an empty map
-     *    if there are no extensions
+     * if there are no extensions
      */
     public Map<String, Extension> getExtensions() {
         return Collections.unmodifiableMap(extensions);
@@ -173,20 +175,12 @@ public class CertificateRevokedException extends CertificateException {
 
     @Override
     public String getMessage() {
-        return "Certificate has been revoked, reason: "
-               + reason + ", revocation date: " + revocationDate
-               + ", authority: " + authority + ", extension OIDs: "
-               + extensions.keySet();
+        return "Certificate has been revoked, reason: " + reason + ", revocation date: " + revocationDate + ", authority: " + authority + ", extension OIDs: "
+                + extensions.keySet();
     }
 
     /**
      * Serialize this {@code CertificateRevokedException} instance.
-     *
-     * @serialData the size of the extensions map (int), followed by all of
-     * the extensions in the map, in no particular order. For each extension,
-     * the following data is emitted: the OID String (Object), the criticality
-     * flag (boolean), the length of the encoded extension value byte array
-     * (int), and the encoded extension value bytes.
      */
     private void writeObject(ObjectOutputStream oos) throws IOException {
         // Write out the non-transient fields
@@ -214,8 +208,7 @@ public class CertificateRevokedException extends CertificateException {
     /**
      * Deserialize the {@code CertificateRevokedException} instance.
      */
-    private void readObject(ObjectInputStream ois)
-        throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
         // Read in the non-transient fields
         // (revocationDate, reason, authority)
         ois.defaultReadObject();
@@ -239,8 +232,7 @@ public class CertificateRevokedException extends CertificateException {
             int length = ois.readInt();
             byte[] extVal = new byte[length];
             ois.readFully(extVal);
-            Extension ext = sun.security.x509.Extension.newExtension
-                (new ObjectIdentifier(oid), critical, extVal);
+            Extension ext = sun.security.x509.Extension.newExtension(new ObjectIdentifier(oid), critical, extVal);
             extensions.put(oid, ext);
         }
     }

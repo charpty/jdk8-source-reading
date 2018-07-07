@@ -38,20 +38,21 @@ package java.security.cert;
  * provide the necessary locking. Multiple threads each manipulating
  * separate objects need not synchronize.
  *
+ * @author Steve Hanna
  * @see CRL
  * @see CertStore
  * @see CertStore#getCRLs
- *
- * @author      Steve Hanna
- * @since       1.4
+ * @since 1.4
  */
 public interface CRLSelector extends Cloneable {
 
     /**
      * Decides whether a {@code CRL} should be selected.
      *
-     * @param   crl     the {@code CRL} to be checked
-     * @return  {@code true} if the {@code CRL} should be selected,
+     * @param crl
+     *         the {@code CRL} to be checked
+     *
+     * @return {@code true} if the {@code CRL} should be selected,
      * {@code false} otherwise
      */
     boolean match(CRL crl);

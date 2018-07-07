@@ -25,8 +25,8 @@
 
 package java.nio.file;
 
-import java.nio.file.attribute.BasicFileAttributes;
 import java.io.IOException;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Objects;
 
 /**
@@ -35,7 +35,8 @@ import java.util.Objects;
  *
  * <p> Methods in this class may be overridden subject to their general contract.
  *
- * @param   <T>     The type of reference to the files
+ * @param <T>
+ *         The type of reference to the files
  *
  * @since 1.7
  */
@@ -54,9 +55,7 @@ public class SimpleFileVisitor<T> implements FileVisitor<T> {
      * CONTINUE}.
      */
     @Override
-    public FileVisitResult preVisitDirectory(T dir, BasicFileAttributes attrs)
-        throws IOException
-    {
+    public FileVisitResult preVisitDirectory(T dir, BasicFileAttributes attrs) throws IOException {
         Objects.requireNonNull(dir);
         Objects.requireNonNull(attrs);
         return FileVisitResult.CONTINUE;
@@ -69,9 +68,7 @@ public class SimpleFileVisitor<T> implements FileVisitor<T> {
      * CONTINUE}.
      */
     @Override
-    public FileVisitResult visitFile(T file, BasicFileAttributes attrs)
-        throws IOException
-    {
+    public FileVisitResult visitFile(T file, BasicFileAttributes attrs) throws IOException {
         Objects.requireNonNull(file);
         Objects.requireNonNull(attrs);
         return FileVisitResult.CONTINUE;
@@ -84,9 +81,7 @@ public class SimpleFileVisitor<T> implements FileVisitor<T> {
      * the file from being visited.
      */
     @Override
-    public FileVisitResult visitFileFailed(T file, IOException exc)
-        throws IOException
-    {
+    public FileVisitResult visitFileFailed(T file, IOException exc) throws IOException {
         Objects.requireNonNull(file);
         throw exc;
     }
@@ -101,12 +96,11 @@ public class SimpleFileVisitor<T> implements FileVisitor<T> {
      * of the directory to terminate prematurely.
      */
     @Override
-    public FileVisitResult postVisitDirectory(T dir, IOException exc)
-        throws IOException
-    {
+    public FileVisitResult postVisitDirectory(T dir, IOException exc) throws IOException {
         Objects.requireNonNull(dir);
-        if (exc != null)
+        if (exc != null) {
             throw exc;
+        }
         return FileVisitResult.CONTINUE;
     }
 }

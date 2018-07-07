@@ -47,19 +47,11 @@ import java.util.stream.Collector;
  * <pre> {@code
  * IntSummaryStatistics stats = people.stream()
  *                                    .collect(Collectors.summarizingInt(Person::getDependents));
- *}</pre>
+ * }</pre>
  *
  * This computes, in a single pass, the count of people, as well as the minimum,
  * maximum, sum, and average of their number of dependents.
  *
- * @implNote This implementation is not thread safe. However, it is safe to use
- * {@link java.util.stream.Collectors#summarizingInt(java.util.function.ToIntFunction)
- * Collectors.toIntStatistics()} on a parallel stream, because the parallel
- * implementation of {@link java.util.stream.Stream#collect Stream.collect()}
- * provides the necessary partitioning, isolation, and merging of results for
- * safe and efficient parallel execution.
- *
- * <p>This implementation does not check for overflow of the sum.
  * @since 1.8
  */
 public class IntSummaryStatistics implements IntConsumer {
@@ -73,12 +65,14 @@ public class IntSummaryStatistics implements IntConsumer {
      * {@code Integer.MAX_VALUE} min, {@code Integer.MIN_VALUE} max and zero
      * average.
      */
-    public IntSummaryStatistics() { }
+    public IntSummaryStatistics() {
+    }
 
     /**
      * Records a new value into the summary information
      *
-     * @param value the input value
+     * @param value
+     *         the input value
      */
     @Override
     public void accept(int value) {
@@ -91,8 +85,11 @@ public class IntSummaryStatistics implements IntConsumer {
     /**
      * Combines the state of another {@code IntSummaryStatistics} into this one.
      *
-     * @param other another {@code IntSummaryStatistics}
-     * @throws NullPointerException if {@code other} is null
+     * @param other
+     *         another {@code IntSummaryStatistics}
+     *
+     * @throws NullPointerException
+     *         if {@code other} is null
      */
     public void combine(IntSummaryStatistics other) {
         count += other.count;
@@ -157,15 +154,8 @@ public class IntSummaryStatistics implements IntConsumer {
      * Returns a non-empty string representation of this object suitable for
      * debugging. The exact presentation format is unspecified and may vary
      * between implementations and versions.
-     */
-    public String toString() {
-        return String.format(
-            "%s{count=%d, sum=%d, min=%d, average=%f, max=%d}",
-            this.getClass().getSimpleName(),
-            getCount(),
-            getSum(),
-            getMin(),
-            getAverage(),
-            getMax());
+     */ public String toString() {
+        return String.format("%s{count=%d, sum=%d, min=%d, average=%f, max=%d}", this.getClass().getSimpleName(), getCount(), getSum(), getMin(), getAverage(),
+                getMax());
     }
 }

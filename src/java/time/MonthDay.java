@@ -61,9 +61,6 @@
  */
 package java.time;
 
-import static java.time.temporal.ChronoField.DAY_OF_MONTH;
-import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -85,6 +82,10 @@ import java.time.temporal.TemporalQuery;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 import java.util.Objects;
+
+
+import static java.time.temporal.ChronoField.DAY_OF_MONTH;
+import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 
 /**
  * A month-day in the ISO-8601 calendar system, such as {@code --12-03}.
@@ -119,13 +120,9 @@ import java.util.Objects;
  * {@code MonthDay} may have unpredictable results and should be avoided.
  * The {@code equals} method should be used for comparisons.
  *
- * @implSpec
- * This class is immutable and thread-safe.
- *
  * @since 1.8
  */
-public final class MonthDay
-        implements TemporalAccessor, TemporalAdjuster, Comparable<MonthDay>, Serializable {
+public final class MonthDay implements TemporalAccessor, TemporalAdjuster, Comparable<MonthDay>, Serializable {
 
     /**
      * Serialization version.
@@ -134,12 +131,8 @@ public final class MonthDay
     /**
      * Parser.
      */
-    private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
-        .appendLiteral("--")
-        .appendValue(MONTH_OF_YEAR, 2)
-        .appendLiteral('-')
-        .appendValue(DAY_OF_MONTH, 2)
-        .toFormatter();
+    private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder().appendLiteral("--").appendValue(MONTH_OF_YEAR, 2).appendLiteral('-')
+            .appendValue(DAY_OF_MONTH, 2).toFormatter();
 
     /**
      * The month-of-year, not null.
@@ -151,6 +144,7 @@ public final class MonthDay
     private final int day;
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains the current month-day from the system clock in the default time-zone.
      * <p>
@@ -175,7 +169,9 @@ public final class MonthDay
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
-     * @param zone  the zone ID to use, not null
+     * @param zone
+     *         the zone ID to use, not null
+     *
      * @return the current month-day using the system clock, not null
      */
     public static MonthDay now(ZoneId zone) {
@@ -189,7 +185,9 @@ public final class MonthDay
      * Using this method allows the use of an alternate clock for testing.
      * The alternate clock may be introduced using {@link Clock dependency injection}.
      *
-     * @param clock  the clock to use, not null
+     * @param clock
+     *         the clock to use, not null
+     *
      * @return the current month-day, not null
      */
     public static MonthDay now(Clock clock) {
@@ -198,6 +196,7 @@ public final class MonthDay
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code MonthDay}.
      * <p>
@@ -208,18 +207,22 @@ public final class MonthDay
      * there can never be April 31st in any year. By contrast, passing in
      * February 29th is permitted, as that month-day can sometimes be valid.
      *
-     * @param month  the month-of-year to represent, not null
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
+     * @param month
+     *         the month-of-year to represent, not null
+     * @param dayOfMonth
+     *         the day-of-month to represent, from 1 to 31
+     *
      * @return the month-day, not null
-     * @throws DateTimeException if the value of any field is out of range,
-     *  or if the day-of-month is invalid for the month
+     *
+     * @throws DateTimeException
+     *         if the value of any field is out of range,
+     *         or if the day-of-month is invalid for the month
      */
     public static MonthDay of(Month month, int dayOfMonth) {
         Objects.requireNonNull(month, "month");
         DAY_OF_MONTH.checkValidValue(dayOfMonth);
         if (dayOfMonth > month.maxLength()) {
-            throw new DateTimeException("Illegal value for DayOfMonth field, value " + dayOfMonth +
-                    " is not valid for month " + month.name());
+            throw new DateTimeException("Illegal value for DayOfMonth field, value " + dayOfMonth + " is not valid for month " + month.name());
         }
         return new MonthDay(month.getValue(), dayOfMonth);
     }
@@ -234,17 +237,23 @@ public final class MonthDay
      * there can never be April 31st in any year. By contrast, passing in
      * February 29th is permitted, as that month-day can sometimes be valid.
      *
-     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
+     * @param month
+     *         the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param dayOfMonth
+     *         the day-of-month to represent, from 1 to 31
+     *
      * @return the month-day, not null
-     * @throws DateTimeException if the value of any field is out of range,
-     *  or if the day-of-month is invalid for the month
+     *
+     * @throws DateTimeException
+     *         if the value of any field is out of range,
+     *         or if the day-of-month is invalid for the month
      */
     public static MonthDay of(int month, int dayOfMonth) {
         return of(Month.of(month), dayOfMonth);
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code MonthDay} from a temporal object.
      * <p>
@@ -260,9 +269,13 @@ public final class MonthDay
      * This method matches the signature of the functional interface {@link TemporalQuery}
      * allowing it to be used as a query via method reference, {@code MonthDay::from}.
      *
-     * @param temporal  the temporal object to convert, not null
+     * @param temporal
+     *         the temporal object to convert, not null
+     *
      * @return the month-day, not null
-     * @throws DateTimeException if unable to convert to a {@code MonthDay}
+     *
+     * @throws DateTimeException
+     *         if unable to convert to a {@code MonthDay}
      */
     public static MonthDay from(TemporalAccessor temporal) {
         if (temporal instanceof MonthDay) {
@@ -274,21 +287,25 @@ public final class MonthDay
             }
             return of(temporal.get(MONTH_OF_YEAR), temporal.get(DAY_OF_MONTH));
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to obtain MonthDay from TemporalAccessor: " +
-                    temporal + " of type " + temporal.getClass().getName(), ex);
+            throw new DateTimeException("Unable to obtain MonthDay from TemporalAccessor: " + temporal + " of type " + temporal.getClass().getName(), ex);
         }
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code MonthDay} from a text string such as {@code --12-03}.
      * <p>
      * The string must represent a valid month-day.
      * The format is {@code --MM-dd}.
      *
-     * @param text  the text to parse such as "--12-03", not null
+     * @param text
+     *         the text to parse such as "--12-03", not null
+     *
      * @return the parsed month-day, not null
-     * @throws DateTimeParseException if the text cannot be parsed
+     *
+     * @throws DateTimeParseException
+     *         if the text cannot be parsed
      */
     public static MonthDay parse(CharSequence text) {
         return parse(text, PARSER);
@@ -299,10 +316,15 @@ public final class MonthDay
      * <p>
      * The text is parsed using the formatter, returning a month-day.
      *
-     * @param text  the text to parse, not null
-     * @param formatter  the formatter to use, not null
+     * @param text
+     *         the text to parse, not null
+     * @param formatter
+     *         the formatter to use, not null
+     *
      * @return the parsed month-day, not null
-     * @throws DateTimeParseException if the text cannot be parsed
+     *
+     * @throws DateTimeParseException
+     *         if the text cannot be parsed
      */
     public static MonthDay parse(CharSequence text, DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
@@ -310,11 +332,14 @@ public final class MonthDay
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Constructor, previously validated.
      *
-     * @param month  the month-of-year to represent, validated from 1 to 12
-     * @param dayOfMonth  the day-of-month to represent, validated from 1 to 29-31
+     * @param month
+     *         the month-of-year to represent, validated from 1 to 12
+     * @param dayOfMonth
+     *         the day-of-month to represent, validated from 1 to 29-31
      */
     private MonthDay(int month, int dayOfMonth) {
         this.month = month;
@@ -322,6 +347,7 @@ public final class MonthDay
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks if the specified field is supported.
      * <p>
@@ -342,7 +368,9 @@ public final class MonthDay
      * passing {@code this} as the argument.
      * Whether the field is supported is determined by the field.
      *
-     * @param field  the field to check, null returns false
+     * @param field
+     *         the field to check, null returns false
+     *
      * @return true if the field is supported on this month-day, false if not
      */
     @Override
@@ -371,10 +399,15 @@ public final class MonthDay
      * passing {@code this} as the argument.
      * Whether the range can be obtained is determined by the field.
      *
-     * @param field  the field to query the range for, not null
+     * @param field
+     *         the field to query the range for, not null
+     *
      * @return the range of valid values for the field, not null
-     * @throws DateTimeException if the range for the field cannot be obtained
-     * @throws UnsupportedTemporalTypeException if the field is not supported
+     *
+     * @throws DateTimeException
+     *         if the range for the field cannot be obtained
+     * @throws UnsupportedTemporalTypeException
+     *         if the field is not supported
      */
     @Override
     public ValueRange range(TemporalField field) {
@@ -404,13 +437,19 @@ public final class MonthDay
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
-     * @param field  the field to get, not null
+     * @param field
+     *         the field to get, not null
+     *
      * @return the value for the field
-     * @throws DateTimeException if a value for the field cannot be obtained or
+     *
+     * @throws DateTimeException
+     *         if a value for the field cannot be obtained or
      *         the value is outside the range of valid values for the field
-     * @throws UnsupportedTemporalTypeException if the field is not supported or
+     * @throws UnsupportedTemporalTypeException
+     *         if the field is not supported or
      *         the range of values exceeds an {@code int}
-     * @throws ArithmeticException if numeric overflow occurs
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override  // override for Javadoc
     public int get(TemporalField field) {
@@ -434,19 +473,27 @@ public final class MonthDay
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
-     * @param field  the field to get, not null
+     * @param field
+     *         the field to get, not null
+     *
      * @return the value for the field
-     * @throws DateTimeException if a value for the field cannot be obtained
-     * @throws UnsupportedTemporalTypeException if the field is not supported
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if a value for the field cannot be obtained
+     * @throws UnsupportedTemporalTypeException
+     *         if the field is not supported
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override
     public long getLong(TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
-                // alignedDOW and alignedWOM not supported because they cannot be set in with()
-                case DAY_OF_MONTH: return day;
-                case MONTH_OF_YEAR: return month;
+            // alignedDOW and alignedWOM not supported because they cannot be set in with()
+            case DAY_OF_MONTH:
+                return day;
+            case MONTH_OF_YEAR:
+                return month;
             }
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
@@ -454,6 +501,7 @@ public final class MonthDay
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the month-of-year field from 1 to 12.
      * <p>
@@ -462,6 +510,7 @@ public final class MonthDay
      * is used by calling {@link #getMonth()}.
      *
      * @return the month-of-year, from 1 to 12
+     *
      * @see #getMonth()
      */
     public int getMonthValue() {
@@ -477,6 +526,7 @@ public final class MonthDay
      * provides the {@link Month#getValue() int value}.
      *
      * @return the month-of-year, not null
+     *
      * @see #getMonthValue()
      */
     public Month getMonth() {
@@ -495,14 +545,18 @@ public final class MonthDay
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks if the year is valid for this month-day.
      * <p>
      * This method checks whether this month and day and the input year form
      * a valid date. This can only return false for February 29th.
      *
-     * @param year  the year to validate
+     * @param year
+     *         the year to validate
+     *
      * @return true if the year is valid for this month-day
+     *
      * @see Year#isValidMonthDay(MonthDay)
      */
     public boolean isValidYear(int year) {
@@ -510,6 +564,7 @@ public final class MonthDay
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns a copy of this {@code MonthDay} with the month-of-year altered.
      * <p>
@@ -519,9 +574,13 @@ public final class MonthDay
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param month  the month-of-year to set in the returned month-day, from 1 (January) to 12 (December)
+     * @param month
+     *         the month-of-year to set in the returned month-day, from 1 (January) to 12 (December)
+     *
      * @return a {@code MonthDay} based on this month-day with the requested month, not null
-     * @throws DateTimeException if the month-of-year value is invalid
+     *
+     * @throws DateTimeException
+     *         if the month-of-year value is invalid
      */
     public MonthDay withMonth(int month) {
         return with(Month.of(month));
@@ -536,7 +595,9 @@ public final class MonthDay
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param month  the month-of-year to set in the returned month-day, not null
+     * @param month
+     *         the month-of-year to set in the returned month-day, not null
+     *
      * @return a {@code MonthDay} based on this month-day with the requested month, not null
      */
     public MonthDay with(Month month) {
@@ -556,10 +617,14 @@ public final class MonthDay
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfMonth  the day-of-month to set in the return month-day, from 1 to 31
+     * @param dayOfMonth
+     *         the day-of-month to set in the return month-day, from 1 to 31
+     *
      * @return a {@code MonthDay} based on this month-day with the requested day, not null
-     * @throws DateTimeException if the day-of-month value is invalid,
-     *  or if the day-of-month is invalid for the month
+     *
+     * @throws DateTimeException
+     *         if the day-of-month value is invalid,
+     *         or if the day-of-month is invalid for the month
      */
     public MonthDay withDayOfMonth(int dayOfMonth) {
         if (dayOfMonth == this.day) {
@@ -569,6 +634,7 @@ public final class MonthDay
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Queries this month-day using the specified query.
      * <p>
@@ -581,11 +647,17 @@ public final class MonthDay
      * {@link TemporalQuery#queryFrom(TemporalAccessor)} method on the
      * specified query passing {@code this} as the argument.
      *
-     * @param <R> the type of the result
-     * @param query  the query to invoke, not null
+     * @param <R>
+     *         the type of the result
+     * @param query
+     *         the query to invoke, not null
+     *
      * @return the query result, null may be returned (defined by the query)
-     * @throws DateTimeException if unable to query (defined by the query)
-     * @throws ArithmeticException if numeric overflow occurs (defined by the query)
+     *
+     * @throws DateTimeException
+     *         if unable to query (defined by the query)
+     * @throws ArithmeticException
+     *         if numeric overflow occurs (defined by the query)
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -618,10 +690,15 @@ public final class MonthDay
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param temporal  the target object to be adjusted, not null
+     * @param temporal
+     *         the target object to be adjusted, not null
+     *
      * @return the adjusted object, not null
-     * @throws DateTimeException if unable to make the adjustment
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if unable to make the adjustment
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override
     public Temporal adjustInto(Temporal temporal) {
@@ -637,9 +714,13 @@ public final class MonthDay
      * <p>
      * This month-day will be passed to the formatter to produce a string.
      *
-     * @param formatter  the formatter to use, not null
+     * @param formatter
+     *         the formatter to use, not null
+     *
      * @return the formatted month-day string, not null
-     * @throws DateTimeException if an error occurs during printing
+     *
+     * @throws DateTimeException
+     *         if an error occurs during printing
      */
     public String format(DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
@@ -647,6 +728,7 @@ public final class MonthDay
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Combines this month-day with a year to create a {@code LocalDate}.
      * <p>
@@ -657,22 +739,29 @@ public final class MonthDay
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to use, from MIN_YEAR to MAX_YEAR
+     * @param year
+     *         the year to use, from MIN_YEAR to MAX_YEAR
+     *
      * @return the local date formed from this month-day and the specified year, not null
-     * @throws DateTimeException if the year is outside the valid range of years
+     *
+     * @throws DateTimeException
+     *         if the year is outside the valid range of years
      */
     public LocalDate atYear(int year) {
         return LocalDate.of(year, month, isValidYear(year) ? day : 28);
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Compares this month-day to another month-day.
      * <p>
      * The comparison is based first on value of the month, then on the value of the day.
      * It is "consistent with equals", as defined by {@link Comparable}.
      *
-     * @param other  the other month-day to compare to, not null
+     * @param other
+     *         the other month-day to compare to, not null
+     *
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
@@ -687,7 +776,9 @@ public final class MonthDay
     /**
      * Checks if this month-day is after the specified month-day.
      *
-     * @param other  the other month-day to compare to, not null
+     * @param other
+     *         the other month-day to compare to, not null
+     *
      * @return true if this is after the specified month-day
      */
     public boolean isAfter(MonthDay other) {
@@ -697,7 +788,9 @@ public final class MonthDay
     /**
      * Checks if this month-day is before the specified month-day.
      *
-     * @param other  the other month-day to compare to, not null
+     * @param other
+     *         the other month-day to compare to, not null
+     *
      * @return true if this point is before the specified month-day
      */
     public boolean isBefore(MonthDay other) {
@@ -705,12 +798,15 @@ public final class MonthDay
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks if this month-day is equal to another month-day.
      * <p>
      * The comparison is based on the time-line position of the month-day within a year.
      *
-     * @param obj  the object to check, null returns false
+     * @param obj
+     *         the object to check, null returns false
+     *
      * @return true if this is equal to the other month-day
      */
     @Override
@@ -736,6 +832,7 @@ public final class MonthDay
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Outputs this month-day as a {@code String}, such as {@code --12-03}.
      * <p>
@@ -745,22 +842,14 @@ public final class MonthDay
      */
     @Override
     public String toString() {
-        return new StringBuilder(10).append("--")
-            .append(month < 10 ? "0" : "").append(month)
-            .append(day < 10 ? "-0" : "-").append(day)
-            .toString();
+        return new StringBuilder(10).append("--").append(month < 10 ? "0" : "").append(month).append(day < 10 ? "-0" : "-").append(day).toString();
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Writes the object using a
      * <a href="../../serialized-form.html#java.time.Ser">dedicated serialized form</a>.
-     * @serialData
-     * <pre>
-     *  out.writeByte(13);  // identifies a MonthDay
-     *  out.writeByte(month);
-     *  out.writeByte(day);
-     * </pre>
      *
      * @return the instance of {@code Ser}, not null
      */
@@ -771,8 +860,11 @@ public final class MonthDay
     /**
      * Defend against malicious streams.
      *
-     * @param s the stream to read
-     * @throws InvalidObjectException always
+     * @param s
+     *         the stream to read
+     *
+     * @throws InvalidObjectException
+     *         always
      */
     private void readObject(ObjectInputStream s) throws InvalidObjectException {
         throw new InvalidObjectException("Deserialization via serialization delegate");

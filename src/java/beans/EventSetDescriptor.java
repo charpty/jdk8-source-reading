@@ -59,24 +59,25 @@ public class EventSetDescriptor extends FeatureDescriptor {
      * addFredListener method of the source component and removed with a
      * call on a removeFredListener method.
      *
-     * @param sourceClass  The class firing the event.
-     * @param eventSetName  The programmatic name of the event.  E.g. &quot;fred&quot;.
-     *          Note that this should normally start with a lower-case character.
-     * @param listenerType  The target interface that events
-     *          will get delivered to.
-     * @param listenerMethodName  The method that will get called when the event gets
-     *          delivered to its target listener interface.
-     * @exception IntrospectionException if an exception occurs during
-     *              introspection.
+     * @param sourceClass
+     *         The class firing the event.
+     * @param eventSetName
+     *         The programmatic name of the event.  E.g. &quot;fred&quot;.
+     *         Note that this should normally start with a lower-case character.
+     * @param listenerType
+     *         The target interface that events
+     *         will get delivered to.
+     * @param listenerMethodName
+     *         The method that will get called when the event gets
+     *         delivered to its target listener interface.
+     *
+     * @throws IntrospectionException
+     *         if an exception occurs during
+     *         introspection.
      */
-    public EventSetDescriptor(Class<?> sourceClass, String eventSetName,
-                Class<?> listenerType, String listenerMethodName)
-                throws IntrospectionException {
-        this(sourceClass, eventSetName, listenerType,
-             new String[] { listenerMethodName },
-             Introspector.ADD_PREFIX + getListenerClassName(listenerType),
-             Introspector.REMOVE_PREFIX + getListenerClassName(listenerType),
-             Introspector.GET_PREFIX + getListenerClassName(listenerType) + "s");
+    public EventSetDescriptor(Class<?> sourceClass, String eventSetName, Class<?> listenerType, String listenerMethodName) throws IntrospectionException {
+        this(sourceClass, eventSetName, listenerType, new String[] { listenerMethodName }, Introspector.ADD_PREFIX + getListenerClassName(listenerType),
+                Introspector.REMOVE_PREFIX + getListenerClassName(listenerType), Introspector.GET_PREFIX + getListenerClassName(listenerType) + "s");
 
         String eventName = NameGenerator.capitalize(eventSetName) + "Event";
         Method[] listenerMethods = getListenerMethods();
@@ -84,9 +85,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
             Class[] args = getParameterTypes(getClass0(), listenerMethods[0]);
             // Check for EventSet compliance. Special case for vetoableChange. See 4529996
             if (!"vetoableChange".equals(eventSetName) && !args[0].getName().endsWith(eventName)) {
-                throw new IntrospectionException("Method \"" + listenerMethodName +
-                                                 "\" should have argument \"" +
-                                                 eventName + "\"");
+                throw new IntrospectionException("Method \"" + listenerMethodName + "\" should have argument \"" + eventName + "\"");
             }
         }
     }
@@ -100,61 +99,65 @@ public class EventSetDescriptor extends FeatureDescriptor {
      * Creates an <TT>EventSetDescriptor</TT> from scratch using
      * string names.
      *
-     * @param sourceClass  The class firing the event.
-     * @param eventSetName The programmatic name of the event set.
-     *          Note that this should normally start with a lower-case character.
-     * @param listenerType  The Class of the target interface that events
-     *          will get delivered to.
-     * @param listenerMethodNames The names of the methods that will get called
-     *          when the event gets delivered to its target listener interface.
-     * @param addListenerMethodName  The name of the method on the event source
-     *          that can be used to register an event listener object.
-     * @param removeListenerMethodName  The name of the method on the event source
-     *          that can be used to de-register an event listener object.
-     * @exception IntrospectionException if an exception occurs during
-     *              introspection.
+     * @param sourceClass
+     *         The class firing the event.
+     * @param eventSetName
+     *         The programmatic name of the event set.
+     *         Note that this should normally start with a lower-case character.
+     * @param listenerType
+     *         The Class of the target interface that events
+     *         will get delivered to.
+     * @param listenerMethodNames
+     *         The names of the methods that will get called
+     *         when the event gets delivered to its target listener interface.
+     * @param addListenerMethodName
+     *         The name of the method on the event source
+     *         that can be used to register an event listener object.
+     * @param removeListenerMethodName
+     *         The name of the method on the event source
+     *         that can be used to de-register an event listener object.
+     *
+     * @throws IntrospectionException
+     *         if an exception occurs during
+     *         introspection.
      */
-    public EventSetDescriptor(Class<?> sourceClass,
-                String eventSetName,
-                Class<?> listenerType,
-                String listenerMethodNames[],
-                String addListenerMethodName,
-                String removeListenerMethodName)
-                throws IntrospectionException {
-        this(sourceClass, eventSetName, listenerType,
-             listenerMethodNames, addListenerMethodName,
-             removeListenerMethodName, null);
+    public EventSetDescriptor(Class<?> sourceClass, String eventSetName, Class<?> listenerType, String listenerMethodNames[], String addListenerMethodName,
+            String removeListenerMethodName) throws IntrospectionException {
+        this(sourceClass, eventSetName, listenerType, listenerMethodNames, addListenerMethodName, removeListenerMethodName, null);
     }
 
     /**
      * This constructor creates an EventSetDescriptor from scratch using
      * string names.
      *
-     * @param sourceClass  The class firing the event.
-     * @param eventSetName The programmatic name of the event set.
-     *          Note that this should normally start with a lower-case character.
-     * @param listenerType  The Class of the target interface that events
-     *          will get delivered to.
-     * @param listenerMethodNames The names of the methods that will get called
-     *          when the event gets delivered to its target listener interface.
-     * @param addListenerMethodName  The name of the method on the event source
-     *          that can be used to register an event listener object.
-     * @param removeListenerMethodName  The name of the method on the event source
-     *          that can be used to de-register an event listener object.
-     * @param getListenerMethodName The method on the event source that
-     *          can be used to access the array of event listener objects.
-     * @exception IntrospectionException if an exception occurs during
-     *              introspection.
+     * @param sourceClass
+     *         The class firing the event.
+     * @param eventSetName
+     *         The programmatic name of the event set.
+     *         Note that this should normally start with a lower-case character.
+     * @param listenerType
+     *         The Class of the target interface that events
+     *         will get delivered to.
+     * @param listenerMethodNames
+     *         The names of the methods that will get called
+     *         when the event gets delivered to its target listener interface.
+     * @param addListenerMethodName
+     *         The name of the method on the event source
+     *         that can be used to register an event listener object.
+     * @param removeListenerMethodName
+     *         The name of the method on the event source
+     *         that can be used to de-register an event listener object.
+     * @param getListenerMethodName
+     *         The method on the event source that
+     *         can be used to access the array of event listener objects.
+     *
+     * @throws IntrospectionException
+     *         if an exception occurs during
+     *         introspection.
      * @since 1.4
      */
-    public EventSetDescriptor(Class<?> sourceClass,
-                String eventSetName,
-                Class<?> listenerType,
-                String listenerMethodNames[],
-                String addListenerMethodName,
-                String removeListenerMethodName,
-                String getListenerMethodName)
-                throws IntrospectionException {
+    public EventSetDescriptor(Class<?> sourceClass, String eventSetName, Class<?> listenerType, String listenerMethodNames[], String addListenerMethodName,
+            String removeListenerMethodName, String getListenerMethodName) throws IntrospectionException {
         if (sourceClass == null || eventSetName == null || listenerType == null) {
             throw new NullPointerException();
         }
@@ -182,15 +185,13 @@ public class EventSetDescriptor extends FeatureDescriptor {
         }
     }
 
-    private static Method getMethod(Class<?> cls, String name, int args)
-        throws IntrospectionException {
+    private static Method getMethod(Class<?> cls, String name, int args) throws IntrospectionException {
         if (name == null) {
             return null;
         }
         Method method = Introspector.findMethod(cls, name, args);
         if ((method == null) || Modifier.isStatic(method.getModifiers())) {
-            throw new IntrospectionException("Method not found: " + name +
-                                             " on class " + cls.getName());
+            throw new IntrospectionException("Method not found: " + name + " on class " + cls.getName());
         }
         return method;
     }
@@ -199,56 +200,61 @@ public class EventSetDescriptor extends FeatureDescriptor {
      * Creates an <TT>EventSetDescriptor</TT> from scratch using
      * <TT>java.lang.reflect.Method</TT> and <TT>java.lang.Class</TT> objects.
      *
-     * @param eventSetName The programmatic name of the event set.
-     * @param listenerType The Class for the listener interface.
-     * @param listenerMethods  An array of Method objects describing each
-     *          of the event handling methods in the target listener.
-     * @param addListenerMethod  The method on the event source
-     *          that can be used to register an event listener object.
-     * @param removeListenerMethod  The method on the event source
-     *          that can be used to de-register an event listener object.
-     * @exception IntrospectionException if an exception occurs during
-     *              introspection.
+     * @param eventSetName
+     *         The programmatic name of the event set.
+     * @param listenerType
+     *         The Class for the listener interface.
+     * @param listenerMethods
+     *         An array of Method objects describing each
+     *         of the event handling methods in the target listener.
+     * @param addListenerMethod
+     *         The method on the event source
+     *         that can be used to register an event listener object.
+     * @param removeListenerMethod
+     *         The method on the event source
+     *         that can be used to de-register an event listener object.
+     *
+     * @throws IntrospectionException
+     *         if an exception occurs during
+     *         introspection.
      */
-    public EventSetDescriptor(String eventSetName,
-                Class<?> listenerType,
-                Method listenerMethods[],
-                Method addListenerMethod,
-                Method removeListenerMethod)
-                throws IntrospectionException {
-        this(eventSetName, listenerType, listenerMethods,
-             addListenerMethod, removeListenerMethod, null);
+    public EventSetDescriptor(String eventSetName, Class<?> listenerType, Method listenerMethods[], Method addListenerMethod, Method removeListenerMethod)
+            throws IntrospectionException {
+        this(eventSetName, listenerType, listenerMethods, addListenerMethod, removeListenerMethod, null);
     }
 
     /**
      * This constructor creates an EventSetDescriptor from scratch using
      * java.lang.reflect.Method and java.lang.Class objects.
      *
-     * @param eventSetName The programmatic name of the event set.
-     * @param listenerType The Class for the listener interface.
-     * @param listenerMethods  An array of Method objects describing each
-     *          of the event handling methods in the target listener.
-     * @param addListenerMethod  The method on the event source
-     *          that can be used to register an event listener object.
-     * @param removeListenerMethod  The method on the event source
-     *          that can be used to de-register an event listener object.
-     * @param getListenerMethod The method on the event source
-     *          that can be used to access the array of event listener objects.
-     * @exception IntrospectionException if an exception occurs during
-     *              introspection.
+     * @param eventSetName
+     *         The programmatic name of the event set.
+     * @param listenerType
+     *         The Class for the listener interface.
+     * @param listenerMethods
+     *         An array of Method objects describing each
+     *         of the event handling methods in the target listener.
+     * @param addListenerMethod
+     *         The method on the event source
+     *         that can be used to register an event listener object.
+     * @param removeListenerMethod
+     *         The method on the event source
+     *         that can be used to de-register an event listener object.
+     * @param getListenerMethod
+     *         The method on the event source
+     *         that can be used to access the array of event listener objects.
+     *
+     * @throws IntrospectionException
+     *         if an exception occurs during
+     *         introspection.
      * @since 1.4
      */
-    public EventSetDescriptor(String eventSetName,
-                Class<?> listenerType,
-                Method listenerMethods[],
-                Method addListenerMethod,
-                Method removeListenerMethod,
-                Method getListenerMethod)
-                throws IntrospectionException {
+    public EventSetDescriptor(String eventSetName, Class<?> listenerType, Method listenerMethods[], Method addListenerMethod, Method removeListenerMethod,
+            Method getListenerMethod) throws IntrospectionException {
         setName(eventSetName);
         setListenerMethods(listenerMethods);
         setAddListenerMethod(addListenerMethod);
-        setRemoveListenerMethod( removeListenerMethod);
+        setRemoveListenerMethod(removeListenerMethod);
         setGetListenerMethod(getListenerMethod);
         setListenerType(listenerType);
     }
@@ -256,30 +262,31 @@ public class EventSetDescriptor extends FeatureDescriptor {
     /**
      * Creates an <TT>EventSetDescriptor</TT> from scratch using
      * <TT>java.lang.reflect.MethodDescriptor</TT> and <TT>java.lang.Class</TT>
-     *  objects.
+     * objects.
      *
-     * @param eventSetName The programmatic name of the event set.
-     * @param listenerType The Class for the listener interface.
-     * @param listenerMethodDescriptors  An array of MethodDescriptor objects
-     *           describing each of the event handling methods in the
-     *           target listener.
-     * @param addListenerMethod  The method on the event source
-     *          that can be used to register an event listener object.
-     * @param removeListenerMethod  The method on the event source
-     *          that can be used to de-register an event listener object.
-     * @exception IntrospectionException if an exception occurs during
-     *              introspection.
+     * @param eventSetName
+     *         The programmatic name of the event set.
+     * @param listenerType
+     *         The Class for the listener interface.
+     * @param listenerMethodDescriptors
+     *         An array of MethodDescriptor objects
+     *         describing each of the event handling methods in the
+     *         target listener.
+     * @param addListenerMethod
+     *         The method on the event source
+     *         that can be used to register an event listener object.
+     * @param removeListenerMethod
+     *         The method on the event source
+     *         that can be used to de-register an event listener object.
+     *
+     * @throws IntrospectionException
+     *         if an exception occurs during
+     *         introspection.
      */
-    public EventSetDescriptor(String eventSetName,
-                Class<?> listenerType,
-                MethodDescriptor listenerMethodDescriptors[],
-                Method addListenerMethod,
-                Method removeListenerMethod)
-                throws IntrospectionException {
+    public EventSetDescriptor(String eventSetName, Class<?> listenerType, MethodDescriptor listenerMethodDescriptors[], Method addListenerMethod,
+            Method removeListenerMethod) throws IntrospectionException {
         setName(eventSetName);
-        this.listenerMethodDescriptors = (listenerMethodDescriptors != null)
-                ? listenerMethodDescriptors.clone()
-                : null;
+        this.listenerMethodDescriptors = (listenerMethodDescriptors != null) ? listenerMethodDescriptors.clone() : null;
         setAddListenerMethod(addListenerMethod);
         setRemoveListenerMethod(removeListenerMethod);
         setListenerType(listenerType);
@@ -292,9 +299,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
      * get invoked when the event is fired.
      */
     public Class<?> getListenerType() {
-        return (this.listenerTypeRef != null)
-                ? this.listenerTypeRef.get()
-                : null;
+        return (this.listenerTypeRef != null) ? this.listenerTypeRef.get() : null;
     }
 
     private void setListenerType(Class<?> cls) {
@@ -336,9 +341,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
     }
 
     private Method[] getListenerMethods0() {
-        return (this.listenerMethodsRef != null)
-                ? this.listenerMethodsRef.get()
-                : null;
+        return (this.listenerMethodsRef != null) ? this.listenerMethodsRef.get() : null;
     }
 
     /**
@@ -349,9 +352,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
      * events are fired.
      */
     public synchronized MethodDescriptor[] getListenerMethodDescriptors() {
-        return (this.listenerMethodDescriptors != null)
-                ? this.listenerMethodDescriptors.clone()
-                : null;
+        return (this.listenerMethodDescriptors != null) ? this.listenerMethodDescriptors.clone() : null;
     }
 
     /**
@@ -398,7 +399,8 @@ public class EventSetDescriptor extends FeatureDescriptor {
      * Gets the method used to access the registered event listeners.
      *
      * @return The method used to access the array of listeners at the event
-     *         source or null if it doesn't exist.
+     * source or null if it doesn't exist.
+     *
      * @since 1.4
      */
     public synchronized Method getGetListenerMethod() {
@@ -419,7 +421,8 @@ public class EventSetDescriptor extends FeatureDescriptor {
     /**
      * Mark an event set as unicast (or not).
      *
-     * @param unicast  True if the event set is unicast.
+     * @param unicast
+     *         True if the event set is unicast.
      */
     public void setUnicast(boolean unicast) {
         this.unicast = unicast;
@@ -429,8 +432,8 @@ public class EventSetDescriptor extends FeatureDescriptor {
      * Normally event sources are multicast.  However there are some
      * exceptions that are strictly unicast.
      *
-     * @return  <TT>true</TT> if the event set is unicast.
-     *          Defaults to <TT>false</TT>.
+     * @return <TT>true</TT> if the event set is unicast.
+     * Defaults to <TT>false</TT>.
      */
     public boolean isUnicast() {
         return unicast;
@@ -440,9 +443,10 @@ public class EventSetDescriptor extends FeatureDescriptor {
      * Marks an event set as being in the &quot;default&quot; set (or not).
      * By default this is <TT>true</TT>.
      *
-     * @param inDefaultEventSet <code>true</code> if the event set is in
-     *                          the &quot;default&quot; set,
-     *                          <code>false</code> if not
+     * @param inDefaultEventSet
+     *         <code>true</code> if the event set is in
+     *         the &quot;default&quot; set,
+     *         <code>false</code> if not
      */
     public void setInDefaultEventSet(boolean inDefaultEventSet) {
         this.inDefaultEventSet = inDefaultEventSet;
@@ -451,8 +455,8 @@ public class EventSetDescriptor extends FeatureDescriptor {
     /**
      * Reports if an event set is in the &quot;default&quot; set.
      *
-     * @return  <TT>true</TT> if the event set is in
-     *          the &quot;default&quot; set.  Defaults to <TT>true</TT>.
+     * @return <TT>true</TT> if the event set is in
+     * the &quot;default&quot; set.  Defaults to <TT>true</TT>.
      */
     public boolean isInDefaultEventSet() {
         return inDefaultEventSet;
@@ -467,7 +471,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
      * @param y  The second (higher priority) EventSetDescriptor
      */
     EventSetDescriptor(EventSetDescriptor x, EventSetDescriptor y) {
-        super(x,y);
+        super(x, y);
         listenerMethodDescriptors = x.listenerMethodDescriptors;
         if (y.listenerMethodDescriptors != null) {
             listenerMethodDescriptors = y.listenerMethodDescriptors;
@@ -509,8 +513,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
             int len = old.listenerMethodDescriptors.length;
             listenerMethodDescriptors = new MethodDescriptor[len];
             for (int i = 0; i < len; i++) {
-                listenerMethodDescriptors[i] = new MethodDescriptor(
-                                        old.listenerMethodDescriptors[i]);
+                listenerMethodDescriptors[i] = new MethodDescriptor(old.listenerMethodDescriptors[i]);
             }
         }
         listenerTypeRef = old.listenerTypeRef;
@@ -533,8 +536,6 @@ public class EventSetDescriptor extends FeatureDescriptor {
     }
 
     private static Method getMethod(MethodDescriptor descriptor) {
-        return (descriptor != null)
-                ? descriptor.getMethod()
-                : null;
+        return (descriptor != null) ? descriptor.getMethod() : null;
     }
 }

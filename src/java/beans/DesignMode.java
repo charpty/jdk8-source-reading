@@ -38,12 +38,11 @@ package java.beans;
  * or other live Java executable abstraction.
  *
  * @author Laurence P. G. Cable
- * @since 1.2
- *
  * @see java.beans.beancontext.BeanContext
  * @see java.beans.beancontext.BeanContextChild
  * @see java.beans.beancontext.BeanContextMembershipListener
  * @see java.beans.PropertyChangeEvent
+ * @since 1.2
  */
 
 public interface DesignMode {
@@ -63,14 +62,16 @@ public interface DesignMode {
      * PropertyChangeEvent, to its registered BeanContextMembershipListeners, with
      * parameters:
      * <ul>
-     *    <li><code>propertyName</code> - <code>java.beans.DesignMode.PROPERTYNAME</code>
-     *    <li><code>oldValue</code> - previous value of "designTime"
-     *    <li><code>newValue</code> - current value of "designTime"
+     * <li><code>propertyName</code> - <code>java.beans.DesignMode.PROPERTYNAME</code>
+     * <li><code>oldValue</code> - previous value of "designTime"
+     * <li><code>newValue</code> - current value of "designTime"
      * </ul>
      * Note it is illegal for a BeanContextChild to invoke this method
      * associated with a BeanContext that it is nested within.
      *
-     * @param designTime  the current "value" of the "designTime" property
+     * @param designTime
+     *         the current "value" of the "designTime" property
+     *
      * @see java.beans.beancontext.BeanContext
      * @see java.beans.beancontext.BeanContextMembershipListener
      * @see java.beans.PropertyChangeEvent

@@ -51,7 +51,8 @@ public class InvalidParameterException extends IllegalArgumentException {
      * detail message.  A detail message is a String that describes
      * this particular exception.
      *
-     * @param msg the detail message.
+     * @param msg
+     *         the detail message.
      */
     public InvalidParameterException(String msg) {
         super(msg);

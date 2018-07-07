@@ -31,12 +31,11 @@ package java.lang;
  * available by the garbage collector.
  *
  * {@code OutOfMemoryError} objects may be constructed by the virtual
- * machine as if {@linkplain Throwable#Throwable(String, Throwable,
- * boolean, boolean) suppression were disabled and/or the stack trace was not
+ * machine as if {@linkplain Throwable#Throwable(String, Throwable, * boolean, boolean) suppression were disabled and/or the stack trace was not
  * writable}.
  *
- * @author  unascribed
- * @since   JDK1.0
+ * @author unascribed
+ * @since JDK1.0
  */
 public class OutOfMemoryError extends VirtualMachineError {
     private static final long serialVersionUID = 8228564086184010517L;
@@ -52,7 +51,8 @@ public class OutOfMemoryError extends VirtualMachineError {
      * Constructs an {@code OutOfMemoryError} with the specified
      * detail message.
      *
-     * @param   s   the detail message.
+     * @param s
+     *         the detail message.
      */
     public OutOfMemoryError(String s) {
         super(s);

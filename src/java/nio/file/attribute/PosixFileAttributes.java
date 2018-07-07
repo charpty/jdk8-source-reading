@@ -39,13 +39,11 @@ import java.util.Set;
  * @since 1.7
  */
 
-public interface PosixFileAttributes
-    extends BasicFileAttributes
-{
+public interface PosixFileAttributes extends BasicFileAttributes {
     /**
      * Returns the owner of the file.
      *
-     * @return  the file owner
+     * @return the file owner
      *
      * @see PosixFileAttributeView#setOwner
      */
@@ -54,7 +52,7 @@ public interface PosixFileAttributes
     /**
      * Returns the group owner of the file.
      *
-     * @return  the file group owner
+     * @return the file group owner
      *
      * @see PosixFileAttributeView#setGroup
      */
@@ -67,7 +65,7 @@ public interface PosixFileAttributes
      * to be modified and passed to the {@link PosixFileAttributeView#setPermissions
      * setPermissions} method to update the file's permissions.
      *
-     * @return  the file permissions
+     * @return the file permissions
      *
      * @see PosixFileAttributeView#setPermissions
      */

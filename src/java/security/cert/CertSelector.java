@@ -39,20 +39,21 @@ package java.security.cert;
  * provide the necessary locking. Multiple threads each manipulating
  * separate objects need not synchronize.
  *
+ * @author Steve Hanna
  * @see Certificate
  * @see CertStore
  * @see CertStore#getCertificates
- *
- * @author      Steve Hanna
- * @since       1.4
+ * @since 1.4
  */
 public interface CertSelector extends Cloneable {
 
     /**
      * Decides whether a {@code Certificate} should be selected.
      *
-     * @param   cert    the {@code Certificate} to be checked
-     * @return  {@code true} if the {@code Certificate}
+     * @param cert
+     *         the {@code Certificate} to be checked
+     *
+     * @return {@code true} if the {@code Certificate}
      * should be selected, {@code false} otherwise
      */
     boolean match(Certificate cert);

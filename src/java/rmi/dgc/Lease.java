@@ -32,13 +32,11 @@ package java.rmi.dgc;
 public final class Lease implements java.io.Serializable {
 
     /**
-     * @serial Virtual Machine ID with which this Lease is associated.
      * @see #getVMID
      */
     private VMID vmid;
 
     /**
-     * @serial Duration of this lease.
      * @see #getValue
      */
     private long value;
@@ -48,30 +46,32 @@ public final class Lease implements java.io.Serializable {
     /**
      * Constructs a lease with a specific VMID and lease duration. The
      * vmid may be null.
-     * @param id VMID associated with this lease
-     * @param duration lease duration
+     *
+     * @param id
+     *         VMID associated with this lease
+     * @param duration
+     *         lease duration
      */
-    public Lease(VMID id, long duration)
-    {
+    public Lease(VMID id, long duration) {
         vmid = id;
         value = duration;
     }
 
     /**
      * Returns the client VMID associated with the lease.
+     *
      * @return client VMID
      */
-    public VMID getVMID()
-    {
+    public VMID getVMID() {
         return vmid;
     }
 
     /**
      * Returns the lease duration.
+     *
      * @return lease duration
      */
-    public long getValue()
-    {
+    public long getValue() {
         return value;
     }
 }

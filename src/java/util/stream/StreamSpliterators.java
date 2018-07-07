@@ -57,9 +57,7 @@ class StreamSpliterators {
      * <p>A wrapping spliterator produced from a sequential stream
      * cannot be split if there are stateful operations present.
      */
-    private static abstract class AbstractWrappingSpliterator<P_IN, P_OUT,
-                                                              T_BUFFER extends AbstractSpinedBuffer>
-            implements Spliterator<P_OUT> {
+    private static abstract class AbstractWrappingSpliterator<P_IN, P_OUT, T_BUFFER extends AbstractSpinedBuffer> implements Spliterator<P_OUT> {
 
         // @@@ Detect if stateful operations are present or not
         //     If not then can split otherwise cannot
@@ -112,9 +110,7 @@ class StreamSpliterators {
          * Construct an AbstractWrappingSpliterator from a
          * {@code Supplier<Spliterator>}.
          */
-        AbstractWrappingSpliterator(PipelineHelper<P_OUT> ph,
-                                    Supplier<Spliterator<P_IN>> spliteratorSupplier,
-                                    boolean parallel) {
+        AbstractWrappingSpliterator(PipelineHelper<P_OUT> ph, Supplier<Spliterator<P_IN>> spliteratorSupplier, boolean parallel) {
             this.ph = ph;
             this.spliteratorSupplier = spliteratorSupplier;
             this.spliterator = null;
@@ -125,9 +121,7 @@ class StreamSpliterators {
          * Construct an AbstractWrappingSpliterator from a
          * {@code Spliterator}.
          */
-        AbstractWrappingSpliterator(PipelineHelper<P_OUT> ph,
-                                    Spliterator<P_IN> spliterator,
-                                    boolean parallel) {
+        AbstractWrappingSpliterator(PipelineHelper<P_OUT> ph, Spliterator<P_IN> spliterator, boolean parallel) {
             this.ph = ph;
             this.spliteratorSupplier = null;
             this.spliterator = spliterator;
@@ -147,20 +141,21 @@ class StreamSpliterators {
         /**
          * Get an element from the source, pushing it into the sink chain,
          * setting up the buffer if needed
+         *
          * @return whether there are elements to consume from the buffer
          */
         final boolean doAdvance() {
             if (buffer == null) {
-                if (finished)
+                if (finished) {
                     return false;
+                }
 
                 init();
                 initPartialTraversalState();
                 nextToConsume = 0;
                 bufferSink.begin(spliterator.getExactSizeIfKnown());
                 return fillBuffer();
-            }
-            else {
+            } else {
                 ++nextToConsume;
                 boolean hasNext = nextToConsume < buffer.count();
                 if (!hasNext) {
@@ -191,22 +186,23 @@ class StreamSpliterators {
 
                 Spliterator<P_IN> split = spliterator.trySplit();
                 return (split == null) ? null : wrap(split);
-            }
-            else
+            } else {
                 return null;
+            }
         }
 
         /**
          * If the buffer is empty, push elements into the sink chain until
          * the source is empty or cancellation is requested.
+         *
          * @return whether there are elements to consume from the buffer
          */
         private boolean fillBuffer() {
             while (buffer.count() == 0) {
                 if (bufferSink.cancellationRequested() || !pusher.getAsBoolean()) {
-                    if (finished)
+                    if (finished) {
                         return false;
-                    else {
+                    } else {
                         bufferSink.end(); // might trigger more elements
                         finished = true;
                     }
@@ -227,9 +223,7 @@ class StreamSpliterators {
         @Override
         public final long getExactSizeIfKnown() {
             init();
-            return StreamOpFlag.SIZED.isKnown(ph.getStreamAndOpFlags())
-                   ? spliterator.getExactSizeIfKnown()
-                   : -1;
+            return StreamOpFlag.SIZED.isKnown(ph.getStreamAndOpFlags()) ? spliterator.getExactSizeIfKnown() : -1;
         }
 
         @Override
@@ -255,8 +249,9 @@ class StreamSpliterators {
 
         @Override
         public Comparator<? super P_OUT> getComparator() {
-            if (!hasCharacteristics(SORTED))
+            if (!hasCharacteristics(SORTED)) {
                 throw new IllegalStateException();
+            }
             return null;
         }
 
@@ -266,18 +261,13 @@ class StreamSpliterators {
         }
     }
 
-    static final class WrappingSpliterator<P_IN, P_OUT>
-            extends AbstractWrappingSpliterator<P_IN, P_OUT, SpinedBuffer<P_OUT>> {
+    static final class WrappingSpliterator<P_IN, P_OUT> extends AbstractWrappingSpliterator<P_IN, P_OUT, SpinedBuffer<P_OUT>> {
 
-        WrappingSpliterator(PipelineHelper<P_OUT> ph,
-                            Supplier<Spliterator<P_IN>> supplier,
-                            boolean parallel) {
+        WrappingSpliterator(PipelineHelper<P_OUT> ph, Supplier<Spliterator<P_IN>> supplier, boolean parallel) {
             super(ph, supplier, parallel);
         }
 
-        WrappingSpliterator(PipelineHelper<P_OUT> ph,
-                            Spliterator<P_IN> spliterator,
-                            boolean parallel) {
+        WrappingSpliterator(PipelineHelper<P_OUT> ph, Spliterator<P_IN> spliterator, boolean parallel) {
             super(ph, spliterator, parallel);
         }
 
@@ -298,8 +288,9 @@ class StreamSpliterators {
         public boolean tryAdvance(Consumer<? super P_OUT> consumer) {
             Objects.requireNonNull(consumer);
             boolean hasNext = doAdvance();
-            if (hasNext)
+            if (hasNext) {
                 consumer.accept(buffer.get(nextToConsume));
+            }
             return hasNext;
         }
 
@@ -311,26 +302,20 @@ class StreamSpliterators {
 
                 ph.wrapAndCopyInto((Sink<P_OUT>) consumer::accept, spliterator);
                 finished = true;
-            }
-            else {
-                do { } while (tryAdvance(consumer));
+            } else {
+                do {
+                } while (tryAdvance(consumer));
             }
         }
     }
 
-    static final class IntWrappingSpliterator<P_IN>
-            extends AbstractWrappingSpliterator<P_IN, Integer, SpinedBuffer.OfInt>
-            implements Spliterator.OfInt {
+    static final class IntWrappingSpliterator<P_IN> extends AbstractWrappingSpliterator<P_IN, Integer, SpinedBuffer.OfInt> implements Spliterator.OfInt {
 
-        IntWrappingSpliterator(PipelineHelper<Integer> ph,
-                               Supplier<Spliterator<P_IN>> supplier,
-                               boolean parallel) {
+        IntWrappingSpliterator(PipelineHelper<Integer> ph, Supplier<Spliterator<P_IN>> supplier, boolean parallel) {
             super(ph, supplier, parallel);
         }
 
-        IntWrappingSpliterator(PipelineHelper<Integer> ph,
-                               Spliterator<P_IN> spliterator,
-                               boolean parallel) {
+        IntWrappingSpliterator(PipelineHelper<Integer> ph, Spliterator<P_IN> spliterator, boolean parallel) {
             super(ph, spliterator, parallel);
         }
 
@@ -356,8 +341,9 @@ class StreamSpliterators {
         public boolean tryAdvance(IntConsumer consumer) {
             Objects.requireNonNull(consumer);
             boolean hasNext = doAdvance();
-            if (hasNext)
+            if (hasNext) {
                 consumer.accept(buffer.get(nextToConsume));
+            }
             return hasNext;
         }
 
@@ -369,26 +355,20 @@ class StreamSpliterators {
 
                 ph.wrapAndCopyInto((Sink.OfInt) consumer::accept, spliterator);
                 finished = true;
-            }
-            else {
-                do { } while (tryAdvance(consumer));
+            } else {
+                do {
+                } while (tryAdvance(consumer));
             }
         }
     }
 
-    static final class LongWrappingSpliterator<P_IN>
-            extends AbstractWrappingSpliterator<P_IN, Long, SpinedBuffer.OfLong>
-            implements Spliterator.OfLong {
+    static final class LongWrappingSpliterator<P_IN> extends AbstractWrappingSpliterator<P_IN, Long, SpinedBuffer.OfLong> implements Spliterator.OfLong {
 
-        LongWrappingSpliterator(PipelineHelper<Long> ph,
-                                Supplier<Spliterator<P_IN>> supplier,
-                                boolean parallel) {
+        LongWrappingSpliterator(PipelineHelper<Long> ph, Supplier<Spliterator<P_IN>> supplier, boolean parallel) {
             super(ph, supplier, parallel);
         }
 
-        LongWrappingSpliterator(PipelineHelper<Long> ph,
-                                Spliterator<P_IN> spliterator,
-                                boolean parallel) {
+        LongWrappingSpliterator(PipelineHelper<Long> ph, Spliterator<P_IN> spliterator, boolean parallel) {
             super(ph, spliterator, parallel);
         }
 
@@ -414,8 +394,9 @@ class StreamSpliterators {
         public boolean tryAdvance(LongConsumer consumer) {
             Objects.requireNonNull(consumer);
             boolean hasNext = doAdvance();
-            if (hasNext)
+            if (hasNext) {
                 consumer.accept(buffer.get(nextToConsume));
+            }
             return hasNext;
         }
 
@@ -427,26 +408,21 @@ class StreamSpliterators {
 
                 ph.wrapAndCopyInto((Sink.OfLong) consumer::accept, spliterator);
                 finished = true;
-            }
-            else {
-                do { } while (tryAdvance(consumer));
+            } else {
+                do {
+                } while (tryAdvance(consumer));
             }
         }
     }
 
-    static final class DoubleWrappingSpliterator<P_IN>
-            extends AbstractWrappingSpliterator<P_IN, Double, SpinedBuffer.OfDouble>
+    static final class DoubleWrappingSpliterator<P_IN> extends AbstractWrappingSpliterator<P_IN, Double, SpinedBuffer.OfDouble>
             implements Spliterator.OfDouble {
 
-        DoubleWrappingSpliterator(PipelineHelper<Double> ph,
-                                  Supplier<Spliterator<P_IN>> supplier,
-                                  boolean parallel) {
+        DoubleWrappingSpliterator(PipelineHelper<Double> ph, Supplier<Spliterator<P_IN>> supplier, boolean parallel) {
             super(ph, supplier, parallel);
         }
 
-        DoubleWrappingSpliterator(PipelineHelper<Double> ph,
-                                  Spliterator<P_IN> spliterator,
-                                  boolean parallel) {
+        DoubleWrappingSpliterator(PipelineHelper<Double> ph, Spliterator<P_IN> spliterator, boolean parallel) {
             super(ph, spliterator, parallel);
         }
 
@@ -472,8 +448,9 @@ class StreamSpliterators {
         public boolean tryAdvance(DoubleConsumer consumer) {
             Objects.requireNonNull(consumer);
             boolean hasNext = doAdvance();
-            if (hasNext)
+            if (hasNext) {
                 consumer.accept(buffer.get(nextToConsume));
+            }
             return hasNext;
         }
 
@@ -485,9 +462,9 @@ class StreamSpliterators {
 
                 ph.wrapAndCopyInto((Sink.OfDouble) consumer::accept, spliterator);
                 finished = true;
-            }
-            else {
-                do { } while (tryAdvance(consumer));
+            } else {
+                do {
+                } while (tryAdvance(consumer));
             }
         }
     }
@@ -496,10 +473,10 @@ class StreamSpliterators {
      * Spliterator implementation that delegates to an underlying spliterator,
      * acquiring the spliterator from a {@code Supplier<Spliterator>} on the
      * first call to any spliterator method.
+     *
      * @param <T>
      */
-    static class DelegatingSpliterator<T, T_SPLITR extends Spliterator<T>>
-            implements Spliterator<T> {
+    static class DelegatingSpliterator<T, T_SPLITR extends Spliterator<T>> implements Spliterator<T> {
         private final Supplier<? extends T_SPLITR> supplier;
 
         private T_SPLITR s;
@@ -556,9 +533,8 @@ class StreamSpliterators {
             return getClass().getName() + "[" + get() + "]";
         }
 
-        static class OfPrimitive<T, T_CONS, T_SPLITR extends Spliterator.OfPrimitive<T, T_CONS, T_SPLITR>>
-            extends DelegatingSpliterator<T, T_SPLITR>
-            implements Spliterator.OfPrimitive<T, T_CONS, T_SPLITR> {
+        static class OfPrimitive<T, T_CONS, T_SPLITR extends Spliterator.OfPrimitive<T, T_CONS, T_SPLITR>> extends DelegatingSpliterator<T, T_SPLITR>
+                implements Spliterator.OfPrimitive<T, T_CONS, T_SPLITR> {
             OfPrimitive(Supplier<? extends T_SPLITR> supplier) {
                 super(supplier);
             }
@@ -574,27 +550,21 @@ class StreamSpliterators {
             }
         }
 
-        static final class OfInt
-                extends OfPrimitive<Integer, IntConsumer, Spliterator.OfInt>
-                implements Spliterator.OfInt {
+        static final class OfInt extends OfPrimitive<Integer, IntConsumer, Spliterator.OfInt> implements Spliterator.OfInt {
 
             OfInt(Supplier<Spliterator.OfInt> supplier) {
                 super(supplier);
             }
         }
 
-        static final class OfLong
-                extends OfPrimitive<Long, LongConsumer, Spliterator.OfLong>
-                implements Spliterator.OfLong {
+        static final class OfLong extends OfPrimitive<Long, LongConsumer, Spliterator.OfLong> implements Spliterator.OfLong {
 
             OfLong(Supplier<Spliterator.OfLong> supplier) {
                 super(supplier);
             }
         }
 
-        static final class OfDouble
-                extends OfPrimitive<Double, DoubleConsumer, Spliterator.OfDouble>
-                implements Spliterator.OfDouble {
+        static final class OfDouble extends OfPrimitive<Double, DoubleConsumer, Spliterator.OfDouble> implements Spliterator.OfDouble {
 
             OfDouble(Supplier<Spliterator.OfDouble> supplier) {
                 super(supplier);
@@ -605,7 +575,6 @@ class StreamSpliterators {
     /**
      * A slice Spliterator from a source Spliterator that reports
      * {@code SUBSIZED}.
-     *
      */
     static abstract class SliceSpliterator<T, T_SPLITR extends Spliterator<T>> {
         // The start index of the slice
@@ -632,11 +601,13 @@ class StreamSpliterators {
         protected abstract T_SPLITR makeSpliterator(T_SPLITR s, long sliceOrigin, long sliceFence, long origin, long fence);
 
         public T_SPLITR trySplit() {
-            if (sliceOrigin >= fence)
+            if (sliceOrigin >= fence) {
                 return null;
+            }
 
-            if (index >= fence)
+            if (index >= fence) {
                 return null;
+            }
 
             // Keep splitting until the left and right splits intersect with the slice
             // thereby ensuring the size estimate decreases.
@@ -646,8 +617,9 @@ class StreamSpliterators {
             while (true) {
                 @SuppressWarnings("unchecked")
                 T_SPLITR leftSplit = (T_SPLITR) s.trySplit();
-                if (leftSplit == null)
+                if (leftSplit == null) {
                     return null;
+                }
 
                 long leftSplitFenceUnbounded = index + leftSplit.estimateSize();
                 long leftSplitFence = Math.min(leftSplitFenceUnbounded, sliceFence);
@@ -656,15 +628,13 @@ class StreamSpliterators {
                     // The right split does intersect
                     // Discard the left split and split further with the right split
                     index = leftSplitFence;
-                }
-                else if (leftSplitFence >= sliceFence) {
+                } else if (leftSplitFence >= sliceFence) {
                     // The right split does not intersect with, and is to the right of, the slice
                     // The left split does intersect
                     // Discard the right split and split further with the left split
                     s = leftSplit;
                     fence = leftSplitFence;
-                }
-                else if (index >= sliceOrigin && leftSplitFenceUnbounded <= sliceFence) {
+                } else if (index >= sliceOrigin && leftSplitFenceUnbounded <= sliceFence) {
                     // The left split is contained within the slice, return the underlying left split
                     // Right split is contained within or intersects with the slice
                     index = leftSplitFence;
@@ -678,31 +648,25 @@ class StreamSpliterators {
         }
 
         public long estimateSize() {
-            return (sliceOrigin < fence)
-                   ? fence - Math.max(sliceOrigin, index) : 0;
+            return (sliceOrigin < fence) ? fence - Math.max(sliceOrigin, index) : 0;
         }
 
         public int characteristics() {
             return s.characteristics();
         }
 
-        static final class OfRef<T>
-                extends SliceSpliterator<T, Spliterator<T>>
-                implements Spliterator<T> {
+        static final class OfRef<T> extends SliceSpliterator<T, Spliterator<T>> implements Spliterator<T> {
 
             OfRef(Spliterator<T> s, long sliceOrigin, long sliceFence) {
                 this(s, sliceOrigin, sliceFence, 0, Math.min(s.estimateSize(), sliceFence));
             }
 
-            private OfRef(Spliterator<T> s,
-                          long sliceOrigin, long sliceFence, long origin, long fence) {
+            private OfRef(Spliterator<T> s, long sliceOrigin, long sliceFence, long origin, long fence) {
                 super(s, sliceOrigin, sliceFence, origin, fence);
             }
 
             @Override
-            protected Spliterator<T> makeSpliterator(Spliterator<T> s,
-                                                     long sliceOrigin, long sliceFence,
-                                                     long origin, long fence) {
+            protected Spliterator<T> makeSpliterator(Spliterator<T> s, long sliceOrigin, long sliceFence, long origin, long fence) {
                 return new OfRef<>(s, sliceOrigin, sliceFence, origin, fence);
             }
 
@@ -710,16 +674,19 @@ class StreamSpliterators {
             public boolean tryAdvance(Consumer<? super T> action) {
                 Objects.requireNonNull(action);
 
-                if (sliceOrigin >= fence)
+                if (sliceOrigin >= fence) {
                     return false;
+                }
 
                 while (sliceOrigin > index) {
-                    s.tryAdvance(e -> {});
+                    s.tryAdvance(e -> {
+                    });
                     index++;
                 }
 
-                if (index >= fence)
+                if (index >= fence) {
                     return false;
+                }
 
                 index++;
                 return s.tryAdvance(action);
@@ -729,11 +696,13 @@ class StreamSpliterators {
             public void forEachRemaining(Consumer<? super T> action) {
                 Objects.requireNonNull(action);
 
-                if (sliceOrigin >= fence)
+                if (sliceOrigin >= fence) {
                     return;
+                }
 
-                if (index >= fence)
+                if (index >= fence) {
                     return;
+                }
 
                 if (index >= sliceOrigin && (index + s.estimateSize()) <= sliceFence) {
                     // The spliterator is contained within the slice
@@ -742,29 +711,26 @@ class StreamSpliterators {
                 } else {
                     // The spliterator intersects with the slice
                     while (sliceOrigin > index) {
-                        s.tryAdvance(e -> {});
+                        s.tryAdvance(e -> {
+                        });
                         index++;
                     }
                     // Traverse elements up to the fence
-                    for (;index < fence; index++) {
+                    for (; index < fence; index++) {
                         s.tryAdvance(action);
                     }
                 }
             }
         }
 
-        static abstract class OfPrimitive<T,
-                T_SPLITR extends Spliterator.OfPrimitive<T, T_CONS, T_SPLITR>,
-                T_CONS>
-                extends SliceSpliterator<T, T_SPLITR>
+        static abstract class OfPrimitive<T, T_SPLITR extends Spliterator.OfPrimitive<T, T_CONS, T_SPLITR>, T_CONS> extends SliceSpliterator<T, T_SPLITR>
                 implements Spliterator.OfPrimitive<T, T_CONS, T_SPLITR> {
 
             OfPrimitive(T_SPLITR s, long sliceOrigin, long sliceFence) {
                 this(s, sliceOrigin, sliceFence, 0, Math.min(s.estimateSize(), sliceFence));
             }
 
-            private OfPrimitive(T_SPLITR s,
-                                long sliceOrigin, long sliceFence, long origin, long fence) {
+            private OfPrimitive(T_SPLITR s, long sliceOrigin, long sliceFence, long origin, long fence) {
                 super(s, sliceOrigin, sliceFence, origin, fence);
             }
 
@@ -772,16 +738,18 @@ class StreamSpliterators {
             public boolean tryAdvance(T_CONS action) {
                 Objects.requireNonNull(action);
 
-                if (sliceOrigin >= fence)
+                if (sliceOrigin >= fence) {
                     return false;
+                }
 
                 while (sliceOrigin > index) {
                     s.tryAdvance(emptyConsumer());
                     index++;
                 }
 
-                if (index >= fence)
+                if (index >= fence) {
                     return false;
+                }
 
                 index++;
                 return s.tryAdvance(action);
@@ -791,11 +759,13 @@ class StreamSpliterators {
             public void forEachRemaining(T_CONS action) {
                 Objects.requireNonNull(action);
 
-                if (sliceOrigin >= fence)
+                if (sliceOrigin >= fence) {
                     return;
+                }
 
-                if (index >= fence)
+                if (index >= fence) {
                     return;
+                }
 
                 if (index >= sliceOrigin && (index + s.estimateSize()) <= sliceFence) {
                     // The spliterator is contained within the slice
@@ -808,7 +778,7 @@ class StreamSpliterators {
                         index++;
                     }
                     // Traverse elements up to the fence
-                    for (;index < fence; index++) {
+                    for (; index < fence; index++) {
                         s.tryAdvance(action);
                     }
                 }
@@ -817,75 +787,66 @@ class StreamSpliterators {
             protected abstract T_CONS emptyConsumer();
         }
 
-        static final class OfInt extends OfPrimitive<Integer, Spliterator.OfInt, IntConsumer>
-                implements Spliterator.OfInt {
+        static final class OfInt extends OfPrimitive<Integer, Spliterator.OfInt, IntConsumer> implements Spliterator.OfInt {
             OfInt(Spliterator.OfInt s, long sliceOrigin, long sliceFence) {
                 super(s, sliceOrigin, sliceFence);
             }
 
-            OfInt(Spliterator.OfInt s,
-                  long sliceOrigin, long sliceFence, long origin, long fence) {
+            OfInt(Spliterator.OfInt s, long sliceOrigin, long sliceFence, long origin, long fence) {
                 super(s, sliceOrigin, sliceFence, origin, fence);
             }
 
             @Override
-            protected Spliterator.OfInt makeSpliterator(Spliterator.OfInt s,
-                                                        long sliceOrigin, long sliceFence,
-                                                        long origin, long fence) {
+            protected Spliterator.OfInt makeSpliterator(Spliterator.OfInt s, long sliceOrigin, long sliceFence, long origin, long fence) {
                 return new SliceSpliterator.OfInt(s, sliceOrigin, sliceFence, origin, fence);
             }
 
             @Override
             protected IntConsumer emptyConsumer() {
-                return e -> {};
+                return e -> {
+                };
             }
         }
 
-        static final class OfLong extends OfPrimitive<Long, Spliterator.OfLong, LongConsumer>
-                implements Spliterator.OfLong {
+        static final class OfLong extends OfPrimitive<Long, Spliterator.OfLong, LongConsumer> implements Spliterator.OfLong {
             OfLong(Spliterator.OfLong s, long sliceOrigin, long sliceFence) {
                 super(s, sliceOrigin, sliceFence);
             }
 
-            OfLong(Spliterator.OfLong s,
-                   long sliceOrigin, long sliceFence, long origin, long fence) {
+            OfLong(Spliterator.OfLong s, long sliceOrigin, long sliceFence, long origin, long fence) {
                 super(s, sliceOrigin, sliceFence, origin, fence);
             }
 
             @Override
-            protected Spliterator.OfLong makeSpliterator(Spliterator.OfLong s,
-                                                         long sliceOrigin, long sliceFence,
-                                                         long origin, long fence) {
+            protected Spliterator.OfLong makeSpliterator(Spliterator.OfLong s, long sliceOrigin, long sliceFence, long origin, long fence) {
                 return new SliceSpliterator.OfLong(s, sliceOrigin, sliceFence, origin, fence);
             }
 
             @Override
             protected LongConsumer emptyConsumer() {
-                return e -> {};
+                return e -> {
+                };
             }
         }
 
-        static final class OfDouble extends OfPrimitive<Double, Spliterator.OfDouble, DoubleConsumer>
-                implements Spliterator.OfDouble {
+        static final class OfDouble extends OfPrimitive<Double, Spliterator.OfDouble, DoubleConsumer> implements Spliterator.OfDouble {
             OfDouble(Spliterator.OfDouble s, long sliceOrigin, long sliceFence) {
                 super(s, sliceOrigin, sliceFence);
             }
 
-            OfDouble(Spliterator.OfDouble s,
-                     long sliceOrigin, long sliceFence, long origin, long fence) {
+            OfDouble(Spliterator.OfDouble s, long sliceOrigin, long sliceFence, long origin, long fence) {
                 super(s, sliceOrigin, sliceFence, origin, fence);
             }
 
             @Override
-            protected Spliterator.OfDouble makeSpliterator(Spliterator.OfDouble s,
-                                                           long sliceOrigin, long sliceFence,
-                                                           long origin, long fence) {
+            protected Spliterator.OfDouble makeSpliterator(Spliterator.OfDouble s, long sliceOrigin, long sliceFence, long origin, long fence) {
                 return new SliceSpliterator.OfDouble(s, sliceOrigin, sliceFence, origin, fence);
             }
 
             @Override
             protected DoubleConsumer emptyConsumer() {
-                return e -> {};
+                return e -> {
+                };
             }
         }
     }
@@ -915,8 +876,7 @@ class StreamSpliterators {
             this.permits = new AtomicLong(limit >= 0 ? skip + limit : skip);
         }
 
-        UnorderedSliceSpliterator(T_SPLITR s,
-                                  UnorderedSliceSpliterator<T, T_SPLITR> parent) {
+        UnorderedSliceSpliterator(T_SPLITR s, UnorderedSliceSpliterator<T, T_SPLITR> parent) {
             this.s = s;
             this.unlimited = parent.unlimited;
             this.permits = parent.permits;
@@ -933,7 +893,9 @@ class StreamSpliterators {
          * if we are not limiting.  The user should consult the method
          * {@code checkPermits()} before acquiring data elements.
          *
-         * @param numElements the number of elements the caller has in hand
+         * @param numElements
+         *         the number of elements the caller has in hand
+         *
          * @return the number of elements that should be processed; any
          * remaining elements should be discarded.
          */
@@ -944,34 +906,37 @@ class StreamSpliterators {
             assert numElements > 0;
             do {
                 remainingPermits = permits.get();
-                if (remainingPermits == 0)
+                if (remainingPermits == 0) {
                     return unlimited ? numElements : 0;
+                }
                 grabbing = Math.min(remainingPermits, numElements);
-            } while (grabbing > 0 &&
-                     !permits.compareAndSet(remainingPermits, remainingPermits - grabbing));
+            } while (grabbing > 0 && !permits.compareAndSet(remainingPermits, remainingPermits - grabbing));
 
-            if (unlimited)
+            if (unlimited) {
                 return Math.max(numElements - grabbing, 0);
-            else if (remainingPermits > skipThreshold)
+            } else if (remainingPermits > skipThreshold) {
                 return Math.max(grabbing - (remainingPermits - skipThreshold), 0);
-            else
+            } else {
                 return grabbing;
+            }
         }
 
-        enum PermitStatus { NO_MORE, MAYBE_MORE, UNLIMITED }
+        enum PermitStatus {NO_MORE, MAYBE_MORE, UNLIMITED}
 
         /** Call to check if permits might be available before acquiring data */
         protected final PermitStatus permitStatus() {
-            if (permits.get() > 0)
+            if (permits.get() > 0) {
                 return PermitStatus.MAYBE_MORE;
-            else
-                return unlimited ?  PermitStatus.UNLIMITED : PermitStatus.NO_MORE;
+            } else {
+                return unlimited ? PermitStatus.UNLIMITED : PermitStatus.NO_MORE;
+            }
         }
 
         public final T_SPLITR trySplit() {
             // Stop splitting when there are no more limit permits
-            if (permits.get() == 0)
+            if (permits.get() == 0) {
                 return null;
+            }
             @SuppressWarnings("unchecked")
             T_SPLITR split = (T_SPLITR) s.trySplit();
             return split == null ? null : makeSpliterator(split);
@@ -984,12 +949,10 @@ class StreamSpliterators {
         }
 
         public final int characteristics() {
-            return s.characteristics() &
-                   ~(Spliterator.SIZED | Spliterator.SUBSIZED | Spliterator.ORDERED);
+            return s.characteristics() & ~(Spliterator.SIZED | Spliterator.SUBSIZED | Spliterator.ORDERED);
         }
 
-        static final class OfRef<T> extends UnorderedSliceSpliterator<T, Spliterator<T>>
-                implements Spliterator<T>, Consumer<T> {
+        static final class OfRef<T> extends UnorderedSliceSpliterator<T, Spliterator<T>> implements Spliterator<T>, Consumer<T> {
             T tmpSlot;
 
             OfRef(Spliterator<T> s, long skip, long limit) {
@@ -1010,9 +973,9 @@ class StreamSpliterators {
                 Objects.requireNonNull(action);
 
                 while (permitStatus() != PermitStatus.NO_MORE) {
-                    if (!s.tryAdvance(this))
+                    if (!s.tryAdvance(this)) {
                         return false;
-                    else if (acquirePermits(1) == 1) {
+                    } else if (acquirePermits(1) == 1) {
                         action.accept(tmpSlot);
                         tmpSlot = null;
                         return true;
@@ -1030,17 +993,19 @@ class StreamSpliterators {
                 while ((permitStatus = permitStatus()) != PermitStatus.NO_MORE) {
                     if (permitStatus == PermitStatus.MAYBE_MORE) {
                         // Optimistically traverse elements up to a threshold of CHUNK_SIZE
-                        if (sb == null)
+                        if (sb == null) {
                             sb = new ArrayBuffer.OfRef<>(CHUNK_SIZE);
-                        else
+                        } else {
                             sb.reset();
+                        }
                         long permitsRequested = 0;
-                        do { } while (s.tryAdvance(sb) && ++permitsRequested < CHUNK_SIZE);
-                        if (permitsRequested == 0)
+                        do {
+                        } while (s.tryAdvance(sb) && ++permitsRequested < CHUNK_SIZE);
+                        if (permitsRequested == 0) {
                             return;
+                        }
                         sb.forEach(action, acquirePermits(permitsRequested));
-                    }
-                    else {
+                    } else {
                         // Must be UNLIMITED; let 'er rip
                         s.forEachRemaining(action);
                         return;
@@ -1057,16 +1022,12 @@ class StreamSpliterators {
         /**
          * Concrete sub-types must also be an instance of type {@code T_CONS}.
          *
-         * @param <T_BUFF> the type of the spined buffer. Must also be a type of
-         *        {@code T_CONS}.
+         * @param <T_BUFF>
+         *         the type of the spined buffer. Must also be a type of
+         *         {@code T_CONS}.
          */
-        static abstract class OfPrimitive<
-                T,
-                T_CONS,
-                T_BUFF extends ArrayBuffer.OfPrimitive<T_CONS>,
-                T_SPLITR extends Spliterator.OfPrimitive<T, T_CONS, T_SPLITR>>
-                extends UnorderedSliceSpliterator<T, T_SPLITR>
-                implements Spliterator.OfPrimitive<T, T_CONS, T_SPLITR> {
+        static abstract class OfPrimitive<T, T_CONS, T_BUFF extends ArrayBuffer.OfPrimitive<T_CONS>, T_SPLITR extends Spliterator.OfPrimitive<T, T_CONS, T_SPLITR>>
+                extends UnorderedSliceSpliterator<T, T_SPLITR> implements Spliterator.OfPrimitive<T, T_CONS, T_SPLITR> {
             OfPrimitive(T_SPLITR s, long skip, long limit) {
                 super(s, skip, limit);
             }
@@ -1082,9 +1043,9 @@ class StreamSpliterators {
                 T_CONS consumer = (T_CONS) this;
 
                 while (permitStatus() != PermitStatus.NO_MORE) {
-                    if (!s.tryAdvance(consumer))
+                    if (!s.tryAdvance(consumer)) {
                         return false;
-                    else if (acquirePermits(1) == 1) {
+                    } else if (acquirePermits(1) == 1) {
                         acceptConsumed(action);
                         return true;
                     }
@@ -1103,19 +1064,21 @@ class StreamSpliterators {
                 while ((permitStatus = permitStatus()) != PermitStatus.NO_MORE) {
                     if (permitStatus == PermitStatus.MAYBE_MORE) {
                         // Optimistically traverse elements up to a threshold of CHUNK_SIZE
-                        if (sb == null)
+                        if (sb == null) {
                             sb = bufferCreate(CHUNK_SIZE);
-                        else
+                        } else {
                             sb.reset();
+                        }
                         @SuppressWarnings("unchecked")
                         T_CONS sbc = (T_CONS) sb;
                         long permitsRequested = 0;
-                        do { } while (s.tryAdvance(sbc) && ++permitsRequested < CHUNK_SIZE);
-                        if (permitsRequested == 0)
+                        do {
+                        } while (s.tryAdvance(sbc) && ++permitsRequested < CHUNK_SIZE);
+                        if (permitsRequested == 0) {
                             return;
+                        }
                         sb.forEach(action, acquirePermits(permitsRequested));
-                    }
-                    else {
+                    } else {
                         // Must be UNLIMITED; let 'er rip
                         s.forEachRemaining(action);
                         return;
@@ -1126,9 +1089,7 @@ class StreamSpliterators {
             protected abstract T_BUFF bufferCreate(int initialCapacity);
         }
 
-        static final class OfInt
-                extends OfPrimitive<Integer, IntConsumer, ArrayBuffer.OfInt, Spliterator.OfInt>
-                implements Spliterator.OfInt, IntConsumer {
+        static final class OfInt extends OfPrimitive<Integer, IntConsumer, ArrayBuffer.OfInt, Spliterator.OfInt> implements Spliterator.OfInt, IntConsumer {
 
             int tmpValue;
 
@@ -1161,9 +1122,7 @@ class StreamSpliterators {
             }
         }
 
-        static final class OfLong
-                extends OfPrimitive<Long, LongConsumer, ArrayBuffer.OfLong, Spliterator.OfLong>
-                implements Spliterator.OfLong, LongConsumer {
+        static final class OfLong extends OfPrimitive<Long, LongConsumer, ArrayBuffer.OfLong, Spliterator.OfLong> implements Spliterator.OfLong, LongConsumer {
 
             long tmpValue;
 
@@ -1196,8 +1155,7 @@ class StreamSpliterators {
             }
         }
 
-        static final class OfDouble
-                extends OfPrimitive<Double, DoubleConsumer, ArrayBuffer.OfDouble, Spliterator.OfDouble>
+        static final class OfDouble extends OfPrimitive<Double, DoubleConsumer, ArrayBuffer.OfDouble, Spliterator.OfDouble>
                 implements Spliterator.OfDouble, DoubleConsumer {
 
             double tmpValue;
@@ -1303,9 +1261,7 @@ class StreamSpliterators {
 
         @Override
         public int characteristics() {
-            return (s.characteristics() & ~(Spliterator.SIZED | Spliterator.SUBSIZED |
-                                            Spliterator.SORTED | Spliterator.ORDERED))
-                   | Spliterator.DISTINCT;
+            return (s.characteristics() & ~(Spliterator.SIZED | Spliterator.SUBSIZED | Spliterator.SORTED | Spliterator.ORDERED)) | Spliterator.DISTINCT;
         }
 
         @Override
@@ -1322,7 +1278,6 @@ class StreamSpliterators {
      *
      * <p>The {@code forEachRemaining} method if invoked will never terminate.
      * The {@code tryAdvance} method always returns true.
-     *
      */
     static abstract class InfiniteSupplyingSpliterator<T> implements Spliterator<T> {
         long estimate;
@@ -1359,14 +1314,14 @@ class StreamSpliterators {
 
             @Override
             public Spliterator<T> trySplit() {
-                if (estimate == 0)
+                if (estimate == 0) {
                     return null;
+                }
                 return new InfiniteSupplyingSpliterator.OfRef<>(estimate >>>= 1, s);
             }
         }
 
-        static final class OfInt extends InfiniteSupplyingSpliterator<Integer>
-                implements Spliterator.OfInt {
+        static final class OfInt extends InfiniteSupplyingSpliterator<Integer> implements Spliterator.OfInt {
             final IntSupplier s;
 
             OfInt(long size, IntSupplier s) {
@@ -1384,14 +1339,14 @@ class StreamSpliterators {
 
             @Override
             public Spliterator.OfInt trySplit() {
-                if (estimate == 0)
+                if (estimate == 0) {
                     return null;
+                }
                 return new InfiniteSupplyingSpliterator.OfInt(estimate = estimate >>> 1, s);
             }
         }
 
-        static final class OfLong extends InfiniteSupplyingSpliterator<Long>
-                implements Spliterator.OfLong {
+        static final class OfLong extends InfiniteSupplyingSpliterator<Long> implements Spliterator.OfLong {
             final LongSupplier s;
 
             OfLong(long size, LongSupplier s) {
@@ -1409,14 +1364,14 @@ class StreamSpliterators {
 
             @Override
             public Spliterator.OfLong trySplit() {
-                if (estimate == 0)
+                if (estimate == 0) {
                     return null;
+                }
                 return new InfiniteSupplyingSpliterator.OfLong(estimate = estimate >>> 1, s);
             }
         }
 
-        static final class OfDouble extends InfiniteSupplyingSpliterator<Double>
-                implements Spliterator.OfDouble {
+        static final class OfDouble extends InfiniteSupplyingSpliterator<Double> implements Spliterator.OfDouble {
             final DoubleSupplier s;
 
             OfDouble(long size, DoubleSupplier s) {
@@ -1434,8 +1389,9 @@ class StreamSpliterators {
 
             @Override
             public Spliterator.OfDouble trySplit() {
-                if (estimate == 0)
+                if (estimate == 0) {
                     return null;
+                }
                 return new InfiniteSupplyingSpliterator.OfDouble(estimate = estimate >>> 1, s);
             }
         }
@@ -1481,8 +1437,7 @@ class StreamSpliterators {
             abstract void forEach(T_CONS action, long fence);
         }
 
-        static final class OfInt extends OfPrimitive<IntConsumer>
-                implements IntConsumer {
+        static final class OfInt extends OfPrimitive<IntConsumer> implements IntConsumer {
             final int[] array;
 
             OfInt(int size) {
@@ -1502,8 +1457,7 @@ class StreamSpliterators {
             }
         }
 
-        static final class OfLong extends OfPrimitive<LongConsumer>
-                implements LongConsumer {
+        static final class OfLong extends OfPrimitive<LongConsumer> implements LongConsumer {
             final long[] array;
 
             OfLong(int size) {
@@ -1523,8 +1477,7 @@ class StreamSpliterators {
             }
         }
 
-        static final class OfDouble extends OfPrimitive<DoubleConsumer>
-                implements DoubleConsumer {
+        static final class OfDouble extends OfPrimitive<DoubleConsumer> implements DoubleConsumer {
             final double[] array;
 
             OfDouble(int size) {

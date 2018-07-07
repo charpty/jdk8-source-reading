@@ -31,12 +31,9 @@ package java.nio.file.attribute;
  * implemented by specific file attribute views that define methods to read
  * and/or update the attributes of a file.
  *
+ * @see java.nio.file.Files#getFileAttributeView(Path, Class, java.nio.file.LinkOption[])
  * @since 1.7
- *
- * @see java.nio.file.Files#getFileAttributeView(Path,Class,java.nio.file.LinkOption[])
  */
 
-public interface FileAttributeView
-    extends AttributeView
-{
+public interface FileAttributeView extends AttributeView {
 }

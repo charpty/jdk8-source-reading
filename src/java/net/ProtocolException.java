@@ -31,18 +31,18 @@ import java.io.IOException;
  * Thrown to indicate that there is an error in the underlying
  * protocol, such as a TCP error.
  *
- * @author  Chris Warth
- * @since   JDK1.0
+ * @author Chris Warth
+ * @since JDK1.0
  */
-public
-class ProtocolException extends IOException {
+public class ProtocolException extends IOException {
     private static final long serialVersionUID = -6098449442062388080L;
 
     /**
      * Constructs a new {@code ProtocolException} with the
      * specified detail message.
      *
-     * @param   host   the detail message.
+     * @param host
+     *         the detail message.
      */
     public ProtocolException(String host) {
         super(host);

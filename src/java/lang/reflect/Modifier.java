@@ -26,7 +26,6 @@
 package java.lang.reflect;
 
 import java.security.AccessController;
-import sun.reflect.LangReflectAccess;
 import sun.reflect.ReflectionFactory;
 
 /**
@@ -37,11 +36,10 @@ import sun.reflect.ReflectionFactory;
  * representing the modifiers are taken from the tables in sections 4.1, 4.4, 4.5, and 4.7 of
  * <cite>The Java&trade; Virtual Machine Specification</cite>.
  *
- * @see Class#getModifiers()
- * @see Member#getModifiers()
- *
  * @author Nakul Saraiya
  * @author Kenneth Russell
+ * @see Class#getModifiers()
+ * @see Member#getModifiers()
  */
 public class Modifier {
 
@@ -50,9 +48,7 @@ public class Modifier {
      *  packages
      */
     static {
-        sun.reflect.ReflectionFactory factory =
-            AccessController.doPrivileged(
-                new ReflectionFactory.GetReflectionFactoryAction());
+        sun.reflect.ReflectionFactory factory = AccessController.doPrivileged(new ReflectionFactory.GetReflectionFactoryAction());
         factory.setLangReflectAccess(new java.lang.reflect.ReflectAccess());
     }
 
@@ -60,7 +56,9 @@ public class Modifier {
      * Return {@code true} if the integer argument includes the
      * {@code public} modifier, {@code false} otherwise.
      *
-     * @param   mod a set of modifiers
+     * @param mod
+     *         a set of modifiers
+     *
      * @return {@code true} if {@code mod} includes the
      * {@code public} modifier; {@code false} otherwise.
      */
@@ -72,7 +70,9 @@ public class Modifier {
      * Return {@code true} if the integer argument includes the
      * {@code private} modifier, {@code false} otherwise.
      *
-     * @param   mod a set of modifiers
+     * @param mod
+     *         a set of modifiers
+     *
      * @return {@code true} if {@code mod} includes the
      * {@code private} modifier; {@code false} otherwise.
      */
@@ -84,7 +84,9 @@ public class Modifier {
      * Return {@code true} if the integer argument includes the
      * {@code protected} modifier, {@code false} otherwise.
      *
-     * @param   mod a set of modifiers
+     * @param mod
+     *         a set of modifiers
+     *
      * @return {@code true} if {@code mod} includes the
      * {@code protected} modifier; {@code false} otherwise.
      */
@@ -96,7 +98,9 @@ public class Modifier {
      * Return {@code true} if the integer argument includes the
      * {@code static} modifier, {@code false} otherwise.
      *
-     * @param   mod a set of modifiers
+     * @param mod
+     *         a set of modifiers
+     *
      * @return {@code true} if {@code mod} includes the
      * {@code static} modifier; {@code false} otherwise.
      */
@@ -108,7 +112,9 @@ public class Modifier {
      * Return {@code true} if the integer argument includes the
      * {@code final} modifier, {@code false} otherwise.
      *
-     * @param   mod a set of modifiers
+     * @param mod
+     *         a set of modifiers
+     *
      * @return {@code true} if {@code mod} includes the
      * {@code final} modifier; {@code false} otherwise.
      */
@@ -120,7 +126,9 @@ public class Modifier {
      * Return {@code true} if the integer argument includes the
      * {@code synchronized} modifier, {@code false} otherwise.
      *
-     * @param   mod a set of modifiers
+     * @param mod
+     *         a set of modifiers
+     *
      * @return {@code true} if {@code mod} includes the
      * {@code synchronized} modifier; {@code false} otherwise.
      */
@@ -132,7 +140,9 @@ public class Modifier {
      * Return {@code true} if the integer argument includes the
      * {@code volatile} modifier, {@code false} otherwise.
      *
-     * @param   mod a set of modifiers
+     * @param mod
+     *         a set of modifiers
+     *
      * @return {@code true} if {@code mod} includes the
      * {@code volatile} modifier; {@code false} otherwise.
      */
@@ -144,7 +154,9 @@ public class Modifier {
      * Return {@code true} if the integer argument includes the
      * {@code transient} modifier, {@code false} otherwise.
      *
-     * @param   mod a set of modifiers
+     * @param mod
+     *         a set of modifiers
+     *
      * @return {@code true} if {@code mod} includes the
      * {@code transient} modifier; {@code false} otherwise.
      */
@@ -156,7 +168,9 @@ public class Modifier {
      * Return {@code true} if the integer argument includes the
      * {@code native} modifier, {@code false} otherwise.
      *
-     * @param   mod a set of modifiers
+     * @param mod
+     *         a set of modifiers
+     *
      * @return {@code true} if {@code mod} includes the
      * {@code native} modifier; {@code false} otherwise.
      */
@@ -168,7 +182,9 @@ public class Modifier {
      * Return {@code true} if the integer argument includes the
      * {@code interface} modifier, {@code false} otherwise.
      *
-     * @param   mod a set of modifiers
+     * @param mod
+     *         a set of modifiers
+     *
      * @return {@code true} if {@code mod} includes the
      * {@code interface} modifier; {@code false} otherwise.
      */
@@ -180,7 +196,9 @@ public class Modifier {
      * Return {@code true} if the integer argument includes the
      * {@code abstract} modifier, {@code false} otherwise.
      *
-     * @param   mod a set of modifiers
+     * @param mod
+     *         a set of modifiers
+     *
      * @return {@code true} if {@code mod} includes the
      * {@code abstract} modifier; {@code false} otherwise.
      */
@@ -192,7 +210,9 @@ public class Modifier {
      * Return {@code true} if the integer argument includes the
      * {@code strictfp} modifier, {@code false} otherwise.
      *
-     * @param   mod a set of modifiers
+     * @param mod
+     *         a set of modifiers
+     *
      * @return {@code true} if {@code mod} includes the
      * {@code strictfp} modifier; {@code false} otherwise.
      */
@@ -227,31 +247,58 @@ public class Modifier {
      * {@code toString} with the appropriate mask from a method like
      * {@link #constructorModifiers} or {@link #methodModifiers}.
      *
-     * @param   mod a set of modifiers
-     * @return  a string representation of the set of modifiers
+     * @param mod
+     *         a set of modifiers
+     *
+     * @return a string representation of the set of modifiers
      * represented by {@code mod}
      */
     public static String toString(int mod) {
         StringBuilder sb = new StringBuilder();
         int len;
 
-        if ((mod & PUBLIC) != 0)        sb.append("public ");
-        if ((mod & PROTECTED) != 0)     sb.append("protected ");
-        if ((mod & PRIVATE) != 0)       sb.append("private ");
+        if ((mod & PUBLIC) != 0) {
+            sb.append("public ");
+        }
+        if ((mod & PROTECTED) != 0) {
+            sb.append("protected ");
+        }
+        if ((mod & PRIVATE) != 0) {
+            sb.append("private ");
+        }
 
         /* Canonical order */
-        if ((mod & ABSTRACT) != 0)      sb.append("abstract ");
-        if ((mod & STATIC) != 0)        sb.append("static ");
-        if ((mod & FINAL) != 0)         sb.append("final ");
-        if ((mod & TRANSIENT) != 0)     sb.append("transient ");
-        if ((mod & VOLATILE) != 0)      sb.append("volatile ");
-        if ((mod & SYNCHRONIZED) != 0)  sb.append("synchronized ");
-        if ((mod & NATIVE) != 0)        sb.append("native ");
-        if ((mod & STRICT) != 0)        sb.append("strictfp ");
-        if ((mod & INTERFACE) != 0)     sb.append("interface ");
+        if ((mod & ABSTRACT) != 0) {
+            sb.append("abstract ");
+        }
+        if ((mod & STATIC) != 0) {
+            sb.append("static ");
+        }
+        if ((mod & FINAL) != 0) {
+            sb.append("final ");
+        }
+        if ((mod & TRANSIENT) != 0) {
+            sb.append("transient ");
+        }
+        if ((mod & VOLATILE) != 0) {
+            sb.append("volatile ");
+        }
+        if ((mod & SYNCHRONIZED) != 0) {
+            sb.append("synchronized ");
+        }
+        if ((mod & NATIVE) != 0) {
+            sb.append("native ");
+        }
+        if ((mod & STRICT) != 0) {
+            sb.append("strictfp ");
+        }
+        if ((mod & INTERFACE) != 0) {
+            sb.append("interface ");
+        }
 
-        if ((len = sb.length()) > 0)    /* trim trailing space */
-            return sb.toString().substring(0, len-1);
+        if ((len = sb.length()) > 0)    /* trim trailing space */ {
+            return sb.toString().substring(0, len - 1);
+        }
         return "";
     }
 
@@ -264,90 +311,91 @@ public class Modifier {
      * The {@code int} value representing the {@code public}
      * modifier.
      */
-    public static final int PUBLIC           = 0x00000001;
+    public static final int PUBLIC = 0x00000001;
 
     /**
      * The {@code int} value representing the {@code private}
      * modifier.
      */
-    public static final int PRIVATE          = 0x00000002;
+    public static final int PRIVATE = 0x00000002;
 
     /**
      * The {@code int} value representing the {@code protected}
      * modifier.
      */
-    public static final int PROTECTED        = 0x00000004;
+    public static final int PROTECTED = 0x00000004;
 
     /**
      * The {@code int} value representing the {@code static}
      * modifier.
      */
-    public static final int STATIC           = 0x00000008;
+    public static final int STATIC = 0x00000008;
 
     /**
      * The {@code int} value representing the {@code final}
      * modifier.
      */
-    public static final int FINAL            = 0x00000010;
+    public static final int FINAL = 0x00000010;
 
     /**
      * The {@code int} value representing the {@code synchronized}
      * modifier.
      */
-    public static final int SYNCHRONIZED     = 0x00000020;
+    public static final int SYNCHRONIZED = 0x00000020;
 
     /**
      * The {@code int} value representing the {@code volatile}
      * modifier.
      */
-    public static final int VOLATILE         = 0x00000040;
+    public static final int VOLATILE = 0x00000040;
 
     /**
      * The {@code int} value representing the {@code transient}
      * modifier.
      */
-    public static final int TRANSIENT        = 0x00000080;
+    public static final int TRANSIENT = 0x00000080;
 
     /**
      * The {@code int} value representing the {@code native}
      * modifier.
      */
-    public static final int NATIVE           = 0x00000100;
+    public static final int NATIVE = 0x00000100;
 
     /**
      * The {@code int} value representing the {@code interface}
      * modifier.
      */
-    public static final int INTERFACE        = 0x00000200;
+    public static final int INTERFACE = 0x00000200;
 
     /**
      * The {@code int} value representing the {@code abstract}
      * modifier.
      */
-    public static final int ABSTRACT         = 0x00000400;
+    public static final int ABSTRACT = 0x00000400;
 
     /**
      * The {@code int} value representing the {@code strictfp}
      * modifier.
      */
-    public static final int STRICT           = 0x00000800;
+    public static final int STRICT = 0x00000800;
 
     // Bits not (yet) exposed in the public API either because they
     // have different meanings for fields and methods and there is no
     // way to distinguish between the two in this class, or because
     // they are not Java programming language keywords
-    static final int BRIDGE    = 0x00000040;
-    static final int VARARGS   = 0x00000080;
+    static final int BRIDGE = 0x00000040;
+    static final int VARARGS = 0x00000080;
     static final int SYNTHETIC = 0x00001000;
-    static final int ANNOTATION  = 0x00002000;
-    static final int ENUM      = 0x00004000;
-    static final int MANDATED  = 0x00008000;
+    static final int ANNOTATION = 0x00002000;
+    static final int ENUM = 0x00004000;
+    static final int MANDATED = 0x00008000;
+
     static boolean isSynthetic(int mod) {
-      return (mod & SYNTHETIC) != 0;
+        return (mod & SYNTHETIC) != 0;
     }
 
     static boolean isMandated(int mod) {
-      return (mod & MANDATED) != 0;
+        return (mod & MANDATED) != 0;
     }
 
     // Note on the FOO_MODIFIERS fields and fooModifiers() methods:
@@ -362,67 +410,51 @@ public class Modifier {
 
     /**
      * The Java source modifiers that can be applied to a class.
-     * @jls 8.1.1 Class Modifiers
      */
     private static final int CLASS_MODIFIERS =
-        Modifier.PUBLIC         | Modifier.PROTECTED    | Modifier.PRIVATE |
-        Modifier.ABSTRACT       | Modifier.STATIC       | Modifier.FINAL   |
-        Modifier.STRICT;
+            Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE | Modifier.ABSTRACT | Modifier.STATIC | Modifier.FINAL | Modifier.STRICT;
 
     /**
      * The Java source modifiers that can be applied to an interface.
-     * @jls 9.1.1 Interface Modifiers
      */
     private static final int INTERFACE_MODIFIERS =
-        Modifier.PUBLIC         | Modifier.PROTECTED    | Modifier.PRIVATE |
-        Modifier.ABSTRACT       | Modifier.STATIC       | Modifier.STRICT;
-
+            Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE | Modifier.ABSTRACT | Modifier.STATIC | Modifier.STRICT;
 
     /**
      * The Java source modifiers that can be applied to a constructor.
-     * @jls 8.8.3 Constructor Modifiers
      */
-    private static final int CONSTRUCTOR_MODIFIERS =
-        Modifier.PUBLIC         | Modifier.PROTECTED    | Modifier.PRIVATE;
+    private static final int CONSTRUCTOR_MODIFIERS = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE;
 
     /**
      * The Java source modifiers that can be applied to a method.
-     * @jls8.4.3  Method Modifiers
      */
     private static final int METHOD_MODIFIERS =
-        Modifier.PUBLIC         | Modifier.PROTECTED    | Modifier.PRIVATE |
-        Modifier.ABSTRACT       | Modifier.STATIC       | Modifier.FINAL   |
-        Modifier.SYNCHRONIZED   | Modifier.NATIVE       | Modifier.STRICT;
+            Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE | Modifier.ABSTRACT | Modifier.STATIC | Modifier.FINAL | Modifier.SYNCHRONIZED
+                    | Modifier.NATIVE | Modifier.STRICT;
 
     /**
      * The Java source modifiers that can be applied to a field.
-     * @jls 8.3.1  Field Modifiers
      */
     private static final int FIELD_MODIFIERS =
-        Modifier.PUBLIC         | Modifier.PROTECTED    | Modifier.PRIVATE |
-        Modifier.STATIC         | Modifier.FINAL        | Modifier.TRANSIENT |
-        Modifier.VOLATILE;
+            Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL | Modifier.TRANSIENT | Modifier.VOLATILE;
 
     /**
      * The Java source modifiers that can be applied to a method or constructor parameter.
-     * @jls 8.4.1 Formal Parameters
      */
-    private static final int PARAMETER_MODIFIERS =
-        Modifier.FINAL;
+    private static final int PARAMETER_MODIFIERS = Modifier.FINAL;
 
     /**
      *
      */
-    static final int ACCESS_MODIFIERS =
-        Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE;
+    static final int ACCESS_MODIFIERS = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE;
 
     /**
      * Return an {@code int} value OR-ing together the source language
      * modifiers that can be applied to a class.
+     *
      * @return an {@code int} value OR-ing together the source language
      * modifiers that can be applied to a class.
      *
-     * @jls 8.1.1 Class Modifiers
      * @since 1.7
      */
     public static int classModifiers() {
@@ -432,10 +464,10 @@ public class Modifier {
     /**
      * Return an {@code int} value OR-ing together the source language
      * modifiers that can be applied to an interface.
+     *
      * @return an {@code int} value OR-ing together the source language
      * modifiers that can be applied to an interface.
      *
-     * @jls 9.1.1 Interface Modifiers
      * @since 1.7
      */
     public static int interfaceModifiers() {
@@ -445,10 +477,10 @@ public class Modifier {
     /**
      * Return an {@code int} value OR-ing together the source language
      * modifiers that can be applied to a constructor.
+     *
      * @return an {@code int} value OR-ing together the source language
      * modifiers that can be applied to a constructor.
      *
-     * @jls 8.8.3 Constructor Modifiers
      * @since 1.7
      */
     public static int constructorModifiers() {
@@ -458,10 +490,10 @@ public class Modifier {
     /**
      * Return an {@code int} value OR-ing together the source language
      * modifiers that can be applied to a method.
+     *
      * @return an {@code int} value OR-ing together the source language
      * modifiers that can be applied to a method.
      *
-     * @jls 8.4.3 Method Modifiers
      * @since 1.7
      */
     public static int methodModifiers() {
@@ -471,10 +503,10 @@ public class Modifier {
     /**
      * Return an {@code int} value OR-ing together the source language
      * modifiers that can be applied to a field.
+     *
      * @return an {@code int} value OR-ing together the source language
      * modifiers that can be applied to a field.
      *
-     * @jls 8.3.1 Field Modifiers
      * @since 1.7
      */
     public static int fieldModifiers() {
@@ -484,10 +516,10 @@ public class Modifier {
     /**
      * Return an {@code int} value OR-ing together the source language
      * modifiers that can be applied to a parameter.
+     *
      * @return an {@code int} value OR-ing together the source language
      * modifiers that can be applied to a parameter.
      *
-     * @jls 8.4.1 Formal Parameters
      * @since 1.8
      */
     public static int parameterModifiers() {

@@ -43,7 +43,9 @@ public interface LongUnaryOperator {
     /**
      * Applies this operator to the given operand.
      *
-     * @param operand the operand
+     * @param operand
+     *         the operand
+     *
      * @return the operator result
      */
     long applyAsLong(long operand);
@@ -54,11 +56,14 @@ public interface LongUnaryOperator {
      * If evaluation of either operator throws an exception, it is relayed to
      * the caller of the composed operator.
      *
-     * @param before the operator to apply before this operator is applied
+     * @param before
+     *         the operator to apply before this operator is applied
+     *
      * @return a composed operator that first applies the {@code before}
      * operator and then applies this operator
-     * @throws NullPointerException if before is null
      *
+     * @throws NullPointerException
+     *         if before is null
      * @see #andThen(LongUnaryOperator)
      */
     default LongUnaryOperator compose(LongUnaryOperator before) {
@@ -72,11 +77,14 @@ public interface LongUnaryOperator {
      * If evaluation of either operator throws an exception, it is relayed to
      * the caller of the composed operator.
      *
-     * @param after the operator to apply after this operator is applied
+     * @param after
+     *         the operator to apply after this operator is applied
+     *
      * @return a composed operator that first applies this operator and then
      * applies the {@code after} operator
-     * @throws NullPointerException if after is null
      *
+     * @throws NullPointerException
+     *         if after is null
      * @see #compose(LongUnaryOperator)
      */
     default LongUnaryOperator andThen(LongUnaryOperator after) {

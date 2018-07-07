@@ -28,7 +28,8 @@ import java.io.File;
 
 class ClassLoaderHelper {
 
-    private ClassLoaderHelper() {}
+    private ClassLoaderHelper() {
+    }
 
     /**
      * Returns an alternate path name for the given file

@@ -38,8 +38,8 @@ package java.lang.annotation;
  * compatibility concerns when evolving an annotation type from being
  * non-repeatable to being repeatable.
  *
- * @author  Josh Bloch
- * @since   1.5
+ * @author Josh Bloch
+ * @since 1.5
  */
 public interface Annotation {
     /**
@@ -49,34 +49,34 @@ public interface Annotation {
      * annotation type as this instance, all of whose members are equal
      * to the corresponding member of this annotation, as defined below:
      * <ul>
-     *    <li>Two corresponding primitive typed members whose values are
-     *    <tt>x</tt> and <tt>y</tt> are considered equal if <tt>x == y</tt>,
-     *    unless their type is <tt>float</tt> or <tt>double</tt>.
+     * <li>Two corresponding primitive typed members whose values are
+     * <tt>x</tt> and <tt>y</tt> are considered equal if <tt>x == y</tt>,
+     * unless their type is <tt>float</tt> or <tt>double</tt>.
      *
-     *    <li>Two corresponding <tt>float</tt> members whose values
-     *    are <tt>x</tt> and <tt>y</tt> are considered equal if
-     *    <tt>Float.valueOf(x).equals(Float.valueOf(y))</tt>.
-     *    (Unlike the <tt>==</tt> operator, NaN is considered equal
-     *    to itself, and <tt>0.0f</tt> unequal to <tt>-0.0f</tt>.)
+     * <li>Two corresponding <tt>float</tt> members whose values
+     * are <tt>x</tt> and <tt>y</tt> are considered equal if
+     * <tt>Float.valueOf(x).equals(Float.valueOf(y))</tt>.
+     * (Unlike the <tt>==</tt> operator, NaN is considered equal
+     * to itself, and <tt>0.0f</tt> unequal to <tt>-0.0f</tt>.)
      *
-     *    <li>Two corresponding <tt>double</tt> members whose values
-     *    are <tt>x</tt> and <tt>y</tt> are considered equal if
-     *    <tt>Double.valueOf(x).equals(Double.valueOf(y))</tt>.
-     *    (Unlike the <tt>==</tt> operator, NaN is considered equal
-     *    to itself, and <tt>0.0</tt> unequal to <tt>-0.0</tt>.)
+     * <li>Two corresponding <tt>double</tt> members whose values
+     * are <tt>x</tt> and <tt>y</tt> are considered equal if
+     * <tt>Double.valueOf(x).equals(Double.valueOf(y))</tt>.
+     * (Unlike the <tt>==</tt> operator, NaN is considered equal
+     * to itself, and <tt>0.0</tt> unequal to <tt>-0.0</tt>.)
      *
-     *    <li>Two corresponding <tt>String</tt>, <tt>Class</tt>, enum, or
-     *    annotation typed members whose values are <tt>x</tt> and <tt>y</tt>
-     *    are considered equal if <tt>x.equals(y)</tt>.  (Note that this
-     *    definition is recursive for annotation typed members.)
+     * <li>Two corresponding <tt>String</tt>, <tt>Class</tt>, enum, or
+     * annotation typed members whose values are <tt>x</tt> and <tt>y</tt>
+     * are considered equal if <tt>x.equals(y)</tt>.  (Note that this
+     * definition is recursive for annotation typed members.)
      *
-     *    <li>Two corresponding array typed members <tt>x</tt> and <tt>y</tt>
-     *    are considered equal if <tt>Arrays.equals(x, y)</tt>, for the
-     *    appropriate overloading of {@link java.util.Arrays#equals}.
+     * <li>Two corresponding array typed members <tt>x</tt> and <tt>y</tt>
+     * are considered equal if <tt>Arrays.equals(x, y)</tt>, for the
+     * appropriate overloading of {@link java.util.Arrays#equals}.
      * </ul>
      *
      * @return true if the specified object represents an annotation
-     *     that is logically equivalent to this one, otherwise false
+     * that is logically equivalent to this one, otherwise false
      */
     boolean equals(Object obj);
 
@@ -94,22 +94,22 @@ public interface Annotation {
      * <p>The hash code of a member-value depends on its type:
      * <ul>
      * <li>The hash code of a primitive value <tt><i>v</i></tt> is equal to
-     *     <tt><i>WrapperType</i>.valueOf(<i>v</i>).hashCode()</tt>, where
-     *     <tt><i>WrapperType</i></tt> is the wrapper type corresponding
-     *     to the primitive type of <tt><i>v</i></tt> ({@link Byte},
-     *     {@link Character}, {@link Double}, {@link Float}, {@link Integer},
-     *     {@link Long}, {@link Short}, or {@link Boolean}).
+     * <tt><i>WrapperType</i>.valueOf(<i>v</i>).hashCode()</tt>, where
+     * <tt><i>WrapperType</i></tt> is the wrapper type corresponding
+     * to the primitive type of <tt><i>v</i></tt> ({@link Byte},
+     * {@link Character}, {@link Double}, {@link Float}, {@link Integer},
+     * {@link Long}, {@link Short}, or {@link Boolean}).
      *
      * <li>The hash code of a string, enum, class, or annotation member-value
-     I     <tt><i>v</i></tt> is computed as by calling
-     *     <tt><i>v</i>.hashCode()</tt>.  (In the case of annotation
-     *     member values, this is a recursive definition.)
+     * I     <tt><i>v</i></tt> is computed as by calling
+     * <tt><i>v</i>.hashCode()</tt>.  (In the case of annotation
+     * member values, this is a recursive definition.)
      *
      * <li>The hash code of an array member-value is computed by calling
-     *     the appropriate overloading of
-     *     {@link java.util.Arrays#hashCode(long[]) Arrays.hashCode}
-     *     on the value.  (There is one overloading for each primitive
-     *     type, and one for object reference types.)
+     * the appropriate overloading of
+     * {@link java.util.Arrays#hashCode(long[]) Arrays.hashCode}
+     * on the value.  (There is one overloading for each primitive
+     * type, and one for object reference types.)
      * </ul>
      *
      * @return the hash code of this annotation
@@ -130,6 +130,7 @@ public interface Annotation {
 
     /**
      * Returns the annotation type of this annotation.
+     *
      * @return the annotation type of this annotation
      */
     Class<? extends Annotation> annotationType();

@@ -44,6 +44,8 @@ package java.security;
  * {@link java.io.ObjectOutputStream#writeObject(java.lang.Object)}
  * to prevent keys that have been destroyed from being serialized.
  *
+ * @author Benjamin Renaud
+ * @author Josh Bloch
  * @see Key
  * @see PublicKey
  * @see Certificate
@@ -51,9 +53,6 @@ package java.security;
  * @see java.security.interfaces.DSAPrivateKey
  * @see java.security.interfaces.RSAPrivateKey
  * @see java.security.interfaces.RSAPrivateCrtKey
- *
- * @author Benjamin Renaud
- * @author Josh Bloch
  */
 
 public interface PrivateKey extends Key, javax.security.auth.Destroyable {

@@ -31,7 +31,7 @@ package java.net;
  * was refused remotely (e.g., no process is listening on the
  * remote address/port).
  *
- * @since   JDK1.1
+ * @since JDK1.1
  */
 public class ConnectException extends SocketException {
     private static final long serialVersionUID = 3831404271622369215L;
@@ -41,7 +41,9 @@ public class ConnectException extends SocketException {
      * message as to why the connect error occurred.
      * A detail message is a String that gives a specific
      * description of this error.
-     * @param msg the detail message
+     *
+     * @param msg
+     *         the detail message
      */
     public ConnectException(String msg) {
         super(msg);
@@ -50,5 +52,6 @@ public class ConnectException extends SocketException {
     /**
      * Construct a new ConnectException with no detailed message.
      */
-    public ConnectException() {}
+    public ConnectException() {
+    }
 }

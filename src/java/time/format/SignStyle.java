@@ -68,9 +68,6 @@ package java.time.format;
  * to be controlled using this enum.
  * See {@link DateTimeFormatterBuilder} for usage.
  *
- * @implSpec
- * This is an immutable and thread-safe enum.
- *
  * @since 1.8
  */
 public enum SignStyle {
@@ -81,30 +78,26 @@ public enum SignStyle {
      * In strict parsing, the negative sign will be accepted and the positive sign rejected.
      * In lenient parsing, any sign will be accepted.
      */
-    NORMAL,
-    /**
+    NORMAL, /**
      * Style to always output the sign, where zero will output '+'.
      * <p>
      * In strict parsing, the absence of a sign will be rejected.
      * In lenient parsing, any sign will be accepted, with the absence
      * of a sign treated as a positive number.
      */
-    ALWAYS,
-    /**
+    ALWAYS, /**
      * Style to never output sign, only outputting the absolute value.
      * <p>
      * In strict parsing, any sign will be rejected.
      * In lenient parsing, any sign will be accepted unless the width is fixed.
      */
-    NEVER,
-    /**
+    NEVER, /**
      * Style to block negative values, throwing an exception on printing.
      * <p>
      * In strict parsing, any sign will be rejected.
      * In lenient parsing, any sign will be accepted unless the width is fixed.
      */
-    NOT_NEGATIVE,
-    /**
+    NOT_NEGATIVE, /**
      * Style to always output the sign if the value exceeds the pad width.
      * A negative value will always output the '-' sign.
      * <p>
@@ -117,22 +110,26 @@ public enum SignStyle {
     /**
      * Parse helper.
      *
-     * @param positive  true if positive sign parsed, false for negative sign
-     * @param strict  true if strict, false if lenient
-     * @param fixedWidth  true if fixed width, false if not
+     * @param positive
+     *         true if positive sign parsed, false for negative sign
+     * @param strict
+     *         true if strict, false if lenient
+     * @param fixedWidth
+     *         true if fixed width, false if not
+     *
      * @return
      */
     boolean parse(boolean positive, boolean strict, boolean fixedWidth) {
         switch (ordinal()) {
-            case 0: // NORMAL
-                // valid if negative or (positive and lenient)
-                return !positive || !strict;
-            case 1: // ALWAYS
-            case 4: // EXCEEDS_PAD
-                return true;
-            default:
-                // valid if lenient and not fixed width
-                return !strict && !fixedWidth;
+        case 0: // NORMAL
+            // valid if negative or (positive and lenient)
+            return !positive || !strict;
+        case 1: // ALWAYS
+        case 4: // EXCEEDS_PAD
+            return true;
+        default:
+            // valid if lenient and not fixed width
+            return !strict && !fixedWidth;
         }
     }
 

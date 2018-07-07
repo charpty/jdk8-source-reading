@@ -27,7 +27,6 @@ package java.security.cert;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Serializable;
 
 /**
  * This interface represents an X.509 extension.
@@ -85,7 +84,7 @@ public interface Extension {
      * STRING tag and length.
      *
      * @return a copy of the extension's value, or {@code null} if no
-     *    extension value is present.
+     * extension value is present.
      */
     byte[] getValue();
 
@@ -93,9 +92,13 @@ public interface Extension {
      * Generates the extension's DER encoding and writes it to the output
      * stream.
      *
-     * @param out the output stream
-     * @exception IOException on encoding or output error.
-     * @exception NullPointerException if {@code out} is {@code null}.
+     * @param out
+     *         the output stream
+     *
+     * @throws IOException
+     *         on encoding or output error.
+     * @throws NullPointerException
+     *         if {@code out} is {@code null}.
      */
     void encode(OutputStream out) throws IOException;
 }

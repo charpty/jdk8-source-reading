@@ -40,9 +40,11 @@ package java.util.concurrent;
  * Usually a scheduled future is the result of scheduling
  * a task with a {@link ScheduledExecutorService}.
  *
- * @since 1.5
+ * @param <V>
+ *         The result type returned by this Future
+ *
  * @author Doug Lea
- * @param <V> The result type returned by this Future
+ * @since 1.5
  */
 public interface ScheduledFuture<V> extends Delayed, Future<V> {
 }

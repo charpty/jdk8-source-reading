@@ -41,7 +41,7 @@ public class IllegalFormatPrecisionException extends IllegalFormatException {
     /**
      * Constructs an instance of this class with the specified precision.
      *
-     * @param  p
+     * @param p
      *         The precision
      */
     public IllegalFormatPrecisionException(int p) {
@@ -51,7 +51,7 @@ public class IllegalFormatPrecisionException extends IllegalFormatException {
     /**
      * Returns the precision
      *
-     * @return  The precision
+     * @return The precision
      */
     public int getPrecision() {
         return p;

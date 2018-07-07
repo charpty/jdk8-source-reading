@@ -28,7 +28,6 @@ package java.nio.channels;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-
 /**
  * A channel that can read bytes into a sequence of buffers.
  *
@@ -40,15 +39,12 @@ import java.nio.ByteBuffer;
  * <i>gathering</i> write operations are defined in the {@link
  * GatheringByteChannel} interface.  </p>
  *
- *
  * @author Mark Reinhold
  * @author JSR-51 Expert Group
  * @since 1.4
  */
 
-public interface ScatteringByteChannel
-    extends ReadableByteChannel
-{
+public interface ScatteringByteChannel extends ReadableByteChannel {
 
     /**
      * Reads a sequence of bytes from this channel into a subsequence of the
@@ -81,47 +77,39 @@ public interface ScatteringByteChannel
      * invocation of this method will block until the first operation is
      * complete. </p>
      *
-     * @param  dsts
+     * @param dsts
      *         The buffers into which bytes are to be transferred
-     *
-     * @param  offset
+     * @param offset
      *         The offset within the buffer array of the first buffer into
      *         which bytes are to be transferred; must be non-negative and no
      *         larger than <tt>dsts.length</tt>
-     *
-     * @param  length
+     * @param length
      *         The maximum number of buffers to be accessed; must be
      *         non-negative and no larger than
      *         <tt>dsts.length</tt>&nbsp;-&nbsp;<tt>offset</tt>
      *
      * @return The number of bytes read, possibly zero,
-     *         or <tt>-1</tt> if the channel has reached end-of-stream
+     * or <tt>-1</tt> if the channel has reached end-of-stream
      *
-     * @throws  IndexOutOfBoundsException
-     *          If the preconditions on the <tt>offset</tt> and <tt>length</tt>
-     *          parameters do not hold
-     *
-     * @throws  NonReadableChannelException
-     *          If this channel was not opened for reading
-     *
-     * @throws  ClosedChannelException
-     *          If this channel is closed
-     *
-     * @throws  AsynchronousCloseException
-     *          If another thread closes this channel
-     *          while the read operation is in progress
-     *
-     * @throws  ClosedByInterruptException
-     *          If another thread interrupts the current thread
-     *          while the read operation is in progress, thereby
-     *          closing the channel and setting the current thread's
-     *          interrupt status
-     *
-     * @throws  IOException
-     *          If some other I/O error occurs
+     * @throws IndexOutOfBoundsException
+     *         If the preconditions on the <tt>offset</tt> and <tt>length</tt>
+     *         parameters do not hold
+     * @throws NonReadableChannelException
+     *         If this channel was not opened for reading
+     * @throws ClosedChannelException
+     *         If this channel is closed
+     * @throws AsynchronousCloseException
+     *         If another thread closes this channel
+     *         while the read operation is in progress
+     * @throws ClosedByInterruptException
+     *         If another thread interrupts the current thread
+     *         while the read operation is in progress, thereby
+     *         closing the channel and setting the current thread's
+     *         interrupt status
+     * @throws IOException
+     *         If some other I/O error occurs
      */
-    public long read(ByteBuffer[] dsts, int offset, int length)
-        throws IOException;
+    public long read(ByteBuffer[] dsts, int offset, int length) throws IOException;
 
     /**
      * Reads a sequence of bytes from this channel into the given buffers.
@@ -132,30 +120,26 @@ public interface ScatteringByteChannel
      * <blockquote><pre>
      * c.read(dsts, 0, dsts.length);</pre></blockquote>
      *
-     * @param  dsts
+     * @param dsts
      *         The buffers into which bytes are to be transferred
      *
      * @return The number of bytes read, possibly zero,
-     *         or <tt>-1</tt> if the channel has reached end-of-stream
+     * or <tt>-1</tt> if the channel has reached end-of-stream
      *
-     * @throws  NonReadableChannelException
-     *          If this channel was not opened for reading
-     *
-     * @throws  ClosedChannelException
-     *          If this channel is closed
-     *
-     * @throws  AsynchronousCloseException
-     *          If another thread closes this channel
-     *          while the read operation is in progress
-     *
-     * @throws  ClosedByInterruptException
-     *          If another thread interrupts the current thread
-     *          while the read operation is in progress, thereby
-     *          closing the channel and setting the current thread's
-     *          interrupt status
-     *
-     * @throws  IOException
-     *          If some other I/O error occurs
+     * @throws NonReadableChannelException
+     *         If this channel was not opened for reading
+     * @throws ClosedChannelException
+     *         If this channel is closed
+     * @throws AsynchronousCloseException
+     *         If another thread closes this channel
+     *         while the read operation is in progress
+     * @throws ClosedByInterruptException
+     *         If another thread interrupts the current thread
+     *         while the read operation is in progress, thereby
+     *         closing the channel and setting the current thread's
+     *         interrupt status
+     * @throws IOException
+     *         If some other I/O error occurs
      */
     public long read(ByteBuffer[] dsts) throws IOException;
 

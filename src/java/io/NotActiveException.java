@@ -28,8 +28,8 @@ package java.io;
 /**
  * Thrown when serialization or deserialization is not active.
  *
- * @author  unascribed
- * @since   JDK1.1
+ * @author unascribed
+ * @since JDK1.1
  */
 public class NotActiveException extends ObjectStreamException {
 
@@ -38,7 +38,8 @@ public class NotActiveException extends ObjectStreamException {
     /**
      * Constructor to create a new NotActiveException with the reason given.
      *
-     * @param reason  a String describing the reason for the exception.
+     * @param reason
+     *         a String describing the reason for the exception.
      */
     public NotActiveException(String reason) {
         super(reason);

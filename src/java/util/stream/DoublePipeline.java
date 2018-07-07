@@ -47,35 +47,36 @@ import java.util.function.Supplier;
  * Abstract base class for an intermediate pipeline stage or pipeline source
  * stage implementing whose elements are of type {@code double}.
  *
- * @param <E_IN> type of elements in the upstream source
+ * @param <E_IN>
+ *         type of elements in the upstream source
  *
  * @since 1.8
  */
-abstract class DoublePipeline<E_IN>
-        extends AbstractPipeline<E_IN, Double, DoubleStream>
-        implements DoubleStream {
+abstract class DoublePipeline<E_IN> extends AbstractPipeline<E_IN, Double, DoubleStream> implements DoubleStream {
 
     /**
      * Constructor for the head of a stream pipeline.
      *
-     * @param source {@code Supplier<Spliterator>} describing the stream source
-     * @param sourceFlags the source flags for the stream source, described in
-     * {@link StreamOpFlag}
+     * @param source
+     *         {@code Supplier<Spliterator>} describing the stream source
+     * @param sourceFlags
+     *         the source flags for the stream source, described in
+     *         {@link StreamOpFlag}
      */
-    DoublePipeline(Supplier<? extends Spliterator<Double>> source,
-                   int sourceFlags, boolean parallel) {
+    DoublePipeline(Supplier<? extends Spliterator<Double>> source, int sourceFlags, boolean parallel) {
         super(source, sourceFlags, parallel);
     }
 
     /**
      * Constructor for the head of a stream pipeline.
      *
-     * @param source {@code Spliterator} describing the stream source
-     * @param sourceFlags the source flags for the stream source, described in
-     * {@link StreamOpFlag}
+     * @param source
+     *         {@code Spliterator} describing the stream source
+     * @param sourceFlags
+     *         the source flags for the stream source, described in
+     *         {@link StreamOpFlag}
      */
-    DoublePipeline(Spliterator<Double> source,
-                   int sourceFlags, boolean parallel) {
+    DoublePipeline(Spliterator<Double> source, int sourceFlags, boolean parallel) {
         super(source, sourceFlags, parallel);
     }
 
@@ -83,8 +84,10 @@ abstract class DoublePipeline<E_IN>
      * Constructor for appending an intermediate operation onto an existing
      * pipeline.
      *
-     * @param upstream the upstream element source.
-     * @param opFlags the operation flags
+     * @param upstream
+     *         the upstream element source.
+     * @param opFlags
+     *         the operation flags
      */
     DoublePipeline(AbstractPipeline<?, E_IN, ?> upstream, int opFlags) {
         super(upstream, opFlags);
@@ -98,31 +101,26 @@ abstract class DoublePipeline<E_IN>
         if (sink instanceof DoubleConsumer) {
             return (DoubleConsumer) sink;
         } else {
-            if (Tripwire.ENABLED)
-                Tripwire.trip(AbstractPipeline.class,
-                              "using DoubleStream.adapt(Sink<Double> s)");
+            if (Tripwire.ENABLED) {
+                Tripwire.trip(AbstractPipeline.class, "using DoubleStream.adapt(Sink<Double> s)");
+            }
             return sink::accept;
         }
     }
 
     /**
      * Adapt a {@code Spliterator<Double>} to a {@code Spliterator.OfDouble}.
-     *
-     * @implNote
-     * The implementation attempts to cast to a Spliterator.OfDouble, and throws
-     * an exception if this cast is not possible.
      */
     private static Spliterator.OfDouble adapt(Spliterator<Double> s) {
         if (s instanceof Spliterator.OfDouble) {
             return (Spliterator.OfDouble) s;
         } else {
-            if (Tripwire.ENABLED)
-                Tripwire.trip(AbstractPipeline.class,
-                              "using DoubleStream.adapt(Spliterator<Double> s)");
+            if (Tripwire.ENABLED) {
+                Tripwire.trip(AbstractPipeline.class, "using DoubleStream.adapt(Spliterator<Double> s)");
+            }
             throw new UnsupportedOperationException("DoubleStream.adapt(Spliterator<Double> s)");
         }
     }
-
 
     // Shape-specific methods
 
@@ -132,17 +130,13 @@ abstract class DoublePipeline<E_IN>
     }
 
     @Override
-    final <P_IN> Node<Double> evaluateToNode(PipelineHelper<Double> helper,
-                                             Spliterator<P_IN> spliterator,
-                                             boolean flattenTree,
-                                             IntFunction<Double[]> generator) {
+    final <P_IN> Node<Double> evaluateToNode(PipelineHelper<Double> helper, Spliterator<P_IN> spliterator, boolean flattenTree,
+            IntFunction<Double[]> generator) {
         return Nodes.collectDouble(helper, spliterator, flattenTree);
     }
 
     @Override
-    final <P_IN> Spliterator<Double> wrap(PipelineHelper<Double> ph,
-                                          Supplier<Spliterator<P_IN>> supplier,
-                                          boolean isParallel) {
+    final <P_IN> Spliterator<Double> wrap(PipelineHelper<Double> ph, Supplier<Spliterator<P_IN>> supplier, boolean isParallel) {
         return new StreamSpliterators.DoubleWrappingSpliterator<>(ph, supplier, isParallel);
     }
 
@@ -156,14 +150,14 @@ abstract class DoublePipeline<E_IN>
     final void forEachWithCancel(Spliterator<Double> spliterator, Sink<Double> sink) {
         Spliterator.OfDouble spl = adapt(spliterator);
         DoubleConsumer adaptedSink = adapt(sink);
-        do { } while (!sink.cancellationRequested() && spl.tryAdvance(adaptedSink));
+        do {
+        } while (!sink.cancellationRequested() && spl.tryAdvance(adaptedSink));
     }
 
     @Override
-    final  Node.Builder<Double> makeNodeBuilder(long exactSizeIfKnown, IntFunction<Double[]> generator) {
+    final Node.Builder<Double> makeNodeBuilder(long exactSizeIfKnown, IntFunction<Double[]> generator) {
         return Nodes.doubleBuilder(exactSizeIfKnown);
     }
-
 
     // DoubleStream
 
@@ -187,8 +181,7 @@ abstract class DoublePipeline<E_IN>
     @Override
     public final DoubleStream map(DoubleUnaryOperator mapper) {
         Objects.requireNonNull(mapper);
-        return new StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE,
-                                       StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
+        return new StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE, StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
             @Override
             Sink<Double> opWrapSink(int flags, Sink<Double> sink) {
                 return new Sink.ChainedDouble<Double>(sink) {
@@ -204,8 +197,7 @@ abstract class DoublePipeline<E_IN>
     @Override
     public final <U> Stream<U> mapToObj(DoubleFunction<? extends U> mapper) {
         Objects.requireNonNull(mapper);
-        return new ReferencePipeline.StatelessOp<Double, U>(this, StreamShape.DOUBLE_VALUE,
-                                                            StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
+        return new ReferencePipeline.StatelessOp<Double, U>(this, StreamShape.DOUBLE_VALUE, StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
             @Override
             Sink<Double> opWrapSink(int flags, Sink<U> sink) {
                 return new Sink.ChainedDouble<U>(sink) {
@@ -221,8 +213,7 @@ abstract class DoublePipeline<E_IN>
     @Override
     public final IntStream mapToInt(DoubleToIntFunction mapper) {
         Objects.requireNonNull(mapper);
-        return new IntPipeline.StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE,
-                                                   StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
+        return new IntPipeline.StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE, StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
             @Override
             Sink<Double> opWrapSink(int flags, Sink<Integer> sink) {
                 return new Sink.ChainedDouble<Integer>(sink) {
@@ -238,8 +229,7 @@ abstract class DoublePipeline<E_IN>
     @Override
     public final LongStream mapToLong(DoubleToLongFunction mapper) {
         Objects.requireNonNull(mapper);
-        return new LongPipeline.StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE,
-                                                    StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
+        return new LongPipeline.StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE, StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
             @Override
             Sink<Double> opWrapSink(int flags, Sink<Long> sink) {
                 return new Sink.ChainedDouble<Long>(sink) {
@@ -254,8 +244,7 @@ abstract class DoublePipeline<E_IN>
 
     @Override
     public final DoubleStream flatMap(DoubleFunction<? extends DoubleStream> mapper) {
-        return new StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE,
-                                        StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT | StreamOpFlag.NOT_SIZED) {
+        return new StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE, StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT | StreamOpFlag.NOT_SIZED) {
             @Override
             Sink<Double> opWrapSink(int flags, Sink<Double> sink) {
                 return new Sink.ChainedDouble<Double>(sink) {
@@ -268,8 +257,9 @@ abstract class DoublePipeline<E_IN>
                     public void accept(double t) {
                         try (DoubleStream result = mapper.apply(t)) {
                             // We can do better that this too; optimize for depth=0 case and just grab spliterator and forEach it
-                            if (result != null)
+                            if (result != null) {
                                 result.sequential().forEach(i -> downstream.accept(i));
+                            }
                         }
                     }
                 };
@@ -279,8 +269,9 @@ abstract class DoublePipeline<E_IN>
 
     @Override
     public DoubleStream unordered() {
-        if (!isOrdered())
+        if (!isOrdered()) {
             return this;
+        }
         return new StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE, StreamOpFlag.NOT_ORDERED) {
             @Override
             Sink<Double> opWrapSink(int flags, Sink<Double> sink) {
@@ -292,8 +283,7 @@ abstract class DoublePipeline<E_IN>
     @Override
     public final DoubleStream filter(DoublePredicate predicate) {
         Objects.requireNonNull(predicate);
-        return new StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE,
-                                       StreamOpFlag.NOT_SIZED) {
+        return new StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE, StreamOpFlag.NOT_SIZED) {
             @Override
             Sink<Double> opWrapSink(int flags, Sink<Double> sink) {
                 return new Sink.ChainedDouble<Double>(sink) {
@@ -304,8 +294,9 @@ abstract class DoublePipeline<E_IN>
 
                     @Override
                     public void accept(double t) {
-                        if (predicate.test(t))
+                        if (predicate.test(t)) {
                             downstream.accept(t);
+                        }
                     }
                 };
             }
@@ -315,8 +306,7 @@ abstract class DoublePipeline<E_IN>
     @Override
     public final DoubleStream peek(DoubleConsumer action) {
         Objects.requireNonNull(action);
-        return new StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE,
-                                       0) {
+        return new StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE, 0) {
             @Override
             Sink<Double> opWrapSink(int flags, Sink<Double> sink) {
                 return new Sink.ChainedDouble<Double>(sink) {
@@ -334,18 +324,20 @@ abstract class DoublePipeline<E_IN>
 
     @Override
     public final DoubleStream limit(long maxSize) {
-        if (maxSize < 0)
+        if (maxSize < 0) {
             throw new IllegalArgumentException(Long.toString(maxSize));
+        }
         return SliceOps.makeDouble(this, (long) 0, maxSize);
     }
 
     @Override
     public final DoubleStream skip(long n) {
-        if (n < 0)
+        if (n < 0) {
             throw new IllegalArgumentException(Long.toString(n));
-        if (n == 0)
+        }
+        if (n == 0) {
             return this;
-        else {
+        } else {
             long limit = -1;
             return SliceOps.makeDouble(this, n, limit);
         }
@@ -385,16 +377,14 @@ abstract class DoublePipeline<E_IN>
          * the proper result if the stream contains infinite values of
          * the same sign.
          */
-        double[] summation = collect(() -> new double[3],
-                               (ll, d) -> {
-                                   Collectors.sumWithCompensation(ll, d);
-                                   ll[2] += d;
-                               },
-                               (ll, rr) -> {
-                                   Collectors.sumWithCompensation(ll, rr[0]);
-                                   Collectors.sumWithCompensation(ll, rr[1]);
-                                   ll[2] += rr[2];
-                               });
+        double[] summation = collect(() -> new double[3], (ll, d) -> {
+            Collectors.sumWithCompensation(ll, d);
+            ll[2] += d;
+        }, (ll, rr) -> {
+            Collectors.sumWithCompensation(ll, rr[0]);
+            Collectors.sumWithCompensation(ll, rr[1]);
+            ll[2] += rr[2];
+        });
 
         return Collectors.computeFinalSum(summation);
     }
@@ -411,12 +401,6 @@ abstract class DoublePipeline<E_IN>
 
     /**
      * {@inheritDoc}
-     *
-     * @implNote The {@code double} format can represent all
-     * consecutive integers in the range -2<sup>53</sup> to
-     * 2<sup>53</sup>. If the pipeline has more than 2<sup>53</sup>
-     * values, the divisor in the average computation will saturate at
-     * 2<sup>53</sup>, leading to additional numerical errors.
      */
     @Override
     public final OptionalDouble average() {
@@ -427,21 +411,17 @@ abstract class DoublePipeline<E_IN>
          * summation, index 2 holds the number of values seen, index 3
          * holds the simple sum.
          */
-        double[] avg = collect(() -> new double[4],
-                               (ll, d) -> {
-                                   ll[2]++;
-                                   Collectors.sumWithCompensation(ll, d);
-                                   ll[3] += d;
-                               },
-                               (ll, rr) -> {
-                                   Collectors.sumWithCompensation(ll, rr[0]);
-                                   Collectors.sumWithCompensation(ll, rr[1]);
-                                   ll[2] += rr[2];
-                                   ll[3] += rr[3];
-                               });
-        return avg[2] > 0
-            ? OptionalDouble.of(Collectors.computeFinalSum(avg) / avg[2])
-            : OptionalDouble.empty();
+        double[] avg = collect(() -> new double[4], (ll, d) -> {
+            ll[2]++;
+            Collectors.sumWithCompensation(ll, d);
+            ll[3] += d;
+        }, (ll, rr) -> {
+            Collectors.sumWithCompensation(ll, rr[0]);
+            Collectors.sumWithCompensation(ll, rr[1]);
+            ll[2] += rr[2];
+            ll[3] += rr[3];
+        });
+        return avg[2] > 0 ? OptionalDouble.of(Collectors.computeFinalSum(avg) / avg[2]) : OptionalDouble.empty();
     }
 
     @Override
@@ -451,8 +431,7 @@ abstract class DoublePipeline<E_IN>
 
     @Override
     public final DoubleSummaryStatistics summaryStatistics() {
-        return collect(DoubleSummaryStatistics::new, DoubleSummaryStatistics::accept,
-                       DoubleSummaryStatistics::combine);
+        return collect(DoubleSummaryStatistics::new, DoubleSummaryStatistics::accept, DoubleSummaryStatistics::combine);
     }
 
     @Override
@@ -466,9 +445,7 @@ abstract class DoublePipeline<E_IN>
     }
 
     @Override
-    public final <R> R collect(Supplier<R> supplier,
-                               ObjDoubleConsumer<R> accumulator,
-                               BiConsumer<R, R> combiner) {
+    public final <R> R collect(Supplier<R> supplier, ObjDoubleConsumer<R> accumulator, BiConsumer<R, R> combiner) {
         BinaryOperator<R> operator = (left, right) -> {
             combiner.accept(left, right);
             return left;
@@ -503,8 +480,7 @@ abstract class DoublePipeline<E_IN>
 
     @Override
     public final double[] toArray() {
-        return Nodes.flattenDouble((Node.OfDouble) evaluateToArrayNode(Double[]::new))
-                        .asPrimitiveArray();
+        return Nodes.flattenDouble((Node.OfDouble) evaluateToArrayNode(Double[]::new)).asPrimitiveArray();
     }
 
     //
@@ -512,33 +488,38 @@ abstract class DoublePipeline<E_IN>
     /**
      * Source stage of a DoubleStream
      *
-     * @param <E_IN> type of elements in the upstream source
+     * @param <E_IN>
+     *         type of elements in the upstream source
      */
     static class Head<E_IN> extends DoublePipeline<E_IN> {
         /**
          * Constructor for the source stage of a DoubleStream.
          *
-         * @param source {@code Supplier<Spliterator>} describing the stream
-         *               source
-         * @param sourceFlags the source flags for the stream source, described
-         *                    in {@link StreamOpFlag}
-         * @param parallel {@code true} if the pipeline is parallel
+         * @param source
+         *         {@code Supplier<Spliterator>} describing the stream
+         *         source
+         * @param sourceFlags
+         *         the source flags for the stream source, described
+         *         in {@link StreamOpFlag}
+         * @param parallel
+         *         {@code true} if the pipeline is parallel
          */
-        Head(Supplier<? extends Spliterator<Double>> source,
-             int sourceFlags, boolean parallel) {
+        Head(Supplier<? extends Spliterator<Double>> source, int sourceFlags, boolean parallel) {
             super(source, sourceFlags, parallel);
         }
 
         /**
          * Constructor for the source stage of a DoubleStream.
          *
-         * @param source {@code Spliterator} describing the stream source
-         * @param sourceFlags the source flags for the stream source, described
-         *                    in {@link StreamOpFlag}
-         * @param parallel {@code true} if the pipeline is parallel
+         * @param source
+         *         {@code Spliterator} describing the stream source
+         * @param sourceFlags
+         *         the source flags for the stream source, described
+         *         in {@link StreamOpFlag}
+         * @param parallel
+         *         {@code true} if the pipeline is parallel
          */
-        Head(Spliterator<Double> source,
-             int sourceFlags, boolean parallel) {
+        Head(Spliterator<Double> source, int sourceFlags, boolean parallel) {
             super(source, sourceFlags, parallel);
         }
 
@@ -558,8 +539,7 @@ abstract class DoublePipeline<E_IN>
         public void forEach(DoubleConsumer consumer) {
             if (!isParallel()) {
                 adapt(sourceStageSpliterator()).forEachRemaining(consumer);
-            }
-            else {
+            } else {
                 super.forEach(consumer);
             }
         }
@@ -568,8 +548,7 @@ abstract class DoublePipeline<E_IN>
         public void forEachOrdered(DoubleConsumer consumer) {
             if (!isParallel()) {
                 adapt(sourceStageSpliterator()).forEachRemaining(consumer);
-            }
-            else {
+            } else {
                 super.forEachOrdered(consumer);
             }
         }
@@ -579,7 +558,9 @@ abstract class DoublePipeline<E_IN>
     /**
      * Base class for a stateless intermediate stage of a DoubleStream.
      *
-     * @param <E_IN> type of elements in the upstream source
+     * @param <E_IN>
+     *         type of elements in the upstream source
+     *
      * @since 1.8
      */
     abstract static class StatelessOp<E_IN> extends DoublePipeline<E_IN> {
@@ -587,13 +568,14 @@ abstract class DoublePipeline<E_IN>
          * Construct a new DoubleStream by appending a stateless intermediate
          * operation to an existing stream.
          *
-         * @param upstream the upstream pipeline stage
-         * @param inputShape the stream shape for the upstream pipeline stage
-         * @param opFlags operation flags for the new stage
+         * @param upstream
+         *         the upstream pipeline stage
+         * @param inputShape
+         *         the stream shape for the upstream pipeline stage
+         * @param opFlags
+         *         operation flags for the new stage
          */
-        StatelessOp(AbstractPipeline<?, E_IN, ?> upstream,
-                    StreamShape inputShape,
-                    int opFlags) {
+        StatelessOp(AbstractPipeline<?, E_IN, ?> upstream, StreamShape inputShape, int opFlags) {
             super(upstream, opFlags);
             assert upstream.getOutputShape() == inputShape;
         }
@@ -607,7 +589,9 @@ abstract class DoublePipeline<E_IN>
     /**
      * Base class for a stateful intermediate stage of a DoubleStream.
      *
-     * @param <E_IN> type of elements in the upstream source
+     * @param <E_IN>
+     *         type of elements in the upstream source
+     *
      * @since 1.8
      */
     abstract static class StatefulOp<E_IN> extends DoublePipeline<E_IN> {
@@ -615,13 +599,14 @@ abstract class DoublePipeline<E_IN>
          * Construct a new DoubleStream by appending a stateful intermediate
          * operation to an existing stream.
          *
-         * @param upstream the upstream pipeline stage
-         * @param inputShape the stream shape for the upstream pipeline stage
-         * @param opFlags operation flags for the new stage
+         * @param upstream
+         *         the upstream pipeline stage
+         * @param inputShape
+         *         the stream shape for the upstream pipeline stage
+         * @param opFlags
+         *         operation flags for the new stage
          */
-        StatefulOp(AbstractPipeline<?, E_IN, ?> upstream,
-                   StreamShape inputShape,
-                   int opFlags) {
+        StatefulOp(AbstractPipeline<?, E_IN, ?> upstream, StreamShape inputShape, int opFlags) {
             super(upstream, opFlags);
             assert upstream.getOutputShape() == inputShape;
         }
@@ -632,8 +617,6 @@ abstract class DoublePipeline<E_IN>
         }
 
         @Override
-        abstract <P_IN> Node<Double> opEvaluateParallel(PipelineHelper<Double> helper,
-                                                        Spliterator<P_IN> spliterator,
-                                                        IntFunction<Double[]> generator);
+        abstract <P_IN> Node<Double> opEvaluateParallel(PipelineHelper<Double> helper, Spliterator<P_IN> spliterator, IntFunction<Double[]> generator);
     }
 }

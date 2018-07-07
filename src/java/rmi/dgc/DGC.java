@@ -24,7 +24,8 @@
  */
 package java.rmi.dgc;
 
-import java.rmi.*;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.rmi.server.ObjID;
 
 /**
@@ -87,14 +88,19 @@ public interface DGC extends Remote {
      * references to a specific remote object, it must schedule a
      * clean call for the object ID associated with the reference.
      *
-     * @param ids IDs of objects to mark as referenced by calling client
-     * @param sequenceNum sequence number
-     * @param lease requested lease
+     * @param ids
+     *         IDs of objects to mark as referenced by calling client
+     * @param sequenceNum
+     *         sequence number
+     * @param lease
+     *         requested lease
+     *
      * @return granted lease
-     * @throws RemoteException if dirty call fails
+     *
+     * @throws RemoteException
+     *         if dirty call fails
      */
-    Lease dirty(ObjID[] ids, long sequenceNum, Lease lease)
-        throws RemoteException;
+    Lease dirty(ObjID[] ids, long sequenceNum, Lease lease) throws RemoteException;
 
     /**
      * The clean call removes the 'vmid' from the reference list of
@@ -104,12 +110,17 @@ public interface DGC extends Remote {
      * thus the sequence number for the client 'vmid' needs to be
      * remembered.
      *
-     * @param ids IDs of objects to mark as unreferenced by calling client
-     * @param sequenceNum sequence number
-     * @param vmid client VMID
-     * @param strong make 'strong' clean call
-     * @throws RemoteException if clean call fails
+     * @param ids
+     *         IDs of objects to mark as unreferenced by calling client
+     * @param sequenceNum
+     *         sequence number
+     * @param vmid
+     *         client VMID
+     * @param strong
+     *         make 'strong' clean call
+     *
+     * @throws RemoteException
+     *         if clean call fails
      */
-    void clean(ObjID[] ids, long sequenceNum, VMID vmid, boolean strong)
-        throws RemoteException;
+    void clean(ObjID[] ids, long sequenceNum, VMID vmid, boolean strong) throws RemoteException;
 }

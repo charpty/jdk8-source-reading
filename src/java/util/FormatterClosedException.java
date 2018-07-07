@@ -41,5 +41,6 @@ public class FormatterClosedException extends IllegalStateException {
     /**
      * Constructs an instance of this class.
      */
-    public FormatterClosedException() { }
+    public FormatterClosedException() {
+    }
 }

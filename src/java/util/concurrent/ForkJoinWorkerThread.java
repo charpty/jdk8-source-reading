@@ -49,8 +49,8 @@ import java.security.ProtectionDomain;
  * custom {@link ForkJoinPool.ForkJoinWorkerThreadFactory} to
  * {@linkplain ForkJoinPool#ForkJoinPool use it} in a {@code ForkJoinPool}.
  *
- * @since 1.7
  * @author Doug Lea
+ * @since 1.7
  */
 public class ForkJoinWorkerThread extends Thread {
     /*
@@ -76,8 +76,11 @@ public class ForkJoinWorkerThread extends Thread {
     /**
      * Creates a ForkJoinWorkerThread operating in the given pool.
      *
-     * @param pool the pool this thread works in
-     * @throws NullPointerException if pool is null
+     * @param pool
+     *         the pool this thread works in
+     *
+     * @throws NullPointerException
+     *         if pool is null
      */
     protected ForkJoinWorkerThread(ForkJoinPool pool) {
         // Use a placeholder until a useful name can be set in registerWorker
@@ -89,8 +92,7 @@ public class ForkJoinWorkerThread extends Thread {
     /**
      * Version for InnocuousForkJoinWorkerThread
      */
-    ForkJoinWorkerThread(ForkJoinPool pool, ThreadGroup threadGroup,
-                         AccessControlContext acc) {
+    ForkJoinWorkerThread(ForkJoinPool pool, ThreadGroup threadGroup, AccessControlContext acc) {
         super(threadGroup, null, "aForkJoinWorkerThread");
         U.putOrderedObject(this, INHERITEDACCESSCONTROLCONTEXT, acc);
         eraseThreadLocals(); // clear before registering
@@ -138,8 +140,9 @@ public class ForkJoinWorkerThread extends Thread {
      * thread.  If you override this method, you must invoke
      * {@code super.onTermination} at the end of the overridden method.
      *
-     * @param exception the exception causing this thread to abort due
-     * to an unrecoverable error, or {@code null} if completed normally
+     * @param exception
+     *         the exception causing this thread to abort due
+     *         to an unrecoverable error, or {@code null} if completed normally
      */
     protected void onTermination(Throwable exception) {
     }
@@ -161,8 +164,9 @@ public class ForkJoinWorkerThread extends Thread {
                 try {
                     onTermination(exception);
                 } catch (Throwable ex) {
-                    if (exception == null)
+                    if (exception == null) {
                         exception = ex;
+                    }
                 } finally {
                     pool.deregisterWorker(this, exception);
                 }
@@ -189,16 +193,14 @@ public class ForkJoinWorkerThread extends Thread {
     private static final long THREADLOCALS;
     private static final long INHERITABLETHREADLOCALS;
     private static final long INHERITEDACCESSCONTROLCONTEXT;
+
     static {
         try {
             U = sun.misc.Unsafe.getUnsafe();
             Class<?> tk = Thread.class;
-            THREADLOCALS = U.objectFieldOffset
-                (tk.getDeclaredField("threadLocals"));
-            INHERITABLETHREADLOCALS = U.objectFieldOffset
-                (tk.getDeclaredField("inheritableThreadLocals"));
-            INHERITEDACCESSCONTROLCONTEXT = U.objectFieldOffset
-                (tk.getDeclaredField("inheritedAccessControlContext"));
+            THREADLOCALS = U.objectFieldOffset(tk.getDeclaredField("threadLocals"));
+            INHERITABLETHREADLOCALS = U.objectFieldOffset(tk.getDeclaredField("inheritableThreadLocals"));
+            INHERITEDACCESSCONTROLCONTEXT = U.objectFieldOffset(tk.getDeclaredField("inheritedAccessControlContext"));
 
         } catch (Exception e) {
             throw new Error(e);
@@ -212,21 +214,17 @@ public class ForkJoinWorkerThread extends Thread {
      */
     static final class InnocuousForkJoinWorkerThread extends ForkJoinWorkerThread {
         /** The ThreadGroup for all InnocuousForkJoinWorkerThreads */
-        private static final ThreadGroup innocuousThreadGroup =
-            createThreadGroup();
+        private static final ThreadGroup innocuousThreadGroup = createThreadGroup();
 
         /** An AccessControlContext supporting no privileges */
-        private static final AccessControlContext INNOCUOUS_ACC =
-            new AccessControlContext(
-                new ProtectionDomain[] {
-                    new ProtectionDomain(null, null)
-                });
+        private static final AccessControlContext INNOCUOUS_ACC = new AccessControlContext(new ProtectionDomain[] { new ProtectionDomain(null, null) });
 
         InnocuousForkJoinWorkerThread(ForkJoinPool pool) {
             super(pool, innocuousThreadGroup, INNOCUOUS_ACC);
         }
 
-        @Override // to erase ThreadLocals
+        @Override
+            // to erase ThreadLocals
         void afterTopLevelExec() {
             eraseThreadLocals();
         }
@@ -237,7 +235,8 @@ public class ForkJoinWorkerThread extends Thread {
         }
 
         @Override // to silently fail
-        public void setUncaughtExceptionHandler(UncaughtExceptionHandler x) { }
+        public void setUncaughtExceptionHandler(UncaughtExceptionHandler x) {
+        }
 
         @Override // paranoically
         public void setContextClassLoader(ClassLoader cl) {
@@ -256,13 +255,12 @@ public class ForkJoinWorkerThread extends Thread {
                 Class<?> gk = ThreadGroup.class;
                 long tg = u.objectFieldOffset(tk.getDeclaredField("group"));
                 long gp = u.objectFieldOffset(gk.getDeclaredField("parent"));
-                ThreadGroup group = (ThreadGroup)
-                    u.getObject(Thread.currentThread(), tg);
+                ThreadGroup group = (ThreadGroup) u.getObject(Thread.currentThread(), tg);
                 while (group != null) {
-                    ThreadGroup parent = (ThreadGroup)u.getObject(group, gp);
-                    if (parent == null)
-                        return new ThreadGroup(group,
-                                               "InnocuousForkJoinWorkerThreadGroup");
+                    ThreadGroup parent = (ThreadGroup) u.getObject(group, gp);
+                    if (parent == null) {
+                        return new ThreadGroup(group, "InnocuousForkJoinWorkerThreadGroup");
+                    }
                     group = parent;
                 }
             } catch (Exception e) {

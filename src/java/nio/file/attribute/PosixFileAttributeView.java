@@ -25,9 +25,9 @@
 
 package java.nio.file.attribute;
 
-import java.nio.file.*;
-import java.util.Set;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Set;
 
 /**
  * A file attribute view that provides a view of the file attributes commonly
@@ -75,18 +75,18 @@ import java.io.IOException;
  * the following attributes are supported:
  * <blockquote>
  * <table border="1" cellpadding="8" summary="Supported attributes">
- *   <tr>
- *     <th> Name </th>
- *     <th> Type </th>
- *   </tr>
- *  <tr>
- *     <td> "permissions" </td>
- *     <td> {@link Set}&lt;{@link PosixFilePermission}&gt; </td>
- *   </tr>
- *   <tr>
- *     <td> "group" </td>
- *     <td> {@link GroupPrincipal} </td>
- *   </tr>
+ * <tr>
+ * <th> Name </th>
+ * <th> Type </th>
+ * </tr>
+ * <tr>
+ * <td> "permissions" </td>
+ * <td> {@link Set}&lt;{@link PosixFilePermission}&gt; </td>
+ * </tr>
+ * <tr>
+ * <td> "group" </td>
+ * <td> {@link GroupPrincipal} </td>
+ * </tr>
  * </table>
  * </blockquote>
  *
@@ -135,9 +135,7 @@ import java.io.IOException;
  * @since 1.7
  */
 
-public interface PosixFileAttributeView
-    extends BasicFileAttributeView, FileOwnerAttributeView
-{
+public interface PosixFileAttributeView extends BasicFileAttributeView, FileOwnerAttributeView {
     /**
      * Returns the name of the attribute view. Attribute views of this type
      * have the name {@code "posix"}.
@@ -146,12 +144,13 @@ public interface PosixFileAttributeView
     String name();
 
     /**
-     * @throws  IOException                {@inheritDoc}
-     * @throws  SecurityException
-     *          In the case of the default provider, a security manager is
-     *          installed, and it denies {@link RuntimePermission}<tt>("accessUserInformation")</tt>
-     *          or its {@link SecurityManager#checkRead(String) checkRead} method
-     *          denies read access to the file.
+     * @throws IOException
+     *         {@inheritDoc}
+     * @throws SecurityException
+     *         In the case of the default provider, a security manager is
+     *         installed, and it denies {@link RuntimePermission}<tt>("accessUserInformation")</tt>
+     *         or its {@link SecurityManager#checkRead(String) checkRead} method
+     *         denies read access to the file.
      */
     @Override
     PosixFileAttributes readAttributes() throws IOException;
@@ -159,35 +158,35 @@ public interface PosixFileAttributeView
     /**
      * Updates the file permissions.
      *
-     * @param   perms
-     *          the new set of permissions
+     * @param perms
+     *         the new set of permissions
      *
-     * @throws  ClassCastException
-     *          if the sets contains elements that are not of type {@code
-     *          PosixFilePermission}
-     * @throws  IOException
-     *          if an I/O error occurs
-     * @throws  SecurityException
-     *          In the case of the default provider, a security manager is
-     *          installed, and it denies {@link RuntimePermission}<tt>("accessUserInformation")</tt>
-     *          or its {@link SecurityManager#checkWrite(String) checkWrite}
-     *          method denies write access to the file.
+     * @throws ClassCastException
+     *         if the sets contains elements that are not of type {@code
+     *         PosixFilePermission}
+     * @throws IOException
+     *         if an I/O error occurs
+     * @throws SecurityException
+     *         In the case of the default provider, a security manager is
+     *         installed, and it denies {@link RuntimePermission}<tt>("accessUserInformation")</tt>
+     *         or its {@link SecurityManager#checkWrite(String) checkWrite}
+     *         method denies write access to the file.
      */
     void setPermissions(Set<PosixFilePermission> perms) throws IOException;
 
     /**
      * Updates the file group-owner.
      *
-     * @param   group
-     *          the new file group-owner
+     * @param group
+     *         the new file group-owner
      *
-     * @throws  IOException
-     *          if an I/O error occurs
-     * @throws  SecurityException
-     *          In the case of the default provider, and a security manager is
-     *          installed, it denies {@link RuntimePermission}<tt>("accessUserInformation")</tt>
-     *          or its {@link SecurityManager#checkWrite(String) checkWrite}
-     *          method denies write access to the file.
+     * @throws IOException
+     *         if an I/O error occurs
+     * @throws SecurityException
+     *         In the case of the default provider, and a security manager is
+     *         installed, it denies {@link RuntimePermission}<tt>("accessUserInformation")</tt>
+     *         or its {@link SecurityManager#checkWrite(String) checkWrite}
+     *         method denies write access to the file.
      */
     void setGroup(GroupPrincipal group) throws IOException;
 }

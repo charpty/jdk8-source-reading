@@ -31,11 +31,11 @@ import java.io.IOException;
  * A token representing a lock on a region of a file.
  *
  * <p> A file-lock object is created each time a lock is acquired on a file via
- * one of the {@link FileChannel#lock(long,long,boolean) lock} or {@link
- * FileChannel#tryLock(long,long,boolean) tryLock} methods of the
+ * one of the {@link FileChannel#lock(long, long, boolean) lock} or {@link
+ * FileChannel#tryLock(long, long, boolean) tryLock} methods of the
  * {@link FileChannel} class, or the {@link
- * AsynchronousFileChannel#lock(long,long,boolean,Object,CompletionHandler) lock}
- * or {@link AsynchronousFileChannel#tryLock(long,long,boolean) tryLock}
+ * AsynchronousFileChannel#lock(long, long, boolean, Object, CompletionHandler) lock}
+ * or {@link AsynchronousFileChannel#tryLock(long, long, boolean) tryLock}
  * methods of the {@link AsynchronousFileChannel} class.
  *
  * <p> A file-lock object is initially valid.  It remains valid until the lock
@@ -110,7 +110,6 @@ import java.io.IOException;
  * certain position, often 2<sup>30</sup> or 2<sup>31</sup>.  In general, great
  * care should be taken when locking files that reside on network filesystems.
  *
- *
  * @author Mark Reinhold
  * @author JSR-51 Expert Group
  * @since 1.4
@@ -126,33 +125,31 @@ public abstract class FileLock implements AutoCloseable {
     /**
      * Initializes a new instance of this class.
      *
-     * @param  channel
+     * @param channel
      *         The file channel upon whose file this lock is held
-     *
-     * @param  position
+     * @param position
      *         The position within the file at which the locked region starts;
      *         must be non-negative
-     *
-     * @param  size
+     * @param size
      *         The size of the locked region; must be non-negative, and the sum
      *         <tt>position</tt>&nbsp;+&nbsp;<tt>size</tt> must be non-negative
-     *
-     * @param  shared
+     * @param shared
      *         <tt>true</tt> if this lock is shared,
      *         <tt>false</tt> if it is exclusive
      *
      * @throws IllegalArgumentException
      *         If the preconditions on the parameters do not hold
      */
-    protected FileLock(FileChannel channel,
-                       long position, long size, boolean shared)
-    {
-        if (position < 0)
+    protected FileLock(FileChannel channel, long position, long size, boolean shared) {
+        if (position < 0) {
             throw new IllegalArgumentException("Negative position");
-        if (size < 0)
+        }
+        if (size < 0) {
             throw new IllegalArgumentException("Negative size");
-        if (position + size < 0)
+        }
+        if (position + size < 0) {
             throw new IllegalArgumentException("Negative position + size");
+        }
         this.channel = channel;
         this.position = position;
         this.size = size;
@@ -162,35 +159,32 @@ public abstract class FileLock implements AutoCloseable {
     /**
      * Initializes a new instance of this class.
      *
-     * @param  channel
+     * @param channel
      *         The channel upon whose file this lock is held
-     *
-     * @param  position
+     * @param position
      *         The position within the file at which the locked region starts;
      *         must be non-negative
-     *
-     * @param  size
+     * @param size
      *         The size of the locked region; must be non-negative, and the sum
      *         <tt>position</tt>&nbsp;+&nbsp;<tt>size</tt> must be non-negative
-     *
-     * @param  shared
+     * @param shared
      *         <tt>true</tt> if this lock is shared,
      *         <tt>false</tt> if it is exclusive
      *
      * @throws IllegalArgumentException
      *         If the preconditions on the parameters do not hold
-     *
      * @since 1.7
      */
-    protected FileLock(AsynchronousFileChannel channel,
-                       long position, long size, boolean shared)
-    {
-        if (position < 0)
+    protected FileLock(AsynchronousFileChannel channel, long position, long size, boolean shared) {
+        if (position < 0) {
             throw new IllegalArgumentException("Negative position");
-        if (size < 0)
+        }
+        if (size < 0) {
             throw new IllegalArgumentException("Negative size");
-        if (position + size < 0)
+        }
+        if (position + size < 0) {
             throw new IllegalArgumentException("Negative position + size");
+        }
         this.channel = channel;
         this.position = position;
         this.size = size;
@@ -203,17 +197,17 @@ public abstract class FileLock implements AutoCloseable {
      * <p> This method has been superseded by the {@link #acquiredBy acquiredBy}
      * method.
      *
-     * @return  The file channel, or {@code null} if the file lock was not
-     *          acquired by a file channel.
+     * @return The file channel, or {@code null} if the file lock was not
+     * acquired by a file channel.
      */
     public final FileChannel channel() {
-        return (channel instanceof FileChannel) ? (FileChannel)channel : null;
+        return (channel instanceof FileChannel) ? (FileChannel) channel : null;
     }
 
     /**
      * Returns the channel upon whose file this lock was acquired.
      *
-     * @return  The channel upon whose file this lock was acquired.
+     * @return The channel upon whose file this lock was acquired.
      *
      * @since 1.7
      */
@@ -229,7 +223,7 @@ public abstract class FileLock implements AutoCloseable {
      * actual underlying file, so the value returned by this method may exceed
      * the file's current size.  </p>
      *
-     * @return  The position
+     * @return The position
      */
     public final long position() {
         return position;
@@ -242,7 +236,7 @@ public abstract class FileLock implements AutoCloseable {
      * actual underlying file, so the value returned by this method may exceed
      * the file's current size.  </p>
      *
-     * @return  The size of the locked region
+     * @return The size of the locked region
      */
     public final long size() {
         return size;
@@ -252,7 +246,7 @@ public abstract class FileLock implements AutoCloseable {
      * Tells whether this lock is shared.
      *
      * @return <tt>true</tt> if lock is shared,
-     *         <tt>false</tt> if it is exclusive
+     * <tt>false</tt> if it is exclusive
      */
     public final boolean isShared() {
         return shared;
@@ -261,19 +255,21 @@ public abstract class FileLock implements AutoCloseable {
     /**
      * Tells whether or not this lock overlaps the given lock range.
      *
-     * @param   position
-     *          The starting position of the lock range
-     * @param   size
-     *          The size of the lock range
+     * @param position
+     *         The starting position of the lock range
+     * @param size
+     *         The size of the lock range
      *
-     * @return  <tt>true</tt> if, and only if, this lock and the given lock
-     *          range overlap by at least one byte
+     * @return <tt>true</tt> if, and only if, this lock and the given lock
+     * range overlap by at least one byte
      */
     public final boolean overlaps(long position, long size) {
-        if (position + size <= this.position)
+        if (position + size <= this.position) {
             return false;               // That is below this
-        if (this.position + this.size <= position)
+        }
+        if (this.position + this.size <= position) {
             return false;               // This is below that
+        }
         return true;
     }
 
@@ -283,7 +279,7 @@ public abstract class FileLock implements AutoCloseable {
      * <p> A lock object remains valid until it is released or the associated
      * file channel is closed, whichever comes first.  </p>
      *
-     * @return  <tt>true</tt> if, and only if, this lock is valid
+     * @return <tt>true</tt> if, and only if, this lock is valid
      */
     public abstract boolean isValid();
 
@@ -294,12 +290,11 @@ public abstract class FileLock implements AutoCloseable {
      * lock and renders the object invalid.  If this lock object is invalid
      * then invoking this method has no effect.  </p>
      *
-     * @throws  ClosedChannelException
-     *          If the channel that was used to acquire this lock
-     *          is no longer open
-     *
-     * @throws  IOException
-     *          If an I/O error occurs
+     * @throws ClosedChannelException
+     *         If the channel that was used to acquire this lock
+     *         is no longer open
+     * @throws IOException
+     *         If an I/O error occurs
      */
     public abstract void release() throws IOException;
 
@@ -317,14 +312,10 @@ public abstract class FileLock implements AutoCloseable {
     /**
      * Returns a string describing the range, type, and validity of this lock.
      *
-     * @return  A descriptive string
+     * @return A descriptive string
      */
     public final String toString() {
-        return (this.getClass().getName()
-                + "[" + position
-                + ":" + size
-                + " " + (shared ? "shared" : "exclusive")
-                + " " + (isValid() ? "valid" : "invalid")
+        return (this.getClass().getName() + "[" + position + ":" + size + " " + (shared ? "shared" : "exclusive") + " " + (isValid() ? "valid" : "invalid")
                 + "]");
     }
 

@@ -32,9 +32,9 @@ package java.lang.annotation;
  * java.lang.reflect.AnnotatedElement API used to read annotations
  * reflectively}.
  *
- * @author  Josh Bloch
- * @see     java.lang.reflect.AnnotatedElement
- * @since   1.5
+ * @author Josh Bloch
+ * @see java.lang.reflect.AnnotatedElement
+ * @since 1.5
  */
 public class AnnotationFormatError extends Error {
     private static final long serialVersionUID = -4256701562333669892L;
@@ -43,7 +43,8 @@ public class AnnotationFormatError extends Error {
      * Constructs a new <tt>AnnotationFormatError</tt> with the specified
      * detail message.
      *
-     * @param   message   the detail message.
+     * @param message
+     *         the detail message.
      */
     public AnnotationFormatError(String message) {
         super(message);
@@ -55,14 +56,15 @@ public class AnnotationFormatError extends Error {
      * with <code>cause</code> is <i>not</i> automatically incorporated in
      * this error's detail message.
      *
-     * @param  message the detail message
-     * @param  cause the cause (A <tt>null</tt> value is permitted, and
-     *     indicates that the cause is nonexistent or unknown.)
+     * @param message
+     *         the detail message
+     * @param cause
+     *         the cause (A <tt>null</tt> value is permitted, and
+     *         indicates that the cause is nonexistent or unknown.)
      */
     public AnnotationFormatError(String message, Throwable cause) {
         super(message, cause);
     }
-
 
     /**
      * Constructs a new <tt>AnnotationFormatError</tt> with the specified
@@ -70,8 +72,9 @@ public class AnnotationFormatError extends Error {
      * <tt>(cause == null ? null : cause.toString())</tt> (which
      * typically contains the class and detail message of <tt>cause</tt>).
      *
-     * @param  cause the cause (A <tt>null</tt> value is permitted, and
-     *     indicates that the cause is nonexistent or unknown.)
+     * @param cause
+     *         the cause (A <tt>null</tt> value is permitted, and
+     *         indicates that the cause is nonexistent or unknown.)
      */
     public AnnotationFormatError(Throwable cause) {
         super(cause);

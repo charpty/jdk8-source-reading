@@ -97,9 +97,6 @@ import java.time.DateTimeException;
  * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code IsoEra}.
  * Use {@code getValue()} instead.</b>
  *
- * @implSpec
- * This is an immutable and thread-safe enum.
- *
  * @since 1.8
  */
 public enum IsoEra implements Era {
@@ -108,36 +105,41 @@ public enum IsoEra implements Era {
      * The singleton instance for the era before the current one, 'Before Current Era',
      * which has the numeric value 0.
      */
-    BCE,
-    /**
+    BCE, /**
      * The singleton instance for the current era, 'Current Era',
      * which has the numeric value 1.
      */
     CE;
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code IsoEra} from an {@code int} value.
      * <p>
      * {@code IsoEra} is an enum representing the ISO eras of BCE/CE.
      * This factory allows the enum to be obtained from the {@code int} value.
      *
-     * @param isoEra  the BCE/CE value to represent, from 0 (BCE) to 1 (CE)
+     * @param isoEra
+     *         the BCE/CE value to represent, from 0 (BCE) to 1 (CE)
+     *
      * @return the era singleton, not null
-     * @throws DateTimeException if the value is invalid
+     *
+     * @throws DateTimeException
+     *         if the value is invalid
      */
     public static IsoEra of(int isoEra) {
         switch (isoEra) {
-            case 0:
-                return BCE;
-            case 1:
-                return CE;
-            default:
-                throw new DateTimeException("Invalid era: " + isoEra);
+        case 0:
+            return BCE;
+        case 1:
+            return CE;
+        default:
+            throw new DateTimeException("Invalid era: " + isoEra);
         }
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the numeric era {@code int} value.
      * <p>

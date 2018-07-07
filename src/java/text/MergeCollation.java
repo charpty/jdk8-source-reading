@@ -56,20 +56,23 @@ import java.util.ArrayList;
  * That is: "a < b < c < d" is the same as "a < b & b < c & c < d" OR
  * "a < b < d & b < c"
  * XXX: make '' be a single quote.
+ *
+ * @author Mark Davis, Helena Shih
  * @see PatternEntry
- * @author             Mark Davis, Helena Shih
  */
 
 final class MergeCollation {
 
     /**
      * Creates from a pattern
-     * @exception ParseException If the input pattern is incorrect.
+     *
+     * @throws ParseException
+     *         If the input pattern is incorrect.
      */
-    public MergeCollation(String pattern) throws ParseException
-    {
-        for (int i = 0; i < statusArray.length; i++)
+    public MergeCollation(String pattern) throws ParseException {
+        for (int i = 0; i < statusArray.length; i++) {
             statusArray[i] = 0;
+        }
         setPattern(pattern);
     }
 
@@ -82,8 +85,10 @@ final class MergeCollation {
 
     /**
      * recovers current pattern.
-     * @param withWhiteSpace puts spacing around the entries, and \n
-     * before & and <
+     *
+     * @param withWhiteSpace
+     *         puts spacing around the entries, and \n
+     *         before & and <
      */
     public String getPattern(boolean withWhiteSpace) {
         StringBuffer result = new StringBuffer();
@@ -93,13 +98,14 @@ final class MergeCollation {
         for (i = 0; i < patterns.size(); ++i) {
             PatternEntry entry = patterns.get(i);
             if (entry.extension.length() != 0) {
-                if (extList == null)
+                if (extList == null) {
                     extList = new ArrayList<>();
+                }
                 extList.add(entry);
             } else {
                 if (extList != null) {
-                    PatternEntry last = findLastWithNoExtension(i-1);
-                    for (int j = extList.size() - 1; j >= 0 ; j--) {
+                    PatternEntry last = findLastWithNoExtension(i - 1);
+                    for (int j = extList.size() - 1; j >= 0; j--) {
                         tmp = extList.get(j);
                         tmp.addToBuffer(result, false, withWhiteSpace, last);
                     }
@@ -109,8 +115,8 @@ final class MergeCollation {
             }
         }
         if (extList != null) {
-            PatternEntry last = findLastWithNoExtension(i-1);
-            for (int j = extList.size() - 1; j >= 0 ; j--) {
+            PatternEntry last = findLastWithNoExtension(i - 1);
+            for (int j = extList.size() - 1; j >= 0; j--) {
                 tmp = extList.get(j);
                 tmp.addToBuffer(result, false, withWhiteSpace, last);
             }
@@ -120,7 +126,7 @@ final class MergeCollation {
     }
 
     private final PatternEntry findLastWithNoExtension(int i) {
-        for (--i;i >= 0; --i) {
+        for (--i; i >= 0; --i) {
             PatternEntry entry = patterns.get(i);
             if (entry.extension.length() == 0) {
                 return entry;
@@ -131,6 +137,7 @@ final class MergeCollation {
 
     /**
      * emits the pattern for collation builder.
+     *
      * @return emits the string in the format understable to the collation
      * builder.
      */
@@ -140,15 +147,17 @@ final class MergeCollation {
 
     /**
      * emits the pattern for collation builder.
-     * @param withWhiteSpace puts spacing around the entries, and \n
-     * before & and <
+     *
+     * @param withWhiteSpace
+     *         puts spacing around the entries, and \n
+     *         before & and <
+     *
      * @return emits the string in the format understable to the collation
      * builder.
      */
     public String emitPattern(boolean withWhiteSpace) {
         StringBuffer result = new StringBuffer();
-        for (int i = 0; i < patterns.size(); ++i)
-        {
+        for (int i = 0; i < patterns.size(); ++i) {
             PatternEntry entry = patterns.get(i);
             if (entry != null) {
                 entry.addToBuffer(result, true, withWhiteSpace, null);
@@ -160,20 +169,21 @@ final class MergeCollation {
     /**
      * sets the pattern.
      */
-    public void setPattern(String pattern) throws ParseException
-    {
+    public void setPattern(String pattern) throws ParseException {
         patterns.clear();
         addPattern(pattern);
     }
 
     /**
      * adds a pattern to the current one.
-     * @param pattern the new pattern to be added
+     *
+     * @param pattern
+     *         the new pattern to be added
      */
-    public void addPattern(String pattern) throws ParseException
-    {
-        if (pattern == null)
+    public void addPattern(String pattern) throws ParseException {
+        if (pattern == null) {
             return;
+        }
 
         PatternEntry.Parser parser = new PatternEntry.Parser(pattern);
 
@@ -186,6 +196,7 @@ final class MergeCollation {
 
     /**
      * gets count of separate entries
+     *
      * @return the size of pattern entries
      */
     public int getCount() {
@@ -194,7 +205,10 @@ final class MergeCollation {
 
     /**
      * gets count of separate entries
-     * @param index the offset of the desired pattern entry
+     *
+     * @param index
+     *         the offset of the desired pattern entry
+     *
      * @return the requested pattern entry
      */
     public PatternEntry getItemAt(int index) {
@@ -222,9 +236,9 @@ final class MergeCollation {
     // Using BitSet would make this easier, but it's significantly slower.
     //
     private transient byte[] statusArray = new byte[8192];
-    private final byte BITARRAYMASK = (byte)0x1;
-    private final int  BYTEPOWER = 3;
-    private final int  BYTEMASK = (1 << BYTEPOWER) - 1;
+    private final byte BITARRAYMASK = (byte) 0x1;
+    private final int BYTEPOWER = 3;
+    private final int BYTEMASK = (1 << BYTEPOWER) - 1;
 
     /*
       If the strength is RESET, then just change the lastEntry to
@@ -232,20 +246,16 @@ final class MergeCollation {
       If not, then remove the current entry, and add it after lastEntry
       (which is usually at the end).
       */
-    private final void fixEntry(PatternEntry newEntry) throws ParseException
-    {
+    private final void fixEntry(PatternEntry newEntry) throws ParseException {
         // check to see whether the new entry has the same characters as the previous
         // entry did (this can happen when a pattern declaring a difference between two
         // strings that are canonically equivalent is normalized).  If so, and the strength
         // is anything other than IDENTICAL or RESET, throw an exception (you can't
         // declare a string to be unequal to itself).       --rtg 5/24/99
-        if (lastEntry != null && newEntry.chars.equals(lastEntry.chars)
-                && newEntry.extension.equals(lastEntry.extension)) {
-            if (newEntry.strength != Collator.IDENTICAL
-                && newEntry.strength != PatternEntry.RESET) {
-                    throw new ParseException("The entries " + lastEntry + " and "
-                            + newEntry + " are adjacent in the rules, but have conflicting "
-                            + "strengths: A character can't be unequal to itself.", -1);
+        if (lastEntry != null && newEntry.chars.equals(lastEntry.chars) && newEntry.extension.equals(lastEntry.extension)) {
+            if (newEntry.strength != Collator.IDENTICAL && newEntry.strength != PatternEntry.RESET) {
+                throw new ParseException("The entries " + lastEntry + " and " + newEntry + " are adjacent in the rules, but have conflicting "
+                        + "strengths: A character can't be unequal to itself.", -1);
             } else {
                 // otherwise, just skip this entry and behave as though you never saw it
                 return;
@@ -261,14 +271,14 @@ final class MergeCollation {
                 char c = newEntry.chars.charAt(0);
                 int statusIndex = c >> BYTEPOWER;
                 byte bitClump = statusArray[statusIndex];
-                byte setBit = (byte)(BITARRAYMASK << (c & BYTEMASK));
+                byte setBit = (byte) (BITARRAYMASK << (c & BYTEMASK));
 
                 if (bitClump != 0 && (bitClump & setBit) != 0) {
                     oldIndex = patterns.lastIndexOf(newEntry);
                 } else {
                     // We're going to add an element that starts with this
                     // character, so go ahead and set its bit.
-                    statusArray[statusIndex] = (byte)(bitClump | setBit);
+                    statusArray[statusIndex] = (byte) (bitClump | setBit);
                 }
             } else {
                 oldIndex = patterns.lastIndexOf(newEntry);
@@ -299,11 +309,10 @@ final class MergeCollation {
         }
     }
 
-    private final int findLastEntry(PatternEntry entry,
-                              StringBuffer excessChars) throws ParseException
-    {
-        if (entry == null)
+    private final int findLastEntry(PatternEntry entry, StringBuffer excessChars) throws ParseException {
+        if (entry == null) {
             return 0;
+        }
 
         if (entry.strength != PatternEntry.RESET) {
             // Search backwards for string that contains this one;
@@ -312,30 +321,28 @@ final class MergeCollation {
             int oldIndex = -1;
             if ((entry.chars.length() == 1)) {
                 int index = entry.chars.charAt(0) >> BYTEPOWER;
-                if ((statusArray[index] &
-                    (BITARRAYMASK << (entry.chars.charAt(0) & BYTEMASK))) != 0) {
+                if ((statusArray[index] & (BITARRAYMASK << (entry.chars.charAt(0) & BYTEMASK))) != 0) {
                     oldIndex = patterns.lastIndexOf(entry);
                 }
             } else {
                 oldIndex = patterns.lastIndexOf(entry);
             }
-            if ((oldIndex == -1))
-                throw new ParseException("couldn't find last entry: "
-                                          + entry, oldIndex);
+            if ((oldIndex == -1)) {
+                throw new ParseException("couldn't find last entry: " + entry, oldIndex);
+            }
             return oldIndex + 1;
         } else {
             int i;
             for (i = patterns.size() - 1; i >= 0; --i) {
                 PatternEntry e = patterns.get(i);
-                if (e.chars.regionMatches(0,entry.chars,0,
-                                              e.chars.length())) {
-                    excessChars.append(entry.chars.substring(e.chars.length(),
-                                                            entry.chars.length()));
+                if (e.chars.regionMatches(0, entry.chars, 0, e.chars.length())) {
+                    excessChars.append(entry.chars.substring(e.chars.length(), entry.chars.length()));
                     break;
                 }
             }
-            if (i == -1)
+            if (i == -1) {
                 throw new ParseException("couldn't find: " + entry, i);
+            }
             return i + 1;
         }
     }

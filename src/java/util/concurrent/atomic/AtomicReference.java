@@ -34,17 +34,21 @@
  */
 
 package java.util.concurrent.atomic;
-import java.util.function.UnaryOperator;
+
 import java.util.function.BinaryOperator;
+import java.util.function.UnaryOperator;
 import sun.misc.Unsafe;
 
 /**
  * An object reference that may be updated atomically. See the {@link
  * java.util.concurrent.atomic} package specification for description
  * of the properties of atomic variables.
- * @since 1.5
+ *
+ * @param <V>
+ *         The type of object referred to by this reference
+ *
  * @author Doug Lea
- * @param <V> The type of object referred to by this reference
+ * @since 1.5
  */
 public class AtomicReference<V> implements java.io.Serializable {
     private static final long serialVersionUID = -1848883965231344442L;
@@ -54,9 +58,10 @@ public class AtomicReference<V> implements java.io.Serializable {
 
     static {
         try {
-            valueOffset = unsafe.objectFieldOffset
-                (AtomicReference.class.getDeclaredField("value"));
-        } catch (Exception ex) { throw new Error(ex); }
+            valueOffset = unsafe.objectFieldOffset(AtomicReference.class.getDeclaredField("value"));
+        } catch (Exception ex) {
+            throw new Error(ex);
+        }
     }
 
     private volatile V value;
@@ -64,7 +69,8 @@ public class AtomicReference<V> implements java.io.Serializable {
     /**
      * Creates a new AtomicReference with the given initial value.
      *
-     * @param initialValue the initial value
+     * @param initialValue
+     *         the initial value
      */
     public AtomicReference(V initialValue) {
         value = initialValue;
@@ -88,7 +94,8 @@ public class AtomicReference<V> implements java.io.Serializable {
     /**
      * Sets to the given value.
      *
-     * @param newValue the new value
+     * @param newValue
+     *         the new value
      */
     public final void set(V newValue) {
         value = newValue;
@@ -97,7 +104,9 @@ public class AtomicReference<V> implements java.io.Serializable {
     /**
      * Eventually sets to the given value.
      *
-     * @param newValue the new value
+     * @param newValue
+     *         the new value
+     *
      * @since 1.6
      */
     public final void lazySet(V newValue) {
@@ -107,8 +116,12 @@ public class AtomicReference<V> implements java.io.Serializable {
     /**
      * Atomically sets the value to the given updated value
      * if the current value {@code ==} the expected value.
-     * @param expect the expected value
-     * @param update the new value
+     *
+     * @param expect
+     *         the expected value
+     * @param update
+     *         the new value
+     *
      * @return {@code true} if successful. False return indicates that
      * the actual value was not equal to the expected value.
      */
@@ -124,8 +137,11 @@ public class AtomicReference<V> implements java.io.Serializable {
      * spuriously and does not provide ordering guarantees</a>, so is
      * only rarely an appropriate alternative to {@code compareAndSet}.
      *
-     * @param expect the expected value
-     * @param update the new value
+     * @param expect
+     *         the expected value
+     * @param update
+     *         the new value
+     *
      * @return {@code true} if successful
      */
     public final boolean weakCompareAndSet(V expect, V update) {
@@ -135,12 +151,14 @@ public class AtomicReference<V> implements java.io.Serializable {
     /**
      * Atomically sets to the given value and returns the old value.
      *
-     * @param newValue the new value
+     * @param newValue
+     *         the new value
+     *
      * @return the previous value
      */
     @SuppressWarnings("unchecked")
     public final V getAndSet(V newValue) {
-        return (V)unsafe.getAndSetObject(this, valueOffset, newValue);
+        return (V) unsafe.getAndSetObject(this, valueOffset, newValue);
     }
 
     /**
@@ -149,8 +167,11 @@ public class AtomicReference<V> implements java.io.Serializable {
      * function should be side-effect-free, since it may be re-applied
      * when attempted updates fail due to contention among threads.
      *
-     * @param updateFunction a side-effect-free function
+     * @param updateFunction
+     *         a side-effect-free function
+     *
      * @return the previous value
+     *
      * @since 1.8
      */
     public final V getAndUpdate(UnaryOperator<V> updateFunction) {
@@ -168,8 +189,11 @@ public class AtomicReference<V> implements java.io.Serializable {
      * function should be side-effect-free, since it may be re-applied
      * when attempted updates fail due to contention among threads.
      *
-     * @param updateFunction a side-effect-free function
+     * @param updateFunction
+     *         a side-effect-free function
+     *
      * @return the updated value
+     *
      * @since 1.8
      */
     public final V updateAndGet(UnaryOperator<V> updateFunction) {
@@ -190,13 +214,16 @@ public class AtomicReference<V> implements java.io.Serializable {
      * is applied with the current value as its first argument,
      * and the given update as the second argument.
      *
-     * @param x the update value
-     * @param accumulatorFunction a side-effect-free function of two arguments
+     * @param x
+     *         the update value
+     * @param accumulatorFunction
+     *         a side-effect-free function of two arguments
+     *
      * @return the previous value
+     *
      * @since 1.8
      */
-    public final V getAndAccumulate(V x,
-                                    BinaryOperator<V> accumulatorFunction) {
+    public final V getAndAccumulate(V x, BinaryOperator<V> accumulatorFunction) {
         V prev, next;
         do {
             prev = get();
@@ -214,13 +241,16 @@ public class AtomicReference<V> implements java.io.Serializable {
      * is applied with the current value as its first argument,
      * and the given update as the second argument.
      *
-     * @param x the update value
-     * @param accumulatorFunction a side-effect-free function of two arguments
+     * @param x
+     *         the update value
+     * @param accumulatorFunction
+     *         a side-effect-free function of two arguments
+     *
      * @return the updated value
+     *
      * @since 1.8
      */
-    public final V accumulateAndGet(V x,
-                                    BinaryOperator<V> accumulatorFunction) {
+    public final V accumulateAndGet(V x, BinaryOperator<V> accumulatorFunction) {
         V prev, next;
         do {
             prev = get();
@@ -231,6 +261,7 @@ public class AtomicReference<V> implements java.io.Serializable {
 
     /**
      * Returns the String representation of the current value.
+     *
      * @return the String representation of the current value
      */
     public String toString() {

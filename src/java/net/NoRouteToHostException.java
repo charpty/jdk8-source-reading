@@ -31,7 +31,7 @@ package java.net;
  * host cannot be reached because of an intervening firewall, or
  * if an intermediate router is down.
  *
- * @since   JDK1.1
+ * @since JDK1.1
  */
 public class NoRouteToHostException extends SocketException {
     private static final long serialVersionUID = -1897550894873493790L;
@@ -41,7 +41,9 @@ public class NoRouteToHostException extends SocketException {
      * message as to why the remote host cannot be reached.
      * A detail message is a String that gives a specific
      * description of this error.
-     * @param msg the detail message
+     *
+     * @param msg
+     *         the detail message
      */
     public NoRouteToHostException(String msg) {
         super(msg);
@@ -50,5 +52,6 @@ public class NoRouteToHostException extends SocketException {
     /**
      * Construct a new NoRouteToHostException with no detailed message.
      */
-    public NoRouteToHostException() {}
+    public NoRouteToHostException() {
+    }
 }

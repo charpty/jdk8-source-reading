@@ -25,7 +25,11 @@
 
 package java.lang;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * A programmer assertion that the body of the annotated method or
@@ -83,11 +87,9 @@ import java.lang.annotation.*;
  * </ul>
  *
  * @since 1.7
- * @jls 4.7 Reifiable Types
- * @jls 8.4.1 Formal Parameters
- * @jls 9.6.3.7 @SafeVarargs
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.CONSTRUCTOR, ElementType.METHOD})
-public @interface SafeVarargs {}
+@Target({ ElementType.CONSTRUCTOR, ElementType.METHOD })
+public @interface SafeVarargs {
+}

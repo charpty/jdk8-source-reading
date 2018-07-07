@@ -27,8 +27,6 @@ package java.nio;
 
 import java.security.AccessController;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.LongAdder;
-
 import sun.misc.JavaLangRefAccess;
 import sun.misc.SharedSecrets;
 import sun.misc.Unsafe;
@@ -40,8 +38,8 @@ import sun.misc.VM;
 
 class Bits {                            // package-private
 
-    private Bits() { }
-
+    private Bits() {
+    }
 
     // -- Swapping --
 
@@ -61,31 +59,26 @@ class Bits {                            // package-private
         return Long.reverseBytes(x);
     }
 
-
     // -- get/put char --
 
     static private char makeChar(byte b1, byte b0) {
-        return (char)((b1 << 8) | (b0 & 0xff));
+        return (char) ((b1 << 8) | (b0 & 0xff));
     }
 
     static char getCharL(ByteBuffer bb, int bi) {
-        return makeChar(bb._get(bi + 1),
-                        bb._get(bi    ));
+        return makeChar(bb._get(bi + 1), bb._get(bi));
     }
 
     static char getCharL(long a) {
-        return makeChar(_get(a + 1),
-                        _get(a    ));
+        return makeChar(_get(a + 1), _get(a));
     }
 
     static char getCharB(ByteBuffer bb, int bi) {
-        return makeChar(bb._get(bi    ),
-                        bb._get(bi + 1));
+        return makeChar(bb._get(bi), bb._get(bi + 1));
     }
 
     static char getCharB(long a) {
-        return makeChar(_get(a    ),
-                        _get(a + 1));
+        return makeChar(_get(a), _get(a + 1));
     }
 
     static char getChar(ByteBuffer bb, int bi, boolean bigEndian) {
@@ -96,68 +89,70 @@ class Bits {                            // package-private
         return bigEndian ? getCharB(a) : getCharL(a);
     }
 
-    private static byte char1(char x) { return (byte)(x >> 8); }
-    private static byte char0(char x) { return (byte)(x     ); }
+    private static byte char1(char x) {
+        return (byte) (x >> 8);
+    }
+
+    private static byte char0(char x) {
+        return (byte) (x);
+    }
 
     static void putCharL(ByteBuffer bb, int bi, char x) {
-        bb._put(bi    , char0(x));
+        bb._put(bi, char0(x));
         bb._put(bi + 1, char1(x));
     }
 
     static void putCharL(long a, char x) {
-        _put(a    , char0(x));
+        _put(a, char0(x));
         _put(a + 1, char1(x));
     }
 
     static void putCharB(ByteBuffer bb, int bi, char x) {
-        bb._put(bi    , char1(x));
+        bb._put(bi, char1(x));
         bb._put(bi + 1, char0(x));
     }
 
     static void putCharB(long a, char x) {
-        _put(a    , char1(x));
+        _put(a, char1(x));
         _put(a + 1, char0(x));
     }
 
     static void putChar(ByteBuffer bb, int bi, char x, boolean bigEndian) {
-        if (bigEndian)
+        if (bigEndian) {
             putCharB(bb, bi, x);
-        else
+        } else {
             putCharL(bb, bi, x);
+        }
     }
 
     static void putChar(long a, char x, boolean bigEndian) {
-        if (bigEndian)
+        if (bigEndian) {
             putCharB(a, x);
-        else
+        } else {
             putCharL(a, x);
+        }
     }
-
 
     // -- get/put short --
 
     static private short makeShort(byte b1, byte b0) {
-        return (short)((b1 << 8) | (b0 & 0xff));
+        return (short) ((b1 << 8) | (b0 & 0xff));
     }
 
     static short getShortL(ByteBuffer bb, int bi) {
-        return makeShort(bb._get(bi + 1),
-                         bb._get(bi    ));
+        return makeShort(bb._get(bi + 1), bb._get(bi));
     }
 
     static short getShortL(long a) {
-        return makeShort(_get(a + 1),
-                         _get(a    ));
+        return makeShort(_get(a + 1), _get(a));
     }
 
     static short getShortB(ByteBuffer bb, int bi) {
-        return makeShort(bb._get(bi    ),
-                         bb._get(bi + 1));
+        return makeShort(bb._get(bi), bb._get(bi + 1));
     }
 
     static short getShortB(long a) {
-        return makeShort(_get(a    ),
-                         _get(a + 1));
+        return makeShort(_get(a), _get(a + 1));
     }
 
     static short getShort(ByteBuffer bb, int bi, boolean bigEndian) {
@@ -168,194 +163,161 @@ class Bits {                            // package-private
         return bigEndian ? getShortB(a) : getShortL(a);
     }
 
-    private static byte short1(short x) { return (byte)(x >> 8); }
-    private static byte short0(short x) { return (byte)(x     ); }
+    private static byte short1(short x) {
+        return (byte) (x >> 8);
+    }
+
+    private static byte short0(short x) {
+        return (byte) (x);
+    }
 
     static void putShortL(ByteBuffer bb, int bi, short x) {
-        bb._put(bi    , short0(x));
+        bb._put(bi, short0(x));
         bb._put(bi + 1, short1(x));
     }
 
     static void putShortL(long a, short x) {
-        _put(a    , short0(x));
+        _put(a, short0(x));
         _put(a + 1, short1(x));
     }
 
     static void putShortB(ByteBuffer bb, int bi, short x) {
-        bb._put(bi    , short1(x));
+        bb._put(bi, short1(x));
         bb._put(bi + 1, short0(x));
     }
 
     static void putShortB(long a, short x) {
-        _put(a    , short1(x));
+        _put(a, short1(x));
         _put(a + 1, short0(x));
     }
 
     static void putShort(ByteBuffer bb, int bi, short x, boolean bigEndian) {
-        if (bigEndian)
+        if (bigEndian) {
             putShortB(bb, bi, x);
-        else
+        } else {
             putShortL(bb, bi, x);
+        }
     }
 
     static void putShort(long a, short x, boolean bigEndian) {
-        if (bigEndian)
+        if (bigEndian) {
             putShortB(a, x);
-        else
+        } else {
             putShortL(a, x);
+        }
     }
-
 
     // -- get/put int --
 
     static private int makeInt(byte b3, byte b2, byte b1, byte b0) {
-        return (((b3       ) << 24) |
-                ((b2 & 0xff) << 16) |
-                ((b1 & 0xff) <<  8) |
-                ((b0 & 0xff)      ));
+        return (((b3) << 24) | ((b2 & 0xff) << 16) | ((b1 & 0xff) << 8) | ((b0 & 0xff)));
     }
 
     static int getIntL(ByteBuffer bb, int bi) {
-        return makeInt(bb._get(bi + 3),
-                       bb._get(bi + 2),
-                       bb._get(bi + 1),
-                       bb._get(bi    ));
+        return makeInt(bb._get(bi + 3), bb._get(bi + 2), bb._get(bi + 1), bb._get(bi));
     }
 
     static int getIntL(long a) {
-        return makeInt(_get(a + 3),
-                       _get(a + 2),
-                       _get(a + 1),
-                       _get(a    ));
+        return makeInt(_get(a + 3), _get(a + 2), _get(a + 1), _get(a));
     }
 
     static int getIntB(ByteBuffer bb, int bi) {
-        return makeInt(bb._get(bi    ),
-                       bb._get(bi + 1),
-                       bb._get(bi + 2),
-                       bb._get(bi + 3));
+        return makeInt(bb._get(bi), bb._get(bi + 1), bb._get(bi + 2), bb._get(bi + 3));
     }
 
     static int getIntB(long a) {
-        return makeInt(_get(a    ),
-                       _get(a + 1),
-                       _get(a + 2),
-                       _get(a + 3));
+        return makeInt(_get(a), _get(a + 1), _get(a + 2), _get(a + 3));
     }
 
     static int getInt(ByteBuffer bb, int bi, boolean bigEndian) {
-        return bigEndian ? getIntB(bb, bi) : getIntL(bb, bi) ;
+        return bigEndian ? getIntB(bb, bi) : getIntL(bb, bi);
     }
 
     static int getInt(long a, boolean bigEndian) {
-        return bigEndian ? getIntB(a) : getIntL(a) ;
+        return bigEndian ? getIntB(a) : getIntL(a);
     }
 
-    private static byte int3(int x) { return (byte)(x >> 24); }
-    private static byte int2(int x) { return (byte)(x >> 16); }
-    private static byte int1(int x) { return (byte)(x >>  8); }
-    private static byte int0(int x) { return (byte)(x      ); }
+    private static byte int3(int x) {
+        return (byte) (x >> 24);
+    }
+
+    private static byte int2(int x) {
+        return (byte) (x >> 16);
+    }
+
+    private static byte int1(int x) {
+        return (byte) (x >> 8);
+    }
+
+    private static byte int0(int x) {
+        return (byte) (x);
+    }
 
     static void putIntL(ByteBuffer bb, int bi, int x) {
         bb._put(bi + 3, int3(x));
         bb._put(bi + 2, int2(x));
         bb._put(bi + 1, int1(x));
-        bb._put(bi    , int0(x));
+        bb._put(bi, int0(x));
     }
 
     static void putIntL(long a, int x) {
         _put(a + 3, int3(x));
         _put(a + 2, int2(x));
         _put(a + 1, int1(x));
-        _put(a    , int0(x));
+        _put(a, int0(x));
     }
 
     static void putIntB(ByteBuffer bb, int bi, int x) {
-        bb._put(bi    , int3(x));
+        bb._put(bi, int3(x));
         bb._put(bi + 1, int2(x));
         bb._put(bi + 2, int1(x));
         bb._put(bi + 3, int0(x));
     }
 
     static void putIntB(long a, int x) {
-        _put(a    , int3(x));
+        _put(a, int3(x));
         _put(a + 1, int2(x));
         _put(a + 2, int1(x));
         _put(a + 3, int0(x));
     }
 
     static void putInt(ByteBuffer bb, int bi, int x, boolean bigEndian) {
-        if (bigEndian)
+        if (bigEndian) {
             putIntB(bb, bi, x);
-        else
+        } else {
             putIntL(bb, bi, x);
+        }
     }
 
     static void putInt(long a, int x, boolean bigEndian) {
-        if (bigEndian)
+        if (bigEndian) {
             putIntB(a, x);
-        else
+        } else {
             putIntL(a, x);
+        }
     }
-
 
     // -- get/put long --
 
-    static private long makeLong(byte b7, byte b6, byte b5, byte b4,
-                                 byte b3, byte b2, byte b1, byte b0)
-    {
-        return ((((long)b7       ) << 56) |
-                (((long)b6 & 0xff) << 48) |
-                (((long)b5 & 0xff) << 40) |
-                (((long)b4 & 0xff) << 32) |
-                (((long)b3 & 0xff) << 24) |
-                (((long)b2 & 0xff) << 16) |
-                (((long)b1 & 0xff) <<  8) |
-                (((long)b0 & 0xff)      ));
+    static private long makeLong(byte b7, byte b6, byte b5, byte b4, byte b3, byte b2, byte b1, byte b0) {
+        return ((((long) b7) << 56) | (((long) b6 & 0xff) << 48) | (((long) b5 & 0xff) << 40) | (((long) b4 & 0xff) << 32) | (((long) b3 & 0xff) << 24) | (
+                ((long) b2 & 0xff) << 16) | (((long) b1 & 0xff) << 8) | (((long) b0 & 0xff)));
     }
 
     static long getLongL(ByteBuffer bb, int bi) {
-        return makeLong(bb._get(bi + 7),
-                        bb._get(bi + 6),
-                        bb._get(bi + 5),
-                        bb._get(bi + 4),
-                        bb._get(bi + 3),
-                        bb._get(bi + 2),
-                        bb._get(bi + 1),
-                        bb._get(bi    ));
+        return makeLong(bb._get(bi + 7), bb._get(bi + 6), bb._get(bi + 5), bb._get(bi + 4), bb._get(bi + 3), bb._get(bi + 2), bb._get(bi + 1), bb._get(bi));
     }
 
     static long getLongL(long a) {
-        return makeLong(_get(a + 7),
-                        _get(a + 6),
-                        _get(a + 5),
-                        _get(a + 4),
-                        _get(a + 3),
-                        _get(a + 2),
-                        _get(a + 1),
-                        _get(a    ));
+        return makeLong(_get(a + 7), _get(a + 6), _get(a + 5), _get(a + 4), _get(a + 3), _get(a + 2), _get(a + 1), _get(a));
     }
 
     static long getLongB(ByteBuffer bb, int bi) {
-        return makeLong(bb._get(bi    ),
-                        bb._get(bi + 1),
-                        bb._get(bi + 2),
-                        bb._get(bi + 3),
-                        bb._get(bi + 4),
-                        bb._get(bi + 5),
-                        bb._get(bi + 6),
-                        bb._get(bi + 7));
+        return makeLong(bb._get(bi), bb._get(bi + 1), bb._get(bi + 2), bb._get(bi + 3), bb._get(bi + 4), bb._get(bi + 5), bb._get(bi + 6), bb._get(bi + 7));
     }
 
     static long getLongB(long a) {
-        return makeLong(_get(a    ),
-                        _get(a + 1),
-                        _get(a + 2),
-                        _get(a + 3),
-                        _get(a + 4),
-                        _get(a + 5),
-                        _get(a + 6),
-                        _get(a + 7));
+        return makeLong(_get(a), _get(a + 1), _get(a + 2), _get(a + 3), _get(a + 4), _get(a + 5), _get(a + 6), _get(a + 7));
     }
 
     static long getLong(ByteBuffer bb, int bi, boolean bigEndian) {
@@ -366,14 +328,37 @@ class Bits {                            // package-private
         return bigEndian ? getLongB(a) : getLongL(a);
     }
 
-    private static byte long7(long x) { return (byte)(x >> 56); }
-    private static byte long6(long x) { return (byte)(x >> 48); }
-    private static byte long5(long x) { return (byte)(x >> 40); }
-    private static byte long4(long x) { return (byte)(x >> 32); }
-    private static byte long3(long x) { return (byte)(x >> 24); }
-    private static byte long2(long x) { return (byte)(x >> 16); }
-    private static byte long1(long x) { return (byte)(x >>  8); }
-    private static byte long0(long x) { return (byte)(x      ); }
+    private static byte long7(long x) {
+        return (byte) (x >> 56);
+    }
+
+    private static byte long6(long x) {
+        return (byte) (x >> 48);
+    }
+
+    private static byte long5(long x) {
+        return (byte) (x >> 40);
+    }
+
+    private static byte long4(long x) {
+        return (byte) (x >> 32);
+    }
+
+    private static byte long3(long x) {
+        return (byte) (x >> 24);
+    }
+
+    private static byte long2(long x) {
+        return (byte) (x >> 16);
+    }
+
+    private static byte long1(long x) {
+        return (byte) (x >> 8);
+    }
+
+    private static byte long0(long x) {
+        return (byte) (x);
+    }
 
     static void putLongL(ByteBuffer bb, int bi, long x) {
         bb._put(bi + 7, long7(x));
@@ -383,7 +368,7 @@ class Bits {                            // package-private
         bb._put(bi + 3, long3(x));
         bb._put(bi + 2, long2(x));
         bb._put(bi + 1, long1(x));
-        bb._put(bi    , long0(x));
+        bb._put(bi, long0(x));
     }
 
     static void putLongL(long a, long x) {
@@ -394,11 +379,11 @@ class Bits {                            // package-private
         _put(a + 3, long3(x));
         _put(a + 2, long2(x));
         _put(a + 1, long1(x));
-        _put(a    , long0(x));
+        _put(a, long0(x));
     }
 
     static void putLongB(ByteBuffer bb, int bi, long x) {
-        bb._put(bi    , long7(x));
+        bb._put(bi, long7(x));
         bb._put(bi + 1, long6(x));
         bb._put(bi + 2, long5(x));
         bb._put(bi + 3, long4(x));
@@ -409,7 +394,7 @@ class Bits {                            // package-private
     }
 
     static void putLongB(long a, long x) {
-        _put(a    , long7(x));
+        _put(a, long7(x));
         _put(a + 1, long6(x));
         _put(a + 2, long5(x));
         _put(a + 3, long4(x));
@@ -420,19 +405,20 @@ class Bits {                            // package-private
     }
 
     static void putLong(ByteBuffer bb, int bi, long x, boolean bigEndian) {
-        if (bigEndian)
+        if (bigEndian) {
             putLongB(bb, bi, x);
-        else
+        } else {
             putLongL(bb, bi, x);
+        }
     }
 
     static void putLong(long a, long x, boolean bigEndian) {
-        if (bigEndian)
+        if (bigEndian) {
             putLongB(a, x);
-        else
+        } else {
             putLongL(a, x);
+        }
     }
-
 
     // -- get/put float --
 
@@ -477,19 +463,20 @@ class Bits {                            // package-private
     }
 
     static void putFloat(ByteBuffer bb, int bi, float x, boolean bigEndian) {
-        if (bigEndian)
+        if (bigEndian) {
             putFloatB(bb, bi, x);
-        else
+        } else {
             putFloatL(bb, bi, x);
+        }
     }
 
     static void putFloat(long a, float x, boolean bigEndian) {
-        if (bigEndian)
+        if (bigEndian) {
             putFloatB(a, x);
-        else
+        } else {
             putFloatL(a, x);
+        }
     }
-
 
     // -- get/put double --
 
@@ -534,19 +521,20 @@ class Bits {                            // package-private
     }
 
     static void putDouble(ByteBuffer bb, int bi, double x, boolean bigEndian) {
-        if (bigEndian)
+        if (bigEndian) {
             putDoubleB(bb, bi, x);
-        else
+        } else {
             putDoubleL(bb, bi, x);
+        }
     }
 
     static void putDouble(long a, double x, boolean bigEndian) {
-        if (bigEndian)
+        if (bigEndian) {
             putDoubleB(a, x);
-        else
+        } else {
             putDoubleL(a, x);
+        }
     }
-
 
     // -- Unsafe access --
 
@@ -564,14 +552,14 @@ class Bits {                            // package-private
         return unsafe;
     }
 
-
     // -- Processor and memory-system properties --
 
     private static final ByteOrder byteOrder;
 
     static ByteOrder byteOrder() {
-        if (byteOrder == null)
+        if (byteOrder == null) {
             throw new Error("Unknown byte order");
+        }
         return byteOrder;
     }
 
@@ -581,8 +569,12 @@ class Bits {                            // package-private
             unsafe.putLong(a, 0x0102030405060708L);
             byte b = unsafe.getByte(a);
             switch (b) {
-            case 0x01: byteOrder = ByteOrder.BIG_ENDIAN;     break;
-            case 0x08: byteOrder = ByteOrder.LITTLE_ENDIAN;  break;
+            case 0x01:
+                byteOrder = ByteOrder.BIG_ENDIAN;
+                break;
+            case 0x08:
+                byteOrder = ByteOrder.LITTLE_ENDIAN;
+                break;
             default:
                 assert false;
                 byteOrder = null;
@@ -592,33 +584,31 @@ class Bits {                            // package-private
         }
     }
 
-
     private static int pageSize = -1;
 
     static int pageSize() {
-        if (pageSize == -1)
+        if (pageSize == -1) {
             pageSize = unsafe().pageSize();
+        }
         return pageSize;
     }
 
     static int pageCount(long size) {
-        return (int)(size + (long)pageSize() - 1L) / pageSize();
+        return (int) (size + (long) pageSize() - 1L) / pageSize();
     }
 
     private static boolean unaligned;
     private static boolean unalignedKnown = false;
 
     static boolean unaligned() {
-        if (unalignedKnown)
+        if (unalignedKnown) {
             return unaligned;
-        String arch = AccessController.doPrivileged(
-            new sun.security.action.GetPropertyAction("os.arch"));
-        unaligned = arch.equals("i386") || arch.equals("x86")
-            || arch.equals("amd64") || arch.equals("x86_64");
+        }
+        String arch = AccessController.doPrivileged(new sun.security.action.GetPropertyAction("os.arch"));
+        unaligned = arch.equals("i386") || arch.equals("x86") || arch.equals("amd64") || arch.equals("x86_64");
         unalignedKnown = true;
         return unaligned;
     }
-
 
     // -- Direct memory management --
 
@@ -717,7 +707,6 @@ class Bits {                            // package-private
         return false;
     }
 
-
     static void unreserveMemory(long size, int cap) {
         long cnt = count.decrementAndGet();
         long reservedMem = reservedMemory.addAndGet(-size);
@@ -729,37 +718,41 @@ class Bits {                            // package-private
 
     static {
         // setup access to this package in SharedSecrets
-        sun.misc.SharedSecrets.setJavaNioAccess(
-            new sun.misc.JavaNioAccess() {
-                @Override
-                public sun.misc.JavaNioAccess.BufferPool getDirectBufferPool() {
-                    return new sun.misc.JavaNioAccess.BufferPool() {
-                        @Override
-                        public String getName() {
-                            return "direct";
-                        }
-                        @Override
-                        public long getCount() {
-                            return Bits.count.get();
-                        }
-                        @Override
-                        public long getTotalCapacity() {
-                            return Bits.totalCapacity.get();
-                        }
-                        @Override
-                        public long getMemoryUsed() {
-                            return Bits.reservedMemory.get();
-                        }
-                    };
-                }
-                @Override
-                public ByteBuffer newDirectByteBuffer(long addr, int cap, Object ob) {
-                    return new DirectByteBuffer(addr, cap, ob);
-                }
-                @Override
-                public void truncate(Buffer buf) {
-                    buf.truncate();
-                }
+        sun.misc.SharedSecrets.setJavaNioAccess(new sun.misc.JavaNioAccess() {
+            @Override
+            public sun.misc.JavaNioAccess.BufferPool getDirectBufferPool() {
+                return new sun.misc.JavaNioAccess.BufferPool() {
+                    @Override
+                    public String getName() {
+                        return "direct";
+                    }
+
+                    @Override
+                    public long getCount() {
+                        return Bits.count.get();
+                    }
+
+                    @Override
+                    public long getTotalCapacity() {
+                        return Bits.totalCapacity.get();
+                    }
+
+                    @Override
+                    public long getMemoryUsed() {
+                        return Bits.reservedMemory.get();
+                    }
+                };
+            }
+
+            @Override
+            public ByteBuffer newDirectByteBuffer(long addr, int cap, Object ob) {
+                return new DirectByteBuffer(addr, cap, ob);
+            }
+
+            @Override
+            public void truncate(Buffer buf) {
+                buf.truncate();
+            }
         });
     }
 
@@ -768,7 +761,7 @@ class Bits {                            // package-private
     // These numbers represent the point at which we have empirically
     // determined that the average cost of a JNI call exceeds the expense
     // of an element by element copy.  These numbers may change over time.
-    static final int JNI_COPY_TO_ARRAY_THRESHOLD   = 6;
+    static final int JNI_COPY_TO_ARRAY_THRESHOLD = 6;
     static final int JNI_COPY_FROM_ARRAY_THRESHOLD = 6;
 
     // This number limits the number of bytes to copy per call to Unsafe's
@@ -783,20 +776,18 @@ class Bits {                            // package-private
     /**
      * Copy from given source array to destination address.
      *
-     * @param   src
-     *          source array
-     * @param   srcBaseOffset
-     *          offset of first element of storage in source array
-     * @param   srcPos
-     *          offset within source array of the first element to read
-     * @param   dstAddr
-     *          destination address
-     * @param   length
-     *          number of bytes to copy
+     * @param src
+     *         source array
+     * @param srcBaseOffset
+     *         offset of first element of storage in source array
+     * @param srcPos
+     *         offset within source array of the first element to read
+     * @param dstAddr
+     *         destination address
+     * @param length
+     *         number of bytes to copy
      */
-    static void copyFromArray(Object src, long srcBaseOffset, long srcPos,
-                              long dstAddr, long length)
-    {
+    static void copyFromArray(Object src, long srcBaseOffset, long srcPos, long dstAddr, long length) {
         long offset = srcBaseOffset + srcPos;
         while (length > 0) {
             long size = (length > UNSAFE_COPY_THRESHOLD) ? UNSAFE_COPY_THRESHOLD : length;
@@ -810,20 +801,18 @@ class Bits {                            // package-private
     /**
      * Copy from source address into given destination array.
      *
-     * @param   srcAddr
-     *          source address
-     * @param   dst
-     *          destination array
-     * @param   dstBaseOffset
-     *          offset of first element of storage in destination array
-     * @param   dstPos
-     *          offset within destination array of the first element to write
-     * @param   length
-     *          number of bytes to copy
+     * @param srcAddr
+     *         source address
+     * @param dst
+     *         destination array
+     * @param dstBaseOffset
+     *         offset of first element of storage in destination array
+     * @param dstPos
+     *         offset within destination array of the first element to write
+     * @param length
+     *         number of bytes to copy
      */
-    static void copyToArray(long srcAddr, Object dst, long dstBaseOffset, long dstPos,
-                            long length)
-    {
+    static void copyToArray(long srcAddr, Object dst, long dstBaseOffset, long dstPos, long length) {
         long offset = dstBaseOffset + dstPos;
         while (length > 0) {
             long size = (length > UNSAFE_COPY_THRESHOLD) ? UNSAFE_COPY_THRESHOLD : length;
@@ -834,31 +823,24 @@ class Bits {                            // package-private
         }
     }
 
-    static void copyFromCharArray(Object src, long srcPos, long dstAddr,
-                                  long length)
-    {
+    static void copyFromCharArray(Object src, long srcPos, long dstAddr, long length) {
         copyFromShortArray(src, srcPos, dstAddr, length);
     }
 
-    static void copyToCharArray(long srcAddr, Object dst, long dstPos,
-                                long length)
-    {
+    static void copyToCharArray(long srcAddr, Object dst, long dstPos, long length) {
         copyToShortArray(srcAddr, dst, dstPos, length);
     }
 
-    static native void copyFromShortArray(Object src, long srcPos, long dstAddr,
-                                          long length);
-    static native void copyToShortArray(long srcAddr, Object dst, long dstPos,
-                                        long length);
+    static native void copyFromShortArray(Object src, long srcPos, long dstAddr, long length);
 
-    static native void copyFromIntArray(Object src, long srcPos, long dstAddr,
-                                        long length);
-    static native void copyToIntArray(long srcAddr, Object dst, long dstPos,
-                                      long length);
+    static native void copyToShortArray(long srcAddr, Object dst, long dstPos, long length);
 
-    static native void copyFromLongArray(Object src, long srcPos, long dstAddr,
-                                         long length);
-    static native void copyToLongArray(long srcAddr, Object dst, long dstPos,
-                                       long length);
+    static native void copyFromIntArray(Object src, long srcPos, long dstAddr, long length);
+
+    static native void copyToIntArray(long srcAddr, Object dst, long dstPos, long length);
+
+    static native void copyFromLongArray(Object src, long srcPos, long dstAddr, long length);
+
+    static native void copyToLongArray(long srcAddr, Object dst, long dstPos, long length);
 
 }

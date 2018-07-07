@@ -61,24 +61,6 @@
  */
 package java.time.chrono;
 
-import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_MONTH;
-import static java.time.temporal.ChronoField.ALIGNED_DAY_OF_WEEK_IN_YEAR;
-import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_MONTH;
-import static java.time.temporal.ChronoField.ALIGNED_WEEK_OF_YEAR;
-import static java.time.temporal.ChronoField.DAY_OF_MONTH;
-import static java.time.temporal.ChronoField.DAY_OF_WEEK;
-import static java.time.temporal.ChronoField.DAY_OF_YEAR;
-import static java.time.temporal.ChronoField.EPOCH_DAY;
-import static java.time.temporal.ChronoField.ERA;
-import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
-import static java.time.temporal.ChronoField.PROLEPTIC_MONTH;
-import static java.time.temporal.ChronoField.YEAR;
-import static java.time.temporal.ChronoField.YEAR_OF_ERA;
-import static java.time.temporal.ChronoUnit.DAYS;
-import static java.time.temporal.ChronoUnit.MONTHS;
-import static java.time.temporal.ChronoUnit.WEEKS;
-import static java.time.temporal.TemporalAdjusters.nextOrSame;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -102,8 +84,12 @@ import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
 import sun.util.logging.PlatformLogger;
+
+
+import static java.time.temporal.ChronoField.*;
+import static java.time.temporal.ChronoUnit.*;
+import static java.time.temporal.TemporalAdjusters.nextOrSame;
 
 /**
  * An abstract implementation of a calendar system, used to organize and identify dates.
@@ -113,15 +99,6 @@ import sun.util.logging.PlatformLogger;
  * <p>
  * See {@link Chronology} for more details.
  *
- * @implSpec
- * This class is separated from the {@code Chronology} interface so that the static methods
- * are not inherited. While {@code Chronology} can be implemented directly, it is strongly
- * recommended to extend this abstract class instead.
- * <p>
- * This class must be implemented with care to ensure other classes operate correctly.
- * All implementations that can be instantiated must be final, immutable and thread-safe.
- * Subclasses should be Serializable wherever possible.
- *
  * @since 1.8
  */
 public abstract class AbstractChronology implements Chronology {
@@ -129,32 +106,29 @@ public abstract class AbstractChronology implements Chronology {
     /**
      * ChronoLocalDate order constant.
      */
-    static final Comparator<ChronoLocalDate> DATE_ORDER =
-        (Comparator<ChronoLocalDate> & Serializable) (date1, date2) -> {
-            return Long.compare(date1.toEpochDay(), date2.toEpochDay());
-        };
+    static final Comparator<ChronoLocalDate> DATE_ORDER = (Comparator<ChronoLocalDate> & Serializable) (date1, date2) -> {
+        return Long.compare(date1.toEpochDay(), date2.toEpochDay());
+    };
     /**
      * ChronoLocalDateTime order constant.
      */
-    static final Comparator<ChronoLocalDateTime<? extends ChronoLocalDate>> DATE_TIME_ORDER =
-        (Comparator<ChronoLocalDateTime<? extends ChronoLocalDate>> & Serializable) (dateTime1, dateTime2) -> {
-            int cmp = Long.compare(dateTime1.toLocalDate().toEpochDay(), dateTime2.toLocalDate().toEpochDay());
-            if (cmp == 0) {
-                cmp = Long.compare(dateTime1.toLocalTime().toNanoOfDay(), dateTime2.toLocalTime().toNanoOfDay());
-            }
-            return cmp;
-        };
+    static final Comparator<ChronoLocalDateTime<? extends ChronoLocalDate>> DATE_TIME_ORDER = (Comparator<ChronoLocalDateTime<? extends ChronoLocalDate>> & Serializable) (dateTime1, dateTime2) -> {
+        int cmp = Long.compare(dateTime1.toLocalDate().toEpochDay(), dateTime2.toLocalDate().toEpochDay());
+        if (cmp == 0) {
+            cmp = Long.compare(dateTime1.toLocalTime().toNanoOfDay(), dateTime2.toLocalTime().toNanoOfDay());
+        }
+        return cmp;
+    };
     /**
      * ChronoZonedDateTime order constant.
      */
-    static final Comparator<ChronoZonedDateTime<?>> INSTANT_ORDER =
-            (Comparator<ChronoZonedDateTime<?>> & Serializable) (dateTime1, dateTime2) -> {
-                int cmp = Long.compare(dateTime1.toEpochSecond(), dateTime2.toEpochSecond());
-                if (cmp == 0) {
-                    cmp = Long.compare(dateTime1.toLocalTime().getNano(), dateTime2.toLocalTime().getNano());
-                }
-                return cmp;
-            };
+    static final Comparator<ChronoZonedDateTime<?>> INSTANT_ORDER = (Comparator<ChronoZonedDateTime<?>> & Serializable) (dateTime1, dateTime2) -> {
+        int cmp = Long.compare(dateTime1.toEpochSecond(), dateTime2.toEpochSecond());
+        if (cmp == 0) {
+            cmp = Long.compare(dateTime1.toLocalTime().getNano(), dateTime2.toLocalTime().getNano());
+        }
+        return cmp;
+    };
 
     /**
      * Map of available calendars by ID.
@@ -170,7 +144,9 @@ public abstract class AbstractChronology implements Chronology {
      * Chronologies must not be registered until they are completely constructed.
      * Specifically, not in the constructor of Chronology.
      *
-     * @param chrono the chronology to register; not null
+     * @param chrono
+     *         the chronology to register; not null
+     *
      * @return the already registered Chronology if any, may be null
      */
     static Chronology registerChrono(Chronology chrono) {
@@ -182,8 +158,11 @@ public abstract class AbstractChronology implements Chronology {
      * Chronos must not be registered until they are completely constructed.
      * Specifically, not in the constructor of Chronology.
      *
-     * @param chrono the chronology to register; not null
-     * @param id the ID to register the chronology; not null
+     * @param chrono
+     *         the chronology to register; not null
+     * @param id
+     *         the ID to register the chronology; not null
+     *
      * @return the already registered Chronology if any, may be null
      */
     static Chronology registerChrono(Chronology chrono, String id) {
@@ -210,6 +189,7 @@ public abstract class AbstractChronology implements Chronology {
      * Multiple threads may perform the initialization concurrently.
      * Only the first registration of each Chronology is retained by the
      * ConcurrentHashMap.
+     *
      * @return true if the cache was initialized
      */
     private static boolean initCache() {
@@ -224,13 +204,13 @@ public abstract class AbstractChronology implements Chronology {
 
             // Register Chronologies from the ServiceLoader
             @SuppressWarnings("rawtypes")
-            ServiceLoader<AbstractChronology> loader =  ServiceLoader.load(AbstractChronology.class, null);
+            ServiceLoader<AbstractChronology> loader = ServiceLoader.load(AbstractChronology.class, null);
             for (AbstractChronology chrono : loader) {
                 String id = chrono.getId();
                 if (id.equals("ISO") || registerChrono(chrono) != null) {
                     // Log the attempt to replace an existing Chronology
                     PlatformLogger logger = PlatformLogger.getLogger("java.time.chrono");
-                    logger.warning("Ignoring duplicate Chronology, from ServiceLoader configuration "  + id);
+                    logger.warning("Ignoring duplicate Chronology, from ServiceLoader configuration " + id);
                 }
             }
 
@@ -242,14 +222,19 @@ public abstract class AbstractChronology implements Chronology {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code Chronology} from a locale.
      * <p>
      * See {@link Chronology#ofLocale(Locale)}.
      *
-     * @param locale  the locale to use to obtain the calendar system, not null
+     * @param locale
+     *         the locale to use to obtain the calendar system, not null
+     *
      * @return the calendar system associated with the locale, not null
-     * @throws java.time.DateTimeException if the locale-specified calendar cannot be found
+     *
+     * @throws java.time.DateTimeException
+     *         if the locale-specified calendar cannot be found
      */
     static Chronology ofLocale(Locale locale) {
         Objects.requireNonNull(locale, "locale");
@@ -279,15 +264,20 @@ public abstract class AbstractChronology implements Chronology {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code Chronology} from a chronology ID or
      * calendar system type.
      * <p>
      * See {@link Chronology#of(String)}.
      *
-     * @param id  the chronology ID or calendar system type, not null
+     * @param id
+     *         the chronology ID or calendar system type, not null
+     *
      * @return the chronology with the identifier requested, not null
-     * @throws java.time.DateTimeException if the chronology cannot be found
+     *
+     * @throws java.time.DateTimeException
+     *         if the chronology cannot be found
      */
     static Chronology of(String id) {
         Objects.requireNonNull(id, "id");
@@ -315,7 +305,9 @@ public abstract class AbstractChronology implements Chronology {
      * Obtains an instance of {@code Chronology} from a chronology ID or
      * calendar system type.
      *
-     * @param id  the chronology ID or calendar system type, not null
+     * @param id
+     *         the chronology ID or calendar system type, not null
+     *
      * @return the chronology with the identifier requested, or {@code null} if not found
      */
     private static Chronology of0(String id) {
@@ -350,6 +342,7 @@ public abstract class AbstractChronology implements Chronology {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Creates an instance.
      */
@@ -357,6 +350,7 @@ public abstract class AbstractChronology implements Chronology {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Resolves parsed {@code ChronoField} values into a date during parsing.
      * <p>
@@ -370,70 +364,70 @@ public abstract class AbstractChronology implements Chronology {
      * be overridden in subclasses.
      * <ul>
      * <li>{@code EPOCH_DAY} - If present, this is converted to a date and
-     *  all other date fields are then cross-checked against the date.
+     * all other date fields are then cross-checked against the date.
      * <li>{@code PROLEPTIC_MONTH} - If present, then it is split into the
-     *  {@code YEAR} and {@code MONTH_OF_YEAR}. If the mode is strict or smart
-     *  then the field is validated.
+     * {@code YEAR} and {@code MONTH_OF_YEAR}. If the mode is strict or smart
+     * then the field is validated.
      * <li>{@code YEAR_OF_ERA} and {@code ERA} - If both are present, then they
-     *  are combined to form a {@code YEAR}. In lenient mode, the {@code YEAR_OF_ERA}
-     *  range is not validated, in smart and strict mode it is. The {@code ERA} is
-     *  validated for range in all three modes. If only the {@code YEAR_OF_ERA} is
-     *  present, and the mode is smart or lenient, then the last available era
-     *  is assumed. In strict mode, no era is assumed and the {@code YEAR_OF_ERA} is
-     *  left untouched. If only the {@code ERA} is present, then it is left untouched.
+     * are combined to form a {@code YEAR}. In lenient mode, the {@code YEAR_OF_ERA}
+     * range is not validated, in smart and strict mode it is. The {@code ERA} is
+     * validated for range in all three modes. If only the {@code YEAR_OF_ERA} is
+     * present, and the mode is smart or lenient, then the last available era
+     * is assumed. In strict mode, no era is assumed and the {@code YEAR_OF_ERA} is
+     * left untouched. If only the {@code ERA} is present, then it is left untouched.
      * <li>{@code YEAR}, {@code MONTH_OF_YEAR} and {@code DAY_OF_MONTH} -
-     *  If all three are present, then they are combined to form a date.
-     *  In all three modes, the {@code YEAR} is validated.
-     *  If the mode is smart or strict, then the month and day are validated.
-     *  If the mode is lenient, then the date is combined in a manner equivalent to
-     *  creating a date on the first day of the first month in the requested year,
-     *  then adding the difference in months, then the difference in days.
-     *  If the mode is smart, and the day-of-month is greater than the maximum for
-     *  the year-month, then the day-of-month is adjusted to the last day-of-month.
-     *  If the mode is strict, then the three fields must form a valid date.
+     * If all three are present, then they are combined to form a date.
+     * In all three modes, the {@code YEAR} is validated.
+     * If the mode is smart or strict, then the month and day are validated.
+     * If the mode is lenient, then the date is combined in a manner equivalent to
+     * creating a date on the first day of the first month in the requested year,
+     * then adding the difference in months, then the difference in days.
+     * If the mode is smart, and the day-of-month is greater than the maximum for
+     * the year-month, then the day-of-month is adjusted to the last day-of-month.
+     * If the mode is strict, then the three fields must form a valid date.
      * <li>{@code YEAR} and {@code DAY_OF_YEAR} -
-     *  If both are present, then they are combined to form a date.
-     *  In all three modes, the {@code YEAR} is validated.
-     *  If the mode is lenient, then the date is combined in a manner equivalent to
-     *  creating a date on the first day of the requested year, then adding
-     *  the difference in days.
-     *  If the mode is smart or strict, then the two fields must form a valid date.
+     * If both are present, then they are combined to form a date.
+     * In all three modes, the {@code YEAR} is validated.
+     * If the mode is lenient, then the date is combined in a manner equivalent to
+     * creating a date on the first day of the requested year, then adding
+     * the difference in days.
+     * If the mode is smart or strict, then the two fields must form a valid date.
      * <li>{@code YEAR}, {@code MONTH_OF_YEAR}, {@code ALIGNED_WEEK_OF_MONTH} and
-     *  {@code ALIGNED_DAY_OF_WEEK_IN_MONTH} -
-     *  If all four are present, then they are combined to form a date.
-     *  In all three modes, the {@code YEAR} is validated.
-     *  If the mode is lenient, then the date is combined in a manner equivalent to
-     *  creating a date on the first day of the first month in the requested year, then adding
-     *  the difference in months, then the difference in weeks, then in days.
-     *  If the mode is smart or strict, then the all four fields are validated to
-     *  their outer ranges. The date is then combined in a manner equivalent to
-     *  creating a date on the first day of the requested year and month, then adding
-     *  the amount in weeks and days to reach their values. If the mode is strict,
-     *  the date is additionally validated to check that the day and week adjustment
-     *  did not change the month.
+     * {@code ALIGNED_DAY_OF_WEEK_IN_MONTH} -
+     * If all four are present, then they are combined to form a date.
+     * In all three modes, the {@code YEAR} is validated.
+     * If the mode is lenient, then the date is combined in a manner equivalent to
+     * creating a date on the first day of the first month in the requested year, then adding
+     * the difference in months, then the difference in weeks, then in days.
+     * If the mode is smart or strict, then the all four fields are validated to
+     * their outer ranges. The date is then combined in a manner equivalent to
+     * creating a date on the first day of the requested year and month, then adding
+     * the amount in weeks and days to reach their values. If the mode is strict,
+     * the date is additionally validated to check that the day and week adjustment
+     * did not change the month.
      * <li>{@code YEAR}, {@code MONTH_OF_YEAR}, {@code ALIGNED_WEEK_OF_MONTH} and
-     *  {@code DAY_OF_WEEK} - If all four are present, then they are combined to
-     *  form a date. The approach is the same as described above for
-     *  years, months and weeks in {@code ALIGNED_DAY_OF_WEEK_IN_MONTH}.
-     *  The day-of-week is adjusted as the next or same matching day-of-week once
-     *  the years, months and weeks have been handled.
+     * {@code DAY_OF_WEEK} - If all four are present, then they are combined to
+     * form a date. The approach is the same as described above for
+     * years, months and weeks in {@code ALIGNED_DAY_OF_WEEK_IN_MONTH}.
+     * The day-of-week is adjusted as the next or same matching day-of-week once
+     * the years, months and weeks have been handled.
      * <li>{@code YEAR}, {@code ALIGNED_WEEK_OF_YEAR} and {@code ALIGNED_DAY_OF_WEEK_IN_YEAR} -
-     *  If all three are present, then they are combined to form a date.
-     *  In all three modes, the {@code YEAR} is validated.
-     *  If the mode is lenient, then the date is combined in a manner equivalent to
-     *  creating a date on the first day of the requested year, then adding
-     *  the difference in weeks, then in days.
-     *  If the mode is smart or strict, then the all three fields are validated to
-     *  their outer ranges. The date is then combined in a manner equivalent to
-     *  creating a date on the first day of the requested year, then adding
-     *  the amount in weeks and days to reach their values. If the mode is strict,
-     *  the date is additionally validated to check that the day and week adjustment
-     *  did not change the year.
+     * If all three are present, then they are combined to form a date.
+     * In all three modes, the {@code YEAR} is validated.
+     * If the mode is lenient, then the date is combined in a manner equivalent to
+     * creating a date on the first day of the requested year, then adding
+     * the difference in weeks, then in days.
+     * If the mode is smart or strict, then the all three fields are validated to
+     * their outer ranges. The date is then combined in a manner equivalent to
+     * creating a date on the first day of the requested year, then adding
+     * the amount in weeks and days to reach their values. If the mode is strict,
+     * the date is additionally validated to check that the day and week adjustment
+     * did not change the year.
      * <li>{@code YEAR}, {@code ALIGNED_WEEK_OF_YEAR} and {@code DAY_OF_WEEK} -
-     *  If all three are present, then they are combined to form a date.
-     *  The approach is the same as described above for years and weeks in
-     *  {@code ALIGNED_DAY_OF_WEEK_IN_YEAR}. The day-of-week is adjusted as the
-     *  next or same matching day-of-week once the years and weeks have been handled.
+     * If all three are present, then they are combined to form a date.
+     * The approach is the same as described above for years and weeks in
+     * {@code ALIGNED_DAY_OF_WEEK_IN_YEAR}. The day-of-week is adjusted as the
+     * next or same matching day-of-week once the years and weeks have been handled.
      * </ul>
      * <p>
      * The default implementation is suitable for most calendar systems.
@@ -443,11 +437,16 @@ public abstract class AbstractChronology implements Chronology {
      * has the value 1, that first day-of-year has the value 1, and that the
      * first of the month and year always exists.
      *
-     * @param fieldValues  the map of fields to values, which can be updated, not null
-     * @param resolverStyle  the requested type of resolve, not null
+     * @param fieldValues
+     *         the map of fields to values, which can be updated, not null
+     * @param resolverStyle
+     *         the requested type of resolve, not null
+     *
      * @return the resolved date, null if insufficient information to create a date
-     * @throws java.time.DateTimeException if the date cannot be resolved, typically
-     *  because of a conflict in the input data
+     *
+     * @throws java.time.DateTimeException
+     *         if the date cannot be resolved, typically
+     *         because of a conflict in the input data
      */
     @Override
     public ChronoLocalDate resolveDate(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
@@ -503,8 +502,7 @@ public abstract class AbstractChronology implements Chronology {
             }
             // first day-of-month is likely to be safest for setting proleptic-month
             // cannot add to year zero, as not all chronologies have a year zero
-            ChronoLocalDate chronoDate = dateNow()
-                    .with(DAY_OF_MONTH, 1).with(PROLEPTIC_MONTH, pMonth);
+            ChronoLocalDate chronoDate = dateNow().with(DAY_OF_MONTH, 1).with(PROLEPTIC_MONTH, pMonth);
             addFieldValue(fieldValues, MONTH_OF_YEAR, chronoDate.get(MONTH_OF_YEAR));
             addFieldValue(fieldValues, YEAR, chronoDate.get(YEAR));
         }
@@ -652,7 +650,7 @@ public abstract class AbstractChronology implements Chronology {
             date = date.plus((dow - 1) / 7, WEEKS);
             dow = ((dow - 1) % 7) + 1;
         } else if (dow < 1) {
-            date = date.plus(Math.subtractExact(dow,  7) / 7, WEEKS);
+            date = date.plus(Math.subtractExact(dow, 7) / 7, WEEKS);
             dow = ((dow + 6) % 7) + 1;
         }
         return date.with(nextOrSame(DayOfWeek.of((int) dow)));
@@ -666,9 +664,13 @@ public abstract class AbstractChronology implements Chronology {
      * If the field is already present and it has a different value to that specified, then
      * an exception is thrown.
      *
-     * @param field  the field to add, not null
-     * @param value  the value to add, not null
-     * @throws java.time.DateTimeException if the field is already present with a different value
+     * @param field
+     *         the field to add, not null
+     * @param value
+     *         the value to add, not null
+     *
+     * @throws java.time.DateTimeException
+     *         if the field is already present with a different value
      */
     void addFieldValue(Map<TemporalField, Long> fieldValues, ChronoField field, long value) {
         Long old = fieldValues.get(field);  // check first for better error message
@@ -679,6 +681,7 @@ public abstract class AbstractChronology implements Chronology {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Compares this chronology to another chronology.
      * <p>
@@ -686,11 +689,9 @@ public abstract class AbstractChronology implements Chronology {
      * additional information specific to the subclass.
      * It is "consistent with equals", as defined by {@link Comparable}.
      *
-     * @implSpec
-     * This implementation compares the chronology ID.
-     * Subclasses must compare any additional state that they store.
+     * @param other
+     *         the other chronology to compare to, not null
      *
-     * @param other  the other chronology to compare to, not null
      * @return the comparator value, negative if less, positive if greater
      */
     @Override
@@ -703,17 +704,15 @@ public abstract class AbstractChronology implements Chronology {
      * <p>
      * The comparison is based on the entire state of the object.
      *
-     * @implSpec
-     * This implementation checks the type and calls
-     * {@link #compareTo(java.time.chrono.Chronology)}.
+     * @param obj
+     *         the object to check, null returns false
      *
-     * @param obj  the object to check, null returns false
      * @return true if this is equal to the other chronology
      */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
-           return true;
+            return true;
         }
         if (obj instanceof AbstractChronology) {
             return compareTo((AbstractChronology) obj) == 0;
@@ -726,10 +725,6 @@ public abstract class AbstractChronology implements Chronology {
      * <p>
      * The hash code should be based on the entire state of the object.
      *
-     * @implSpec
-     * This implementation is based on the chronology ID and class.
-     * Subclasses should add any additional state that they store.
-     *
      * @return a suitable hash code
      */
     @Override
@@ -738,6 +733,7 @@ public abstract class AbstractChronology implements Chronology {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Outputs this chronology as a {@code String}, using the chronology ID.
      *
@@ -749,6 +745,7 @@ public abstract class AbstractChronology implements Chronology {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Writes the Chronology using a
      * <a href="../../../serialized-form.html#java.time.chrono.Ser">dedicated serialized form</a>.
@@ -766,8 +763,11 @@ public abstract class AbstractChronology implements Chronology {
     /**
      * Defend against malicious streams.
      *
-     * @param s the stream to read
-     * @throws java.io.InvalidObjectException always
+     * @param s
+     *         the stream to read
+     *
+     * @throws java.io.InvalidObjectException
+     *         always
      */
     private void readObject(ObjectInputStream s) throws ObjectStreamException {
         throw new InvalidObjectException("Deserialization via serialization delegate");

@@ -30,10 +30,9 @@ package java.lang;
  * recurses too deeply.
  *
  * @author unascribed
- * @since   JDK1.0
+ * @since JDK1.0
  */
-public
-class StackOverflowError extends VirtualMachineError {
+public class StackOverflowError extends VirtualMachineError {
     private static final long serialVersionUID = 8609175038441759607L;
 
     /**
@@ -47,7 +46,8 @@ class StackOverflowError extends VirtualMachineError {
      * Constructs a <code>StackOverflowError</code> with the specified
      * detail message.
      *
-     * @param   s   the detail message.
+     * @param s
+     *         the detail message.
      */
     public StackOverflowError(String s) {
         super(s);

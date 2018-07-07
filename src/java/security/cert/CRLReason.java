@@ -32,9 +32,9 @@ package java.security.cert;
  * Profile</a>.
  *
  * @author Sean Mullan
- * @since 1.7
  * @see X509CRLEntry#getRevocationReason
  * @see CertificateRevokedException#getRevocationReason
+ * @since 1.7
  */
 public enum CRLReason {
     /**

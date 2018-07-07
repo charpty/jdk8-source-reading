@@ -24,11 +24,10 @@
  */
 package java.beans;
 
-import com.sun.beans.finder.PersistenceDelegateFinder;
-
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import com.sun.beans.finder.PersistenceDelegateFinder;
 
 /**
  * An <code>Encoder</code> is a class which can be used to create
@@ -40,9 +39,8 @@ import java.util.Map;
  * A subclass typically provides a syntax for these expressions
  * using some human readable form - like Java source code or XML.
  *
- * @since 1.4
- *
  * @author Philip Milne
+ * @since 1.4
  */
 
 public class Encoder {
@@ -62,7 +60,8 @@ public class Encoder {
      * the matching pairs of "setter" and "getter" methods
      * returned by the Introspector.
      *
-     * @param o The object to be written to the stream.
+     * @param o
+     *         The object to be written to the stream.
      *
      * @see XMLDecoder#readObject
      */
@@ -79,8 +78,9 @@ public class Encoder {
      * The exception handler is notified when this stream catches recoverable
      * exceptions.
      *
-     * @param exceptionListener The exception handler for this stream;
-     *       if <code>null</code> the default exception listener will be used.
+     * @param exceptionListener
+     *         The exception handler for this stream;
+     *         if <code>null</code> the default exception listener will be used.
      *
      * @see #getExceptionListener
      */
@@ -92,7 +92,7 @@ public class Encoder {
      * Gets the exception handler for this stream.
      *
      * @return The exception handler for this stream;
-     *    Will return the default exception listener if this has not explicitly been set.
+     * Will return the default exception listener if this has not explicitly been set.
      *
      * @see #setExceptionListener
      */
@@ -103,8 +103,7 @@ public class Encoder {
     Object getValue(Expression exp) {
         try {
             return (exp == null) ? null : exp.getValue();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             getExceptionListener().exceptionThrown(e);
             throw new RuntimeException("failed to evaluate: " + exp.toString());
         }
@@ -186,7 +185,9 @@ public class Encoder {
      * }</pre>
      * </ol>
      *
-     * @param type  the class of the objects
+     * @param type
+     *         the class of the objects
+     *
      * @return the persistence delegate for the given type
      *
      * @see #setPersistenceDelegate
@@ -207,8 +208,10 @@ public class Encoder {
     /**
      * Associates the specified persistence delegate with the given type.
      *
-     * @param type  the class of objects that the specified persistence delegate applies to
-     * @param delegate  the persistence delegate for instances of the given type
+     * @param type
+     *         the class of objects that the specified persistence delegate applies to
+     * @param delegate
+     *         the persistence delegate for instances of the given type
      *
      * @see #getPersistenceDelegate
      * @see java.beans.Introspector#getBeanInfo
@@ -221,7 +224,9 @@ public class Encoder {
     /**
      * Removes the entry for this instance, returning the old entry.
      *
-     * @param oldInstance The entry that should be removed.
+     * @param oldInstance
+     *         The entry that should be removed.
+     *
      * @return The entry that was removed.
      *
      * @see #get
@@ -240,12 +245,13 @@ public class Encoder {
      * a new object must be instantiated afresh. If the
      * stream has not yet seen this value, null is returned.
      *
-     * @param  oldInstance The instance to be looked up.
+     * @param oldInstance
+     *         The instance to be looked up.
+     *
      * @return The object, null if the object has not been seen before.
      */
     public Object get(Object oldInstance) {
-        if (oldInstance == null || oldInstance == this ||
-            oldInstance.getClass() == String.class) {
+        if (oldInstance == null || oldInstance == this || oldInstance.getClass() == String.class) {
             return oldInstance;
         }
         Expression exp = bindings.get(oldInstance);
@@ -270,9 +276,9 @@ public class Encoder {
         for (int i = 0; i < oldArgs.length; i++) {
             newArgs[i] = writeObject1(oldArgs[i]);
         }
-        Statement newExp = Statement.class.equals(oldExp.getClass())
-                ? new Statement(newTarget, oldExp.getMethodName(), newArgs)
-                : new Expression(newTarget, oldExp.getMethodName(), newArgs);
+        Statement newExp = Statement.class.equals(oldExp.getClass()) ?
+                new Statement(newTarget, oldExp.getMethodName(), newArgs) :
+                new Expression(newTarget, oldExp.getMethodName(), newArgs);
         newExp.loader = oldExp.loader;
         return newExp;
     }
@@ -294,7 +300,8 @@ public class Encoder {
      * on the target and all the arguments and building a new
      * expression with the results.
      *
-     * @param oldStm The expression to be written to the stream.
+     * @param oldStm
+     *         The expression to be written to the stream.
      */
     public void writeStatement(Statement oldStm) {
         // System.out.println("writeStatement: " + oldExp);
@@ -303,8 +310,7 @@ public class Encoder {
             try {
                 newStm.execute();
             } catch (Exception e) {
-                getExceptionListener().exceptionThrown(new Exception("Encoder: discarding statement "
-                                                                     + newStm, e));
+                getExceptionListener().exceptionThrown(new Exception("Encoder: discarding statement " + newStm, e));
             }
         }
     }
@@ -318,7 +324,8 @@ public class Encoder {
      * with the value of the cloned expression
      * by calling <code>writeObject</code>.
      *
-     * @param oldExp The expression to be written to the stream.
+     * @param oldExp
+     *         The expression to be written to the stream.
      */
     public void writeExpression(Expression oldExp) {
         // System.out.println("Encoder::writeExpression: " + oldExp);
@@ -326,7 +333,7 @@ public class Encoder {
         if (get(oldValue) != null) {
             return;
         }
-        bindings.put(oldValue, (Expression)cloneStatement(oldExp));
+        bindings.put(oldValue, (Expression) cloneStatement(oldExp));
         writeObject(oldValue);
     }
 

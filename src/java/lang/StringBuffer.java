@@ -89,15 +89,12 @@ import java.util.Arrays;
  * this one, as it supports all of the same operations but it is faster, as
  * it performs no synchronization.
  *
- * @author      Arthur van Hoff
- * @see     java.lang.StringBuilder
- * @see     java.lang.String
- * @since   JDK1.0
+ * @author Arthur van Hoff
+ * @see java.lang.StringBuilder
+ * @see java.lang.String
+ * @since JDK1.0
  */
- public final class StringBuffer
-    extends AbstractStringBuilder
-    implements java.io.Serializable, CharSequence
-{
+public final class StringBuffer extends AbstractStringBuilder implements java.io.Serializable, CharSequence {
 
     /**
      * A cache of the last value returned by toString. Cleared
@@ -120,9 +117,12 @@ import java.util.Arrays;
      * Constructs a string buffer with no characters in it and
      * the specified initial capacity.
      *
-     * @param      capacity  the initial capacity.
-     * @exception  NegativeArraySizeException  if the {@code capacity}
-     *               argument is less than {@code 0}.
+     * @param capacity
+     *         the initial capacity.
+     *
+     * @throws NegativeArraySizeException
+     *         if the {@code capacity}
+     *         argument is less than {@code 0}.
      */
     public StringBuffer(int capacity) {
         super(capacity);
@@ -133,7 +133,8 @@ import java.util.Arrays;
      * specified string. The initial capacity of the string buffer is
      * {@code 16} plus the length of the string argument.
      *
-     * @param   str   the initial contents of the buffer.
+     * @param str
+     *         the initial contents of the buffer.
      */
     public StringBuffer(String str) {
         super(str.length() + 16);
@@ -150,7 +151,9 @@ import java.util.Arrays;
      * less than or equal to zero, then an empty buffer of capacity
      * {@code 16} is returned.
      *
-     * @param      seq   the sequence to copy.
+     * @param seq
+     *         the sequence to copy.
+     *
      * @since 1.5
      */
     public StringBuffer(CharSequence seq) {
@@ -168,14 +171,13 @@ import java.util.Arrays;
         return value.length;
     }
 
-
     @Override
     public synchronized void ensureCapacity(int minimumCapacity) {
         super.ensureCapacity(minimumCapacity);
     }
 
     /**
-     * @since      1.5
+     * @since 1.5
      */
     @Override
     public synchronized void trimToSize() {
@@ -183,8 +185,9 @@ import java.util.Arrays;
     }
 
     /**
-     * @throws IndexOutOfBoundsException {@inheritDoc}
-     * @see        #length()
+     * @throws IndexOutOfBoundsException
+     *         {@inheritDoc}
+     * @see #length()
      */
     @Override
     public synchronized void setLength(int newLength) {
@@ -193,18 +196,20 @@ import java.util.Arrays;
     }
 
     /**
-     * @throws IndexOutOfBoundsException {@inheritDoc}
-     * @see        #length()
+     * @throws IndexOutOfBoundsException
+     *         {@inheritDoc}
+     * @see #length()
      */
     @Override
     public synchronized char charAt(int index) {
-        if ((index < 0) || (index >= count))
+        if ((index < 0) || (index >= count)) {
             throw new StringIndexOutOfBoundsException(index);
+        }
         return value[index];
     }
 
     /**
-     * @since      1.5
+     * @since 1.5
      */
     @Override
     public synchronized int codePointAt(int index) {
@@ -212,7 +217,7 @@ import java.util.Arrays;
     }
 
     /**
-     * @since     1.5
+     * @since 1.5
      */
     @Override
     public synchronized int codePointBefore(int index) {
@@ -220,7 +225,7 @@ import java.util.Arrays;
     }
 
     /**
-     * @since     1.5
+     * @since 1.5
      */
     @Override
     public synchronized int codePointCount(int beginIndex, int endIndex) {
@@ -228,7 +233,7 @@ import java.util.Arrays;
     }
 
     /**
-     * @since     1.5
+     * @since 1.5
      */
     @Override
     public synchronized int offsetByCodePoints(int index, int codePointOffset) {
@@ -236,23 +241,24 @@ import java.util.Arrays;
     }
 
     /**
-     * @throws IndexOutOfBoundsException {@inheritDoc}
+     * @throws IndexOutOfBoundsException
+     *         {@inheritDoc}
      */
     @Override
-    public synchronized void getChars(int srcBegin, int srcEnd, char[] dst,
-                                      int dstBegin)
-    {
+    public synchronized void getChars(int srcBegin, int srcEnd, char[] dst, int dstBegin) {
         super.getChars(srcBegin, srcEnd, dst, dstBegin);
     }
 
     /**
-     * @throws IndexOutOfBoundsException {@inheritDoc}
-     * @see        #length()
+     * @throws IndexOutOfBoundsException
+     *         {@inheritDoc}
+     * @see #length()
      */
     @Override
     public synchronized void setCharAt(int index, char ch) {
-        if ((index < 0) || (index >= count))
+        if ((index < 0) || (index >= count)) {
             throw new StringIndexOutOfBoundsException(index);
+        }
         toStringCache = null;
         value[index] = ch;
     }
@@ -291,8 +297,11 @@ import java.util.Arrays;
      * This method synchronizes on {@code this}, the destination
      * object, but does not synchronize on the source ({@code sb}).
      *
-     * @param   sb   the {@code StringBuffer} to append.
-     * @return  a reference to this object.
+     * @param sb
+     *         the {@code StringBuffer} to append.
+     *
+     * @return a reference to this object.
+     *
      * @since 1.4
      */
     public synchronized StringBuffer append(StringBuffer sb) {
@@ -328,8 +337,11 @@ import java.util.Arrays;
      * <p>If {@code s} is {@code null}, then the four characters
      * {@code "null"} are appended.
      *
-     * @param   s the {@code CharSequence} to append.
-     * @return  a reference to this object.
+     * @param s
+     *         the {@code CharSequence} to append.
+     *
+     * @return a reference to this object.
+     *
      * @since 1.5
      */
     @Override
@@ -340,12 +352,12 @@ import java.util.Arrays;
     }
 
     /**
-     * @throws IndexOutOfBoundsException {@inheritDoc}
-     * @since      1.5
+     * @throws IndexOutOfBoundsException
+     *         {@inheritDoc}
+     * @since 1.5
      */
     @Override
-    public synchronized StringBuffer append(CharSequence s, int start, int end)
-    {
+    public synchronized StringBuffer append(CharSequence s, int start, int end) {
         toStringCache = null;
         super.append(s, start, end);
         return this;
@@ -359,7 +371,8 @@ import java.util.Arrays;
     }
 
     /**
-     * @throws IndexOutOfBoundsException {@inheritDoc}
+     * @throws IndexOutOfBoundsException
+     *         {@inheritDoc}
      */
     @Override
     public synchronized StringBuffer append(char[] str, int offset, int len) {
@@ -421,8 +434,9 @@ import java.util.Arrays;
     }
 
     /**
-     * @throws StringIndexOutOfBoundsException {@inheritDoc}
-     * @since      1.2
+     * @throws StringIndexOutOfBoundsException
+     *         {@inheritDoc}
+     * @since 1.2
      */
     @Override
     public synchronized StringBuffer delete(int start, int end) {
@@ -432,8 +446,9 @@ import java.util.Arrays;
     }
 
     /**
-     * @throws StringIndexOutOfBoundsException {@inheritDoc}
-     * @since      1.2
+     * @throws StringIndexOutOfBoundsException
+     *         {@inheritDoc}
+     * @since 1.2
      */
     @Override
     public synchronized StringBuffer deleteCharAt(int index) {
@@ -443,8 +458,9 @@ import java.util.Arrays;
     }
 
     /**
-     * @throws StringIndexOutOfBoundsException {@inheritDoc}
-     * @since      1.2
+     * @throws StringIndexOutOfBoundsException
+     *         {@inheritDoc}
+     * @since 1.2
      */
     @Override
     public synchronized StringBuffer replace(int start, int end, String str) {
@@ -454,8 +470,9 @@ import java.util.Arrays;
     }
 
     /**
-     * @throws StringIndexOutOfBoundsException {@inheritDoc}
-     * @since      1.2
+     * @throws StringIndexOutOfBoundsException
+     *         {@inheritDoc}
+     * @since 1.2
      */
     @Override
     public synchronized String substring(int start) {
@@ -463,8 +480,9 @@ import java.util.Arrays;
     }
 
     /**
-     * @throws IndexOutOfBoundsException {@inheritDoc}
-     * @since      1.4
+     * @throws IndexOutOfBoundsException
+     *         {@inheritDoc}
+     * @since 1.4
      */
     @Override
     public synchronized CharSequence subSequence(int start, int end) {
@@ -472,8 +490,9 @@ import java.util.Arrays;
     }
 
     /**
-     * @throws StringIndexOutOfBoundsException {@inheritDoc}
-     * @since      1.2
+     * @throws StringIndexOutOfBoundsException
+     *         {@inheritDoc}
+     * @since 1.2
      */
     @Override
     public synchronized String substring(int start, int end) {
@@ -481,20 +500,20 @@ import java.util.Arrays;
     }
 
     /**
-     * @throws StringIndexOutOfBoundsException {@inheritDoc}
-     * @since      1.2
+     * @throws StringIndexOutOfBoundsException
+     *         {@inheritDoc}
+     * @since 1.2
      */
     @Override
-    public synchronized StringBuffer insert(int index, char[] str, int offset,
-                                            int len)
-    {
+    public synchronized StringBuffer insert(int index, char[] str, int offset, int len) {
         toStringCache = null;
         super.insert(index, str, offset, len);
         return this;
     }
 
     /**
-     * @throws StringIndexOutOfBoundsException {@inheritDoc}
+     * @throws StringIndexOutOfBoundsException
+     *         {@inheritDoc}
      */
     @Override
     public synchronized StringBuffer insert(int offset, Object obj) {
@@ -504,7 +523,8 @@ import java.util.Arrays;
     }
 
     /**
-     * @throws StringIndexOutOfBoundsException {@inheritDoc}
+     * @throws StringIndexOutOfBoundsException
+     *         {@inheritDoc}
      */
     @Override
     public synchronized StringBuffer insert(int offset, String str) {
@@ -514,7 +534,8 @@ import java.util.Arrays;
     }
 
     /**
-     * @throws StringIndexOutOfBoundsException {@inheritDoc}
+     * @throws StringIndexOutOfBoundsException
+     *         {@inheritDoc}
      */
     @Override
     public synchronized StringBuffer insert(int offset, char[] str) {
@@ -524,8 +545,9 @@ import java.util.Arrays;
     }
 
     /**
-     * @throws IndexOutOfBoundsException {@inheritDoc}
-     * @since      1.5
+     * @throws IndexOutOfBoundsException
+     *         {@inheritDoc}
+     * @since 1.5
      */
     @Override
     public StringBuffer insert(int dstOffset, CharSequence s) {
@@ -537,23 +559,23 @@ import java.util.Arrays;
     }
 
     /**
-     * @throws IndexOutOfBoundsException {@inheritDoc}
-     * @since      1.5
+     * @throws IndexOutOfBoundsException
+     *         {@inheritDoc}
+     * @since 1.5
      */
     @Override
-    public synchronized StringBuffer insert(int dstOffset, CharSequence s,
-            int start, int end)
-    {
+    public synchronized StringBuffer insert(int dstOffset, CharSequence s, int start, int end) {
         toStringCache = null;
         super.insert(dstOffset, s, start, end);
         return this;
     }
 
     /**
-     * @throws StringIndexOutOfBoundsException {@inheritDoc}
+     * @throws StringIndexOutOfBoundsException
+     *         {@inheritDoc}
      */
     @Override
-    public  StringBuffer insert(int offset, boolean b) {
+    public StringBuffer insert(int offset, boolean b) {
         // Note, synchronization achieved via invocation of StringBuffer insert(int, String)
         // after conversion of b to String by super class method
         // Ditto for toStringCache clearing
@@ -562,7 +584,8 @@ import java.util.Arrays;
     }
 
     /**
-     * @throws IndexOutOfBoundsException {@inheritDoc}
+     * @throws IndexOutOfBoundsException
+     *         {@inheritDoc}
      */
     @Override
     public synchronized StringBuffer insert(int offset, char c) {
@@ -572,7 +595,8 @@ import java.util.Arrays;
     }
 
     /**
-     * @throws StringIndexOutOfBoundsException {@inheritDoc}
+     * @throws StringIndexOutOfBoundsException
+     *         {@inheritDoc}
      */
     @Override
     public StringBuffer insert(int offset, int i) {
@@ -584,7 +608,8 @@ import java.util.Arrays;
     }
 
     /**
-     * @throws StringIndexOutOfBoundsException {@inheritDoc}
+     * @throws StringIndexOutOfBoundsException
+     *         {@inheritDoc}
      */
     @Override
     public StringBuffer insert(int offset, long l) {
@@ -596,7 +621,8 @@ import java.util.Arrays;
     }
 
     /**
-     * @throws StringIndexOutOfBoundsException {@inheritDoc}
+     * @throws StringIndexOutOfBoundsException
+     *         {@inheritDoc}
      */
     @Override
     public StringBuffer insert(int offset, float f) {
@@ -608,7 +634,8 @@ import java.util.Arrays;
     }
 
     /**
-     * @throws StringIndexOutOfBoundsException {@inheritDoc}
+     * @throws StringIndexOutOfBoundsException
+     *         {@inheritDoc}
      */
     @Override
     public StringBuffer insert(int offset, double d) {
@@ -620,7 +647,7 @@ import java.util.Arrays;
     }
 
     /**
-     * @since      1.4
+     * @since 1.4
      */
     @Override
     public int indexOf(String str) {
@@ -629,7 +656,7 @@ import java.util.Arrays;
     }
 
     /**
-     * @since      1.4
+     * @since 1.4
      */
     @Override
     public synchronized int indexOf(String str, int fromIndex) {
@@ -637,7 +664,7 @@ import java.util.Arrays;
     }
 
     /**
-     * @since      1.4
+     * @since 1.4
      */
     @Override
     public int lastIndexOf(String str) {
@@ -646,7 +673,7 @@ import java.util.Arrays;
     }
 
     /**
-     * @since      1.4
+     * @since 1.4
      */
     @Override
     public synchronized int lastIndexOf(String str, int fromIndex) {
@@ -654,7 +681,7 @@ import java.util.Arrays;
     }
 
     /**
-     * @since   JDK1.0.2
+     * @since JDK1.0.2
      */
     @Override
     public synchronized StringBuffer reverse() {
@@ -673,28 +700,15 @@ import java.util.Arrays;
 
     /**
      * Serializable fields for StringBuffer.
-     *
-     * @serialField value  char[]
-     *              The backing character array of this StringBuffer.
-     * @serialField count int
-     *              The number of characters in this StringBuffer.
-     * @serialField shared  boolean
-     *              A flag indicating whether the backing array is shared.
-     *              The value is ignored upon deserialization.
      */
-    private static final java.io.ObjectStreamField[] serialPersistentFields =
-    {
-        new java.io.ObjectStreamField("value", char[].class),
-        new java.io.ObjectStreamField("count", Integer.TYPE),
-        new java.io.ObjectStreamField("shared", Boolean.TYPE),
-    };
+    private static final java.io.ObjectStreamField[] serialPersistentFields = { new java.io.ObjectStreamField("value", char[].class),
+            new java.io.ObjectStreamField("count", Integer.TYPE), new java.io.ObjectStreamField("shared", Boolean.TYPE), };
 
     /**
      * readObject is called to restore the state of the StringBuffer from
      * a stream.
      */
-    private synchronized void writeObject(java.io.ObjectOutputStream s)
-        throws java.io.IOException {
+    private synchronized void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
         java.io.ObjectOutputStream.PutField fields = s.putFields();
         fields.put("value", value);
         fields.put("count", count);
@@ -706,10 +720,9 @@ import java.util.Arrays;
      * readObject is called to restore the state of the StringBuffer from
      * a stream.
      */
-    private void readObject(java.io.ObjectInputStream s)
-        throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
         java.io.ObjectInputStream.GetField fields = s.readFields();
-        value = (char[])fields.get("value", null);
+        value = (char[]) fields.get("value", null);
         count = fields.get("count", 0);
     }
 }

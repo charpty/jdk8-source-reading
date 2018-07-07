@@ -61,17 +61,14 @@
  */
 package java.time.temporal;
 
-import static java.time.temporal.ChronoField.DAY_OF_MONTH;
-import static java.time.temporal.ChronoField.DAY_OF_WEEK;
-import static java.time.temporal.ChronoField.DAY_OF_YEAR;
-import static java.time.temporal.ChronoUnit.DAYS;
-import static java.time.temporal.ChronoUnit.MONTHS;
-import static java.time.temporal.ChronoUnit.YEARS;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
+
+
+import static java.time.temporal.ChronoField.*;
+import static java.time.temporal.ChronoUnit.*;
 
 /**
  * Common and useful TemporalAdjusters.
@@ -104,9 +101,6 @@ import java.util.function.UnaryOperator;
  * <li>finding the next or previous day-of-week, such as "next Thursday"
  * </ul>
  *
- * @implSpec
- * All the implementations supplied by the static methods are immutable.
- *
  * @see TemporalAdjuster
  * @since 1.8
  */
@@ -119,6 +113,7 @@ public final class TemporalAdjusters {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains a {@code TemporalAdjuster} that wraps a date adjuster.
      * <p>
@@ -133,7 +128,9 @@ public final class TemporalAdjusters {
      *       TemporalAdjusters.ofDateAdjuster(date -> date.plusDays(2));
      * }</pre>
      *
-     * @param dateBasedAdjuster  the date-based adjuster, not null
+     * @param dateBasedAdjuster
+     *         the date-based adjuster, not null
+     *
      * @return the temporal adjuster wrapping on the date adjuster, not null
      */
     public static TemporalAdjuster ofDateAdjuster(UnaryOperator<LocalDate> dateBasedAdjuster) {
@@ -146,6 +143,7 @@ public final class TemporalAdjusters {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns the "first day of month" adjuster, which returns a new date set to
      * the first day of the current month.
@@ -210,6 +208,7 @@ public final class TemporalAdjusters {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns the "first day of year" adjuster, which returns a new date set to
      * the first day of the current year.
@@ -271,6 +270,7 @@ public final class TemporalAdjusters {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns the first in month adjuster, which returns a new date
      * in the same month with the first matching day-of-week.
@@ -284,7 +284,9 @@ public final class TemporalAdjusters {
      * It uses the {@code DAY_OF_WEEK} and {@code DAY_OF_MONTH} fields
      * and the {@code DAYS} unit, and assumes a seven day week.
      *
-     * @param dayOfWeek  the day-of-week, not null
+     * @param dayOfWeek
+     *         the day-of-week, not null
+     *
      * @return the first in month adjuster, not null
      */
     public static TemporalAdjuster firstInMonth(DayOfWeek dayOfWeek) {
@@ -304,7 +306,9 @@ public final class TemporalAdjusters {
      * It uses the {@code DAY_OF_WEEK} and {@code DAY_OF_MONTH} fields
      * and the {@code DAYS} unit, and assumes a seven day week.
      *
-     * @param dayOfWeek  the day-of-week, not null
+     * @param dayOfWeek
+     *         the day-of-week, not null
+     *
      * @return the first in month adjuster, not null
      */
     public static TemporalAdjuster lastInMonth(DayOfWeek dayOfWeek) {
@@ -339,8 +343,11 @@ public final class TemporalAdjusters {
      * It uses the {@code DAY_OF_WEEK} and {@code DAY_OF_MONTH} fields
      * and the {@code DAYS} unit, and assumes a seven day week.
      *
-     * @param ordinal  the week within the month, unbounded but typically from -5 to 5
-     * @param dayOfWeek  the day-of-week, not null
+     * @param ordinal
+     *         the week within the month, unbounded but typically from -5 to 5
+     * @param dayOfWeek
+     *         the day-of-week, not null
+     *
      * @return the day-of-week in month adjuster, not null
      */
     public static TemporalAdjuster dayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
@@ -367,6 +374,7 @@ public final class TemporalAdjusters {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns the next day-of-week adjuster, which adjusts the date to the
      * first occurrence of the specified day-of-week after the date being adjusted.
@@ -380,7 +388,9 @@ public final class TemporalAdjusters {
      * It uses the {@code DAY_OF_WEEK} field and the {@code DAYS} unit,
      * and assumes a seven day week.
      *
-     * @param dayOfWeek  the day-of-week to move the date to, not null
+     * @param dayOfWeek
+     *         the day-of-week to move the date to, not null
+     *
      * @return the next day-of-week adjuster, not null
      */
     public static TemporalAdjuster next(DayOfWeek dayOfWeek) {
@@ -406,7 +416,9 @@ public final class TemporalAdjusters {
      * It uses the {@code DAY_OF_WEEK} field and the {@code DAYS} unit,
      * and assumes a seven day week.
      *
-     * @param dayOfWeek  the day-of-week to check for or move the date to, not null
+     * @param dayOfWeek
+     *         the day-of-week to check for or move the date to, not null
+     *
      * @return the next-or-same day-of-week adjuster, not null
      */
     public static TemporalAdjuster nextOrSame(DayOfWeek dayOfWeek) {
@@ -434,7 +446,9 @@ public final class TemporalAdjusters {
      * It uses the {@code DAY_OF_WEEK} field and the {@code DAYS} unit,
      * and assumes a seven day week.
      *
-     * @param dayOfWeek  the day-of-week to move the date to, not null
+     * @param dayOfWeek
+     *         the day-of-week to move the date to, not null
+     *
      * @return the previous day-of-week adjuster, not null
      */
     public static TemporalAdjuster previous(DayOfWeek dayOfWeek) {
@@ -460,7 +474,9 @@ public final class TemporalAdjusters {
      * It uses the {@code DAY_OF_WEEK} field and the {@code DAYS} unit,
      * and assumes a seven day week.
      *
-     * @param dayOfWeek  the day-of-week to check for or move the date to, not null
+     * @param dayOfWeek
+     *         the day-of-week to check for or move the date to, not null
+     *
      * @return the previous-or-same day-of-week adjuster, not null
      */
     public static TemporalAdjuster previousOrSame(DayOfWeek dayOfWeek) {

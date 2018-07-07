@@ -40,8 +40,8 @@ package java.lang.management;
  * <p>The <tt>ObjectName</tt> for uniquely identifying the MXBean for
  * the operating system within an MBeanServer is:
  * <blockquote>
- *    {@link ManagementFactory#OPERATING_SYSTEM_MXBEAN_NAME
- *      <tt>java.lang:type=OperatingSystem</tt>}
+ * {@link ManagementFactory#OPERATING_SYSTEM_MXBEAN_NAME
+ * <tt>java.lang:type=OperatingSystem</tt>}
  * </blockquote>
  *
  * It can be obtained by calling the
@@ -51,14 +51,13 @@ package java.lang.management;
  * system properties about the operating system on which the Java
  * virtual machine is running.
  *
+ * @author Mandy Chung
  * @see ManagementFactory#getPlatformMXBeans(Class)
  * @see <a href="../../../javax/management/package-summary.html">
- *      JMX Specification.</a>
+ * JMX Specification.</a>
  * @see <a href="package-summary.html#examples">
- *      Ways to Access MXBeans</a>
- *
- * @author  Mandy Chung
- * @since   1.5
+ * Ways to Access MXBeans</a>
+ * @since 1.5
  */
 public interface OperatingSystemMXBean extends PlatformManagedObject {
     /**
@@ -67,10 +66,10 @@ public interface OperatingSystemMXBean extends PlatformManagedObject {
      *
      * @return the operating system name.
      *
-     * @throws  java.lang.SecurityException
-     *     if a security manager exists and its
-     *     <code>checkPropertiesAccess</code> method doesn't allow access
-     *     to this system property.
+     * @throws java.lang.SecurityException
+     *         if a security manager exists and its
+     *         <code>checkPropertiesAccess</code> method doesn't allow access
+     *         to this system property.
      * @see java.lang.SecurityManager#checkPropertyAccess(java.lang.String)
      * @see java.lang.System#getProperty
      */
@@ -82,10 +81,10 @@ public interface OperatingSystemMXBean extends PlatformManagedObject {
      *
      * @return the operating system architecture.
      *
-     * @throws  java.lang.SecurityException
-     *     if a security manager exists and its
-     *     <code>checkPropertiesAccess</code> method doesn't allow access
-     *     to this system property.
+     * @throws java.lang.SecurityException
+     *         if a security manager exists and its
+     *         <code>checkPropertiesAccess</code> method doesn't allow access
+     *         to this system property.
      * @see java.lang.SecurityManager#checkPropertyAccess(java.lang.String)
      * @see java.lang.System#getProperty
      */
@@ -97,10 +96,10 @@ public interface OperatingSystemMXBean extends PlatformManagedObject {
      *
      * @return the operating system version.
      *
-     * @throws  java.lang.SecurityException
-     *     if a security manager exists and its
-     *     <code>checkPropertiesAccess</code> method doesn't allow access
-     *     to this system property.
+     * @throws java.lang.SecurityException
+     *         if a security manager exists and its
+     *         <code>checkPropertiesAccess</code> method doesn't allow access
+     *         to this system property.
      * @see java.lang.SecurityManager#checkPropertyAccess(java.lang.String)
      * @see java.lang.System#getProperty
      */
@@ -113,8 +112,8 @@ public interface OperatingSystemMXBean extends PlatformManagedObject {
      * <p> This value may change during a particular invocation of
      * the virtual machine.
      *
-     * @return  the number of processors available to the virtual
-     *          machine; never smaller than one.
+     * @return the number of processors available to the virtual
+     * machine; never smaller than one.
      */
     public int getAvailableProcessors();
 

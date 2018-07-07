@@ -29,7 +29,6 @@
 
 package java.nio;
 
-
 /**
  * Unchecked exception thrown when a relative <i>get</i> operation reaches
  * the source buffer's limit.
@@ -37,15 +36,14 @@ package java.nio;
  * @since 1.4
  */
 
-public class BufferUnderflowException
-    extends RuntimeException
-{
+public class BufferUnderflowException extends RuntimeException {
 
     private static final long serialVersionUID = -1713313658691622206L;
 
     /**
      * Constructs an instance of this class.
      */
-    public BufferUnderflowException() { }
+    public BufferUnderflowException() {
+    }
 
 }

@@ -25,8 +25,8 @@
 
 package java.rmi.server;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.Socket;
 
 /**
  * An <code>RMIClientSocketFactory</code> instance is used by the RMI runtime
@@ -52,23 +52,28 @@ import java.net.*;
  * implement {@link Object#hashCode} consistently with its
  * <code>Object.equals</code> implementation).
  *
- * @author  Ann Wollrath
- * @author  Peter Jones
- * @since   1.2
- * @see     java.rmi.server.UnicastRemoteObject
- * @see     java.rmi.activation.Activatable
- * @see     java.rmi.registry.LocateRegistry
+ * @author Ann Wollrath
+ * @author Peter Jones
+ * @see java.rmi.server.UnicastRemoteObject
+ * @see java.rmi.activation.Activatable
+ * @see java.rmi.registry.LocateRegistry
+ * @since 1.2
  */
 public interface RMIClientSocketFactory {
 
     /**
      * Create a client socket connected to the specified host and port.
-     * @param  host   the host name
-     * @param  port   the port number
+     *
+     * @param host
+     *         the host name
+     * @param port
+     *         the port number
+     *
      * @return a socket connected to the specified host and port.
-     * @exception IOException if an I/O error occurs during socket creation
+     *
+     * @throws IOException
+     *         if an I/O error occurs during socket creation
      * @since 1.2
      */
-    public Socket createSocket(String host, int port)
-        throws IOException;
+    public Socket createSocket(String host, int port) throws IOException;
 }

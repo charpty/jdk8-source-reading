@@ -53,7 +53,6 @@ import java.util.stream.StreamSupport;
  *
  * @author Mike McCloskey
  * @since 1.4
- * @spec JSR-51
  */
 
 public interface CharSequence {
@@ -62,7 +61,7 @@ public interface CharSequence {
      * Returns the length of this character sequence.  The length is the number
      * of 16-bit <code>char</code>s in the sequence.
      *
-     * @return  the number of <code>char</code>s in this sequence
+     * @return the number of <code>char</code>s in this sequence
      */
     int length();
 
@@ -76,13 +75,14 @@ public interface CharSequence {
      * <a href="{@docRoot}/java/lang/Character.html#unicode">surrogate</a>, the surrogate
      * value is returned.
      *
-     * @param   index   the index of the <code>char</code> value to be returned
+     * @param index
+     *         the index of the <code>char</code> value to be returned
      *
-     * @return  the specified <code>char</code> value
+     * @return the specified <code>char</code> value
      *
-     * @throws  IndexOutOfBoundsException
-     *          if the <tt>index</tt> argument is negative or not less than
-     *          <tt>length()</tt>
+     * @throws IndexOutOfBoundsException
+     *         if the <tt>index</tt> argument is negative or not less than
+     *         <tt>length()</tt>
      */
     char charAt(int index);
 
@@ -94,15 +94,17 @@ public interface CharSequence {
      * returned sequence is <tt>end - start</tt>, so if <tt>start == end</tt>
      * then an empty sequence is returned.
      *
-     * @param   start   the start index, inclusive
-     * @param   end     the end index, exclusive
+     * @param start
+     *         the start index, inclusive
+     * @param end
+     *         the end index, exclusive
      *
-     * @return  the specified subsequence
+     * @return the specified subsequence
      *
-     * @throws  IndexOutOfBoundsException
-     *          if <tt>start</tt> or <tt>end</tt> are negative,
-     *          if <tt>end</tt> is greater than <tt>length()</tt>,
-     *          or if <tt>start</tt> is greater than <tt>end</tt>
+     * @throws IndexOutOfBoundsException
+     *         if <tt>start</tt> or <tt>end</tt> are negative,
+     *         if <tt>end</tt> is greater than <tt>length()</tt>,
+     *         or if <tt>start</tt> is greater than <tt>end</tt>
      */
     CharSequence subSequence(int start, int end);
 
@@ -111,7 +113,7 @@ public interface CharSequence {
      * order as this sequence.  The length of the string will be the length of
      * this sequence.
      *
-     * @return  a string consisting of exactly this sequence of characters
+     * @return a string consisting of exactly this sequence of characters
      */
     public String toString();
 
@@ -125,6 +127,7 @@ public interface CharSequence {
      * result is undefined.
      *
      * @return an IntStream of char values from this sequence
+     *
      * @since 1.8
      */
     public default IntStream chars() {
@@ -151,13 +154,8 @@ public interface CharSequence {
             }
         }
 
-        return StreamSupport.intStream(() ->
-                Spliterators.spliterator(
-                        new CharIterator(),
-                        length(),
-                        Spliterator.ORDERED),
-                Spliterator.SUBSIZED | Spliterator.SIZED | Spliterator.ORDERED,
-                false);
+        return StreamSupport.intStream(() -> Spliterators.spliterator(new CharIterator(), length(), Spliterator.ORDERED),
+                Spliterator.SUBSIZED | Spliterator.SIZED | Spliterator.ORDERED, false);
     }
 
     /**
@@ -172,6 +170,7 @@ public interface CharSequence {
      * is undefined.
      *
      * @return an IntStream of Unicode code points from this sequence
+     *
      * @since 1.8
      */
     public default IntStream codePoints() {
@@ -224,11 +223,6 @@ public interface CharSequence {
             }
         }
 
-        return StreamSupport.intStream(() ->
-                Spliterators.spliteratorUnknownSize(
-                        new CodePointIterator(),
-                        Spliterator.ORDERED),
-                Spliterator.ORDERED,
-                false);
+        return StreamSupport.intStream(() -> Spliterators.spliteratorUnknownSize(new CodePointIterator(), Spliterator.ORDERED), Spliterator.ORDERED, false);
     }
 }

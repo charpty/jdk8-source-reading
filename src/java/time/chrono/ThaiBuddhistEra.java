@@ -99,9 +99,6 @@ import java.time.DateTimeException;
  * <b>Do not use {@code ordinal()} to obtain the numeric representation of {@code ThaiBuddhistEra}.
  * Use {@code getValue()} instead.</b>
  *
- * @implSpec
- * This is an immutable and thread-safe enum.
- *
  * @since 1.8
  */
 public enum ThaiBuddhistEra implements Era {
@@ -110,36 +107,41 @@ public enum ThaiBuddhistEra implements Era {
      * The singleton instance for the era before the current one, 'Before Buddhist Era',
      * which has the numeric value 0.
      */
-    BEFORE_BE,
-    /**
+    BEFORE_BE, /**
      * The singleton instance for the current era, 'Buddhist Era',
      * which has the numeric value 1.
      */
     BE;
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code ThaiBuddhistEra} from an {@code int} value.
      * <p>
      * {@code ThaiBuddhistEra} is an enum representing the Thai Buddhist eras of BEFORE_BE/BE.
      * This factory allows the enum to be obtained from the {@code int} value.
      *
-     * @param thaiBuddhistEra  the era to represent, from 0 to 1
+     * @param thaiBuddhistEra
+     *         the era to represent, from 0 to 1
+     *
      * @return the BuddhistEra singleton, never null
-     * @throws DateTimeException if the era is invalid
+     *
+     * @throws DateTimeException
+     *         if the era is invalid
      */
     public static ThaiBuddhistEra of(int thaiBuddhistEra) {
         switch (thaiBuddhistEra) {
-            case 0:
-                return BEFORE_BE;
-            case 1:
-                return BE;
-            default:
-                throw new DateTimeException("Invalid era: " + thaiBuddhistEra);
+        case 0:
+            return BEFORE_BE;
+        case 1:
+            return BE;
+        default:
+            throw new DateTimeException("Invalid era: " + thaiBuddhistEra);
         }
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the numeric era {@code int} value.
      * <p>

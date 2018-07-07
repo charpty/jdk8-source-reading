@@ -25,17 +25,16 @@
 
 package java.util.zip;
 
-import java.io.OutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * This class implements a stream filter for writing compressed data in
  * the GZIP file format.
- * @author      David Connelly
  *
+ * @author David Connelly
  */
-public
-class GZIPOutputStream extends DeflaterOutputStream {
+public class GZIPOutputStream extends DeflaterOutputStream {
     /**
      * CRC-32 of uncompressed data.
      */
@@ -58,10 +57,15 @@ class GZIPOutputStream extends DeflaterOutputStream {
      * <p>The new output stream instance is created as if by invoking
      * the 3-argument constructor GZIPOutputStream(out, size, false).
      *
-     * @param out the output stream
-     * @param size the output buffer size
-     * @exception IOException If an I/O error has occurred.
-     * @exception IllegalArgumentException if {@code size <= 0}
+     * @param out
+     *         the output stream
+     * @param size
+     *         the output buffer size
+     *
+     * @throws IOException
+     *         If an I/O error has occurred.
+     * @throws IllegalArgumentException
+     *         if {@code size <= 0}
      */
     public GZIPOutputStream(OutputStream out, int size) throws IOException {
         this(out, size, false);
@@ -71,30 +75,29 @@ class GZIPOutputStream extends DeflaterOutputStream {
      * Creates a new output stream with the specified buffer size and
      * flush mode.
      *
-     * @param out the output stream
-     * @param size the output buffer size
+     * @param out
+     *         the output stream
+     * @param size
+     *         the output buffer size
      * @param syncFlush
-     *        if {@code true} invocation of the inherited
-     *        {@link DeflaterOutputStream#flush() flush()} method of
-     *        this instance flushes the compressor with flush mode
-     *        {@link Deflater#SYNC_FLUSH} before flushing the output
-     *        stream, otherwise only flushes the output stream
-     * @exception IOException If an I/O error has occurred.
-     * @exception IllegalArgumentException if {@code size <= 0}
+     *         if {@code true} invocation of the inherited
+     *         {@link DeflaterOutputStream#flush() flush()} method of
+     *         this instance flushes the compressor with flush mode
+     *         {@link Deflater#SYNC_FLUSH} before flushing the output
+     *         stream, otherwise only flushes the output stream
      *
+     * @throws IOException
+     *         If an I/O error has occurred.
+     * @throws IllegalArgumentException
+     *         if {@code size <= 0}
      * @since 1.7
      */
-    public GZIPOutputStream(OutputStream out, int size, boolean syncFlush)
-        throws IOException
-    {
-        super(out, new Deflater(Deflater.DEFAULT_COMPRESSION, true),
-              size,
-              syncFlush);
+    public GZIPOutputStream(OutputStream out, int size, boolean syncFlush) throws IOException {
+        super(out, new Deflater(Deflater.DEFAULT_COMPRESSION, true), size, syncFlush);
         usesDefaultDeflater = true;
         writeHeader();
         crc.reset();
     }
-
 
     /**
      * Creates a new output stream with a default buffer size.
@@ -102,8 +105,11 @@ class GZIPOutputStream extends DeflaterOutputStream {
      * <p>The new output stream instance is created as if by invoking
      * the 2-argument constructor GZIPOutputStream(out, false).
      *
-     * @param out the output stream
-     * @exception IOException If an I/O error has occurred.
+     * @param out
+     *         the output stream
+     *
+     * @throws IOException
+     *         If an I/O error has occurred.
      */
     public GZIPOutputStream(OutputStream out) throws IOException {
         this(out, 512, false);
@@ -113,35 +119,38 @@ class GZIPOutputStream extends DeflaterOutputStream {
      * Creates a new output stream with a default buffer size and
      * the specified flush mode.
      *
-     * @param out the output stream
+     * @param out
+     *         the output stream
      * @param syncFlush
-     *        if {@code true} invocation of the inherited
-     *        {@link DeflaterOutputStream#flush() flush()} method of
-     *        this instance flushes the compressor with flush mode
-     *        {@link Deflater#SYNC_FLUSH} before flushing the output
-     *        stream, otherwise only flushes the output stream
+     *         if {@code true} invocation of the inherited
+     *         {@link DeflaterOutputStream#flush() flush()} method of
+     *         this instance flushes the compressor with flush mode
+     *         {@link Deflater#SYNC_FLUSH} before flushing the output
+     *         stream, otherwise only flushes the output stream
      *
-     * @exception IOException If an I/O error has occurred.
-     *
+     * @throws IOException
+     *         If an I/O error has occurred.
      * @since 1.7
      */
-    public GZIPOutputStream(OutputStream out, boolean syncFlush)
-        throws IOException
-    {
+    public GZIPOutputStream(OutputStream out, boolean syncFlush) throws IOException {
         this(out, 512, syncFlush);
     }
 
     /**
      * Writes array of bytes to the compressed output stream. This method
      * will block until all the bytes are written.
-     * @param buf the data to be written
-     * @param off the start offset of the data
-     * @param len the length of the data
-     * @exception IOException If an I/O error has occurred.
+     *
+     * @param buf
+     *         the data to be written
+     * @param off
+     *         the start offset of the data
+     * @param len
+     *         the length of the data
+     *
+     * @throws IOException
+     *         If an I/O error has occurred.
      */
-    public synchronized void write(byte[] buf, int off, int len)
-        throws IOException
-    {
+    public synchronized void write(byte[] buf, int off, int len) throws IOException {
         super.write(buf, off, len);
         crc.update(buf, off, len);
     }
@@ -150,7 +159,9 @@ class GZIPOutputStream extends DeflaterOutputStream {
      * Finishes writing compressed data to the output stream without closing
      * the underlying stream. Use this method when applying multiple filters
      * in succession to the same output stream.
-     * @exception IOException if an I/O error has occurred
+     *
+     * @throws IOException
+     *         if an I/O error has occurred
      */
     public void finish() throws IOException {
         if (!def.finished()) {
@@ -164,8 +175,9 @@ class GZIPOutputStream extends DeflaterOutputStream {
                     out.write(buf, 0, len);
                     return;
                 }
-                if (len > 0)
+                if (len > 0) {
                     out.write(buf, 0, len);
+                }
             }
             // if we can't fit the trailer at the end of the last
             // deflater buffer, we write it separately
@@ -179,18 +191,17 @@ class GZIPOutputStream extends DeflaterOutputStream {
      * Writes GZIP member header.
      */
     private void writeHeader() throws IOException {
-        out.write(new byte[] {
-                      (byte) GZIP_MAGIC,        // Magic number (short)
-                      (byte)(GZIP_MAGIC >> 8),  // Magic number (short)
-                      Deflater.DEFLATED,        // Compression method (CM)
-                      0,                        // Flags (FLG)
-                      0,                        // Modification time MTIME (int)
-                      0,                        // Modification time MTIME (int)
-                      0,                        // Modification time MTIME (int)
-                      0,                        // Modification time MTIME (int)
-                      0,                        // Extra flags (XFLG)
-                      0                         // Operating system (OS)
-                  });
+        out.write(new byte[] { (byte) GZIP_MAGIC,        // Magic number (short)
+                (byte) (GZIP_MAGIC >> 8),  // Magic number (short)
+                Deflater.DEFLATED,        // Compression method (CM)
+                0,                        // Flags (FLG)
+                0,                        // Modification time MTIME (int)
+                0,                        // Modification time MTIME (int)
+                0,                        // Modification time MTIME (int)
+                0,                        // Modification time MTIME (int)
+                0,                        // Extra flags (XFLG)
+                0                         // Operating system (OS)
+        });
     }
 
     /*
@@ -198,7 +209,7 @@ class GZIPOutputStream extends DeflaterOutputStream {
      * offset.
      */
     private void writeTrailer(byte[] buf, int offset) throws IOException {
-        writeInt((int)crc.getValue(), buf, offset); // CRC-32 of uncompr. data
+        writeInt((int) crc.getValue(), buf, offset); // CRC-32 of uncompr. data
         writeInt(def.getTotalIn(), buf, offset + 4); // Number of uncompr. bytes
     }
 
@@ -216,7 +227,7 @@ class GZIPOutputStream extends DeflaterOutputStream {
      * at a given offset
      */
     private void writeShort(int s, byte[] buf, int offset) throws IOException {
-        buf[offset] = (byte)(s & 0xff);
-        buf[offset + 1] = (byte)((s >> 8) & 0xff);
+        buf[offset] = (byte) (s & 0xff);
+        buf[offset + 1] = (byte) ((s >> 8) & 0xff);
     }
 }

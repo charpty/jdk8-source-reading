@@ -109,12 +109,11 @@ package java.util.concurrent.locks;
  * You should consider all of these things when evaluating the suitability
  * of a given implementation for your application.
  *
+ * @author Doug Lea
  * @see ReentrantReadWriteLock
  * @see Lock
  * @see ReentrantLock
- *
  * @since 1.5
- * @author Doug Lea
  */
 public interface ReadWriteLock {
     /**

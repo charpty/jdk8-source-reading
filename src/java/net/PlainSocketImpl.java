@@ -24,12 +24,11 @@
  */
 package java.net;
 
-import java.io.IOException;
 import java.io.FileDescriptor;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Collections;
-import jdk.net.*;
+import java.io.IOException;
+import jdk.net.ExtendedSocketOptions;
+import jdk.net.SocketFlow;
+
 
 import static sun.net.ExtendedOptionsImpl.*;
 
@@ -39,8 +38,7 @@ import static sun.net.ExtendedOptionsImpl.*;
  * @author Chris Hegarty
  */
 
-class PlainSocketImpl extends AbstractPlainSocketImpl
-{
+class PlainSocketImpl extends AbstractPlainSocketImpl {
     static {
         initProto();
     }
@@ -48,7 +46,8 @@ class PlainSocketImpl extends AbstractPlainSocketImpl
     /**
      * Constructs an empty instance.
      */
-    PlainSocketImpl() { }
+    PlainSocketImpl() {
+    }
 
     /**
      * Constructs an instance with the given file descriptor.
@@ -66,7 +65,7 @@ class PlainSocketImpl extends AbstractPlainSocketImpl
             }
             checkSetOptionPermission(name);
             checkValueType(value, SocketFlow.class);
-            setFlowOption(getFileDescriptor(), (SocketFlow)value);
+            setFlowOption(getFileDescriptor(), (SocketFlow) value);
         }
     }
 
@@ -80,25 +79,24 @@ class PlainSocketImpl extends AbstractPlainSocketImpl
         checkGetOptionPermission(name);
         SocketFlow flow = SocketFlow.create();
         getFlowOption(getFileDescriptor(), flow);
-        return (T)flow;
+        return (T) flow;
     }
 
     protected void socketSetOption(int opt, boolean b, Object val) throws SocketException {
         try {
             socketSetOption0(opt, b, val);
         } catch (SocketException se) {
-            if (socket == null || !socket.isConnected())
+            if (socket == null || !socket.isConnected()) {
                 throw se;
+            }
         }
     }
 
     native void socketCreate(boolean isServer) throws IOException;
 
-    native void socketConnect(InetAddress address, int port, int timeout)
-        throws IOException;
+    native void socketConnect(InetAddress address, int port, int timeout) throws IOException;
 
-    native void socketBind(InetAddress address, int port)
-        throws IOException;
+    native void socketBind(InetAddress address, int port) throws IOException;
 
     native void socketListen(int count) throws IOException;
 
@@ -112,8 +110,7 @@ class PlainSocketImpl extends AbstractPlainSocketImpl
 
     static native void initProto();
 
-    native void socketSetOption0(int cmd, boolean on, Object value)
-        throws SocketException;
+    native void socketSetOption0(int cmd, boolean on, Object value) throws SocketException;
 
     native int socketGetOption(int opt, Object iaContainerObj) throws SocketException;
 

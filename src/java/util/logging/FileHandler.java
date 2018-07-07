@@ -25,10 +25,6 @@
 
 package java.util.logging;
 
-import static java.nio.file.StandardOpenOption.APPEND;
-import static java.nio.file.StandardOpenOption.CREATE_NEW;
-import static java.nio.file.StandardOpenOption.WRITE;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -46,6 +42,9 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashSet;
 import java.util.Set;
+
+
+import static java.nio.file.StandardOpenOption.*;
 
 /**
  * Simple file logging <tt>Handler</tt>.
@@ -71,29 +70,29 @@ import java.util.Set;
  * (or have invalid values) then the specified default values are used.
  * <ul>
  * <li>   &lt;handler-name&gt;.level
- *        specifies the default level for the <tt>Handler</tt>
- *        (defaults to <tt>Level.ALL</tt>). </li>
+ * specifies the default level for the <tt>Handler</tt>
+ * (defaults to <tt>Level.ALL</tt>). </li>
  * <li>   &lt;handler-name&gt;.filter
- *        specifies the name of a <tt>Filter</tt> class to use
- *        (defaults to no <tt>Filter</tt>). </li>
+ * specifies the name of a <tt>Filter</tt> class to use
+ * (defaults to no <tt>Filter</tt>). </li>
  * <li>   &lt;handler-name&gt;.formatter
- *        specifies the name of a <tt>Formatter</tt> class to use
- *        (defaults to <tt>java.util.logging.XMLFormatter</tt>) </li>
+ * specifies the name of a <tt>Formatter</tt> class to use
+ * (defaults to <tt>java.util.logging.XMLFormatter</tt>) </li>
  * <li>   &lt;handler-name&gt;.encoding
- *        the name of the character set encoding to use (defaults to
- *        the default platform encoding). </li>
+ * the name of the character set encoding to use (defaults to
+ * the default platform encoding). </li>
  * <li>   &lt;handler-name&gt;.limit
- *        specifies an approximate maximum amount to write (in bytes)
- *        to any one file.  If this is zero, then there is no limit.
- *        (Defaults to no limit). </li>
+ * specifies an approximate maximum amount to write (in bytes)
+ * to any one file.  If this is zero, then there is no limit.
+ * (Defaults to no limit). </li>
  * <li>   &lt;handler-name&gt;.count
- *        specifies how many output files to cycle through (defaults to 1). </li>
+ * specifies how many output files to cycle through (defaults to 1). </li>
  * <li>   &lt;handler-name&gt;.pattern
- *        specifies a pattern for generating the output file name.  See
- *        below for details. (Defaults to "%h/java%u.log"). </li>
+ * specifies a pattern for generating the output file name.  See
+ * below for details. (Defaults to "%h/java%u.log"). </li>
  * <li>   &lt;handler-name&gt;.append
- *        specifies whether the FileHandler should append onto
- *        any existing files (defaults to false). </li>
+ * specifies whether the FileHandler should append onto
+ * any existing files (defaults to false). </li>
  * </ul>
  * <p>
  * For example, the properties for {@code FileHandler} would be:
@@ -187,7 +186,7 @@ public class FileHandler extends StreamHandler {
 
         @Override
         public void write(byte buff[], int off, int len) throws IOException {
-            out.write(buff,off,len);
+            out.write(buff, off, len);
             written += len;
         }
 
@@ -205,7 +204,7 @@ public class FileHandler extends StreamHandler {
     private void open(File fname, boolean append) throws IOException {
         int len = 0;
         if (append) {
-            len = (int)fname.length();
+            len = (int) fname.length();
         }
         FileOutputStream fout = new FileOutputStream(fname.toString(), append);
         BufferedOutputStream bout = new BufferedOutputStream(fout);
@@ -236,7 +235,7 @@ public class FileHandler extends StreamHandler {
         setFilter(manager.getFilterProperty(cname + ".filter", null));
         setFormatter(manager.getFormatterProperty(cname + ".formatter", new XMLFormatter()));
         try {
-            setEncoding(manager.getStringProperty(cname +".encoding", null));
+            setEncoding(manager.getStringProperty(cname + ".encoding", null));
         } catch (Exception ex) {
             try {
                 setEncoding(null);
@@ -247,15 +246,18 @@ public class FileHandler extends StreamHandler {
         }
     }
 
-
     /**
      * Construct a default <tt>FileHandler</tt>.  This will be configured
      * entirely from <tt>LogManager</tt> properties (or their default values).
      * <p>
-     * @exception  IOException if there are IO problems opening the files.
-     * @exception  SecurityException  if a security manager exists and if
-     *             the caller does not have <tt>LoggingPermission("control"))</tt>.
-     * @exception  NullPointerException if pattern property is an empty String.
+     *
+     * @throws IOException
+     *         if there are IO problems opening the files.
+     * @throws SecurityException
+     *         if a security manager exists and if
+     *         the caller does not have <tt>LoggingPermission("control"))</tt>.
+     * @throws NullPointerException
+     *         if pattern property is an empty String.
      */
     public FileHandler() throws IOException, SecurityException {
         checkPermission();
@@ -274,14 +276,19 @@ public class FileHandler extends StreamHandler {
      * There is no limit on the amount of data that may be written,
      * so use this with care.
      *
-     * @param pattern  the name of the output file
-     * @exception  IOException if there are IO problems opening the files.
-     * @exception  SecurityException  if a security manager exists and if
-     *             the caller does not have <tt>LoggingPermission("control")</tt>.
-     * @exception  IllegalArgumentException if pattern is an empty string
+     * @param pattern
+     *         the name of the output file
+     *
+     * @throws IOException
+     *         if there are IO problems opening the files.
+     * @throws SecurityException
+     *         if a security manager exists and if
+     *         the caller does not have <tt>LoggingPermission("control")</tt>.
+     * @throws IllegalArgumentException
+     *         if pattern is an empty string
      */
     public FileHandler(String pattern) throws IOException, SecurityException {
-        if (pattern.length() < 1 ) {
+        if (pattern.length() < 1) {
             throw new IllegalArgumentException();
         }
         checkPermission();
@@ -305,16 +312,21 @@ public class FileHandler extends StreamHandler {
      * There is no limit on the amount of data that may be written,
      * so use this with care.
      *
-     * @param pattern  the name of the output file
-     * @param append  specifies append mode
-     * @exception  IOException if there are IO problems opening the files.
-     * @exception  SecurityException  if a security manager exists and if
-     *             the caller does not have <tt>LoggingPermission("control")</tt>.
-     * @exception  IllegalArgumentException if pattern is an empty string
+     * @param pattern
+     *         the name of the output file
+     * @param append
+     *         specifies append mode
+     *
+     * @throws IOException
+     *         if there are IO problems opening the files.
+     * @throws SecurityException
+     *         if a security manager exists and if
+     *         the caller does not have <tt>LoggingPermission("control")</tt>.
+     * @throws IllegalArgumentException
+     *         if pattern is an empty string
      */
-    public FileHandler(String pattern, boolean append) throws IOException,
-            SecurityException {
-        if (pattern.length() < 1 ) {
+    public FileHandler(String pattern, boolean append) throws IOException, SecurityException {
+        if (pattern.length() < 1) {
             throw new IllegalArgumentException();
         }
         checkPermission();
@@ -340,17 +352,24 @@ public class FileHandler extends StreamHandler {
      * <p>
      * The count must be at least 1.
      *
-     * @param pattern  the pattern for naming the output file
-     * @param limit  the maximum number of bytes to write to any one file
-     * @param count  the number of files to use
-     * @exception  IOException if there are IO problems opening the files.
-     * @exception  SecurityException  if a security manager exists and if
-     *             the caller does not have <tt>LoggingPermission("control")</tt>.
-     * @exception  IllegalArgumentException if {@code limit < 0}, or {@code count < 1}.
-     * @exception  IllegalArgumentException if pattern is an empty string
+     * @param pattern
+     *         the pattern for naming the output file
+     * @param limit
+     *         the maximum number of bytes to write to any one file
+     * @param count
+     *         the number of files to use
+     *
+     * @throws IOException
+     *         if there are IO problems opening the files.
+     * @throws SecurityException
+     *         if a security manager exists and if
+     *         the caller does not have <tt>LoggingPermission("control")</tt>.
+     * @throws IllegalArgumentException
+     *         if {@code limit < 0}, or {@code count < 1}.
+     * @throws IllegalArgumentException
+     *         if pattern is an empty string
      */
-    public FileHandler(String pattern, int limit, int count)
-                                        throws IOException, SecurityException {
+    public FileHandler(String pattern, int limit, int count) throws IOException, SecurityException {
         if (limit < 0 || count < 1 || pattern.length() < 1) {
             throw new IllegalArgumentException();
         }
@@ -377,19 +396,26 @@ public class FileHandler extends StreamHandler {
      * <p>
      * The count must be at least 1.
      *
-     * @param pattern  the pattern for naming the output file
-     * @param limit  the maximum number of bytes to write to any one file
-     * @param count  the number of files to use
-     * @param append  specifies append mode
-     * @exception  IOException if there are IO problems opening the files.
-     * @exception  SecurityException  if a security manager exists and if
-     *             the caller does not have <tt>LoggingPermission("control")</tt>.
-     * @exception  IllegalArgumentException if {@code limit < 0}, or {@code count < 1}.
-     * @exception  IllegalArgumentException if pattern is an empty string
+     * @param pattern
+     *         the pattern for naming the output file
+     * @param limit
+     *         the maximum number of bytes to write to any one file
+     * @param count
+     *         the number of files to use
+     * @param append
+     *         specifies append mode
      *
+     * @throws IOException
+     *         if there are IO problems opening the files.
+     * @throws SecurityException
+     *         if a security manager exists and if
+     *         the caller does not have <tt>LoggingPermission("control")</tt>.
+     * @throws IllegalArgumentException
+     *         if {@code limit < 0}, or {@code count < 1}.
+     * @throws IllegalArgumentException
+     *         if pattern is an empty string
      */
-    public FileHandler(String pattern, int limit, int count, boolean append)
-                                        throws IOException, SecurityException {
+    public FileHandler(String pattern, int limit, int count, boolean append) throws IOException, SecurityException {
         if (limit < 0 || count < 1 || pattern.length() < 1) {
             throw new IllegalArgumentException();
         }
@@ -402,7 +428,7 @@ public class FileHandler extends StreamHandler {
         openFiles();
     }
 
-    private  boolean isParentWritable(Path path) {
+    private boolean isParentWritable(Path path) {
         Path parent = path.getParent();
         if (parent == null) {
             parent = path.toAbsolutePath().getParent();
@@ -418,7 +444,7 @@ public class FileHandler extends StreamHandler {
         LogManager manager = LogManager.getLogManager();
         manager.checkPermission();
         if (count < 1) {
-           throw new IllegalArgumentException("file count = " + count);
+            throw new IllegalArgumentException("file count = " + count);
         }
         if (limit < 0) {
             limit = 0;
@@ -432,7 +458,7 @@ public class FileHandler extends StreamHandler {
         // Create a lock file.  This grants us exclusive access
         // to our set of output files, as long as we are alive.
         int unique = -1;
-        for (;;) {
+        for (; ; ) {
             unique++;
             if (unique > MAX_LOCKS) {
                 throw new IOException("Couldn't get lock for " + pattern);
@@ -443,7 +469,7 @@ public class FileHandler extends StreamHandler {
             // Because some systems (e.g., Solaris) can only do file locks
             // between processes (and not within a process), we first check
             // if we ourself already have the file locked.
-            synchronized(locks) {
+            synchronized (locks) {
                 if (locks.contains(lockFileName)) {
                     // We already own this lock, for a different FileHandler
                     // object.  Try again.
@@ -456,8 +482,7 @@ public class FileHandler extends StreamHandler {
                 boolean fileCreated = false;
                 while (channel == null && retries++ < 1) {
                     try {
-                        channel = FileChannel.open(lockFilePath,
-                                CREATE_NEW, WRITE);
+                        channel = FileChannel.open(lockFilePath, CREATE_NEW, WRITE);
                         fileCreated = true;
                     } catch (FileAlreadyExistsException ix) {
                         // This may be a zombie file left over by a previous
@@ -465,17 +490,15 @@ public class FileHandler extends StreamHandler {
                         // write to its directory.
                         // Note that this is a situation that may happen,
                         // but not too frequently.
-                        if (Files.isRegularFile(lockFilePath, LinkOption.NOFOLLOW_LINKS)
-                            && isParentWritable(lockFilePath)) {
+                        if (Files.isRegularFile(lockFilePath, LinkOption.NOFOLLOW_LINKS) && isParentWritable(lockFilePath)) {
                             try {
-                                channel = FileChannel.open(lockFilePath,
-                                    WRITE, APPEND);
+                                channel = FileChannel.open(lockFilePath, WRITE, APPEND);
                             } catch (NoSuchFileException x) {
                                 // Race condition - retry once, and if that
                                 // fails again just try the next name in
                                 // the sequence.
                                 continue;
-                            } catch(IOException x) {
+                            } catch (IOException x) {
                                 // the file may not be writable for us.
                                 // try the next name in the sequence
                                 break;
@@ -488,7 +511,9 @@ public class FileHandler extends StreamHandler {
                     }
                 }
 
-                if (channel == null) continue; // try the next name;
+                if (channel == null) {
+                    continue; // try the next name;
+                }
                 lockFileChannel = channel;
 
                 boolean available;
@@ -557,14 +582,19 @@ public class FileHandler extends StreamHandler {
     /**
      * Generate a file based on a user-supplied pattern, generation number,
      * and an integer uniqueness suffix
-     * @param pattern the pattern for naming the output file
-     * @param generation the generation number to distinguish rotated logs
-     * @param unique a unique number to resolve conflicts
+     *
+     * @param pattern
+     *         the pattern for naming the output file
+     * @param generation
+     *         the generation number to distinguish rotated logs
+     * @param unique
+     *         a unique number to resolve conflicts
+     *
      * @return the generated File
+     *
      * @throws IOException
      */
-    private File generate(String pattern, int generation, int unique)
-            throws IOException {
+    private File generate(String pattern, int generation, int unique) throws IOException {
         File file = null;
         String word = "";
         int ix = 0;
@@ -585,7 +615,7 @@ public class FileHandler extends StreamHandler {
                 }
                 word = "";
                 continue;
-            } else  if (ch == '%') {
+            } else if (ch == '%') {
                 if (ch2 == 't') {
                     String tmpDir = System.getProperty("java.io.tmpdir");
                     if (tmpDir == null) {
@@ -647,9 +677,9 @@ public class FileHandler extends StreamHandler {
         setLevel(Level.OFF);
 
         super.close();
-        for (int i = count-2; i >= 0; i--) {
+        for (int i = count - 2; i >= 0; i--) {
             File f1 = files[i];
-            File f2 = files[i+1];
+            File f2 = files[i + 1];
             if (f1.exists()) {
                 if (f2.exists()) {
                     f2.delete();
@@ -671,8 +701,9 @@ public class FileHandler extends StreamHandler {
     /**
      * Format and publish a <tt>LogRecord</tt>.
      *
-     * @param  record  description of the log event. A null record is
-     *                 silently ignored and is not published
+     * @param record
+     *         description of the log event. A null record is
+     *         silently ignored and is not published
      */
     @Override
     public synchronized void publish(LogRecord record) {
@@ -700,8 +731,9 @@ public class FileHandler extends StreamHandler {
     /**
      * Close all the files.
      *
-     * @exception  SecurityException  if a security manager exists and if
-     *             the caller does not have <tt>LoggingPermission("control")</tt>.
+     * @throws SecurityException
+     *         if a security manager exists and if
+     *         the caller does not have <tt>LoggingPermission("control")</tt>.
      */
     @Override
     public synchronized void close() throws SecurityException {
@@ -716,7 +748,7 @@ public class FileHandler extends StreamHandler {
         } catch (Exception ex) {
             // Problems closing the stream.  Punt.
         }
-        synchronized(locks) {
+        synchronized (locks) {
             locks.remove(lockFileName);
         }
         new File(lockFileName).delete();
@@ -726,6 +758,7 @@ public class FileHandler extends StreamHandler {
 
     private static class InitializationErrorManager extends ErrorManager {
         Exception lastException;
+
         @Override
         public void error(String msg, Exception ex, int code) {
             lastException = ex;

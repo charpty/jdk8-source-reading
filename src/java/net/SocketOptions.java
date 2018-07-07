@@ -39,9 +39,9 @@ import java.lang.annotation.Native;
  * type-safe methods to get/set each of these options in Socket, ServerSocket,
  * DatagramSocket and MulticastSocket.
  * <P>
+ *
  * @author David Brown
  */
-
 
 public interface SocketOptions {
 
@@ -54,23 +54,23 @@ public interface SocketOptions {
      * SocketImpl s;
      * ...
      * s.setOption(SO_LINGER, new Integer(10));
-     *    // OK - set SO_LINGER w/ timeout of 10 sec.
+     * // OK - set SO_LINGER w/ timeout of 10 sec.
      * s.setOption(SO_LINGER, new Double(10));
-     *    // ERROR - expects java.lang.Integer
-     *</PRE>
+     * // ERROR - expects java.lang.Integer
+     * </PRE>
      * If the requested option is binary, it can be set using this method by
      * a java.lang.Boolean:
      * <BR><PRE>
      * s.setOption(TCP_NODELAY, new Boolean(true));
-     *    // OK - enables TCP_NODELAY, a binary option
+     * // OK - enables TCP_NODELAY, a binary option
      * </PRE>
      * <BR>
      * Any option can be disabled using this method with a Boolean(false):
      * <BR><PRE>
      * s.setOption(TCP_NODELAY, new Boolean(false));
-     *    // OK - disables TCP_NODELAY
+     * // OK - disables TCP_NODELAY
      * s.setOption(SO_LINGER, new Boolean(false));
-     *    // OK - disables SO_LINGER
+     * // OK - disables SO_LINGER
      * </PRE>
      * <BR>
      * For an option that has a notion of on and off, and requires
@@ -80,14 +80,18 @@ public interface SocketOptions {
      * Throws SocketException if the option is unrecognized,
      * the socket is closed, or some low-level error occurred
      * <BR>
-     * @param optID identifies the option
-     * @param value the parameter of the socket option
-     * @throws SocketException if the option is unrecognized,
-     * the socket is closed, or some low-level error occurred
+     *
+     * @param optID
+     *         identifies the option
+     * @param value
+     *         the parameter of the socket option
+     *
+     * @throws SocketException
+     *         if the option is unrecognized,
+     *         the socket is closed, or some low-level error occurred
      * @see #getOption(int)
      */
-    public void
-        setOption(int optID, Object value) throws SocketException;
+    public void setOption(int optID, Object value) throws SocketException;
 
     /**
      * Fetch the value of an option.
@@ -98,7 +102,7 @@ public interface SocketOptions {
      * ...
      * Boolean noDelay = (Boolean)(s.getOption(TCP_NODELAY));
      * if (noDelay.booleanValue()) {
-     *     // true if TCP_NODELAY is enabled...
+     * // true if TCP_NODELAY is enabled...
      * ...
      * }
      * </PRE>
@@ -109,16 +113,21 @@ public interface SocketOptions {
      * <PRE>
      * Object o = s.getOption(SO_LINGER);
      * if (o instanceof Integer) {
-     *     System.out.print("Linger time is " + ((Integer)o).intValue());
+     * System.out.print("Linger time is " + ((Integer)o).intValue());
      * } else {
-     *   // the true type of o is java.lang.Boolean(false);
+     * // the true type of o is java.lang.Boolean(false);
      * }
      * </PRE>
      *
-     * @param optID an {@code int} identifying the option to fetch
+     * @param optID
+     *         an {@code int} identifying the option to fetch
+     *
      * @return the value of the option
-     * @throws SocketException if the socket is closed
-     * @throws SocketException if <I>optID</I> is unknown along the
+     *
+     * @throws SocketException
+     *         if the socket is closed
+     * @throws SocketException
+     *         if <I>optID</I> is unknown along the
      *         protocol stack (including the SocketImpl)
      * @see #setOption(int, java.lang.Object)
      */
@@ -132,14 +141,15 @@ public interface SocketOptions {
      * Disable Nagle's algorithm for this connection.  Written data
      * to the network is not buffered pending acknowledgement of
      * previously written data.
-     *<P>
+     * <P>
      * Valid for TCP only: SocketImpl.
      *
      * @see Socket#setTcpNoDelay
      * @see Socket#getTcpNoDelay
      */
 
-    @Native public final static int TCP_NODELAY = 0x0001;
+    @Native
+    public final static int TCP_NODELAY = 0x0001;
 
     /**
      * Fetch the local address binding of a socket (this option cannot
@@ -160,15 +170,18 @@ public interface SocketOptions {
      * @see DatagramSocket#getLocalAddress
      */
 
-    @Native public final static int SO_BINDADDR = 0x000F;
+    @Native
+    public final static int SO_BINDADDR = 0x000F;
 
-    /** Sets SO_REUSEADDR for a socket.  This is used only for MulticastSockets
+    /**
+     * Sets SO_REUSEADDR for a socket.  This is used only for MulticastSockets
      * in java, and it is set by default for MulticastSockets.
      * <P>
      * Valid for: DatagramSocketImpl
      */
 
-    @Native public final static int SO_REUSEADDR = 0x04;
+    @Native
+    public final static int SO_REUSEADDR = 0x04;
 
     /**
      * Sets SO_BROADCAST for a socket. This option enables and disables
@@ -176,12 +189,15 @@ public interface SocketOptions {
      * for only datagram sockets and only on networks that support
      * the concept of a broadcast message (e.g. Ethernet, token ring, etc.),
      * and it is set by default for DatagramSockets.
+     *
      * @since 1.4
      */
 
-    @Native public final static int SO_BROADCAST = 0x0020;
+    @Native
+    public final static int SO_BROADCAST = 0x0020;
 
-    /** Set which outgoing interface on which to send multicast packets.
+    /**
+     * Set which outgoing interface on which to send multicast packets.
      * Useful on hosts with multiple network interfaces, where applications
      * want to use other than the system default.  Takes/returns an InetAddress.
      * <P>
@@ -191,35 +207,43 @@ public interface SocketOptions {
      * @see MulticastSocket#getInterface()
      */
 
-    @Native public final static int IP_MULTICAST_IF = 0x10;
+    @Native
+    public final static int IP_MULTICAST_IF = 0x10;
 
-    /** Same as above. This option is introduced so that the behaviour
-     *  with IP_MULTICAST_IF will be kept the same as before, while
-     *  this new option can support setting outgoing interfaces with either
-     *  IPv4 and IPv6 addresses.
+    /**
+     * Same as above. This option is introduced so that the behaviour
+     * with IP_MULTICAST_IF will be kept the same as before, while
+     * this new option can support setting outgoing interfaces with either
+     * IPv4 and IPv6 addresses.
      *
-     *  NOTE: make sure there is no conflict with this
+     * NOTE: make sure there is no conflict with this
+     *
      * @see MulticastSocket#setNetworkInterface(NetworkInterface)
      * @see MulticastSocket#getNetworkInterface()
      * @since 1.4
      */
-    @Native public final static int IP_MULTICAST_IF2 = 0x1f;
+    @Native
+    public final static int IP_MULTICAST_IF2 = 0x1f;
 
     /**
      * This option enables or disables local loopback of multicast datagrams.
      * This option is enabled by default for Multicast Sockets.
+     *
      * @since 1.4
      */
 
-    @Native public final static int IP_MULTICAST_LOOP = 0x12;
+    @Native
+    public final static int IP_MULTICAST_LOOP = 0x12;
 
     /**
      * This option sets the type-of-service or traffic class field
      * in the IP header for a TCP or UDP socket.
+     *
      * @since 1.4
      */
 
-    @Native public final static int IP_TOS = 0x3;
+    @Native
+    public final static int IP_TOS = 0x3;
 
     /**
      * Specify a linger-on-close timeout.  This option disables/enables
@@ -237,9 +261,11 @@ public interface SocketOptions {
      * @see Socket#setSoLinger
      * @see Socket#getSoLinger
      */
-    @Native public final static int SO_LINGER = 0x0080;
+    @Native
+    public final static int SO_LINGER = 0x0080;
 
-    /** Set a timeout on blocking Socket operations:
+    /**
+     * Set a timeout on blocking Socket operations:
      * <PRE>
      * ServerSocket.accept();
      * SocketInputStream.read();
@@ -258,7 +284,8 @@ public interface SocketOptions {
      * @see ServerSocket#setSoTimeout
      * @see DatagramSocket#setSoTimeout
      */
-    @Native public final static int SO_TIMEOUT = 0x1006;
+    @Native
+    public final static int SO_TIMEOUT = 0x1006;
 
     /**
      * Set a hint the size of the underlying buffers used by the
@@ -275,7 +302,8 @@ public interface SocketOptions {
      * @see DatagramSocket#setSendBufferSize
      * @see DatagramSocket#getSendBufferSize
      */
-    @Native public final static int SO_SNDBUF = 0x1001;
+    @Native
+    public final static int SO_SNDBUF = 0x1001;
 
     /**
      * Set a hint the size of the underlying buffers used by the
@@ -293,7 +321,8 @@ public interface SocketOptions {
      * @see DatagramSocket#setReceiveBufferSize
      * @see DatagramSocket#getReceiveBufferSize
      */
-    @Native public final static int SO_RCVBUF = 0x1002;
+    @Native
+    public final static int SO_RCVBUF = 0x1002;
 
     /**
      * When the keepalive option is set for a TCP socket and no data
@@ -303,10 +332,10 @@ public interface SocketOptions {
      * TCP segment to which the peer must respond.
      * One of three responses is expected:
      * 1. The peer responds with the expected ACK. The application is not
-     *    notified (since everything is OK). TCP will send another probe
-     *    following another 2 hours of inactivity.
+     * notified (since everything is OK). TCP will send another probe
+     * following another 2 hours of inactivity.
      * 2. The peer responds with an RST, which tells the local TCP that
-     *    the peer host has crashed and rebooted. The socket is closed.
+     * the peer host has crashed and rebooted. The socket is closed.
      * 3. There is no response from the peer. The socket is closed.
      *
      * The purpose of this option is to detect if the peer host crashes.
@@ -316,7 +345,8 @@ public interface SocketOptions {
      * @see Socket#setKeepAlive
      * @see Socket#getKeepAlive
      */
-    @Native public final static int SO_KEEPALIVE = 0x0008;
+    @Native
+    public final static int SO_KEEPALIVE = 0x0008;
 
     /**
      * When the OOBINLINE option is set, any TCP urgent data received on
@@ -327,5 +357,6 @@ public interface SocketOptions {
      * @see Socket#setOOBInline
      * @see Socket#getOOBInline
      */
-    @Native public final static int SO_OOBINLINE = 0x1003;
+    @Native
+    public final static int SO_OOBINLINE = 0x1003;
 }

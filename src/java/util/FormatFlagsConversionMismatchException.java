@@ -34,9 +34,7 @@ package java.util;
  *
  * @since 1.5
  */
-public class FormatFlagsConversionMismatchException
-    extends IllegalFormatException
-{
+public class FormatFlagsConversionMismatchException extends IllegalFormatException {
     private static final long serialVersionUID = 19120414L;
 
     private String f;
@@ -47,15 +45,15 @@ public class FormatFlagsConversionMismatchException
      * Constructs an instance of this class with the specified flag
      * and conversion.
      *
-     * @param  f
+     * @param f
      *         The flag
-     *
-     * @param  c
+     * @param c
      *         The conversion
      */
     public FormatFlagsConversionMismatchException(String f, char c) {
-        if (f == null)
+        if (f == null) {
             throw new NullPointerException();
+        }
         this.f = f;
         this.c = c;
     }
@@ -63,16 +61,16 @@ public class FormatFlagsConversionMismatchException
     /**
      * Returns the incompatible flag.
      *
-     * @return  The flag
+     * @return The flag
      */
-     public String getFlags() {
+    public String getFlags() {
         return f;
     }
 
     /**
      * Returns the incompatible conversion.
      *
-     * @return  The conversion
+     * @return The conversion
      */
     public char getConversion() {
         return c;

@@ -31,11 +31,10 @@ package java.lang;
  * Java application is not in an appropriate state for the requested
  * operation.
  *
- * @author  Jonni Kanerva
- * @since   JDK1.1
+ * @author Jonni Kanerva
+ * @since JDK1.1
  */
-public
-class IllegalStateException extends RuntimeException {
+public class IllegalStateException extends RuntimeException {
     /**
      * Constructs an IllegalStateException with no detail message.
      * A detail message is a String that describes this particular exception.
@@ -49,7 +48,8 @@ class IllegalStateException extends RuntimeException {
      * message.  A detail message is a String that describes this particular
      * exception.
      *
-     * @param s the String that contains a detailed message
+     * @param s
+     *         the String that contains a detailed message
      */
     public IllegalStateException(String s) {
         super(s);
@@ -63,12 +63,15 @@ class IllegalStateException extends RuntimeException {
      * <i>not</i> automatically incorporated in this exception's detail
      * message.
      *
-     * @param  message the detail message (which is saved for later retrieval
+     * @param message
+     *         the detail message (which is saved for later retrieval
      *         by the {@link Throwable#getMessage()} method).
-     * @param  cause the cause (which is saved for later retrieval by the
+     * @param cause
+     *         the cause (which is saved for later retrieval by the
      *         {@link Throwable#getCause()} method).  (A <tt>null</tt> value
      *         is permitted, and indicates that the cause is nonexistent or
      *         unknown.)
+     *
      * @since 1.5
      */
     public IllegalStateException(String message, Throwable cause) {
@@ -83,11 +86,13 @@ class IllegalStateException extends RuntimeException {
      * wrappers for other throwables (for example, {@link
      * java.security.PrivilegedActionException}).
      *
-     * @param  cause the cause (which is saved for later retrieval by the
+     * @param cause
+     *         the cause (which is saved for later retrieval by the
      *         {@link Throwable#getCause()} method).  (A <tt>null</tt> value is
      *         permitted, and indicates that the cause is nonexistent or
      *         unknown.)
-     * @since  1.5
+     *
+     * @since 1.5
      */
     public IllegalStateException(Throwable cause) {
         super(cause);

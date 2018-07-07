@@ -63,9 +63,9 @@ import sun.security.action.GetPropertyAction;
  * strong random number generator to choose the object number of the
  * returned <code>ObjID</code>.
  *
- * @author      Ann Wollrath
- * @author      Peter Jones
- * @since       JDK1.1
+ * @author Ann Wollrath
+ * @author Peter Jones
+ * @since JDK1.1
  */
 public final class ObjID implements Serializable {
 
@@ -89,7 +89,6 @@ public final class ObjID implements Serializable {
     private static final SecureRandom secureRandom = new SecureRandom();
 
     /**
-     * @serial object number
      * @see #hashCode
      */
     private final long objNum;
@@ -130,7 +129,8 @@ public final class ObjID implements Serializable {
      * clash with any <code>ObjID</code>s generated via the no-arg
      * constructor.
      *
-     * @param   objNum object number for well-known object identifier
+     * @param objNum
+     *         object number for well-known object identifier
      */
     public ObjID(int objNum) {
         space = new UID((short) 0);
@@ -155,11 +155,13 @@ public final class ObjID implements Serializable {
      * space identifier by invoking its {@link UID#write(DataOutput)}
      * method with the stream.
      *
-     * @param   out the <code>ObjectOutput</code> instance to write
-     * this <code>ObjID</code> to
+     * @param out
+     *         the <code>ObjectOutput</code> instance to write
+     *         this <code>ObjID</code> to
      *
-     * @throws  IOException if an I/O error occurs while performing
-     * this operation
+     * @throws IOException
+     *         if an I/O error occurs while performing
+     *         this operation
      */
     public void write(ObjectOutput out) throws IOException {
         out.writeLong(objNum);
@@ -179,13 +181,15 @@ public final class ObjID implements Serializable {
      * contains the object number and address space identifier that
      * were read from the stream.
      *
-     * @param   in the <code>ObjectInput</code> instance to read
-     * <code>ObjID</code> from
+     * @param in
+     *         the <code>ObjectInput</code> instance to read
+     *         <code>ObjID</code> from
      *
-     * @return  unmarshalled <code>ObjID</code> instance
+     * @return unmarshalled <code>ObjID</code> instance
      *
-     * @throws  IOException if an I/O error occurs while performing
-     * this operation
+     * @throws IOException
+     *         if an I/O error occurs while performing
+     *         this operation
      */
     public static ObjID read(ObjectInput in) throws IOException {
         long num = in.readLong();
@@ -197,7 +201,7 @@ public final class ObjID implements Serializable {
      * Returns the hash code value for this object identifier, the
      * object number.
      *
-     * @return  the hash code value for this object identifier
+     * @return the hash code value for this object identifier
      */
     public int hashCode() {
         return (int) objNum;
@@ -211,9 +215,10 @@ public final class ObjID implements Serializable {
      * specified object is an <code>ObjID</code> instance with the same
      * object number and address space identifier as this one.
      *
-     * @param   obj the object to compare this <code>ObjID</code> to
+     * @param obj
+     *         the object to compare this <code>ObjID</code> to
      *
-     * @return  <code>true</code> if the given object is equivalent to
+     * @return <code>true</code> if the given object is equivalent to
      * this one, and <code>false</code> otherwise
      */
     public boolean equals(Object obj) {
@@ -228,7 +233,7 @@ public final class ObjID implements Serializable {
     /**
      * Returns a string representation of this object identifier.
      *
-     * @return  a string representation of this object identifier
+     * @return a string representation of this object identifier
      */
     /*
      * The address space identifier is only included in the string
@@ -236,13 +241,11 @@ public final class ObjID implements Serializable {
      * (or if the randomIDs property was set).
      */
     public String toString() {
-        return "[" + (space.equals(mySpace) ? "" : space + ", ") +
-            objNum + "]";
+        return "[" + (space.equals(mySpace) ? "" : space + ", ") + objNum + "]";
     }
 
     private static boolean useRandomIDs() {
-        String value = AccessController.doPrivileged(
-            new GetPropertyAction("java.rmi.server.randomIDs"));
+        String value = AccessController.doPrivileged(new GetPropertyAction("java.rmi.server.randomIDs"));
         return value == null ? true : Boolean.parseBoolean(value);
     }
 }

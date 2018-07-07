@@ -53,24 +53,16 @@ import java.util.function.Supplier;
  * operation, the stream is considered to be consumed, and no more intermediate
  * or terminal operations are permitted on this stream instance.
  *
- * @implNote
- * <p>For sequential streams, and parallel streams without
- * <a href="package-summary.html#StreamOps">stateful intermediate
- * operations</a>, parallel streams, pipeline evaluation is done in a single
- * pass that "jams" all the operations together.  For parallel streams with
- * stateful operations, execution is divided into segments, where each
- * stateful operations marks the end of a segment, and each segment is
- * evaluated separately and the result used as the input to the next
- * segment.  In all cases, the source data is not consumed until a terminal
- * operation begins.
+ * @param <E_IN>
+ *         type of input elements
+ * @param <E_OUT>
+ *         type of output elements
+ * @param <S>
+ *         type of the subclass implementing {@code BaseStream}
  *
- * @param <E_IN>  type of input elements
- * @param <E_OUT> type of output elements
- * @param <S> type of the subclass implementing {@code BaseStream}
  * @since 1.8
  */
-abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
-        extends PipelineHelper<E_OUT> implements BaseStream<E_OUT, S> {
+abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>> extends PipelineHelper<E_OUT> implements BaseStream<E_OUT, S> {
     private static final String MSG_STREAM_LINKED = "stream has already been operated upon or closed";
     private static final String MSG_CONSUMED = "source already consumed or closed";
 
@@ -151,13 +143,15 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
     /**
      * Constructor for the head of a stream pipeline.
      *
-     * @param source {@code Supplier<Spliterator>} describing the stream source
-     * @param sourceFlags The source flags for the stream source, described in
-     * {@link StreamOpFlag}
-     * @param parallel True if the pipeline is parallel
+     * @param source
+     *         {@code Supplier<Spliterator>} describing the stream source
+     * @param sourceFlags
+     *         The source flags for the stream source, described in
+     *         {@link StreamOpFlag}
+     * @param parallel
+     *         True if the pipeline is parallel
      */
-    AbstractPipeline(Supplier<? extends Spliterator<?>> source,
-                     int sourceFlags, boolean parallel) {
+    AbstractPipeline(Supplier<? extends Spliterator<?>> source, int sourceFlags, boolean parallel) {
         this.previousStage = null;
         this.sourceSupplier = source;
         this.sourceStage = this;
@@ -172,13 +166,15 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
     /**
      * Constructor for the head of a stream pipeline.
      *
-     * @param source {@code Spliterator} describing the stream source
-     * @param sourceFlags the source flags for the stream source, described in
-     * {@link StreamOpFlag}
-     * @param parallel {@code true} if the pipeline is parallel
+     * @param source
+     *         {@code Spliterator} describing the stream source
+     * @param sourceFlags
+     *         the source flags for the stream source, described in
+     *         {@link StreamOpFlag}
+     * @param parallel
+     *         {@code true} if the pipeline is parallel
      */
-    AbstractPipeline(Spliterator<?> source,
-                     int sourceFlags, boolean parallel) {
+    AbstractPipeline(Spliterator<?> source, int sourceFlags, boolean parallel) {
         this.previousStage = null;
         this.sourceSpliterator = source;
         this.sourceStage = this;
@@ -194,13 +190,16 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * Constructor for appending an intermediate operation stage onto an
      * existing pipeline.
      *
-     * @param previousStage the upstream pipeline stage
-     * @param opFlags the operation flags for the new stage, described in
-     * {@link StreamOpFlag}
+     * @param previousStage
+     *         the upstream pipeline stage
+     * @param opFlags
+     *         the operation flags for the new stage, described in
+     *         {@link StreamOpFlag}
      */
     AbstractPipeline(AbstractPipeline<?, E_IN, ?> previousStage, int opFlags) {
-        if (previousStage.linkedOrConsumed)
+        if (previousStage.linkedOrConsumed) {
             throw new IllegalStateException(MSG_STREAM_LINKED);
+        }
         previousStage.linkedOrConsumed = true;
         previousStage.nextStage = this;
 
@@ -208,42 +207,49 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
         this.sourceOrOpFlags = opFlags & StreamOpFlag.OP_MASK;
         this.combinedFlags = StreamOpFlag.combineOpFlags(opFlags, previousStage.combinedFlags);
         this.sourceStage = previousStage.sourceStage;
-        if (opIsStateful())
+        if (opIsStateful()) {
             sourceStage.sourceAnyStateful = true;
+        }
         this.depth = previousStage.depth + 1;
     }
-
 
     // Terminal evaluation methods
 
     /**
      * Evaluate the pipeline with a terminal operation to produce a result.
      *
-     * @param <R> the type of result
-     * @param terminalOp the terminal operation to be applied to the pipeline.
+     * @param <R>
+     *         the type of result
+     * @param terminalOp
+     *         the terminal operation to be applied to the pipeline.
+     *
      * @return the result
      */
     final <R> R evaluate(TerminalOp<E_OUT, R> terminalOp) {
         assert getOutputShape() == terminalOp.inputShape();
-        if (linkedOrConsumed)
+        if (linkedOrConsumed) {
             throw new IllegalStateException(MSG_STREAM_LINKED);
+        }
         linkedOrConsumed = true;
 
-        return isParallel()
-               ? terminalOp.evaluateParallel(this, sourceSpliterator(terminalOp.getOpFlags()))
-               : terminalOp.evaluateSequential(this, sourceSpliterator(terminalOp.getOpFlags()));
+        return isParallel() ?
+                terminalOp.evaluateParallel(this, sourceSpliterator(terminalOp.getOpFlags())) :
+                terminalOp.evaluateSequential(this, sourceSpliterator(terminalOp.getOpFlags()));
     }
 
     /**
      * Collect the elements output from the pipeline stage.
      *
-     * @param generator the array generator to be used to create array instances
+     * @param generator
+     *         the array generator to be used to create array instances
+     *
      * @return a flat array-backed Node that holds the collected output elements
      */
     @SuppressWarnings("unchecked")
     final Node<E_OUT> evaluateToArrayNode(IntFunction<E_OUT[]> generator) {
-        if (linkedOrConsumed)
+        if (linkedOrConsumed) {
             throw new IllegalStateException(MSG_STREAM_LINKED);
+        }
         linkedOrConsumed = true;
 
         // If the last intermediate operation is stateful then
@@ -255,8 +261,7 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
             // in this slice
             depth = 0;
             return opEvaluateParallel(previousStage, previousStage.sourceSpliterator(0), generator);
-        }
-        else {
+        } else {
             return evaluate(sourceSpliterator(0), true, generator);
         }
     }
@@ -267,16 +272,20 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * returns successfully.
      *
      * @return the source stage spliterator
-     * @throws IllegalStateException if this pipeline stage is not the source
+     *
+     * @throws IllegalStateException
+     *         if this pipeline stage is not the source
      *         stage.
      */
     @SuppressWarnings("unchecked")
     final Spliterator<E_OUT> sourceStageSpliterator() {
-        if (this != sourceStage)
+        if (this != sourceStage) {
             throw new IllegalStateException();
+        }
 
-        if (linkedOrConsumed)
+        if (linkedOrConsumed) {
             throw new IllegalStateException(MSG_STREAM_LINKED);
+        }
         linkedOrConsumed = true;
 
         if (sourceStage.sourceSpliterator != null) {
@@ -284,14 +293,12 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
             Spliterator<E_OUT> s = sourceStage.sourceSpliterator;
             sourceStage.sourceSpliterator = null;
             return s;
-        }
-        else if (sourceStage.sourceSupplier != null) {
+        } else if (sourceStage.sourceSupplier != null) {
             @SuppressWarnings("unchecked")
             Spliterator<E_OUT> s = (Spliterator<E_OUT>) sourceStage.sourceSupplier.get();
             sourceStage.sourceSupplier = null;
             return s;
-        }
-        else {
+        } else {
             throw new IllegalStateException(MSG_CONSUMED);
         }
     }
@@ -328,10 +335,7 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
     @SuppressWarnings("unchecked")
     public S onClose(Runnable closeHandler) {
         Runnable existingHandler = sourceStage.sourceCloseAction;
-        sourceStage.sourceCloseAction =
-                (existingHandler == null)
-                ? closeHandler
-                : Streams.composeWithExceptions(existingHandler, closeHandler);
+        sourceStage.sourceCloseAction = (existingHandler == null) ? closeHandler : Streams.composeWithExceptions(existingHandler, closeHandler);
         return (S) this;
     }
 
@@ -339,8 +343,9 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
     @Override
     @SuppressWarnings("unchecked")
     public Spliterator<E_OUT> spliterator() {
-        if (linkedOrConsumed)
+        if (linkedOrConsumed) {
             throw new IllegalStateException(MSG_STREAM_LINKED);
+        }
         linkedOrConsumed = true;
 
         if (this == sourceStage) {
@@ -349,18 +354,15 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
                 Spliterator<E_OUT> s = (Spliterator<E_OUT>) sourceStage.sourceSpliterator;
                 sourceStage.sourceSpliterator = null;
                 return s;
-            }
-            else if (sourceStage.sourceSupplier != null) {
+            } else if (sourceStage.sourceSupplier != null) {
                 @SuppressWarnings("unchecked")
                 Supplier<Spliterator<E_OUT>> s = (Supplier<Spliterator<E_OUT>>) sourceStage.sourceSupplier;
                 sourceStage.sourceSupplier = null;
                 return lazySpliterator(s);
-            }
-            else {
+            } else {
                 throw new IllegalStateException(MSG_CONSUMED);
             }
-        }
-        else {
+        } else {
             return wrap(this, () -> sourceSpliterator(0), isParallel());
         }
     }
@@ -370,13 +372,13 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
         return sourceStage.parallel;
     }
 
-
     /**
      * Returns the composition of stream flags of the stream source and all
      * intermediate operations.
      *
      * @return the composition of stream flags of the stream source and all
-     *         intermediate operations
+     * intermediate operations
+     *
      * @see StreamOpFlag
      */
     final int getStreamFlags() {
@@ -397,12 +399,10 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
         if (sourceStage.sourceSpliterator != null) {
             spliterator = sourceStage.sourceSpliterator;
             sourceStage.sourceSpliterator = null;
-        }
-        else if (sourceStage.sourceSupplier != null) {
+        } else if (sourceStage.sourceSupplier != null) {
             spliterator = (Spliterator<?>) sourceStage.sourceSupplier.get();
             sourceStage.sourceSupplier = null;
-        }
-        else {
+        } else {
             throw new IllegalStateException(MSG_CONSUMED);
         }
 
@@ -411,9 +411,9 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
             // in the pipeline up to and including this pipeline stage.
             // The depth and flags of each pipeline stage are adjusted accordingly.
             int depth = 1;
-            for (@SuppressWarnings("rawtypes") AbstractPipeline u = sourceStage, p = sourceStage.nextStage, e = this;
-                 u != e;
-                 u = p, p = p.nextStage) {
+            for (
+                    @SuppressWarnings("rawtypes")
+                    AbstractPipeline u = sourceStage, p = sourceStage.nextStage, e = this; u != e; u = p, p = p.nextStage) {
 
                 int thisOpFlags = p.sourceOrOpFlags;
                 if (p.opIsStateful()) {
@@ -432,16 +432,16 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
 
                     // Inject or clear SIZED on the source pipeline stage
                     // based on the stage's spliterator
-                    thisOpFlags = spliterator.hasCharacteristics(Spliterator.SIZED)
-                            ? (thisOpFlags & ~StreamOpFlag.NOT_SIZED) | StreamOpFlag.IS_SIZED
-                            : (thisOpFlags & ~StreamOpFlag.IS_SIZED) | StreamOpFlag.NOT_SIZED;
+                    thisOpFlags = spliterator.hasCharacteristics(Spliterator.SIZED) ?
+                            (thisOpFlags & ~StreamOpFlag.NOT_SIZED) | StreamOpFlag.IS_SIZED :
+                            (thisOpFlags & ~StreamOpFlag.IS_SIZED) | StreamOpFlag.NOT_SIZED;
                 }
                 p.depth = depth++;
                 p.combinedFlags = StreamOpFlag.combineOpFlags(thisOpFlags, u.combinedFlags);
             }
         }
 
-        if (terminalFlags != 0)  {
+        if (terminalFlags != 0) {
             // Apply flags from the terminal operation to last pipeline stage
             combinedFlags = StreamOpFlag.combineOpFlags(terminalFlags, combinedFlags);
         }
@@ -480,8 +480,7 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
             wrappedSink.begin(spliterator.getExactSizeIfKnown());
             spliterator.forEachRemaining(wrappedSink);
             wrappedSink.end();
-        }
-        else {
+        } else {
             copyIntoWithCancel(wrappedSink, spliterator);
         }
     }
@@ -489,7 +488,7 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
     @Override
     @SuppressWarnings("unchecked")
     final <P_IN> void copyIntoWithCancel(Sink<P_IN> wrappedSink, Spliterator<P_IN> spliterator) {
-        @SuppressWarnings({"rawtypes","unchecked"})
+        @SuppressWarnings({ "rawtypes", "unchecked" })
         AbstractPipeline p = AbstractPipeline.this;
         while (p.depth > 0) {
             p = p.previousStage;
@@ -513,7 +512,9 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
     final <P_IN> Sink<P_IN> wrapSink(Sink<E_OUT> sink) {
         Objects.requireNonNull(sink);
 
-        for ( @SuppressWarnings("rawtypes") AbstractPipeline p=AbstractPipeline.this; p.depth > 0; p=p.previousStage) {
+        for (
+                @SuppressWarnings("rawtypes")
+                AbstractPipeline p = AbstractPipeline.this; p.depth > 0; p = p.previousStage) {
             sink = p.opWrapSink(p.previousStage.combinedFlags, sink);
         }
         return (Sink<P_IN>) sink;
@@ -524,28 +525,22 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
     final <P_IN> Spliterator<E_OUT> wrapSpliterator(Spliterator<P_IN> sourceSpliterator) {
         if (depth == 0) {
             return (Spliterator<E_OUT>) sourceSpliterator;
-        }
-        else {
+        } else {
             return wrap(this, () -> sourceSpliterator, isParallel());
         }
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    final <P_IN> Node<E_OUT> evaluate(Spliterator<P_IN> spliterator,
-                                      boolean flatten,
-                                      IntFunction<E_OUT[]> generator) {
+    final <P_IN> Node<E_OUT> evaluate(Spliterator<P_IN> spliterator, boolean flatten, IntFunction<E_OUT[]> generator) {
         if (isParallel()) {
             // @@@ Optimize if op of this pipeline stage is a stateful op
             return evaluateToNode(this, spliterator, flatten, generator);
-        }
-        else {
-            Node.Builder<E_OUT> nb = makeNodeBuilder(
-                    exactOutputSizeIfKnown(spliterator), generator);
+        } else {
+            Node.Builder<E_OUT> nb = makeNodeBuilder(exactOutputSizeIfKnown(spliterator), generator);
             return wrapAndCopyInto(nb, spliterator).build();
         }
     }
-
 
     // Shape-specific abstract methods, implemented by XxxPipeline classes
 
@@ -563,34 +558,40 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * Collect elements output from a pipeline into a Node that holds elements
      * of this shape.
      *
-     * @param helper the pipeline helper describing the pipeline stages
-     * @param spliterator the source spliterator
-     * @param flattenTree true if the returned node should be flattened
-     * @param generator the array generator
+     * @param helper
+     *         the pipeline helper describing the pipeline stages
+     * @param spliterator
+     *         the source spliterator
+     * @param flattenTree
+     *         true if the returned node should be flattened
+     * @param generator
+     *         the array generator
+     *
      * @return a Node holding the output of the pipeline
      */
-    abstract <P_IN> Node<E_OUT> evaluateToNode(PipelineHelper<E_OUT> helper,
-                                               Spliterator<P_IN> spliterator,
-                                               boolean flattenTree,
-                                               IntFunction<E_OUT[]> generator);
+    abstract <P_IN> Node<E_OUT> evaluateToNode(PipelineHelper<E_OUT> helper, Spliterator<P_IN> spliterator, boolean flattenTree,
+            IntFunction<E_OUT[]> generator);
 
     /**
      * Create a spliterator that wraps a source spliterator, compatible with
      * this stream shape, and operations associated with a {@link
      * PipelineHelper}.
      *
-     * @param ph the pipeline helper describing the pipeline stages
-     * @param supplier the supplier of a spliterator
+     * @param ph
+     *         the pipeline helper describing the pipeline stages
+     * @param supplier
+     *         the supplier of a spliterator
+     *
      * @return a wrapping spliterator compatible with this shape
      */
-    abstract <P_IN> Spliterator<E_OUT> wrap(PipelineHelper<E_OUT> ph,
-                                            Supplier<Spliterator<P_IN>> supplier,
-                                            boolean isParallel);
+    abstract <P_IN> Spliterator<E_OUT> wrap(PipelineHelper<E_OUT> ph, Supplier<Spliterator<P_IN>> supplier, boolean isParallel);
 
     /**
      * Create a lazy spliterator that wraps and obtains the supplied the
      * spliterator when a method is invoked on the lazy spliterator.
-     * @param supplier the supplier of a spliterator
+     *
+     * @param supplier
+     *         the supplier of a spliterator
      */
     abstract Spliterator<E_OUT> lazySpliterator(Supplier<? extends Spliterator<E_OUT>> supplier);
 
@@ -599,30 +600,32 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * pushing those elements into a sink.   If the sink requests cancellation,
      * no further elements will be pulled or pushed.
      *
-     * @param spliterator the spliterator to pull elements from
-     * @param sink the sink to push elements to
+     * @param spliterator
+     *         the spliterator to pull elements from
+     * @param sink
+     *         the sink to push elements to
      */
     abstract void forEachWithCancel(Spliterator<E_OUT> spliterator, Sink<E_OUT> sink);
 
     /**
      * Make a node builder compatible with this stream shape.
      *
-     * @param exactSizeIfKnown if {@literal >=0}, then a node builder will be
-     * created that has a fixed capacity of at most sizeIfKnown elements. If
-     * {@literal < 0}, then the node builder has an unfixed capacity. A fixed
-     * capacity node builder will throw exceptions if an element is added after
-     * builder has reached capacity, or is built before the builder has reached
-     * capacity.
+     * @param exactSizeIfKnown
+     *         if {@literal >=0}, then a node builder will be
+     *         created that has a fixed capacity of at most sizeIfKnown elements. If
+     *         {@literal < 0}, then the node builder has an unfixed capacity. A fixed
+     *         capacity node builder will throw exceptions if an element is added after
+     *         builder has reached capacity, or is built before the builder has reached
+     *         capacity.
+     * @param generator
+     *         the array generator to be used to create instances of a
+     *         T[] array. For implementations supporting primitive nodes, this parameter
+     *         may be ignored.
      *
-     * @param generator the array generator to be used to create instances of a
-     * T[] array. For implementations supporting primitive nodes, this parameter
-     * may be ignored.
      * @return a node builder
      */
     @Override
-    abstract Node.Builder<E_OUT> makeNodeBuilder(long exactSizeIfKnown,
-                                                 IntFunction<E_OUT[]> generator);
-
+    abstract Node.Builder<E_OUT> makeNodeBuilder(long exactSizeIfKnown, IntFunction<E_OUT[]> generator);
 
     // Op-specific abstract methods, implemented by the operation class
 
@@ -642,18 +645,15 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * this operation and which performs the operation, passing the results to
      * the provided {@code Sink}.
      *
-     * @apiNote
-     * The implementation may use the {@code flags} parameter to optimize the
-     * sink wrapping.  For example, if the input is already {@code DISTINCT},
-     * the implementation for the {@code Stream#distinct()} method could just
-     * return the sink it was passed.
+     * @param flags
+     *         The combined stream and operation flags up to, but not
+     *         including, this operation
+     * @param sink
+     *         sink to which elements should be sent after processing
      *
-     * @param flags The combined stream and operation flags up to, but not
-     *        including, this operation
-     * @param sink sink to which elements should be sent after processing
      * @return a sink which accepts elements, perform the operation upon
-     *         each element, and passes the results (if any) to the provided
-     *         {@code Sink}.
+     * each element, and passes the results (if any) to the provided
+     * {@code Sink}.
      */
     abstract Sink<E_IN> opWrapSink(int flags, Sink<E_OUT> sink);
 
@@ -664,17 +664,16 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * #opIsStateful()} returns true then implementations must override the
      * default implementation.
      *
-     * @implSpec The default implementation always throw
-     * {@code UnsupportedOperationException}.
+     * @param helper
+     *         the pipeline helper describing the pipeline stages
+     * @param spliterator
+     *         the source {@code Spliterator}
+     * @param generator
+     *         the array generator
      *
-     * @param helper the pipeline helper describing the pipeline stages
-     * @param spliterator the source {@code Spliterator}
-     * @param generator the array generator
      * @return a {@code Node} describing the result of the evaluation
      */
-    <P_IN> Node<E_OUT> opEvaluateParallel(PipelineHelper<E_OUT> helper,
-                                          Spliterator<P_IN> spliterator,
-                                          IntFunction<E_OUT[]> generator) {
+    <P_IN> Node<E_OUT> opEvaluateParallel(PipelineHelper<E_OUT> helper, Spliterator<P_IN> spliterator, IntFunction<E_OUT[]> generator) {
         throw new UnsupportedOperationException("Parallel evaluation is not supported");
     }
 
@@ -686,21 +685,15 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * result here; it is preferable, if possible, to describe the result via a
      * lazily evaluated spliterator.
      *
-     * @implSpec The default implementation behaves as if:
-     * <pre>{@code
-     *     return evaluateParallel(helper, i -> (E_OUT[]) new
-     * Object[i]).spliterator();
-     * }</pre>
-     * and is suitable for implementations that cannot do better than a full
-     * synchronous evaluation.
+     * @param helper
+     *         the pipeline helper
+     * @param spliterator
+     *         the source {@code Spliterator}
      *
-     * @param helper the pipeline helper
-     * @param spliterator the source {@code Spliterator}
      * @return a {@code Spliterator} describing the result of the evaluation
      */
     @SuppressWarnings("unchecked")
-    <P_IN> Spliterator<E_OUT> opEvaluateParallelLazy(PipelineHelper<E_OUT> helper,
-                                                     Spliterator<P_IN> spliterator) {
+    <P_IN> Spliterator<E_OUT> opEvaluateParallelLazy(PipelineHelper<E_OUT> helper, Spliterator<P_IN> spliterator) {
         return opEvaluateParallel(helper, spliterator, i -> (E_OUT[]) new Object[i]).spliterator();
     }
 }

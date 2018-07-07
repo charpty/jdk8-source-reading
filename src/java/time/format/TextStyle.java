@@ -79,9 +79,6 @@ import java.util.Calendar;
  * in the word used when the text is used alone, as opposed to in a complete date.
  * For example, the word used for a month when used alone in a date picker is different
  * to the word used for month in association with a day and year in a date.
- *
- * @implSpec
- * This is immutable and thread-safe enum.
  */
 public enum TextStyle {
     // ordered from large to small
@@ -91,28 +88,23 @@ public enum TextStyle {
      * Full text, typically the full description.
      * For example, day-of-week Monday might output "Monday".
      */
-    FULL(Calendar.LONG_FORMAT, 0),
-    /**
+    FULL(Calendar.LONG_FORMAT, 0), /**
      * Full text for stand-alone use, typically the full description.
      * For example, day-of-week Monday might output "Monday".
      */
-    FULL_STANDALONE(Calendar.LONG_STANDALONE, 0),
-    /**
+    FULL_STANDALONE(Calendar.LONG_STANDALONE, 0), /**
      * Short text, typically an abbreviation.
      * For example, day-of-week Monday might output "Mon".
      */
-    SHORT(Calendar.SHORT_FORMAT, 1),
-    /**
+    SHORT(Calendar.SHORT_FORMAT, 1), /**
      * Short text for stand-alone use, typically an abbreviation.
      * For example, day-of-week Monday might output "Mon".
      */
-    SHORT_STANDALONE(Calendar.SHORT_STANDALONE, 1),
-    /**
+    SHORT_STANDALONE(Calendar.SHORT_STANDALONE, 1), /**
      * Narrow text, typically a single letter.
      * For example, day-of-week Monday might output "M".
      */
-    NARROW(Calendar.NARROW_FORMAT, 1),
-    /**
+    NARROW(Calendar.NARROW_FORMAT, 1), /**
      * Narrow text for stand-alone use, typically a single letter.
      * For example, day-of-week Monday might output "M".
      */
@@ -128,6 +120,7 @@ public enum TextStyle {
 
     /**
      * Returns true if the Style is a stand-alone style.
+     *
      * @return true if the style is a stand-alone style.
      */
     public boolean isStandalone() {
@@ -136,10 +129,11 @@ public enum TextStyle {
 
     /**
      * Returns the stand-alone style with the same size.
+     *
      * @return the stand-alone style with the same size
      */
     public TextStyle asStandalone() {
-        return TextStyle.values()[ordinal()  | 1];
+        return TextStyle.values()[ordinal() | 1];
     }
 
     /**

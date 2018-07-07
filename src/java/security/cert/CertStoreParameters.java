@@ -41,10 +41,9 @@ package java.security.cert;
  * parameters. The type of parameters needed may vary between different types
  * of {@code CertStore}s.
  *
+ * @author Steve Hanna
  * @see CertStore#getInstance
- *
- * @since       1.4
- * @author      Steve Hanna
+ * @since 1.4
  */
 public interface CertStoreParameters extends Cloneable {
 

@@ -24,6 +24,7 @@
  */
 
 package java.lang.annotation;
+
 import java.lang.reflect.Method;
 
 /**
@@ -34,8 +35,8 @@ import java.lang.reflect.Method;
  * java.lang.reflect.AnnotatedElement API used to read annotations
  * reflectively}.
  *
- * @author  Josh Bloch
- * @see     java.lang.reflect.AnnotatedElement
+ * @author Josh Bloch
+ * @see java.lang.reflect.AnnotatedElement
  * @since 1.5
  */
 public class AnnotationTypeMismatchException extends RuntimeException {
@@ -57,14 +58,15 @@ public class AnnotationTypeMismatchException extends RuntimeException {
      * Constructs an AnnotationTypeMismatchException for the specified
      * annotation type element and found data type.
      *
-     * @param element the <tt>Method</tt> object for the annotation element
-     * @param foundType the (erroneous) type of data found in the annotation.
-     *        This string may, but is not required to, contain the value
-     *        as well.  The exact format of the string is unspecified.
+     * @param element
+     *         the <tt>Method</tt> object for the annotation element
+     * @param foundType
+     *         the (erroneous) type of data found in the annotation.
+     *         This string may, but is not required to, contain the value
+     *         as well.  The exact format of the string is unspecified.
      */
     public AnnotationTypeMismatchException(Method element, String foundType) {
-        super("Incorrectly typed data found for annotation element " + element
-              + " (Found data of type " + foundType + ")");
+        super("Incorrectly typed data found for annotation element " + element + " (Found data of type " + foundType + ")");
         this.element = element;
         this.foundType = foundType;
     }

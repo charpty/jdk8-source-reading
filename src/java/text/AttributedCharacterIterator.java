@@ -48,7 +48,7 @@ import java.util.Set;
  * <ul>
  * <li>the attribute is undefined or {@code null} for the entire range, or
  * <li>the attribute value is defined and has the same non-{@code null} value for the
- *     entire range.
+ * entire range.
  * </ul>
  *
  * <p>A <em>run with respect to a set of attributes</em> is a maximum text range for
@@ -81,6 +81,7 @@ public interface AttributedCharacterIterator extends CharacterIterator {
     /**
      * Defines attribute keys that are used to identify text attributes. These
      * keys are used in {@code AttributedCharacterIterator} and {@code AttributedString}.
+     *
      * @see AttributedCharacterIterator
      * @see AttributedString
      * @since 1.2
@@ -92,7 +93,6 @@ public interface AttributedCharacterIterator extends CharacterIterator {
          * The name of this {@code Attribute}. The name is used primarily by {@code readResolve}
          * to look up the corresponding predefined instance when deserializing
          * an instance.
-         * @serial
          */
         private String name;
 
@@ -102,7 +102,8 @@ public interface AttributedCharacterIterator extends CharacterIterator {
         /**
          * Constructs an {@code Attribute} with the given name.
          *
-         * @param name the name of {@code Attribute}
+         * @param name
+         *         the name of {@code Attribute}
          */
         protected Attribute(String name) {
             this.name = name;
@@ -150,8 +151,10 @@ public interface AttributedCharacterIterator extends CharacterIterator {
          * Resolves instances being deserialized to the predefined constants.
          *
          * @return the resolved {@code Attribute} object
-         * @throws InvalidObjectException if the object to resolve is not
-         *                                an instance of {@code Attribute}
+         *
+         * @throws InvalidObjectException
+         *         if the object to resolve is not
+         *         an instance of {@code Attribute}
          */
         protected Object readResolve() throws InvalidObjectException {
             if (this.getClass() != Attribute.class) {
@@ -169,6 +172,7 @@ public interface AttributedCharacterIterator extends CharacterIterator {
         /**
          * Attribute key for the language of some text.
          * <p> Values are instances of {@link java.util.Locale Locale}.
+         *
          * @see java.util.Locale
          */
         public static final Attribute LANGUAGE = new Attribute("language");
@@ -189,6 +193,7 @@ public interface AttributedCharacterIterator extends CharacterIterator {
          * Attribute key for input method segments. Input methods often break
          * up text into segments, which usually correspond to words.
          * <p>Values are instances of {@link Annotation} holding a {@code null} reference.
+         *
          * @see Annotation
          */
         public static final Attribute INPUT_METHOD_SEGMENT = new Attribute("input_method_segment");
@@ -196,7 +201,9 @@ public interface AttributedCharacterIterator extends CharacterIterator {
         // make sure the serial version doesn't change between compiler versions
         private static final long serialVersionUID = -9142742483513960612L;
 
-    };
+    }
+
+    ;
 
     /**
      * Returns the index of the first character of the run
@@ -214,7 +221,9 @@ public interface AttributedCharacterIterator extends CharacterIterator {
      * Returns the index of the first character of the run
      * with respect to the given {@code attribute} containing the current character.
      *
-     * @param attribute the desired attribute.
+     * @param attribute
+     *         the desired attribute.
+     *
      * @return the index of the first character of the run
      */
     public int getRunStart(Attribute attribute);
@@ -223,7 +232,9 @@ public interface AttributedCharacterIterator extends CharacterIterator {
      * Returns the index of the first character of the run
      * with respect to the given {@code attributes} containing the current character.
      *
-     * @param attributes a set of the desired attributes.
+     * @param attributes
+     *         a set of the desired attributes.
+     *
      * @return the index of the first character of the run
      */
     public int getRunStart(Set<? extends Attribute> attributes);
@@ -244,7 +255,9 @@ public interface AttributedCharacterIterator extends CharacterIterator {
      * Returns the index of the first character following the run
      * with respect to the given {@code attribute} containing the current character.
      *
-     * @param attribute the desired attribute
+     * @param attribute
+     *         the desired attribute
+     *
      * @return the index of the first character following the run
      */
     public int getRunLimit(Attribute attribute);
@@ -253,7 +266,9 @@ public interface AttributedCharacterIterator extends CharacterIterator {
      * Returns the index of the first character following the run
      * with respect to the given {@code attributes} containing the current character.
      *
-     * @param attributes a set of the desired attributes
+     * @param attributes
+     *         a set of the desired attributes
+     *
      * @return the index of the first character following the run
      */
     public int getRunLimit(Set<? extends Attribute> attributes);
@@ -264,13 +279,15 @@ public interface AttributedCharacterIterator extends CharacterIterator {
      *
      * @return a map with the attributes defined on the current character
      */
-    public Map<Attribute,Object> getAttributes();
+    public Map<Attribute, Object> getAttributes();
 
     /**
      * Returns the value of the named {@code attribute} for the current character.
      * Returns {@code null} if the {@code attribute} is not defined.
      *
-     * @param attribute the desired attribute
+     * @param attribute
+     *         the desired attribute
+     *
      * @return the value of the named {@code attribute} or {@code null}
      */
     public Object getAttribute(Attribute attribute);

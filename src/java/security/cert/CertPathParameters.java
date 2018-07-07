@@ -32,18 +32,18 @@ package java.security.cert;
  * {@code CertPath} parameter specifications must implement this
  * interface.
  *
- * @author      Yassir Elley
- * @see         CertPathValidator#validate(CertPath, CertPathParameters)
- * @see         CertPathBuilder#build(CertPathParameters)
- * @since       1.4
+ * @author Yassir Elley
+ * @see CertPathValidator#validate(CertPath, CertPathParameters)
+ * @see CertPathBuilder#build(CertPathParameters)
+ * @since 1.4
  */
 public interface CertPathParameters extends Cloneable {
 
-  /**
-   * Makes a copy of this {@code CertPathParameters}. Changes to the
-   * copy will not affect the original and vice versa.
-   *
-   * @return a copy of this {@code CertPathParameters}
-   */
-  Object clone();
+    /**
+     * Makes a copy of this {@code CertPathParameters}. Changes to the
+     * copy will not affect the original and vice versa.
+     *
+     * @return a copy of this {@code CertPathParameters}
+     */
+    Object clone();
 }

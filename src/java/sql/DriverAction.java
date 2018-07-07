@@ -28,7 +28,7 @@ package java.sql;
 /**
  * An interface that must be implemented when a {@linkplain Driver} wants to be
  * notified by {@code DriverManager}.
- *<P>
+ * <P>
  * A {@code DriverAction} implementation is not intended to be used
  * directly by applications. A JDBC Driver  may choose
  * to create its {@code DriverAction} implementation in a private class
@@ -38,13 +38,14 @@ package java.sql;
  * {@linkplain DriverManager#registerDriver(java.sql.Driver, java.sql.DriverAction) } in order
  * to inform {@code DriverManager} which {@code DriverAction} implementation to
  * call when the JDBC driver is de-registered.
+ *
  * @since 1.8
  */
 public interface DriverAction {
     /**
      * Method called by
      * {@linkplain DriverManager#deregisterDriver(Driver) }
-     *  to notify the JDBC driver that it was de-registered.
+     * to notify the JDBC driver that it was de-registered.
      * <p>
      * The {@code deregister} method is intended only to be used by JDBC Drivers
      * and not by applications.  JDBC drivers are recommended to not implement
@@ -57,6 +58,7 @@ public interface DriverAction {
      * other {@code Driver} methods or throw a {@code SQLException}.
      * Consult your JDBC driver's documentation for additional information
      * on its behavior.
+     *
      * @see DriverManager#registerDriver(java.sql.Driver, java.sql.DriverAction)
      * @see DriverManager#deregisterDriver(Driver)
      * @since 1.8

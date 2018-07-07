@@ -33,8 +33,8 @@ import java.security.SecureRandom;
  * machines.  VMIDs are used by the distributed garbage collector
  * to identify client VMs.
  *
- * @author      Ann Wollrath
- * @author      Peter Jones
+ * @author Ann Wollrath
+ * @author Peter Jones
  */
 public final class VMID implements java.io.Serializable {
     /** Array of bytes uniquely identifying this host */
@@ -77,7 +77,9 @@ public final class VMID implements java.io.Serializable {
     /**
      * Return true if an accurate address can be determined for this
      * host.  If false, reliable VMID cannot be generated from this host
+     *
      * @return true if host address can be determined, false otherwise
+     *
      * @deprecated
      */
     @Deprecated
@@ -99,16 +101,21 @@ public final class VMID implements java.io.Serializable {
     public boolean equals(Object obj) {
         if (obj instanceof VMID) {
             VMID vmid = (VMID) obj;
-            if (!uid.equals(vmid.uid))
+            if (!uid.equals(vmid.uid)) {
                 return false;
-            if ((addr == null) ^ (vmid.addr == null))
+            }
+            if ((addr == null) ^ (vmid.addr == null)) {
                 return false;
+            }
             if (addr != null) {
-                if (addr.length != vmid.addr.length)
+                if (addr.length != vmid.addr.length) {
                     return false;
-                for (int i = 0; i < addr.length; ++ i)
-                    if (addr[i] != vmid.addr[i])
+                }
+                for (int i = 0; i < addr.length; ++i) {
+                    if (addr[i] != vmid.addr[i]) {
                         return false;
+                    }
+                }
             }
             return true;
         } else {
@@ -121,12 +128,12 @@ public final class VMID implements java.io.Serializable {
      */
     public String toString() {
         StringBuffer result = new StringBuffer();
-        if (addr != null)
-            for (int i = 0; i < addr.length; ++ i) {
+        if (addr != null) {
+            for (int i = 0; i < addr.length; ++i) {
                 int x = addr[i] & 0xFF;
-                result.append((x < 0x10 ? "0" : "") +
-                              Integer.toString(x, 16));
+                result.append((x < 0x10 ? "0" : "") + Integer.toString(x, 16));
             }
+        }
         result.append(':');
         result.append(uid.toString());
         return result.toString();

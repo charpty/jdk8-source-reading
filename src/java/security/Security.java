@@ -25,15 +25,30 @@
 
 package java.security;
 
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.URL;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import sun.security.jca.GetInstance;
+import sun.security.jca.ProviderList;
+import sun.security.jca.Providers;
 import sun.security.util.Debug;
 import sun.security.util.PropertyExpander;
-
-import sun.security.jca.*;
 
 /**
  * <p>This class centralizes all security properties and common security
@@ -49,8 +64,7 @@ import sun.security.jca.*;
 public final class Security {
 
     /* Are we debugging? -- for developers */
-    private static final Debug sdebug =
-                        Debug.getInstance("properties");
+    private static final Debug sdebug = Debug.getInstance("properties");
 
     /* The java.security properties */
     private static Properties props;
@@ -91,13 +105,11 @@ public final class Security {
                 loadedProps = true;
 
                 if (sdebug != null) {
-                    sdebug.println("reading security properties file: " +
-                                propFile);
+                    sdebug.println("reading security properties file: " + propFile);
                 }
             } catch (IOException e) {
                 if (sdebug != null) {
-                    sdebug.println("unable to load security properties from " +
-                                propFile);
+                    sdebug.println("unable to load security properties from " + propFile);
                     e.printStackTrace();
                 }
             } finally {
@@ -113,11 +125,9 @@ public final class Security {
             }
         }
 
-        if ("true".equalsIgnoreCase(props.getProperty
-                ("security.overridePropertiesFile"))) {
+        if ("true".equalsIgnoreCase(props.getProperty("security.overridePropertiesFile"))) {
 
-            String extraPropFile = System.getProperty
-                                        ("java.security.properties");
+            String extraPropFile = System.getProperty("java.security.properties");
             if (extraPropFile != null && extraPropFile.startsWith("=")) {
                 overrideAll = true;
                 extraPropFile = extraPropFile.substring(1);
@@ -126,8 +136,7 @@ public final class Security {
             if (overrideAll) {
                 props = new Properties();
                 if (sdebug != null) {
-                    sdebug.println
-                        ("overriding other security properties files!");
+                    sdebug.println("overriding other security properties files!");
                 }
             }
 
@@ -141,8 +150,7 @@ public final class Security {
                     extraPropFile = PropertyExpander.expand(extraPropFile);
                     propFile = new File(extraPropFile);
                     if (propFile.exists()) {
-                        propURL = new URL
-                                ("file:" + propFile.getCanonicalPath());
+                        propURL = new URL("file:" + propFile.getCanonicalPath());
                     } else {
                         propURL = new URL(extraPropFile);
                     }
@@ -151,18 +159,14 @@ public final class Security {
                     loadedProps = true;
 
                     if (sdebug != null) {
-                        sdebug.println("reading security properties file: " +
-                                        propURL);
+                        sdebug.println("reading security properties file: " + propURL);
                         if (overrideAll) {
-                            sdebug.println
-                                ("overriding other security properties files!");
+                            sdebug.println("overriding other security properties files!");
                         }
                     }
                 } catch (Exception e) {
                     if (sdebug != null) {
-                        sdebug.println
-                                ("unable to load security properties from " +
-                                extraPropFile);
+                        sdebug.println("unable to load security properties from " + extraPropFile);
                         e.printStackTrace();
                     }
                 } finally {
@@ -182,8 +186,7 @@ public final class Security {
         if (!loadedProps) {
             initializeStatic();
             if (sdebug != null) {
-                sdebug.println("unable to load security properties " +
-                        "-- using defaults");
+                sdebug.println("unable to load security properties " + "-- using defaults");
             }
         }
 
@@ -212,8 +215,7 @@ public final class Security {
         // maybe check for a system property which will specify where to
         // look. Someday.
         String sep = File.separator;
-        return new File(System.getProperty("java.home") + sep + "lib" + sep +
-                        "security" + sep + filename);
+        return new File(System.getProperty("java.home") + sep + "lib" + sep + "security" + sep + filename);
     }
 
     /**
@@ -236,9 +238,8 @@ public final class Security {
             if (prop == null) {
                 // Is there a match if we do a case-insensitive property name
                 // comparison? Let's try ...
-                for (Enumeration<Object> e = prov.keys();
-                                e.hasMoreElements() && prop == null; ) {
-                    matchKey = (String)e.nextElement();
+                for (Enumeration<Object> e = prov.keys(); e.hasMoreElements() && prop == null; ) {
+                    matchKey = (String) e.nextElement();
                     if (key.equalsIgnoreCase(matchKey)) {
                         prop = prov.getProperty(matchKey);
                         break;
@@ -265,9 +266,8 @@ public final class Security {
         if (prop == null) {
             // Is there a match if we do a case-insensitive property name
             // comparison? Let's try ...
-            for (Enumeration<Object> e = provider.keys();
-                                e.hasMoreElements() && prop == null; ) {
-                String matchKey = (String)e.nextElement();
+            for (Enumeration<Object> e = provider.keys(); e.hasMoreElements() && prop == null; ) {
+                String matchKey = (String) e.nextElement();
                 if (key.equalsIgnoreCase(matchKey)) {
                     prop = provider.getProperty(matchKey);
                     break;
@@ -288,9 +288,10 @@ public final class Security {
      * classes to algorithms which they understand (much like Key parsers
      * do).
      *
-     * @param algName the algorithm name.
-     *
-     * @param propName the name of the property to get.
+     * @param algName
+     *         the algorithm name.
+     * @param propName
+     *         the name of the property to get.
      *
      * @return the value of the specified property.
      *
@@ -302,10 +303,8 @@ public final class Security {
      * classes (introduced in the J2SE version 1.2 platform) instead.
      */
     @Deprecated
-    public static String getAlgorithmProperty(String algName,
-                                              String propName) {
-        ProviderProperty entry = getProviderProperty("Alg." + propName
-                                                     + "." + algName);
+    public static String getAlgorithmProperty(String algName, String propName) {
+        ProviderProperty entry = getProviderProperty("Alg." + propName + "." + algName);
         if (entry != null) {
             return entry.className;
         } else {
@@ -334,27 +333,27 @@ public final class Security {
      * {@code "insertProvider."+provider.getName()} permission target name. If
      * both checks are denied, a {@code SecurityException} is thrown.
      *
-     * @param provider the provider to be added.
-     *
-     * @param position the preference position that the caller would
-     * like for this provider.
+     * @param provider
+     *         the provider to be added.
+     * @param position
+     *         the preference position that the caller would
+     *         like for this provider.
      *
      * @return the actual preference position in which the provider was
      * added, or -1 if the provider was not added because it is
      * already installed.
      *
-     * @throws  NullPointerException if provider is null
-     * @throws  SecurityException
-     *          if a security manager exists and its {@link
-     *          java.lang.SecurityManager#checkSecurityAccess} method
-     *          denies access to add a new provider
-     *
+     * @throws NullPointerException
+     *         if provider is null
+     * @throws SecurityException
+     *         if a security manager exists and its {@link
+     *         java.lang.SecurityManager#checkSecurityAccess} method
+     *         denies access to add a new provider
      * @see #getProvider
      * @see #removeProvider
      * @see java.security.SecurityPermission
      */
-    public static synchronized int insertProviderAt(Provider provider,
-            int position) {
+    public static synchronized int insertProviderAt(Provider provider, int position) {
         String providerName = provider.getName();
         checkInsertProvider(providerName);
         ProviderList list = Providers.getFullProviderList();
@@ -377,18 +376,19 @@ public final class Security {
      * {@code "insertProvider."+provider.getName()} permission target name. If
      * both checks are denied, a {@code SecurityException} is thrown.
      *
-     * @param provider the provider to be added.
+     * @param provider
+     *         the provider to be added.
      *
      * @return the preference position in which the provider was
      * added, or -1 if the provider was not added because it is
      * already installed.
      *
-     * @throws  NullPointerException if provider is null
-     * @throws  SecurityException
-     *          if a security manager exists and its {@link
-     *          java.lang.SecurityManager#checkSecurityAccess} method
-     *          denies access to add a new provider
-     *
+     * @throws NullPointerException
+     *         if provider is null
+     * @throws SecurityException
+     *         if a security manager exists and its {@link
+     *         java.lang.SecurityManager#checkSecurityAccess} method
+     *         denies access to add a new provider
      * @see #getProvider
      * @see #removeProvider
      * @see java.security.SecurityPermission
@@ -424,14 +424,14 @@ public final class Security {
      * with a {@code SecurityPermission("removeProvider."+name)}
      * permission.
      *
-     * @param name the name of the provider to remove.
+     * @param name
+     *         the name of the provider to remove.
      *
-     * @throws  SecurityException
-     *          if a security manager exists and its {@link
-     *          java.lang.SecurityManager#checkSecurityAccess} method
-     *          denies
-     *          access to remove the provider
-     *
+     * @throws SecurityException
+     *         if a security manager exists and its {@link
+     *         java.lang.SecurityManager#checkSecurityAccess} method
+     *         denies
+     *         access to remove the provider
      * @see #getProvider
      * @see #addProvider
      */
@@ -457,7 +457,8 @@ public final class Security {
      * any. Returns null if no provider with the specified name is
      * installed or if name is null.
      *
-     * @param name the name of the provider to get.
+     * @param name
+     *         the name of the provider to get.
      *
      * @return the provider of the specified name.
      *
@@ -499,7 +500,7 @@ public final class Security {
      * must be one or more space characters between the
      * <i>{@literal <algorithm_or_type>}</i> and the
      * <i>{@literal <attribute_name>}</i>.
-     *  <p> A provider satisfies this selection criterion iff the
+     * <p> A provider satisfies this selection criterion iff the
      * provider implements the specified algorithm or type for the specified
      * cryptographic service and its implementation meets the
      * constraint expressed by the specified attribute name/value pair.
@@ -515,16 +516,17 @@ public final class Security {
      * for information about standard cryptographic service names, standard
      * algorithm names and standard attribute names.
      *
-     * @param filter the criterion for selecting
-     * providers. The filter is case-insensitive.
+     * @param filter
+     *         the criterion for selecting
+     *         providers. The filter is case-insensitive.
      *
      * @return all the installed providers that satisfy the selection
      * criterion, or null if no such providers have been installed.
      *
      * @throws InvalidParameterException
      *         if the filter is not in the required format
-     * @throws NullPointerException if filter is null
-     *
+     * @throws NullPointerException
+     *         if filter is null
      * @see #getProviders(java.util.Map)
      * @since 1.3
      */
@@ -586,20 +588,21 @@ public final class Security {
      * for information about standard cryptographic service names, standard
      * algorithm names and standard attribute names.
      *
-     * @param filter the criteria for selecting
-     * providers. The filter is case-insensitive.
+     * @param filter
+     *         the criteria for selecting
+     *         providers. The filter is case-insensitive.
      *
      * @return all the installed providers that satisfy the selection
      * criteria, or null if no such providers have been installed.
      *
      * @throws InvalidParameterException
      *         if the filter is not in the required format
-     * @throws NullPointerException if filter is null
-     *
+     * @throws NullPointerException
+     *         if filter is null
      * @see #getProviders(java.lang.String)
      * @since 1.3
      */
-    public static Provider[] getProviders(Map<String,String> filter) {
+    public static Provider[] getProviders(Map<String, String> filter) {
         // Get all installed providers first.
         // Then only return those providers who satisfy the selection criteria.
         Provider[] allProviders = Security.getProviders();
@@ -620,8 +623,7 @@ public final class Security {
             String key = ite.next();
             String value = filter.get(key);
 
-            LinkedHashSet<Provider> newCandidates = getAllQualifyingCandidates(key, value,
-                                                               allProviders);
+            LinkedHashSet<Provider> newCandidates = getAllQualifyingCandidates(key, value, allProviders);
             if (firstSearch) {
                 candidates = newCandidates;
                 firstSearch = false;
@@ -631,8 +633,7 @@ public final class Security {
                 // For each provider in the candidates set, if it
                 // isn't in the newCandidate set, we should remove
                 // it from the candidate set.
-                for (Iterator<Provider> cansIte = candidates.iterator();
-                     cansIte.hasNext(); ) {
+                for (Iterator<Provider> cansIte = candidates.iterator(); cansIte.hasNext(); ) {
                     Provider prov = cansIte.next();
                     if (!newCandidates.contains(prov)) {
                         cansIte.remove();
@@ -644,22 +645,22 @@ public final class Security {
             }
         }
 
-        if ((candidates == null) || (candidates.isEmpty()))
+        if ((candidates == null) || (candidates.isEmpty())) {
             return null;
+        }
 
         Object[] candidatesArray = candidates.toArray();
         Provider[] result = new Provider[candidatesArray.length];
 
         for (int i = 0; i < result.length; i++) {
-            result[i] = (Provider)candidatesArray[i];
+            result[i] = (Provider) candidatesArray[i];
         }
 
         return result;
     }
 
     // Map containing cached Spi Class objects of the specified type
-    private static final Map<String, Class<?>> spiMap =
-            new ConcurrentHashMap<>();
+    private static final Map<String, Class<?>> spiMap = new ConcurrentHashMap<>();
 
     /**
      * Return the Class object for the given engine type
@@ -688,26 +689,20 @@ public final class Security {
      * The {@code provider} argument can be null, in which case all
      * configured providers will be searched in order of preference.
      */
-    static Object[] getImpl(String algorithm, String type, String provider)
-            throws NoSuchAlgorithmException, NoSuchProviderException {
+    static Object[] getImpl(String algorithm, String type, String provider) throws NoSuchAlgorithmException, NoSuchProviderException {
         if (provider == null) {
-            return GetInstance.getInstance
-                (type, getSpiClass(type), algorithm).toArray();
+            return GetInstance.getInstance(type, getSpiClass(type), algorithm).toArray();
         } else {
-            return GetInstance.getInstance
-                (type, getSpiClass(type), algorithm, provider).toArray();
+            return GetInstance.getInstance(type, getSpiClass(type), algorithm, provider).toArray();
         }
     }
 
-    static Object[] getImpl(String algorithm, String type, String provider,
-            Object params) throws NoSuchAlgorithmException,
-            NoSuchProviderException, InvalidAlgorithmParameterException {
+    static Object[] getImpl(String algorithm, String type, String provider, Object params)
+            throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
         if (provider == null) {
-            return GetInstance.getInstance
-                (type, getSpiClass(type), algorithm, params).toArray();
+            return GetInstance.getInstance(type, getSpiClass(type), algorithm, params).toArray();
         } else {
-            return GetInstance.getInstance
-                (type, getSpiClass(type), algorithm, params, provider).toArray();
+            return GetInstance.getInstance(type, getSpiClass(type), algorithm, params, provider).toArray();
         }
     }
 
@@ -718,17 +713,13 @@ public final class Security {
      * of that implementation.
      * The {@code provider} argument cannot be null.
      */
-    static Object[] getImpl(String algorithm, String type, Provider provider)
-            throws NoSuchAlgorithmException {
-        return GetInstance.getInstance
-            (type, getSpiClass(type), algorithm, provider).toArray();
+    static Object[] getImpl(String algorithm, String type, Provider provider) throws NoSuchAlgorithmException {
+        return GetInstance.getInstance(type, getSpiClass(type), algorithm, provider).toArray();
     }
 
-    static Object[] getImpl(String algorithm, String type, Provider provider,
-            Object params) throws NoSuchAlgorithmException,
-            InvalidAlgorithmParameterException {
-        return GetInstance.getInstance
-            (type, getSpiClass(type), algorithm, params, provider).toArray();
+    static Object[] getImpl(String algorithm, String type, Provider provider, Object params)
+            throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+        return GetInstance.getInstance(type, getSpiClass(type), algorithm, params, provider).toArray();
     }
 
     /**
@@ -740,29 +731,30 @@ public final class Security {
      * permission to see if it's ok to retrieve the specified
      * security property value..
      *
-     * @param key the key of the property being retrieved.
+     * @param key
+     *         the key of the property being retrieved.
      *
      * @return the value of the security property corresponding to key.
      *
-     * @throws  SecurityException
-     *          if a security manager exists and its {@link
-     *          java.lang.SecurityManager#checkPermission} method
-     *          denies
-     *          access to retrieve the specified security property value
-     * @throws  NullPointerException is key is null
-     *
+     * @throws SecurityException
+     *         if a security manager exists and its {@link
+     *         java.lang.SecurityManager#checkPermission} method
+     *         denies
+     *         access to retrieve the specified security property value
+     * @throws NullPointerException
+     *         is key is null
      * @see #setProperty
      * @see java.security.SecurityPermission
      */
     public static String getProperty(String key) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
-            sm.checkPermission(new SecurityPermission("getProperty."+
-                                                      key));
+            sm.checkPermission(new SecurityPermission("getProperty." + key));
         }
         String name = props.getProperty(key);
-        if (name != null)
+        if (name != null) {
             name = name.trim(); // could be a class name with trailing ws
+        }
         return name;
     }
 
@@ -775,21 +767,22 @@ public final class Security {
      * permission to see if it's ok to set the specified
      * security property value.
      *
-     * @param key the name of the property to be set.
+     * @param key
+     *         the name of the property to be set.
+     * @param datum
+     *         the value of the property to be set.
      *
-     * @param datum the value of the property to be set.
-     *
-     * @throws  SecurityException
-     *          if a security manager exists and its {@link
-     *          java.lang.SecurityManager#checkPermission} method
-     *          denies access to set the specified security property value
-     * @throws  NullPointerException if key or datum is null
-     *
+     * @throws SecurityException
+     *         if a security manager exists and its {@link
+     *         java.lang.SecurityManager#checkPermission} method
+     *         denies access to set the specified security property value
+     * @throws NullPointerException
+     *         if key or datum is null
      * @see #getProperty
      * @see java.security.SecurityPermission
      */
     public static void setProperty(String key, String datum) {
-        check("setProperty."+key);
+        check("setProperty." + key);
         props.put(key, datum);
         invalidateSMCache(key);  /* See below. */
     }
@@ -814,8 +807,7 @@ public final class Security {
                 public Void run() {
                     try {
                         /* Get the class via the bootstrap class loader. */
-                        Class<?> cl = Class.forName(
-                            "java.lang.SecurityManager", false, null);
+                        Class<?> cl = Class.forName("java.lang.SecurityManager", false, null);
                         Field f = null;
                         boolean accessible = false;
 
@@ -830,8 +822,7 @@ public final class Security {
                         }
                         f.setBoolean(f, false);
                         f.setAccessible(accessible);
-                    }
-                    catch (Exception e1) {
+                    } catch (Exception e1) {
                         /* If we couldn't get the class, it hasn't
                          * been loaded yet.  If there is no such
                          * field, we shouldn't try to set it.  There
@@ -873,15 +864,11 @@ public final class Security {
     }
 
     /*
-    * Returns all providers who satisfy the specified
-    * criterion.
-    */
-    private static LinkedHashSet<Provider> getAllQualifyingCandidates(
-                                                String filterKey,
-                                                String filterValue,
-                                                Provider[] allProviders) {
-        String[] filterComponents = getFilterComponents(filterKey,
-                                                        filterValue);
+     * Returns all providers who satisfy the specified
+     * criterion.
+     */
+    private static LinkedHashSet<Provider> getAllQualifyingCandidates(String filterKey, String filterValue, Provider[] allProviders) {
+        String[] filterComponents = getFilterComponents(filterKey, filterValue);
 
         // The first component is the service name.
         // The second is the algorithm name.
@@ -890,21 +877,14 @@ public final class Security {
         String algName = filterComponents[1];
         String attrName = filterComponents[2];
 
-        return getProvidersNotUsingCache(serviceName, algName, attrName,
-                                         filterValue, allProviders);
+        return getProvidersNotUsingCache(serviceName, algName, attrName, filterValue, allProviders);
     }
 
-    private static LinkedHashSet<Provider> getProvidersNotUsingCache(
-                                                String serviceName,
-                                                String algName,
-                                                String attrName,
-                                                String filterValue,
-                                                Provider[] allProviders) {
+    private static LinkedHashSet<Provider> getProvidersNotUsingCache(String serviceName, String algName, String attrName, String filterValue,
+            Provider[] allProviders) {
         LinkedHashSet<Provider> candidates = new LinkedHashSet<>(5);
         for (int i = 0; i < allProviders.length; i++) {
-            if (isCriterionSatisfied(allProviders[i], serviceName,
-                                     algName,
-                                     attrName, filterValue)) {
+            if (isCriterionSatisfied(allProviders[i], serviceName, algName, attrName, filterValue)) {
                 candidates.add(allProviders[i]);
             }
         }
@@ -915,11 +895,7 @@ public final class Security {
      * Returns true if the given provider satisfies
      * the selection criterion key:value.
      */
-    private static boolean isCriterionSatisfied(Provider prov,
-                                                String serviceName,
-                                                String algName,
-                                                String attrName,
-                                                String filterValue) {
+    private static boolean isCriterionSatisfied(Provider prov, String serviceName, String algName, String attrName, String filterValue) {
         String key = serviceName + '.' + algName;
 
         if (attrName != null) {
@@ -932,10 +908,7 @@ public final class Security {
         if (propValue == null) {
             // Check whether we have an alias instead
             // of a standard name in the key.
-            String standardName = getProviderProperty("Alg.Alias." +
-                                                      serviceName + "." +
-                                                      algName,
-                                                      prov);
+            String standardName = getProviderProperty("Alg.Alias." + serviceName + "." + algName, prov);
             if (standardName != null) {
                 key = serviceName + "." + standardName;
 
@@ -977,11 +950,13 @@ public final class Security {
     private static boolean isStandardAttr(String attribute) {
         // For now, we just have two standard attributes:
         // KeySize and ImplementedIn.
-        if (attribute.equalsIgnoreCase("KeySize"))
+        if (attribute.equalsIgnoreCase("KeySize")) {
             return true;
+        }
 
-        if (attribute.equalsIgnoreCase("ImplementedIn"))
+        if (attribute.equalsIgnoreCase("ImplementedIn")) {
             return true;
+        }
 
         return false;
     }
@@ -990,9 +965,7 @@ public final class Security {
      * Returns true if the requested attribute value is supported;
      * otherwise, returns false.
      */
-    private static boolean isConstraintSatisfied(String attribute,
-                                                 String value,
-                                                 String prop) {
+    private static boolean isConstraintSatisfied(String attribute, String value, String prop) {
         // For KeySize, prop is the max key size the
         // provider supports for a specific <crypto_service>.<algorithm>.
         if (attribute.equalsIgnoreCase("KeySize")) {
@@ -1053,8 +1026,7 @@ public final class Security {
             }
 
             // There must be an algorithm name in the filter.
-            if ((attrIndex < algIndex) ||
-                (algIndex == attrIndex - 1)) {
+            if ((attrIndex < algIndex) || (algIndex == attrIndex - 1)) {
                 throw new InvalidParameterException("Invalid filter");
             } else {
                 algName = filterKey.substring(algIndex + 1, attrIndex);
@@ -1080,9 +1052,10 @@ public final class Security {
      * Cryptography Architecture API Specification &amp; Reference</a>.
      * Note: the returned set is immutable.
      *
-     * @param serviceName the name of the Java cryptographic
-     * service (e.g., Signature, MessageDigest, Cipher, Mac, KeyStore).
-     * Note: this parameter is case-insensitive.
+     * @param serviceName
+     *         the name of the Java cryptographic
+     *         service (e.g., Signature, MessageDigest, Cipher, Mac, KeyStore).
+     *         Note: this parameter is case-insensitive.
      *
      * @return a Set of Strings containing the names of all available
      * algorithms or types for the specified Java cryptographic service
@@ -1092,8 +1065,7 @@ public final class Security {
      **/
     public static Set<String> getAlgorithms(String serviceName) {
 
-        if ((serviceName == null) || (serviceName.length() == 0) ||
-            (serviceName.endsWith("."))) {
+        if ((serviceName == null) || (serviceName.length() == 0) || (serviceName.endsWith("."))) {
             return Collections.emptySet();
         }
 
@@ -1102,12 +1074,9 @@ public final class Security {
 
         for (int i = 0; i < providers.length; i++) {
             // Check the keys for each provider.
-            for (Enumeration<Object> e = providers[i].keys();
-                                                e.hasMoreElements(); ) {
-                String currentKey =
-                        ((String)e.nextElement()).toUpperCase(Locale.ENGLISH);
-                if (currentKey.startsWith(
-                        serviceName.toUpperCase(Locale.ENGLISH))) {
+            for (Enumeration<Object> e = providers[i].keys(); e.hasMoreElements(); ) {
+                String currentKey = ((String) e.nextElement()).toUpperCase(Locale.ENGLISH);
+                if (currentKey.startsWith(serviceName.toUpperCase(Locale.ENGLISH))) {
                     // We should skip the currentKey if it contains a
                     // whitespace. The reason is: such an entry in the
                     // provider property contains attributes for the
@@ -1115,8 +1084,7 @@ public final class Security {
                     // in entries which lead to the implementation
                     // classes.
                     if (currentKey.indexOf(" ") < 0) {
-                        result.add(currentKey.substring(
-                                                serviceName.length() + 1));
+                        result.add(currentKey.substring(serviceName.length() + 1));
                     }
                 }
             }

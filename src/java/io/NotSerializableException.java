@@ -30,8 +30,8 @@ package java.io;
  * The serialization runtime or the class of the instance can throw
  * this exception. The argument should be the name of the class.
  *
- * @author  unascribed
- * @since   JDK1.1
+ * @author unascribed
+ * @since JDK1.1
  */
 public class NotSerializableException extends ObjectStreamException {
 
@@ -40,14 +40,15 @@ public class NotSerializableException extends ObjectStreamException {
     /**
      * Constructs a NotSerializableException object with message string.
      *
-     * @param classname Class of the instance being serialized/deserialized.
+     * @param classname
+     *         Class of the instance being serialized/deserialized.
      */
     public NotSerializableException(String classname) {
         super(classname);
     }
 
     /**
-     *  Constructs a NotSerializableException object.
+     * Constructs a NotSerializableException object.
      */
     public NotSerializableException() {
         super();

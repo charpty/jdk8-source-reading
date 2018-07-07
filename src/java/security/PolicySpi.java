@@ -23,7 +23,6 @@
  *
  */
 
-
 package java.security;
 
 /**
@@ -38,7 +37,6 @@ package java.security;
  * an IllegalArgumentException if it does not understand the
  * {@code Policy.Parameters} input.
  *
- *
  * @since 1.6
  */
 
@@ -47,15 +45,15 @@ public abstract class PolicySpi {
     /**
      * Check whether the policy has granted a Permission to a ProtectionDomain.
      *
-     * @param domain the ProtectionDomain to check.
-     *
-     * @param permission check whether this permission is granted to the
-     *          specified domain.
+     * @param domain
+     *         the ProtectionDomain to check.
+     * @param permission
+     *         check whether this permission is granted to the
+     *         specified domain.
      *
      * @return boolean true if the permission is granted to the domain.
      */
-    protected abstract boolean engineImplies
-        (ProtectionDomain domain, Permission permission);
+    protected abstract boolean engineImplies(ProtectionDomain domain, Permission permission);
 
     /**
      * Refreshes/reloads the policy configuration. The behavior of this method
@@ -66,7 +64,8 @@ public abstract class PolicySpi {
      * This method should be overridden if a refresh operation is supported
      * by the policy implementation.
      */
-    protected void engineRefresh() { }
+    protected void engineRefresh() {
+    }
 
     /**
      * Return a PermissionCollection object containing the set of
@@ -77,18 +76,18 @@ public abstract class PolicySpi {
      * overridden if the policy implementation can return a set of
      * permissions granted to a CodeSource.
      *
-     * @param codesource the CodeSource to which the returned
-     *          PermissionCollection has been granted.
+     * @param codesource
+     *         the CodeSource to which the returned
+     *         PermissionCollection has been granted.
      *
      * @return a set of permissions granted to the specified CodeSource.
-     *          If this operation is supported, the returned
-     *          set of permissions must be a new mutable instance
-     *          and it must support heterogeneous Permission types.
-     *          If this operation is not supported,
-     *          Policy.UNSUPPORTED_EMPTY_COLLECTION is returned.
+     * If this operation is supported, the returned
+     * set of permissions must be a new mutable instance
+     * and it must support heterogeneous Permission types.
+     * If this operation is not supported,
+     * Policy.UNSUPPORTED_EMPTY_COLLECTION is returned.
      */
-    protected PermissionCollection engineGetPermissions
-                                        (CodeSource codesource) {
+    protected PermissionCollection engineGetPermissions(CodeSource codesource) {
         return Policy.UNSUPPORTED_EMPTY_COLLECTION;
     }
 
@@ -101,18 +100,18 @@ public abstract class PolicySpi {
      * overridden if the policy implementation can return a set of
      * permissions granted to a ProtectionDomain.
      *
-     * @param domain the ProtectionDomain to which the returned
-     *          PermissionCollection has been granted.
+     * @param domain
+     *         the ProtectionDomain to which the returned
+     *         PermissionCollection has been granted.
      *
      * @return a set of permissions granted to the specified ProtectionDomain.
-     *          If this operation is supported, the returned
-     *          set of permissions must be a new mutable instance
-     *          and it must support heterogeneous Permission types.
-     *          If this operation is not supported,
-     *          Policy.UNSUPPORTED_EMPTY_COLLECTION is returned.
+     * If this operation is supported, the returned
+     * set of permissions must be a new mutable instance
+     * and it must support heterogeneous Permission types.
+     * If this operation is not supported,
+     * Policy.UNSUPPORTED_EMPTY_COLLECTION is returned.
      */
-    protected PermissionCollection engineGetPermissions
-                                        (ProtectionDomain domain) {
+    protected PermissionCollection engineGetPermissions(ProtectionDomain domain) {
         return Policy.UNSUPPORTED_EMPTY_COLLECTION;
     }
 }

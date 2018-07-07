@@ -31,8 +31,6 @@ import java.math.BigInteger;
  * This class specifies an RSA public key.
  *
  * @author Jan Luehe
- *
- *
  * @see java.security.Key
  * @see java.security.KeyFactory
  * @see KeySpec
@@ -49,8 +47,10 @@ public class RSAPublicKeySpec implements KeySpec {
     /**
      * Creates a new RSAPublicKeySpec.
      *
-     * @param modulus the modulus
-     * @param publicExponent the public exponent
+     * @param modulus
+     *         the modulus
+     * @param publicExponent
+     *         the public exponent
      */
     public RSAPublicKeySpec(BigInteger modulus, BigInteger publicExponent) {
         this.modulus = modulus;

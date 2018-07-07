@@ -24,6 +24,7 @@
  */
 
 package java.util.logging;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,12 +68,12 @@ public class Level implements java.io.Serializable {
     private static final String defaultBundle = "sun.util.logging.resources.logging";
 
     /**
-     * @serial  The non-localized name of the level.
+     * @serial The non-localized name of the level.
      */
     private final String name;
 
     /**
-     * @serial  The integer value of the level.
+     * @serial The integer value of the level.
      */
     private final int value;
 
@@ -89,7 +90,7 @@ public class Level implements java.io.Serializable {
      * OFF is a special level that can be used to turn off logging.
      * This level is initialized to <CODE>Integer.MAX_VALUE</CODE>.
      */
-    public static final Level OFF = new Level("OFF",Integer.MAX_VALUE, defaultBundle);
+    public static final Level OFF = new Level("OFF", Integer.MAX_VALUE, defaultBundle);
 
     /**
      * SEVERE is a message level indicating a serious failure.
@@ -100,7 +101,7 @@ public class Level implements java.io.Serializable {
      * to end users and to system administrators.
      * This level is initialized to <CODE>1000</CODE>.
      */
-    public static final Level SEVERE = new Level("SEVERE",1000, defaultBundle);
+    public static final Level SEVERE = new Level("SEVERE", 1000, defaultBundle);
 
     /**
      * WARNING is a message level indicating a potential problem.
@@ -184,9 +185,14 @@ public class Level implements java.io.Serializable {
      * objects such as SEVERE or FINEST.  However, if clients need to
      * add new logging levels, they may subclass Level and define new
      * constants.
-     * @param name  the name of the Level, for example "SEVERE".
-     * @param value an integer value for the level.
-     * @throws NullPointerException if the name is null
+     *
+     * @param name
+     *         the name of the Level, for example "SEVERE".
+     * @param value
+     *         an integer value for the level.
+     *
+     * @throws NullPointerException
+     *         if the name is null
      */
     protected Level(String name, int value) {
         this(name, value, null);
@@ -196,12 +202,18 @@ public class Level implements java.io.Serializable {
      * Create a named Level with a given integer value and a
      * given localization resource name.
      * <p>
-     * @param name  the name of the Level, for example "SEVERE".
-     * @param value an integer value for the level.
-     * @param resourceBundleName name of a resource bundle to use in
-     *    localizing the given name. If the resourceBundleName is null
-     *    or an empty string, it is ignored.
-     * @throws NullPointerException if the name is null
+     *
+     * @param name
+     *         the name of the Level, for example "SEVERE".
+     * @param value
+     *         an integer value for the level.
+     * @param resourceBundleName
+     *         name of a resource bundle to use in
+     *         localizing the given name. If the resourceBundleName is null
+     *         or an empty string, it is ignored.
+     *
+     * @throws NullPointerException
+     *         if the name is null
      */
     protected Level(String name, int value, String resourceBundleName) {
         this(name, value, resourceBundleName, true);
@@ -266,16 +278,15 @@ public class Level implements java.io.Serializable {
         final String localizedName = rb.getString(name);
 
         final boolean isDefaultBundle = defaultBundle.equals(resourceBundleName);
-        if (!isDefaultBundle) return localizedName;
+        if (!isDefaultBundle) {
+            return localizedName;
+        }
 
         // This is a trick to determine whether the name has been translated
         // or not. If it has not been translated, we need to use Locale.ROOT
         // when calling toUpperCase().
         final Locale rbLocale = rb.getLocale();
-        final Locale locale =
-                Locale.ROOT.equals(rbLocale)
-                || name.equals(localizedName.toUpperCase(Locale.ROOT))
-                ? Locale.ROOT : rbLocale;
+        final Locale locale = Locale.ROOT.equals(rbLocale) || name.equals(localizedName.toUpperCase(Locale.ROOT)) ? Locale.ROOT : rbLocale;
 
         // ALL CAPS in a resource bundle's message indicates no translation
         // needed per Oracle translation guideline.  To workaround this
@@ -392,6 +403,7 @@ public class Level implements java.io.Serializable {
      * Get the integer value for this level.  This integer value
      * can be used for efficient ordering comparisons between
      * Level objects.
+     *
      * @return the integer value for this level.
      */
     public final int intValue() {
@@ -426,20 +438,24 @@ public class Level implements java.io.Serializable {
      * <li>     "1000"
      * </ul>
      *
-     * @param  name   string to be parsed
-     * @throws NullPointerException if the name is null
-     * @throws IllegalArgumentException if the value is not valid.
-     * Valid values are integers between <CODE>Integer.MIN_VALUE</CODE>
-     * and <CODE>Integer.MAX_VALUE</CODE>, and all known level names.
-     * Known names are the levels defined by this class (e.g., <CODE>FINE</CODE>,
-     * <CODE>FINER</CODE>, <CODE>FINEST</CODE>), or created by this class with
-     * appropriate package access, or new levels defined or created
-     * by subclasses.
+     * @param name
+     *         string to be parsed
      *
      * @return The parsed value. Passing an integer that corresponds to a known name
      * (e.g., 700) will return the associated name (e.g., <CODE>CONFIG</CODE>).
      * Passing an integer that does not (e.g., 1) will return a new level name
      * initialized to that value.
+     *
+     * @throws NullPointerException
+     *         if the name is null
+     * @throws IllegalArgumentException
+     *         if the value is not valid.
+     *         Valid values are integers between <CODE>Integer.MIN_VALUE</CODE>
+     *         and <CODE>Integer.MAX_VALUE</CODE>, and all known level names.
+     *         Known names are the levels defined by this class (e.g., <CODE>FINE</CODE>,
+     *         <CODE>FINER</CODE>, <CODE>FINEST</CODE>), or created by this class with
+     *         appropriate package access, or new levels defined or created
+     *         by subclasses.
      */
     public static synchronized Level parse(String name) throws IllegalArgumentException {
         // Check that name is not null.
@@ -484,12 +500,13 @@ public class Level implements java.io.Serializable {
 
     /**
      * Compare two objects for value equality.
+     *
      * @return true if and only if the two objects have the same level value.
      */
     @Override
     public boolean equals(Object ox) {
         try {
-            Level lx = (Level)ox;
+            Level lx = (Level) ox;
             return (lx.value == this.value);
         } catch (Exception ex) {
             return false;
@@ -498,6 +515,7 @@ public class Level implements java.io.Serializable {
 
     /**
      * Generate a hashcode.
+     *
      * @return a hashcode based on the level value
      */
     @Override
@@ -530,6 +548,7 @@ public class Level implements java.io.Serializable {
         private static Map<Integer, List<KnownLevel>> intToLevels = new HashMap<>();
         final Level levelObject;     // instance of Level class or Level subclass
         final Level mirroredLevel;   // mirror of the custom Level
+
         KnownLevel(Level l) {
             this.levelObject = l;
             if (l.getClass() == Level.class) {
@@ -600,10 +619,8 @@ public class Level implements java.io.Serializable {
                 for (KnownLevel level : list) {
                     Level other = level.mirroredLevel;
                     Class<? extends Level> type = level.levelObject.getClass();
-                    if (l.value == other.value &&
-                           (l.resourceBundleName == other.resourceBundleName ||
-                               (l.resourceBundleName != null &&
-                                l.resourceBundleName.equals(other.resourceBundleName)))) {
+                    if (l.value == other.value && (l.resourceBundleName == other.resourceBundleName || (l.resourceBundleName != null && l.resourceBundleName
+                            .equals(other.resourceBundleName)))) {
                         if (type == l.getClass()) {
                             return level;
                         }

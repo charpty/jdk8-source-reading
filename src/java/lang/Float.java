@@ -25,9 +25,9 @@
 
 package java.lang;
 
-import sun.misc.FloatingDecimal;
-import sun.misc.FloatConsts;
 import sun.misc.DoubleConsts;
+import sun.misc.FloatConsts;
+import sun.misc.FloatingDecimal;
 
 /**
  * The {@code Float} class wraps a value of primitive type
@@ -41,9 +41,9 @@ import sun.misc.DoubleConsts;
  * constants and methods useful when dealing with a
  * {@code float}.
  *
- * @author  Lee Boynton
- * @author  Arthur van Hoff
- * @author  Joseph D. Darcy
+ * @author Lee Boynton
+ * @author Arthur van Hoff
+ * @author Joseph D. Darcy
  * @since JDK1.0
  */
 public final class Float extends Number implements Comparable<Float> {
@@ -143,42 +143,42 @@ public final class Float extends Number implements Comparable<Float> {
      * <li>If the argument is NaN, the result is the string
      * "{@code NaN}".
      * <li>Otherwise, the result is a string that represents the sign and
-     *     magnitude (absolute value) of the argument. If the sign is
-     *     negative, the first character of the result is
-     *     '{@code -}' ({@code '\u005Cu002D'}); if the sign is
-     *     positive, no sign character appears in the result. As for
-     *     the magnitude <i>m</i>:
+     * magnitude (absolute value) of the argument. If the sign is
+     * negative, the first character of the result is
+     * '{@code -}' ({@code '\u005Cu002D'}); if the sign is
+     * positive, no sign character appears in the result. As for
+     * the magnitude <i>m</i>:
      * <ul>
      * <li>If <i>m</i> is infinity, it is represented by the characters
-     *     {@code "Infinity"}; thus, positive infinity produces
-     *     the result {@code "Infinity"} and negative infinity
-     *     produces the result {@code "-Infinity"}.
+     * {@code "Infinity"}; thus, positive infinity produces
+     * the result {@code "Infinity"} and negative infinity
+     * produces the result {@code "-Infinity"}.
      * <li>If <i>m</i> is zero, it is represented by the characters
-     *     {@code "0.0"}; thus, negative zero produces the result
-     *     {@code "-0.0"} and positive zero produces the result
-     *     {@code "0.0"}.
+     * {@code "0.0"}; thus, negative zero produces the result
+     * {@code "-0.0"} and positive zero produces the result
+     * {@code "0.0"}.
      * <li> If <i>m</i> is greater than or equal to 10<sup>-3</sup> but
-     *      less than 10<sup>7</sup>, then it is represented as the
-     *      integer part of <i>m</i>, in decimal form with no leading
-     *      zeroes, followed by '{@code .}'
-     *      ({@code '\u005Cu002E'}), followed by one or more
-     *      decimal digits representing the fractional part of
-     *      <i>m</i>.
+     * less than 10<sup>7</sup>, then it is represented as the
+     * integer part of <i>m</i>, in decimal form with no leading
+     * zeroes, followed by '{@code .}'
+     * ({@code '\u005Cu002E'}), followed by one or more
+     * decimal digits representing the fractional part of
+     * <i>m</i>.
      * <li> If <i>m</i> is less than 10<sup>-3</sup> or greater than or
-     *      equal to 10<sup>7</sup>, then it is represented in
-     *      so-called "computerized scientific notation." Let <i>n</i>
-     *      be the unique integer such that 10<sup><i>n</i> </sup>&le;
-     *      <i>m</i> {@literal <} 10<sup><i>n</i>+1</sup>; then let <i>a</i>
-     *      be the mathematically exact quotient of <i>m</i> and
-     *      10<sup><i>n</i></sup> so that 1 &le; <i>a</i> {@literal <} 10.
-     *      The magnitude is then represented as the integer part of
-     *      <i>a</i>, as a single decimal digit, followed by
-     *      '{@code .}' ({@code '\u005Cu002E'}), followed by
-     *      decimal digits representing the fractional part of
-     *      <i>a</i>, followed by the letter '{@code E}'
-     *      ({@code '\u005Cu0045'}), followed by a representation
-     *      of <i>n</i> as a decimal integer, as produced by the
-     *      method {@link java.lang.Integer#toString(int)}.
+     * equal to 10<sup>7</sup>, then it is represented in
+     * so-called "computerized scientific notation." Let <i>n</i>
+     * be the unique integer such that 10<sup><i>n</i> </sup>&le;
+     * <i>m</i> {@literal <} 10<sup><i>n</i>+1</sup>; then let <i>a</i>
+     * be the mathematically exact quotient of <i>m</i> and
+     * 10<sup><i>n</i></sup> so that 1 &le; <i>a</i> {@literal <} 10.
+     * The magnitude is then represented as the integer part of
+     * <i>a</i>, as a single decimal digit, followed by
+     * '{@code .}' ({@code '\u005Cu002E'}), followed by
+     * decimal digits representing the fractional part of
+     * <i>a</i>, followed by the letter '{@code E}'
+     * ({@code '\u005Cu0045'}), followed by a representation
+     * of <i>n</i> as a decimal integer, as produced by the
+     * method {@link java.lang.Integer#toString(int)}.
      *
      * </ul>
      * </ul>
@@ -199,7 +199,9 @@ public final class Float extends Number implements Comparable<Float> {
      * <p>To create localized string representations of a floating-point
      * value, use subclasses of {@link java.text.NumberFormat}.
      *
-     * @param   f   the float to be converted.
+     * @param f
+     *         the float to be converted.
+     *
      * @return a string representation of the argument.
      */
     public static String toString(float f) {
@@ -213,7 +215,7 @@ public final class Float extends Number implements Comparable<Float> {
      *
      * <ul>
      * <li>If the argument is NaN, the result is the string
-     *     "{@code NaN}".
+     * "{@code NaN}".
      * <li>Otherwise, the result is a string that represents the sign and
      * magnitude (absolute value) of the argument. If the sign is negative,
      * the first character of the result is '{@code -}'
@@ -267,33 +269,35 @@ public final class Float extends Number implements Comparable<Float> {
      * <tr><td>{@code 0.5}</td> <td>{@code 0x1.0p-1}</td>
      * <tr><td>{@code 0.25}</td>        <td>{@code 0x1.0p-2}</td>
      * <tr><td>{@code Float.MAX_VALUE}</td>
-     *     <td>{@code 0x1.fffffep127}</td>
+     * <td>{@code 0x1.fffffep127}</td>
      * <tr><td>{@code Minimum Normal Value}</td>
-     *     <td>{@code 0x1.0p-126}</td>
+     * <td>{@code 0x1.0p-126}</td>
      * <tr><td>{@code Maximum Subnormal Value}</td>
-     *     <td>{@code 0x0.fffffep-126}</td>
+     * <td>{@code 0x0.fffffep-126}</td>
      * <tr><td>{@code Float.MIN_VALUE}</td>
-     *     <td>{@code 0x0.000002p-126}</td>
+     * <td>{@code 0x0.000002p-126}</td>
      * </table>
-     * @param   f   the {@code float} to be converted.
+     *
+     * @param f
+     *         the {@code float} to be converted.
+     *
      * @return a hex string representation of the argument.
+     *
      * @since 1.5
-     * @author Joseph D. Darcy
      */
     public static String toHexString(float f) {
-        if (Math.abs(f) < FloatConsts.MIN_NORMAL
-            &&  f != 0.0f ) {// float subnormal
+        if (Math.abs(f) < FloatConsts.MIN_NORMAL && f != 0.0f) {// float subnormal
             // Adjust exponent to create subnormal double, then
             // replace subnormal double exponent with subnormal float
             // exponent
-            String s = Double.toHexString(Math.scalb((double)f,
-                                                     /* -1022+126 */
-                                                     DoubleConsts.MIN_EXPONENT-
-                                                     FloatConsts.MIN_EXPONENT));
+            String s = Double.toHexString(Math.scalb((double) f,
+                    /* -1022+126 */
+                    DoubleConsts.MIN_EXPONENT - FloatConsts.MIN_EXPONENT));
             return s.replaceFirst("p-1022$", "p-126");
-        }
-        else // double string will be the same as float string
+        } else // double string will be the same as float string
+        {
             return Double.toHexString(f);
+        }
     }
 
     /**
@@ -331,9 +335,9 @@ public final class Float extends Number implements Comparable<Float> {
      * <dd><i>HexNumeral</i>
      * <dd><i>HexNumeral</i> {@code .}
      * <dd>{@code 0x} <i>HexDigits<sub>opt</sub>
-     *     </i>{@code .}<i> HexDigits</i>
+     * </i>{@code .}<i> HexDigits</i>
      * <dd>{@code 0X}<i> HexDigits<sub>opt</sub>
-     *     </i>{@code .} <i>HexDigits</i>
+     * </i>{@code .} <i>HexDigits</i>
      * </dl>
      *
      * <dl>
@@ -406,11 +410,15 @@ public final class Float extends Number implements Comparable<Float> {
      * for {@link Double#valueOf Double.valueOf} lists a regular
      * expression which can be used to screen the input.
      *
-     * @param   s   the string to be parsed.
-     * @return  a {@code Float} object holding the value
-     *          represented by the {@code String} argument.
-     * @throws  NumberFormatException  if the string does not contain a
-     *          parsable number.
+     * @param s
+     *         the string to be parsed.
+     *
+     * @return a {@code Float} object holding the value
+     * represented by the {@code String} argument.
+     *
+     * @throws NumberFormatException
+     *         if the string does not contain a
+     *         parsable number.
      */
     public static Float valueOf(String s) throws NumberFormatException {
         return new Float(parseFloat(s));
@@ -425,9 +433,12 @@ public final class Float extends Number implements Comparable<Float> {
      * significantly better space and time performance by caching
      * frequently requested values.
      *
-     * @param  f a float value.
+     * @param f
+     *         a float value.
+     *
      * @return a {@code Float} instance representing {@code f}.
-     * @since  1.5
+     *
+     * @since 1.5
      */
     public static Float valueOf(float f) {
         return new Float(f);
@@ -438,13 +449,18 @@ public final class Float extends Number implements Comparable<Float> {
      * represented by the specified {@code String}, as performed
      * by the {@code valueOf} method of class {@code Float}.
      *
-     * @param  s the string to be parsed.
+     * @param s
+     *         the string to be parsed.
+     *
      * @return the {@code float} value represented by the string
-     *         argument.
-     * @throws NullPointerException  if the string is null
-     * @throws NumberFormatException if the string does not contain a
-     *               parsable {@code float}.
-     * @see    java.lang.Float#valueOf(String)
+     * argument.
+     *
+     * @throws NullPointerException
+     *         if the string is null
+     * @throws NumberFormatException
+     *         if the string does not contain a
+     *         parsable {@code float}.
+     * @see java.lang.Float#valueOf(String)
      * @since 1.2
      */
     public static float parseFloat(String s) throws NumberFormatException {
@@ -455,9 +471,11 @@ public final class Float extends Number implements Comparable<Float> {
      * Returns {@code true} if the specified number is a
      * Not-a-Number (NaN) value, {@code false} otherwise.
      *
-     * @param   v   the value to be tested.
-     * @return  {@code true} if the argument is NaN;
-     *          {@code false} otherwise.
+     * @param v
+     *         the value to be tested.
+     *
+     * @return {@code true} if the argument is NaN;
+     * {@code false} otherwise.
      */
     public static boolean isNaN(float v) {
         return (v != v);
@@ -467,33 +485,35 @@ public final class Float extends Number implements Comparable<Float> {
      * Returns {@code true} if the specified number is infinitely
      * large in magnitude, {@code false} otherwise.
      *
-     * @param   v   the value to be tested.
-     * @return  {@code true} if the argument is positive infinity or
-     *          negative infinity; {@code false} otherwise.
+     * @param v
+     *         the value to be tested.
+     *
+     * @return {@code true} if the argument is positive infinity or
+     * negative infinity; {@code false} otherwise.
      */
     public static boolean isInfinite(float v) {
         return (v == POSITIVE_INFINITY) || (v == NEGATIVE_INFINITY);
     }
-
 
     /**
      * Returns {@code true} if the argument is a finite floating-point
      * value; returns {@code false} otherwise (for NaN and infinity
      * arguments).
      *
-     * @param f the {@code float} value to be tested
+     * @param f
+     *         the {@code float} value to be tested
+     *
      * @return {@code true} if the argument is a finite
      * floating-point value, {@code false} otherwise.
+     *
      * @since 1.8
      */
-     public static boolean isFinite(float f) {
+    public static boolean isFinite(float f) {
         return Math.abs(f) <= FloatConsts.MAX_VALUE;
     }
 
     /**
      * The value of the Float.
-     *
-     * @serial
      */
     private final float value;
 
@@ -501,7 +521,8 @@ public final class Float extends Number implements Comparable<Float> {
      * Constructs a newly allocated {@code Float} object that
      * represents the primitive {@code float} argument.
      *
-     * @param   value   the value to be represented by the {@code Float}.
+     * @param value
+     *         the value to be represented by the {@code Float}.
      */
     public Float(float value) {
         this.value = value;
@@ -511,10 +532,11 @@ public final class Float extends Number implements Comparable<Float> {
      * Constructs a newly allocated {@code Float} object that
      * represents the argument converted to type {@code float}.
      *
-     * @param   value   the value to be represented by the {@code Float}.
+     * @param value
+     *         the value to be represented by the {@code Float}.
      */
     public Float(double value) {
-        this.value = (float)value;
+        this.value = (float) value;
     }
 
     /**
@@ -523,10 +545,13 @@ public final class Float extends Number implements Comparable<Float> {
      * represented by the string. The string is converted to a
      * {@code float} value as if by the {@code valueOf} method.
      *
-     * @param      s   a string to be converted to a {@code Float}.
-     * @throws  NumberFormatException  if the string does not contain a
-     *               parsable number.
-     * @see        java.lang.Float#valueOf(java.lang.String)
+     * @param s
+     *         a string to be converted to a {@code Float}.
+     *
+     * @throws NumberFormatException
+     *         if the string does not contain a
+     *         parsable number.
+     * @see java.lang.Float#valueOf(java.lang.String)
      */
     public Float(String s) throws NumberFormatException {
         value = parseFloat(s);
@@ -536,8 +561,8 @@ public final class Float extends Number implements Comparable<Float> {
      * Returns {@code true} if this {@code Float} value is a
      * Not-a-Number (NaN), {@code false} otherwise.
      *
-     * @return  {@code true} if the value represented by this object is
-     *          NaN; {@code false} otherwise.
+     * @return {@code true} if the value represented by this object is
+     * NaN; {@code false} otherwise.
      */
     public boolean isNaN() {
         return isNaN(value);
@@ -547,9 +572,9 @@ public final class Float extends Number implements Comparable<Float> {
      * Returns {@code true} if this {@code Float} value is
      * infinitely large in magnitude, {@code false} otherwise.
      *
-     * @return  {@code true} if the value represented by this object is
-     *          positive infinity or negative infinity;
-     *          {@code false} otherwise.
+     * @return {@code true} if the value represented by this object is
+     * positive infinity or negative infinity;
+     * {@code false} otherwise.
      */
     public boolean isInfinite() {
         return isInfinite(value);
@@ -561,7 +586,8 @@ public final class Float extends Number implements Comparable<Float> {
      * is converted to a {@code String} exactly as if by the method
      * {@code toString} of one argument.
      *
-     * @return  a {@code String} representation of this object.
+     * @return a {@code String} representation of this object.
+     *
      * @see java.lang.Float#toString(float)
      */
     public String toString() {
@@ -572,49 +598,46 @@ public final class Float extends Number implements Comparable<Float> {
      * Returns the value of this {@code Float} as a {@code byte} after
      * a narrowing primitive conversion.
      *
-     * @return  the {@code float} value represented by this object
-     *          converted to type {@code byte}
-     * @jls 5.1.3 Narrowing Primitive Conversions
+     * @return the {@code float} value represented by this object
+     * converted to type {@code byte}
      */
     public byte byteValue() {
-        return (byte)value;
+        return (byte) value;
     }
 
     /**
      * Returns the value of this {@code Float} as a {@code short}
      * after a narrowing primitive conversion.
      *
-     * @return  the {@code float} value represented by this object
-     *          converted to type {@code short}
-     * @jls 5.1.3 Narrowing Primitive Conversions
+     * @return the {@code float} value represented by this object
+     * converted to type {@code short}
+     *
      * @since JDK1.1
      */
     public short shortValue() {
-        return (short)value;
+        return (short) value;
     }
 
     /**
      * Returns the value of this {@code Float} as an {@code int} after
      * a narrowing primitive conversion.
      *
-     * @return  the {@code float} value represented by this object
-     *          converted to type {@code int}
-     * @jls 5.1.3 Narrowing Primitive Conversions
+     * @return the {@code float} value represented by this object
+     * converted to type {@code int}
      */
     public int intValue() {
-        return (int)value;
+        return (int) value;
     }
 
     /**
      * Returns value of this {@code Float} as a {@code long} after a
      * narrowing primitive conversion.
      *
-     * @return  the {@code float} value represented by this object
-     *          converted to type {@code long}
-     * @jls 5.1.3 Narrowing Primitive Conversions
+     * @return the {@code float} value represented by this object
+     * converted to type {@code long}
      */
     public long longValue() {
-        return (long)value;
+        return (long) value;
     }
 
     /**
@@ -631,11 +654,10 @@ public final class Float extends Number implements Comparable<Float> {
      * after a widening primitive conversion.
      *
      * @return the {@code float} value represented by this
-     *         object converted to type {@code double}
-     * @jls 5.1.2 Widening Primitive Conversions
+     * object converted to type {@code double}
      */
     public double doubleValue() {
-        return (double)value;
+        return (double) value;
     }
 
     /**
@@ -656,8 +678,11 @@ public final class Float extends Number implements Comparable<Float> {
      * Returns a hash code for a {@code float} value; compatible with
      * {@code Float.hashCode()}.
      *
-     * @param value the value to hash
+     * @param value
+     *         the value to hash
+     *
      * @return a hash code value for a {@code float} value.
+     *
      * @since 1.8
      */
     public static int hashCode(float value) {
@@ -665,7 +690,6 @@ public final class Float extends Number implements Comparable<Float> {
     }
 
     /**
-
      * Compares this object against the specified object.  The result
      * is {@code true} if and only if the argument is not
      * {@code null} and is a {@code Float} object that
@@ -687,26 +711,28 @@ public final class Float extends Number implements Comparable<Float> {
      * <p>also has the value {@code true}. However, there are two exceptions:
      * <ul>
      * <li>If {@code f1} and {@code f2} both represent
-     *     {@code Float.NaN}, then the {@code equals} method returns
-     *     {@code true}, even though {@code Float.NaN==Float.NaN}
-     *     has the value {@code false}.
+     * {@code Float.NaN}, then the {@code equals} method returns
+     * {@code true}, even though {@code Float.NaN==Float.NaN}
+     * has the value {@code false}.
      * <li>If {@code f1} represents {@code +0.0f} while
-     *     {@code f2} represents {@code -0.0f}, or vice
-     *     versa, the {@code equal} test has the value
-     *     {@code false}, even though {@code 0.0f==-0.0f}
-     *     has the value {@code true}.
+     * {@code f2} represents {@code -0.0f}, or vice
+     * versa, the {@code equal} test has the value
+     * {@code false}, even though {@code 0.0f==-0.0f}
+     * has the value {@code true}.
      * </ul>
      *
      * This definition allows hash tables to operate properly.
      *
-     * @param obj the object to be compared
-     * @return  {@code true} if the objects are the same;
-     *          {@code false} otherwise.
+     * @param obj
+     *         the object to be compared
+     *
+     * @return {@code true} if the objects are the same;
+     * {@code false} otherwise.
+     *
      * @see java.lang.Float#floatToIntBits(float)
      */
     public boolean equals(Object obj) {
-        return (obj instanceof Float)
-               && (floatToIntBits(((Float)obj).value) == floatToIntBits(value));
+        return (obj instanceof Float) && (floatToIntBits(((Float) obj).value) == floatToIntBits(value));
     }
 
     /**
@@ -737,17 +763,18 @@ public final class Float extends Number implements Comparable<Float> {
      * (except all NaN values are collapsed to a single
      * "canonical" NaN value).
      *
-     * @param   value   a floating-point number.
+     * @param value
+     *         a floating-point number.
+     *
      * @return the bits that represent the floating-point number.
      */
     public static int floatToIntBits(float value) {
         int result = floatToRawIntBits(value);
         // Check for NaN based on values of bit fields, maximum
         // exponent and nonzero significand.
-        if ( ((result & FloatConsts.EXP_BIT_MASK) ==
-              FloatConsts.EXP_BIT_MASK) &&
-             (result & FloatConsts.SIGNIF_BIT_MASK) != 0)
+        if (((result & FloatConsts.EXP_BIT_MASK) == FloatConsts.EXP_BIT_MASK) && (result & FloatConsts.SIGNIF_BIT_MASK) != 0) {
             result = 0x7fc00000;
+        }
         return result;
     }
 
@@ -782,8 +809,11 @@ public final class Float extends Number implements Comparable<Float> {
      * floating-point value the same as the argument to
      * {@code floatToRawIntBits}.
      *
-     * @param   value   a floating-point number.
+     * @param value
+     *         a floating-point number.
+     *
      * @return the bits that represent the floating-point number.
+     *
      * @since 1.3
      */
     public static native int floatToRawIntBits(float value);
@@ -843,9 +873,11 @@ public final class Float extends Number implements Comparable<Float> {
      * dependent; although all NaN bit patterns, quiet or signaling,
      * must be in the NaN range identified above.
      *
-     * @param   bits   an integer.
-     * @return  the {@code float} floating-point value with the same bit
-     *          pattern.
+     * @param bits
+     *         an integer.
+     *
+     * @return the {@code float} floating-point value with the same bit
+     * pattern.
      */
     public static native float intBitsToFloat(int bits);
 
@@ -857,29 +889,31 @@ public final class Float extends Number implements Comparable<Float> {
      * applied to primitive {@code float} values:
      *
      * <ul><li>
-     *          {@code Float.NaN} is considered by this method to
-     *          be equal to itself and greater than all other
-     *          {@code float} values
-     *          (including {@code Float.POSITIVE_INFINITY}).
+     * {@code Float.NaN} is considered by this method to
+     * be equal to itself and greater than all other
+     * {@code float} values
+     * (including {@code Float.POSITIVE_INFINITY}).
      * <li>
-     *          {@code 0.0f} is considered by this method to be greater
-     *          than {@code -0.0f}.
+     * {@code 0.0f} is considered by this method to be greater
+     * than {@code -0.0f}.
      * </ul>
      *
      * This ensures that the <i>natural ordering</i> of {@code Float}
      * objects imposed by this method is <i>consistent with equals</i>.
      *
-     * @param   anotherFloat   the {@code Float} to be compared.
-     * @return  the value {@code 0} if {@code anotherFloat} is
-     *          numerically equal to this {@code Float}; a value
-     *          less than {@code 0} if this {@code Float}
-     *          is numerically less than {@code anotherFloat};
-     *          and a value greater than {@code 0} if this
-     *          {@code Float} is numerically greater than
-     *          {@code anotherFloat}.
+     * @param anotherFloat
+     *         the {@code Float} to be compared.
      *
-     * @since   1.2
+     * @return the value {@code 0} if {@code anotherFloat} is
+     * numerically equal to this {@code Float}; a value
+     * less than {@code 0} if this {@code Float}
+     * is numerically less than {@code anotherFloat};
+     * and a value greater than {@code 0} if this
+     * {@code Float} is numerically greater than
+     * {@code anotherFloat}.
+     *
      * @see Comparable#compareTo(Object)
+     * @since 1.2
      */
     public int compareTo(Float anotherFloat) {
         return Float.compare(value, anotherFloat.value);
@@ -893,38 +927,47 @@ public final class Float extends Number implements Comparable<Float> {
      *    new Float(f1).compareTo(new Float(f2))
      * </pre>
      *
-     * @param   f1        the first {@code float} to compare.
-     * @param   f2        the second {@code float} to compare.
-     * @return  the value {@code 0} if {@code f1} is
-     *          numerically equal to {@code f2}; a value less than
-     *          {@code 0} if {@code f1} is numerically less than
-     *          {@code f2}; and a value greater than {@code 0}
-     *          if {@code f1} is numerically greater than
-     *          {@code f2}.
+     * @param f1
+     *         the first {@code float} to compare.
+     * @param f2
+     *         the second {@code float} to compare.
+     *
+     * @return the value {@code 0} if {@code f1} is
+     * numerically equal to {@code f2}; a value less than
+     * {@code 0} if {@code f1} is numerically less than
+     * {@code f2}; and a value greater than {@code 0}
+     * if {@code f1} is numerically greater than
+     * {@code f2}.
+     *
      * @since 1.4
      */
     public static int compare(float f1, float f2) {
-        if (f1 < f2)
+        if (f1 < f2) {
             return -1;           // Neither val is NaN, thisVal is smaller
-        if (f1 > f2)
+        }
+        if (f1 > f2) {
             return 1;            // Neither val is NaN, thisVal is larger
+        }
 
         // Cannot use floatToRawIntBits because of possibility of NaNs.
-        int thisBits    = Float.floatToIntBits(f1);
+        int thisBits = Float.floatToIntBits(f1);
         int anotherBits = Float.floatToIntBits(f2);
 
-        return (thisBits == anotherBits ?  0 : // Values are equal
+        return (thisBits == anotherBits ? 0 : // Values are equal
                 (thisBits < anotherBits ? -1 : // (-0.0, 0.0) or (!NaN, NaN)
-                 1));                          // (0.0, -0.0) or (NaN, !NaN)
+                        1));                          // (0.0, -0.0) or (NaN, !NaN)
     }
 
     /**
      * Adds two {@code float} values together as per the + operator.
      *
-     * @param a the first operand
-     * @param b the second operand
+     * @param a
+     *         the first operand
+     * @param b
+     *         the second operand
+     *
      * @return the sum of {@code a} and {@code b}
-     * @jls 4.2.4 Floating-Point Operations
+     *
      * @see java.util.function.BinaryOperator
      * @since 1.8
      */
@@ -936,9 +979,13 @@ public final class Float extends Number implements Comparable<Float> {
      * Returns the greater of two {@code float} values
      * as if by calling {@link Math#max(float, float) Math.max}.
      *
-     * @param a the first operand
-     * @param b the second operand
+     * @param a
+     *         the first operand
+     * @param b
+     *         the second operand
+     *
      * @return the greater of {@code a} and {@code b}
+     *
      * @see java.util.function.BinaryOperator
      * @since 1.8
      */
@@ -950,9 +997,13 @@ public final class Float extends Number implements Comparable<Float> {
      * Returns the smaller of two {@code float} values
      * as if by calling {@link Math#min(float, float) Math.min}.
      *
-     * @param a the first operand
-     * @param b the second operand
+     * @param a
+     *         the first operand
+     * @param b
+     *         the second operand
+     *
      * @return the smaller of {@code a} and {@code b}
+     *
      * @see java.util.function.BinaryOperator
      * @since 1.8
      */

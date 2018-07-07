@@ -99,10 +99,14 @@ abstract class FileSystem {
     /* -- Attribute accessors -- */
 
     /* Constants for simple boolean attributes */
-    @Native public static final int BA_EXISTS    = 0x01;
-    @Native public static final int BA_REGULAR   = 0x02;
-    @Native public static final int BA_DIRECTORY = 0x04;
-    @Native public static final int BA_HIDDEN    = 0x08;
+    @Native
+    public static final int BA_EXISTS = 0x01;
+    @Native
+    public static final int BA_REGULAR = 0x02;
+    @Native
+    public static final int BA_DIRECTORY = 0x04;
+    @Native
+    public static final int BA_HIDDEN = 0x08;
 
     /**
      * Return the simple boolean attributes for the file or directory denoted
@@ -111,9 +115,12 @@ abstract class FileSystem {
      */
     public abstract int getBooleanAttributes(File f);
 
-    @Native public static final int ACCESS_READ    = 0x04;
-    @Native public static final int ACCESS_WRITE   = 0x02;
-    @Native public static final int ACCESS_EXECUTE = 0x01;
+    @Native
+    public static final int ACCESS_READ = 0x04;
+    @Native
+    public static final int ACCESS_WRITE = 0x02;
+    @Native
+    public static final int ACCESS_EXECUTE = 0x01;
 
     /**
      * Check whether the file or directory denoted by the given abstract
@@ -122,6 +129,7 @@ abstract class FileSystem {
      * Return false if access is denied or an I/O error occurs
      */
     public abstract boolean checkAccess(File f, int access);
+
     /**
      * Set on or off the access permission (to owner only or to all) to the file
      * or directory denoted by the given abstract pathname, based on the parameters
@@ -152,8 +160,7 @@ abstract class FileSystem {
      * file or directory with the given pathname already exists.  Throw an
      * IOException if an I/O error occurs.
      */
-    public abstract boolean createFileExclusively(String pathname)
-        throws IOException;
+    public abstract boolean createFileExclusively(String pathname) throws IOException;
 
     /**
      * Delete the file or directory denoted by the given abstract pathname,
@@ -204,9 +211,12 @@ abstract class FileSystem {
     public abstract File[] listRoots();
 
     /* -- Disk usage -- */
-    @Native public static final int SPACE_TOTAL  = 0;
-    @Native public static final int SPACE_FREE   = 1;
-    @Native public static final int SPACE_USABLE = 2;
+    @Native
+    public static final int SPACE_TOTAL = 0;
+    @Native
+    public static final int SPACE_FREE = 1;
+    @Native
+    public static final int SPACE_USABLE = 2;
 
     public abstract long getSpace(File f, int t);
 
@@ -224,12 +234,14 @@ abstract class FileSystem {
 
     // Flags for enabling/disabling performance optimizations for file
     // name canonicalization
-    static boolean useCanonCaches      = true;
+    static boolean useCanonCaches = true;
     static boolean useCanonPrefixCache = true;
 
     private static boolean getBooleanProperty(String prop, boolean defaultVal) {
         String val = System.getProperty(prop);
-        if (val == null) return defaultVal;
+        if (val == null) {
+            return defaultVal;
+        }
         if (val.equalsIgnoreCase("true")) {
             return true;
         } else {
@@ -238,9 +250,7 @@ abstract class FileSystem {
     }
 
     static {
-        useCanonCaches      = getBooleanProperty("sun.io.useCanonCaches",
-                                                 useCanonCaches);
-        useCanonPrefixCache = getBooleanProperty("sun.io.useCanonPrefixCache",
-                                                 useCanonPrefixCache);
+        useCanonCaches = getBooleanProperty("sun.io.useCanonCaches", useCanonCaches);
+        useCanonPrefixCache = getBooleanProperty("sun.io.useCanonPrefixCache", useCanonPrefixCache);
     }
 }

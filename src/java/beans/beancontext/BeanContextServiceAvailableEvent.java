@@ -25,11 +25,6 @@
 
 package java.beans.beancontext;
 
-import java.beans.beancontext.BeanContextChild;
-import java.beans.beancontext.BeanContextEvent;
-
-import java.beans.beancontext.BeanContextServices;
-
 import java.util.Iterator;
 
 /**
@@ -44,35 +39,43 @@ public class BeanContextServiceAvailableEvent extends BeanContextEvent {
 
     /**
      * Construct a <code>BeanContextAvailableServiceEvent</code>.
-     * @param bcs The context in which the service has become available
-     * @param sc A <code>Class</code> reference to the newly available service
+     *
+     * @param bcs
+     *         The context in which the service has become available
+     * @param sc
+     *         A <code>Class</code> reference to the newly available service
      */
     public BeanContextServiceAvailableEvent(BeanContextServices bcs, Class sc) {
-        super((BeanContext)bcs);
+        super((BeanContext) bcs);
 
         serviceClass = sc;
     }
 
     /**
      * Gets the source as a reference of type <code>BeanContextServices</code>.
+     *
      * @return The context in which the service has become available
      */
     public BeanContextServices getSourceAsBeanContextServices() {
-        return (BeanContextServices)getBeanContext();
+        return (BeanContextServices) getBeanContext();
     }
 
     /**
      * Gets the service class that is the subject of this notification.
+     *
      * @return A <code>Class</code> reference to the newly available service
      */
-    public Class getServiceClass() { return serviceClass; }
+    public Class getServiceClass() {
+        return serviceClass;
+    }
 
     /**
      * Gets the list of service dependent selectors.
+     *
      * @return the current selectors available from the service
      */
     public Iterator getCurrentServiceSelectors() {
-        return ((BeanContextServices)getSource()).getCurrentServiceSelectors(serviceClass);
+        return ((BeanContextServices) getSource()).getCurrentServiceSelectors(serviceClass);
     }
 
     /*
@@ -82,5 +85,5 @@ public class BeanContextServiceAvailableEvent extends BeanContextEvent {
     /**
      * A <code>Class</code> reference to the newly available service
      */
-    protected Class                      serviceClass;
+    protected Class serviceClass;
 }

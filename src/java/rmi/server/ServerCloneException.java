@@ -40,9 +40,9 @@ package java.rmi.server;
  * instance of <code>ServerCloneException</code> always throws {@link
  * IllegalStateException}.
  *
- * @author  Ann Wollrath
- * @since   JDK1.1
- * @see     java.rmi.server.UnicastRemoteObject#clone()
+ * @author Ann Wollrath
+ * @see java.rmi.server.UnicastRemoteObject#clone()
+ * @since JDK1.1
  */
 public class ServerCloneException extends CloneNotSupportedException {
 
@@ -52,8 +52,6 @@ public class ServerCloneException extends CloneNotSupportedException {
      * <p>This field predates the general-purpose exception chaining facility.
      * The {@link Throwable#getCause()} method is now the preferred means of
      * obtaining this information.
-     *
-     * @serial
      */
     public Exception detail;
 
@@ -64,7 +62,8 @@ public class ServerCloneException extends CloneNotSupportedException {
      * Constructs a <code>ServerCloneException</code> with the specified
      * detail message.
      *
-     * @param s the detail message.
+     * @param s
+     *         the detail message.
      */
     public ServerCloneException(String s) {
         super(s);
@@ -75,8 +74,10 @@ public class ServerCloneException extends CloneNotSupportedException {
      * Constructs a <code>ServerCloneException</code> with the specified
      * detail message and cause.
      *
-     * @param s the detail message.
-     * @param cause the cause
+     * @param s
+     *         the detail message.
+     * @param cause
+     *         the cause
      */
     public ServerCloneException(String s, Exception cause) {
         super(s);
@@ -91,20 +92,20 @@ public class ServerCloneException extends CloneNotSupportedException {
      * @return the detail message
      */
     public String getMessage() {
-        if (detail == null)
+        if (detail == null) {
             return super.getMessage();
-        else
-            return super.getMessage() +
-                "; nested exception is: \n\t" +
-                detail.toString();
+        } else {
+            return super.getMessage() + "; nested exception is: \n\t" + detail.toString();
+        }
     }
 
     /**
      * Returns the cause of this exception.  This method returns the value
      * of the {@link #detail} field.
      *
-     * @return  the cause, which may be <tt>null</tt>.
-     * @since   1.4
+     * @return the cause, which may be <tt>null</tt>.
+     *
+     * @since 1.4
      */
     public Throwable getCause() {
         return detail;

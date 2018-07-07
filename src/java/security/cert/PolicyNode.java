@@ -59,8 +59,8 @@ import java.util.Set;
  * with no ill effects. This stipulation applies to all public fields and
  * methods of this class and any added or overridden by subclasses.
  *
- * @since       1.4
- * @author      Sean Mullan
+ * @author Sean Mullan
+ * @since 1.4
  */
 public interface PolicyNode {
 

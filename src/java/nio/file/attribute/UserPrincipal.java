@@ -51,4 +51,5 @@ import java.security.Principal;
  * @since 1.7
  */
 
-public interface UserPrincipal extends Principal { }
+public interface UserPrincipal extends Principal {
+}

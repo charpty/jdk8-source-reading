@@ -26,8 +26,8 @@
 package java.beans;
 
 import java.lang.ref.Reference;
-import java.lang.reflect.Method;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import sun.reflect.misc.ReflectUtil;
 
 /**
@@ -60,16 +60,18 @@ public class PropertyDescriptor extends FeatureDescriptor {
      * property name should start with a lower case character, which will
      * be capitalized in the method names.
      *
-     * @param propertyName The programmatic name of the property.
-     * @param beanClass The Class object for the target bean.  For
-     *          example sun.beans.OurButton.class.
-     * @exception IntrospectionException if an exception occurs during
-     *              introspection.
+     * @param propertyName
+     *         The programmatic name of the property.
+     * @param beanClass
+     *         The Class object for the target bean.  For
+     *         example sun.beans.OurButton.class.
+     *
+     * @throws IntrospectionException
+     *         if an exception occurs during
+     *         introspection.
      */
-    public PropertyDescriptor(String propertyName, Class<?> beanClass)
-                throws IntrospectionException {
-        this(propertyName, beanClass,
-                Introspector.IS_PREFIX + NameGenerator.capitalize(propertyName),
+    public PropertyDescriptor(String propertyName, Class<?> beanClass) throws IntrospectionException {
+        this(propertyName, beanClass, Introspector.IS_PREFIX + NameGenerator.capitalize(propertyName),
                 Introspector.SET_PREFIX + NameGenerator.capitalize(propertyName));
     }
 
@@ -77,19 +79,23 @@ public class PropertyDescriptor extends FeatureDescriptor {
      * This constructor takes the name of a simple property, and method
      * names for reading and writing the property.
      *
-     * @param propertyName The programmatic name of the property.
-     * @param beanClass The Class object for the target bean.  For
-     *          example sun.beans.OurButton.class.
-     * @param readMethodName The name of the method used for reading the property
-     *           value.  May be null if the property is write-only.
-     * @param writeMethodName The name of the method used for writing the property
-     *           value.  May be null if the property is read-only.
-     * @exception IntrospectionException if an exception occurs during
-     *              introspection.
+     * @param propertyName
+     *         The programmatic name of the property.
+     * @param beanClass
+     *         The Class object for the target bean.  For
+     *         example sun.beans.OurButton.class.
+     * @param readMethodName
+     *         The name of the method used for reading the property
+     *         value.  May be null if the property is write-only.
+     * @param writeMethodName
+     *         The name of the method used for writing the property
+     *         value.  May be null if the property is read-only.
+     *
+     * @throws IntrospectionException
+     *         if an exception occurs during
+     *         introspection.
      */
-    public PropertyDescriptor(String propertyName, Class<?> beanClass,
-                String readMethodName, String writeMethodName)
-                throws IntrospectionException {
+    public PropertyDescriptor(String propertyName, Class<?> beanClass, String readMethodName, String writeMethodName) throws IntrospectionException {
         if (beanClass == null) {
             throw new IntrospectionException("Target Bean class is null");
         }
@@ -121,16 +127,20 @@ public class PropertyDescriptor extends FeatureDescriptor {
      * This constructor takes the name of a simple property, and Method
      * objects for reading and writing the property.
      *
-     * @param propertyName The programmatic name of the property.
-     * @param readMethod The method used for reading the property value.
-     *          May be null if the property is write-only.
-     * @param writeMethod The method used for writing the property value.
-     *          May be null if the property is read-only.
-     * @exception IntrospectionException if an exception occurs during
-     *              introspection.
+     * @param propertyName
+     *         The programmatic name of the property.
+     * @param readMethod
+     *         The method used for reading the property value.
+     *         May be null if the property is write-only.
+     * @param writeMethod
+     *         The method used for writing the property value.
+     *         May be null if the property is read-only.
+     *
+     * @throws IntrospectionException
+     *         if an exception occurs during
+     *         introspection.
      */
-    public PropertyDescriptor(String propertyName, Method readMethod, Method writeMethod)
-                throws IntrospectionException {
+    public PropertyDescriptor(String propertyName, Method readMethod, Method writeMethod) throws IntrospectionException {
         if (propertyName == null || propertyName.length() == 0) {
             throw new IntrospectionException("bad property name");
         }
@@ -143,12 +153,17 @@ public class PropertyDescriptor extends FeatureDescriptor {
      * Creates <code>PropertyDescriptor</code> for the specified bean
      * with the specified name and methods to read/write the property value.
      *
-     * @param bean   the type of the target bean
-     * @param base   the base name of the property (the rest of the method name)
-     * @param read   the method used for reading the property value
-     * @param write  the method used for writing the property value
-     * @exception IntrospectionException if an exception occurs during introspection
+     * @param bean
+     *         the type of the target bean
+     * @param base
+     *         the base name of the property (the rest of the method name)
+     * @param read
+     *         the method used for reading the property value
+     * @param write
+     *         the method used for writing the property value
      *
+     * @throws IntrospectionException
+     *         if an exception occurs during introspection
      * @since 1.7
      */
     PropertyDescriptor(Class<?> bean, String base, Method read, Method write) throws IntrospectionException {
@@ -172,11 +187,11 @@ public class PropertyDescriptor extends FeatureDescriptor {
      * that does not support non-indexed access.
      *
      * @return the {@code Class} object that represents the Java type info,
-     *         or {@code null} if the type cannot be determined
+     * or {@code null} if the type cannot be determined
      */
     public synchronized Class<?> getPropertyType() {
         Class<?> type = getPropertyType0();
-        if (type  == null) {
+        if (type == null) {
             try {
                 type = findPropertyType(getReadMethod(), getWriteMethod());
                 setPropertyType(type);
@@ -192,9 +207,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
     }
 
     private Class<?> getPropertyType0() {
-        return (this.propertyTypeRef != null)
-                ? this.propertyTypeRef.get()
-                : null;
+        return (this.propertyTypeRef != null) ? this.propertyTypeRef.get() : null;
     }
 
     /**
@@ -243,11 +256,13 @@ public class PropertyDescriptor extends FeatureDescriptor {
     /**
      * Sets the method that should be used to read the property value.
      *
-     * @param readMethod The new read method.
-     * @throws IntrospectionException if the read method is invalid
+     * @param readMethod
+     *         The new read method.
+     *
+     * @throws IntrospectionException
+     *         if the read method is invalid
      */
-    public synchronized void setReadMethod(Method readMethod)
-                                throws IntrospectionException {
+    public synchronized void setReadMethod(Method readMethod) throws IntrospectionException {
         this.readMethodRef.set(readMethod);
         if (readMethod == null) {
             readMethodName = null;
@@ -313,11 +328,13 @@ public class PropertyDescriptor extends FeatureDescriptor {
     /**
      * Sets the method that should be used to write the property value.
      *
-     * @param writeMethod The new write method.
-     * @throws IntrospectionException if the write method is invalid
+     * @param writeMethod
+     *         The new write method.
+     *
+     * @throws IntrospectionException
+     *         if the write method is invalid
      */
-    public synchronized void setWriteMethod(Method writeMethod)
-                                throws IntrospectionException {
+    public synchronized void setWriteMethod(Method writeMethod) throws IntrospectionException {
         this.writeMethodRef.set(writeMethod);
         if (writeMethod == null) {
             writeMethodName = null;
@@ -356,7 +373,8 @@ public class PropertyDescriptor extends FeatureDescriptor {
      * Updates to "bound" properties will cause a "PropertyChange" event to
      * get fired when the property is changed.
      *
-     * @param bound True if this is a bound property.
+     * @param bound
+     *         True if this is a bound property.
      */
     public void setBound(boolean bound) {
         this.bound = bound;
@@ -376,12 +394,12 @@ public class PropertyDescriptor extends FeatureDescriptor {
      * Attempted updates to "Constrained" properties will cause a "VetoableChange"
      * event to get fired when the property is changed.
      *
-     * @param constrained True if this is a constrained property.
+     * @param constrained
+     *         True if this is a constrained property.
      */
     public void setConstrained(boolean constrained) {
         this.constrained = constrained;
     }
-
 
     /**
      * Normally PropertyEditors will be found using the PropertyEditorManager.
@@ -389,7 +407,8 @@ public class PropertyDescriptor extends FeatureDescriptor {
      * PropertyEditor with a given property, then you can do it with
      * this method.
      *
-     * @param propertyEditorClass  The Class for the desired PropertyEditor.
+     * @param propertyEditorClass
+     *         The Class for the desired PropertyEditor.
      */
     public void setPropertyEditorClass(Class<?> propertyEditorClass) {
         this.propertyEditorClassRef = getWeakReference(propertyEditorClass);
@@ -400,15 +419,13 @@ public class PropertyDescriptor extends FeatureDescriptor {
      * for this property.
      *
      * @return Any explicit PropertyEditor Class that has been registered
-     *          for this property.  Normally this will return "null",
-     *          indicating that no special editor has been registered,
-     *          so the PropertyEditorManager should be used to locate
-     *          a suitable PropertyEditor.
+     * for this property.  Normally this will return "null",
+     * indicating that no special editor has been registered,
+     * so the PropertyEditorManager should be used to locate
+     * a suitable PropertyEditor.
      */
     public Class<?> getPropertyEditorClass() {
-        return (this.propertyEditorClassRef != null)
-                ? this.propertyEditorClassRef.get()
-                : null;
+        return (this.propertyEditorClassRef != null) ? this.propertyEditorClassRef.get() : null;
     }
 
     /**
@@ -419,17 +436,19 @@ public class PropertyDescriptor extends FeatureDescriptor {
      * Object argument then it will be invoked using the bean parameter
      * as the argument. Otherwise, the default constructor will be invoked.
      *
-     * @param bean the source object
+     * @param bean
+     *         the source object
+     *
      * @return a property editor instance or null if a property editor has
-     *         not been defined or cannot be created
+     * not been defined or cannot be created
+     *
      * @since 1.5
      */
     public PropertyEditor createPropertyEditor(Object bean) {
         Object editor = null;
 
         final Class<?> cls = getPropertyEditorClass();
-        if (cls != null && PropertyEditor.class.isAssignableFrom(cls)
-                && ReflectUtil.isPackageAccessible(cls)) {
+        if (cls != null && PropertyEditor.class.isAssignableFrom(cls) && ReflectUtil.isPackageAccessible(cls)) {
             Constructor<?> ctor = null;
             if (bean != null) {
                 try {
@@ -448,9 +467,8 @@ public class PropertyDescriptor extends FeatureDescriptor {
                 // Fall through
             }
         }
-        return (PropertyEditor)editor;
+        return (PropertyEditor) editor;
     }
-
 
     /**
      * Compares this <code>PropertyDescriptor</code> against the specified object.
@@ -465,7 +483,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
             return true;
         }
         if (obj != null && obj instanceof PropertyDescriptor) {
-            PropertyDescriptor other = (PropertyDescriptor)obj;
+            PropertyDescriptor other = (PropertyDescriptor) obj;
             Method otherReadMethod = other.getReadMethod();
             Method otherWriteMethod = other.getWriteMethod();
 
@@ -477,11 +495,8 @@ public class PropertyDescriptor extends FeatureDescriptor {
                 return false;
             }
 
-            if (getPropertyType() == other.getPropertyType() &&
-                getPropertyEditorClass() == other.getPropertyEditorClass() &&
-                bound == other.isBound() && constrained == other.isConstrained() &&
-                writeMethodName == other.writeMethodName &&
-                readMethodName == other.readMethodName) {
+            if (getPropertyType() == other.getPropertyType() && getPropertyEditorClass() == other.getPropertyEditorClass() && bound == other.isBound()
+                    && constrained == other.isConstrained() && writeMethodName == other.writeMethodName && readMethodName == other.readMethodName) {
                 return true;
             }
         }
@@ -491,8 +506,11 @@ public class PropertyDescriptor extends FeatureDescriptor {
     /**
      * Package private helper method for Descriptor .equals methods.
      *
-     * @param a first method to compare
-     * @param b second method to compare
+     * @param a
+     *         first method to compare
+     * @param b
+     *         second method to compare
+     *
      * @return boolean to indicate that the methods are equivalent
      */
     boolean compareMethods(Method a, Method b) {
@@ -514,11 +532,13 @@ public class PropertyDescriptor extends FeatureDescriptor {
      * Merge two property descriptors.  Where they conflict, give the
      * second argument (y) priority over the first argument (x).
      *
-     * @param x  The first (lower priority) PropertyDescriptor
-     * @param y  The second (higher priority) PropertyDescriptor
+     * @param x
+     *         The first (lower priority) PropertyDescriptor
+     * @param y
+     *         The second (higher priority) PropertyDescriptor
      */
     PropertyDescriptor(PropertyDescriptor x, PropertyDescriptor y) {
-        super(x,y);
+        super(x, y);
 
         if (y.baseName != null) {
             baseName = y.baseName;
@@ -561,12 +581,9 @@ public class PropertyDescriptor extends FeatureDescriptor {
 
         // However, if both x and y reference read methods in the same class,
         // give priority to a boolean "is" method over a boolean "get" method.
-        if (xr != null && yr != null &&
-                   xr.getDeclaringClass() == yr.getDeclaringClass() &&
-                   getReturnType(getClass0(), xr) == boolean.class &&
-                   getReturnType(getClass0(), yr) == boolean.class &&
-                   xr.getName().indexOf(Introspector.IS_PREFIX) == 0 &&
-                   yr.getName().indexOf(Introspector.GET_PREFIX) == 0) {
+        if (xr != null && yr != null && xr.getDeclaringClass() == yr.getDeclaringClass() && getReturnType(getClass0(), xr) == boolean.class
+                && getReturnType(getClass0(), yr) == boolean.class && xr.getName().indexOf(Introspector.IS_PREFIX) == 0
+                && yr.getName().indexOf(Introspector.GET_PREFIX) == 0) {
             try {
                 setReadMethod(xr);
             } catch (IntrospectionException ex) {
@@ -592,7 +609,6 @@ public class PropertyDescriptor extends FeatureDescriptor {
         } else {
             setPropertyEditorClass(x.getPropertyEditorClass());
         }
-
 
         bound = x.bound | y.bound;
         constrained = x.constrained | y.constrained;
@@ -621,8 +637,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
         setClass0(type);
         try {
             setPropertyType(findPropertyType(this.readMethodRef.get(), this.writeMethodRef.get()));
-        }
-        catch (IntrospectionException exception) {
+        } catch (IntrospectionException exception) {
             setPropertyType(null);
         }
     }
@@ -632,30 +647,28 @@ public class PropertyDescriptor extends FeatureDescriptor {
      * The type precedence is given to the readMethod.
      *
      * @return the type of the property descriptor or null if both
-     *         read and write methods are null.
-     * @throws IntrospectionException if the read or write method is invalid
+     * read and write methods are null.
+     *
+     * @throws IntrospectionException
+     *         if the read or write method is invalid
      */
-    private Class<?> findPropertyType(Method readMethod, Method writeMethod)
-        throws IntrospectionException {
+    private Class<?> findPropertyType(Method readMethod, Method writeMethod) throws IntrospectionException {
         Class<?> propertyType = null;
         try {
             if (readMethod != null) {
                 Class<?>[] params = getParameterTypes(getClass0(), readMethod);
                 if (params.length != 0) {
-                    throw new IntrospectionException("bad read method arg count: "
-                                                     + readMethod);
+                    throw new IntrospectionException("bad read method arg count: " + readMethod);
                 }
                 propertyType = getReturnType(getClass0(), readMethod);
                 if (propertyType == Void.TYPE) {
-                    throw new IntrospectionException("read method " +
-                                        readMethod.getName() + " returns void");
+                    throw new IntrospectionException("read method " + readMethod.getName() + " returns void");
                 }
             }
             if (writeMethod != null) {
                 Class<?>[] params = getParameterTypes(getClass0(), writeMethod);
                 if (params.length != 1) {
-                    throw new IntrospectionException("bad write method arg count: "
-                                                     + writeMethod);
+                    throw new IntrospectionException("bad write method arg count: " + writeMethod);
                 }
                 if (propertyType != null && !params[0].isAssignableFrom(propertyType)) {
                     throw new IntrospectionException("type mismatch between read and write methods");
@@ -668,29 +681,23 @@ public class PropertyDescriptor extends FeatureDescriptor {
         return propertyType;
     }
 
-
     /**
      * Returns a hash code value for the object.
      * See {@link java.lang.Object#hashCode} for a complete description.
      *
      * @return a hash code value for this object.
+     *
      * @since 1.5
      */
     public int hashCode() {
         int result = 7;
 
-        result = 37 * result + ((getPropertyType() == null) ? 0 :
-                                getPropertyType().hashCode());
-        result = 37 * result + ((getReadMethod() == null) ? 0 :
-                                getReadMethod().hashCode());
-        result = 37 * result + ((getWriteMethod() == null) ? 0 :
-                                getWriteMethod().hashCode());
-        result = 37 * result + ((getPropertyEditorClass() == null) ? 0 :
-                                getPropertyEditorClass().hashCode());
-        result = 37 * result + ((writeMethodName == null) ? 0 :
-                                writeMethodName.hashCode());
-        result = 37 * result + ((readMethodName == null) ? 0 :
-                                readMethodName.hashCode());
+        result = 37 * result + ((getPropertyType() == null) ? 0 : getPropertyType().hashCode());
+        result = 37 * result + ((getReadMethod() == null) ? 0 : getReadMethod().hashCode());
+        result = 37 * result + ((getWriteMethod() == null) ? 0 : getWriteMethod().hashCode());
+        result = 37 * result + ((getPropertyEditorClass() == null) ? 0 : getPropertyEditorClass().hashCode());
+        result = 37 * result + ((writeMethodName == null) ? 0 : writeMethodName.hashCode());
+        result = 37 * result + ((readMethodName == null) ? 0 : readMethodName.hashCode());
         result = 37 * result + getName().hashCode();
         result = 37 * result + ((bound == false) ? 0 : 1);
         result = 37 * result + ((constrained == false) ? 0 : 1);

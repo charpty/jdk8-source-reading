@@ -45,7 +45,7 @@ package java.security;
  *
  * @see PrivilegedExceptionAction
  * @see AccessController#doPrivileged(PrivilegedExceptionAction)
- * @see AccessController#doPrivileged(PrivilegedExceptionAction,AccessControlContext)
+ * @see AccessController#doPrivileged(PrivilegedExceptionAction, AccessControlContext)
  */
 public class PrivilegedActionException extends Exception {
     // use serialVersionUID from JDK 1.2.2 for interoperability
@@ -60,10 +60,11 @@ public class PrivilegedActionException extends Exception {
      * Constructs a new PrivilegedActionException &quot;wrapping&quot;
      * the specific Exception.
      *
-     * @param exception The exception thrown
+     * @param exception
+     *         The exception thrown
      */
     public PrivilegedActionException(Exception exception) {
-        super((Throwable)null);  // Disallow initCause
+        super((Throwable) null);  // Disallow initCause
         this.exception = exception;
     }
 
@@ -76,11 +77,11 @@ public class PrivilegedActionException extends Exception {
      * obtaining this information.
      *
      * @return the exception thrown by the privileged computation that
-     *         resulted in this {@code PrivilegedActionException}.
+     * resulted in this {@code PrivilegedActionException}.
+     *
      * @see PrivilegedExceptionAction
      * @see AccessController#doPrivileged(PrivilegedExceptionAction)
-     * @see AccessController#doPrivileged(PrivilegedExceptionAction,
-     *                                            AccessControlContext)
+     * @see AccessController#doPrivileged(PrivilegedExceptionAction, * AccessControlContext)
      */
     public Exception getException() {
         return exception;
@@ -91,8 +92,9 @@ public class PrivilegedActionException extends Exception {
      * the privileged computation that resulted in this
      * {@code PrivilegedActionException}).
      *
-     * @return  the cause of this exception.
-     * @since   1.4
+     * @return the cause of this exception.
+     *
+     * @since 1.4
      */
     public Throwable getCause() {
         return exception;

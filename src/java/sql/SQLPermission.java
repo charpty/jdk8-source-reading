@@ -23,10 +23,9 @@
  *
  */
 
-
 package java.sql;
 
-import java.security.*;
+import java.security.BasicPermission;
 
 /**
  * The permission for which the <code>SecurityManager</code> will check
@@ -66,52 +65,52 @@ import java.security.*;
  * </tr>
  *
  * <tr>
- *   <td>setLog</td>
- *   <td>Setting of the logging stream</td>
- *   <td>This is a dangerous permission to grant.
+ * <td>setLog</td>
+ * <td>Setting of the logging stream</td>
+ * <td>This is a dangerous permission to grant.
  * The contents of the log may contain usernames and passwords,
  * SQL statements, and SQL data.</td>
  * </tr>
  * <tr>
  * <td>callAbort</td>
- *   <td>Allows the invocation of the {@code Connection} method
- *   {@code abort}</td>
- *   <td>Permits an application to terminate a physical connection to a
- *  database.</td>
+ * <td>Allows the invocation of the {@code Connection} method
+ * {@code abort}</td>
+ * <td>Permits an application to terminate a physical connection to a
+ * database.</td>
  * </tr>
  * <tr>
  * <td>setSyncFactory</td>
- *   <td>Allows the invocation of the {@code SyncFactory} methods
- *   {@code setJNDIContext} and {@code setLogger}</td>
- *   <td>Permits an application to specify the JNDI context from which the
- *   {@code SyncProvider} implementations can be retrieved from and the logging
- *   object to be used by the {@code SyncProvider} implementation.</td>
+ * <td>Allows the invocation of the {@code SyncFactory} methods
+ * {@code setJNDIContext} and {@code setLogger}</td>
+ * <td>Permits an application to specify the JNDI context from which the
+ * {@code SyncProvider} implementations can be retrieved from and the logging
+ * object to be used by the {@code SyncProvider} implementation.</td>
  * </tr>
  *
  * <tr>
  * <td>setNetworkTimeout</td>
- *   <td>Allows the invocation of the {@code Connection} method
- *   {@code setNetworkTimeout}</td>
- *   <td>Permits an application to specify the maximum period a
+ * <td>Allows the invocation of the {@code Connection} method
+ * {@code setNetworkTimeout}</td>
+ * <td>Permits an application to specify the maximum period a
  * <code>Connection</code> or
  * objects created from the <code>Connection</code>
  * will wait for the database to reply to any one request.</td>
  * <tr>
  * <td>deregisterDriver</td>
- *   <td>Allows the invocation of the {@code DriverManager}
+ * <td>Allows the invocation of the {@code DriverManager}
  * method {@code deregisterDriver}</td>
- *   <td>Permits an application to remove a JDBC driver from the list of
+ * <td>Permits an application to remove a JDBC driver from the list of
  * registered Drivers and release its resources.</td>
  * </tr>
  * </table>
- *<p>
- * @since 1.3
+ * <p>
+ *
  * @see java.security.BasicPermission
  * @see java.security.Permission
  * @see java.security.Permissions
  * @see java.security.PermissionCollection
  * @see java.lang.SecurityManager
- *
+ * @since 1.3
  */
 
 public final class SQLPermission extends BasicPermission {
@@ -120,12 +119,15 @@ public final class SQLPermission extends BasicPermission {
      * Creates a new <code>SQLPermission</code> object with the specified name.
      * The name is the symbolic name of the <code>SQLPermission</code>.
      *
-     * @param name the name of this <code>SQLPermission</code> object, which must
-     * be either {@code  setLog}, {@code callAbort}, {@code setSyncFactory},
-     *  {@code deregisterDriver}, or {@code setNetworkTimeout}
-     * @throws NullPointerException if <code>name</code> is <code>null</code>.
-     * @throws IllegalArgumentException if <code>name</code> is empty.
-
+     * @param name
+     *         the name of this <code>SQLPermission</code> object, which must
+     *         be either {@code  setLog}, {@code callAbort}, {@code setSyncFactory},
+     *         {@code deregisterDriver}, or {@code setNetworkTimeout}
+     *
+     * @throws NullPointerException
+     *         if <code>name</code> is <code>null</code>.
+     * @throws IllegalArgumentException
+     *         if <code>name</code> is empty.
      */
 
     public SQLPermission(String name) {
@@ -138,13 +140,17 @@ public final class SQLPermission extends BasicPermission {
      * actions <code>String</code> is currently unused and should be
      * <code>null</code>.
      *
-     * @param name the name of this <code>SQLPermission</code> object, which must
-     * be either {@code  setLog}, {@code callAbort}, {@code setSyncFactory},
-     *  {@code deregisterDriver}, or {@code setNetworkTimeout}
-     * @param actions should be <code>null</code>
-     * @throws NullPointerException if <code>name</code> is <code>null</code>.
-     * @throws IllegalArgumentException if <code>name</code> is empty.
-
+     * @param name
+     *         the name of this <code>SQLPermission</code> object, which must
+     *         be either {@code  setLog}, {@code callAbort}, {@code setSyncFactory},
+     *         {@code deregisterDriver}, or {@code setNetworkTimeout}
+     * @param actions
+     *         should be <code>null</code>
+     *
+     * @throws NullPointerException
+     *         if <code>name</code> is <code>null</code>.
+     * @throws IllegalArgumentException
+     *         if <code>name</code> is empty.
      */
 
     public SQLPermission(String name, String actions) {

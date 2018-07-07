@@ -37,9 +37,9 @@ class SocketSecrets {
         SocketImpl impl;
 
         if (obj instanceof Socket) {
-            impl = ((Socket)obj).getImpl();
+            impl = ((Socket) obj).getImpl();
         } else if (obj instanceof ServerSocket) {
-            impl = ((ServerSocket)obj).getImpl();
+            impl = ((ServerSocket) obj).getImpl();
         } else {
             throw new IllegalArgumentException();
         }
@@ -50,9 +50,9 @@ class SocketSecrets {
         SocketImpl impl;
 
         if (obj instanceof Socket) {
-            impl = ((Socket)obj).getImpl();
+            impl = ((Socket) obj).getImpl();
         } else if (obj instanceof ServerSocket) {
-            impl = ((ServerSocket)obj).getImpl();
+            impl = ((ServerSocket) obj).getImpl();
         } else {
             throw new IllegalArgumentException();
         }

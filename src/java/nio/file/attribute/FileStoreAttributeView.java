@@ -32,7 +32,5 @@ package java.nio.file.attribute;
  * @since 1.7
  */
 
-public interface FileStoreAttributeView
-    extends AttributeView
-{
+public interface FileStoreAttributeView extends AttributeView {
 }

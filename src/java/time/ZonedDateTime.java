@@ -61,14 +61,10 @@
  */
 package java.time;
 
-import static java.time.temporal.ChronoField.INSTANT_SECONDS;
-import static java.time.temporal.ChronoField.NANO_OF_SECOND;
-import static java.time.temporal.ChronoField.OFFSET_SECONDS;
-
 import java.io.DataOutput;
 import java.io.IOException;
-import java.io.ObjectInput;
 import java.io.InvalidObjectException;
+import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.time.chrono.ChronoZonedDateTime;
@@ -90,6 +86,9 @@ import java.time.zone.ZoneOffsetTransition;
 import java.time.zone.ZoneRules;
 import java.util.List;
 import java.util.Objects;
+
+
+import static java.time.temporal.ChronoField.*;
 
 /**
  * A date-time with a time-zone in the ISO-8601 calendar system,
@@ -114,13 +113,13 @@ import java.util.Objects;
  * is not straightforward. There are three cases:
  * <ul>
  * <li>Normal, with one valid offset. For the vast majority of the year, the normal
- *  case applies, where there is a single valid offset for the local date-time.</li>
+ * case applies, where there is a single valid offset for the local date-time.</li>
  * <li>Gap, with zero valid offsets. This is when clocks jump forward typically
- *  due to the spring daylight savings change from "winter" to "summer".
- *  In a gap there are local date-time values with no valid offset.</li>
+ * due to the spring daylight savings change from "winter" to "summer".
+ * In a gap there are local date-time values with no valid offset.</li>
  * <li>Overlap, with two valid offsets. This is when clocks are set back typically
- *  due to the autumn daylight savings change from "summer" to "winter".
- *  In an overlap there are local date-time values with two valid offsets.</li>
+ * due to the autumn daylight savings change from "summer" to "winter".
+ * In an overlap there are local date-time values with two valid offsets.</li>
  * </ul>
  * <p>
  * Any method that converts directly or implicitly from a local date-time to an
@@ -150,19 +149,9 @@ import java.util.Objects;
  * {@code ZonedDateTime} may have unpredictable results and should be avoided.
  * The {@code equals} method should be used for comparisons.
  *
- * @implSpec
- * A {@code ZonedDateTime} holds state equivalent to three separate objects,
- * a {@code LocalDateTime}, a {@code ZoneId} and the resolved {@code ZoneOffset}.
- * The offset and local date-time are used to define an instant when necessary.
- * The zone ID is used to obtain the rules for how and when the offset changes.
- * The offset cannot be freely set, as the zone controls which offsets are valid.
- * <p>
- * This class is immutable and thread-safe.
- *
  * @since 1.8
  */
-public final class ZonedDateTime
-        implements Temporal, ChronoZonedDateTime<LocalDate>, Serializable {
+public final class ZonedDateTime implements Temporal, ChronoZonedDateTime<LocalDate>, Serializable {
 
     /**
      * Serialization version.
@@ -183,6 +172,7 @@ public final class ZonedDateTime
     private final ZoneId zone;
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains the current date-time from the system clock in the default time-zone.
      * <p>
@@ -209,7 +199,9 @@ public final class ZonedDateTime
      * Using this method will prevent the ability to use an alternate clock for testing
      * because the clock is hard-coded.
      *
-     * @param zone  the zone ID to use, not null
+     * @param zone
+     *         the zone ID to use, not null
+     *
      * @return the current date-time using the system clock, not null
      */
     public static ZonedDateTime now(ZoneId zone) {
@@ -225,7 +217,9 @@ public final class ZonedDateTime
      * Using this method allows the use of an alternate clock for testing.
      * The alternate clock may be introduced using {@link Clock dependency injection}.
      *
-     * @param clock  the clock to use, not null
+     * @param clock
+     *         the clock to use, not null
+     *
      * @return the current date-time, not null
      */
     public static ZonedDateTime now(Clock clock) {
@@ -235,6 +229,7 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code ZonedDateTime} from a local date and time.
      * <p>
@@ -246,7 +241,7 @@ public final class ZonedDateTime
      * The local date-time is then resolved to a single instant on the time-line.
      * This is achieved by finding a valid offset from UTC/Greenwich for the local
      * date-time as defined by the {@link ZoneRules rules} of the zone ID.
-     *<p>
+     * <p>
      * In most cases, there is only one valid offset for a local date-time.
      * In the case of an overlap, when clocks are set back, there are two valid offsets.
      * This method uses the earlier offset typically corresponding to "summer".
@@ -256,9 +251,13 @@ public final class ZonedDateTime
      * For a typical one hour daylight savings change, the local date-time will be
      * moved one hour later into the offset typically corresponding to "summer".
      *
-     * @param date  the local date, not null
-     * @param time  the local time, not null
-     * @param zone  the time-zone, not null
+     * @param date
+     *         the local date, not null
+     * @param time
+     *         the local time, not null
+     * @param zone
+     *         the time-zone, not null
+     *
      * @return the offset date-time, not null
      */
     public static ZonedDateTime of(LocalDate date, LocalTime time, ZoneId zone) {
@@ -275,7 +274,7 @@ public final class ZonedDateTime
      * The local date-time is resolved to a single instant on the time-line.
      * This is achieved by finding a valid offset from UTC/Greenwich for the local
      * date-time as defined by the {@link ZoneRules rules} of the zone ID.
-     *<p>
+     * <p>
      * In most cases, there is only one valid offset for a local date-time.
      * In the case of an overlap, when clocks are set back, there are two valid offsets.
      * This method uses the earlier offset typically corresponding to "summer".
@@ -285,8 +284,11 @@ public final class ZonedDateTime
      * For a typical one hour daylight savings change, the local date-time will be
      * moved one hour later into the offset typically corresponding to "summer".
      *
-     * @param localDateTime  the local date-time, not null
-     * @param zone  the time-zone, not null
+     * @param localDateTime
+     *         the local date-time, not null
+     * @param zone
+     *         the time-zone, not null
+     *
      * @return the zoned date-time, not null
      */
     public static ZonedDateTime of(LocalDateTime localDateTime, ZoneId zone) {
@@ -305,7 +307,7 @@ public final class ZonedDateTime
      * The local date-time is resolved to a single instant on the time-line.
      * This is achieved by finding a valid offset from UTC/Greenwich for the local
      * date-time as defined by the {@link ZoneRules rules} of the zone ID.
-     *<p>
+     * <p>
      * In most cases, there is only one valid offset for a local date-time.
      * In the case of an overlap, when clocks are set back, there are two valid offsets.
      * This method uses the earlier offset typically corresponding to "summer".
@@ -321,21 +323,30 @@ public final class ZonedDateTime
      * equivalent factory method taking fewer arguments.
      * They are not provided here to reduce the footprint of the API.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param month  the month-of-year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
-     * @param hour  the hour-of-day to represent, from 0 to 23
-     * @param minute  the minute-of-hour to represent, from 0 to 59
-     * @param second  the second-of-minute to represent, from 0 to 59
-     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
-     * @param zone  the time-zone, not null
+     * @param year
+     *         the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param month
+     *         the month-of-year to represent, from 1 (January) to 12 (December)
+     * @param dayOfMonth
+     *         the day-of-month to represent, from 1 to 31
+     * @param hour
+     *         the hour-of-day to represent, from 0 to 23
+     * @param minute
+     *         the minute-of-hour to represent, from 0 to 59
+     * @param second
+     *         the second-of-minute to represent, from 0 to 59
+     * @param nanoOfSecond
+     *         the nano-of-second to represent, from 0 to 999,999,999
+     * @param zone
+     *         the time-zone, not null
+     *
      * @return the offset date-time, not null
-     * @throws DateTimeException if the value of any field is out of range, or
-     *  if the day-of-month is invalid for the month-year
+     *
+     * @throws DateTimeException
+     *         if the value of any field is out of range, or
+     *         if the day-of-month is invalid for the month-year
      */
-    public static ZonedDateTime of(
-            int year, int month, int dayOfMonth,
-            int hour, int minute, int second, int nanoOfSecond, ZoneId zone) {
+    public static ZonedDateTime of(int year, int month, int dayOfMonth, int hour, int minute, int second, int nanoOfSecond, ZoneId zone) {
         LocalDateTime dt = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond);
         return ofLocal(dt, zone, null);
     }
@@ -347,7 +358,7 @@ public final class ZonedDateTime
      * The local date-time is resolved to a single instant on the time-line.
      * This is achieved by finding a valid offset from UTC/Greenwich for the local
      * date-time as defined by the {@link ZoneRules rules} of the zone ID.
-     *<p>
+     * <p>
      * In most cases, there is only one valid offset for a local date-time.
      * In the case of an overlap, where clocks are set back, there are two valid offsets.
      * If the preferred offset is one of the valid offsets then it is used.
@@ -358,9 +369,13 @@ public final class ZonedDateTime
      * For a typical one hour daylight savings change, the local date-time will be
      * moved one hour later into the offset typically corresponding to "summer".
      *
-     * @param localDateTime  the local date-time, not null
-     * @param zone  the time-zone, not null
-     * @param preferredOffset  the zone offset, null if no preference
+     * @param localDateTime
+     *         the local date-time, not null
+     * @param zone
+     *         the time-zone, not null
+     * @param preferredOffset
+     *         the zone offset, null if no preference
+     *
      * @return the zoned date-time, not null
      */
     public static ZonedDateTime ofLocal(LocalDateTime localDateTime, ZoneId zone, ZoneOffset preferredOffset) {
@@ -389,6 +404,7 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code ZonedDateTime} from an {@code Instant}.
      * <p>
@@ -398,10 +414,15 @@ public final class ZonedDateTime
      * Converting an instant to a zoned date-time is simple as there is only one valid
      * offset for each instant.
      *
-     * @param instant  the instant to create the date-time from, not null
-     * @param zone  the time-zone, not null
+     * @param instant
+     *         the instant to create the date-time from, not null
+     * @param zone
+     *         the time-zone, not null
+     *
      * @return the zoned date-time, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported range
      */
     public static ZonedDateTime ofInstant(Instant instant, ZoneId zone) {
         Objects.requireNonNull(instant, "instant");
@@ -424,9 +445,13 @@ public final class ZonedDateTime
      * If the {@code ZoneId} to be used is a {@code ZoneOffset}, this method is equivalent
      * to {@link #of(LocalDateTime, ZoneId)}.
      *
-     * @param localDateTime  the local date-time, not null
-     * @param offset  the zone offset, not null
-     * @param zone  the time-zone, not null
+     * @param localDateTime
+     *         the local date-time, not null
+     * @param offset
+     *         the zone offset, not null
+     * @param zone
+     *         the time-zone, not null
+     *
      * @return the zoned date-time, not null
      */
     public static ZonedDateTime ofInstant(LocalDateTime localDateTime, ZoneOffset offset, ZoneId zone) {
@@ -443,11 +468,17 @@ public final class ZonedDateTime
      * Obtains an instance of {@code ZonedDateTime} using seconds from the
      * epoch of 1970-01-01T00:00:00Z.
      *
-     * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
-     * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
-     * @param zone  the time-zone, not null
+     * @param epochSecond
+     *         the number of seconds from the epoch of 1970-01-01T00:00:00Z
+     * @param nanoOfSecond
+     *         the nanosecond within the second, from 0 to 999,999,999
+     * @param zone
+     *         the time-zone, not null
+     *
      * @return the zoned date-time, not null
-     * @throws DateTimeException if the result exceeds the supported range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported range
      */
     private static ZonedDateTime create(long epochSecond, int nanoOfSecond, ZoneId zone) {
         ZoneRules rules = zone.getRules();
@@ -458,6 +489,7 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code ZonedDateTime} strictly validating the
      * combination of local date-time, offset and zone ID.
@@ -466,9 +498,13 @@ public final class ZonedDateTime
      * local date-time according to the rules of the specified zone.
      * If the offset is invalid, an exception is thrown.
      *
-     * @param localDateTime  the local date-time, not null
-     * @param offset  the zone offset, not null
-     * @param zone  the time-zone, not null
+     * @param localDateTime
+     *         the local date-time, not null
+     * @param offset
+     *         the zone offset, not null
+     * @param zone
+     *         the time-zone, not null
+     *
      * @return the zoned date-time, not null
      */
     public static ZonedDateTime ofStrict(LocalDateTime localDateTime, ZoneOffset offset, ZoneId zone) {
@@ -481,12 +517,10 @@ public final class ZonedDateTime
             if (trans != null && trans.isGap()) {
                 // error message says daylight savings for simplicity
                 // even though there are other kinds of gaps
-                throw new DateTimeException("LocalDateTime '" + localDateTime +
-                        "' does not exist in zone '" + zone +
-                        "' due to a gap in the local time-line, typically caused by daylight savings");
+                throw new DateTimeException("LocalDateTime '" + localDateTime + "' does not exist in zone '" + zone
+                        + "' due to a gap in the local time-line, typically caused by daylight savings");
             }
-            throw new DateTimeException("ZoneOffset '" + offset + "' is not valid for LocalDateTime '" +
-                    localDateTime + "' in zone '" + zone + "'");
+            throw new DateTimeException("ZoneOffset '" + offset + "' is not valid for LocalDateTime '" + localDateTime + "' in zone '" + zone + "'");
         }
         return new ZonedDateTime(localDateTime, offset, zone);
     }
@@ -507,9 +541,13 @@ public final class ZonedDateTime
      * local date-time now does not occur. This method can be used to create the object
      * in an "invalid" state, despite the change in rules.
      *
-     * @param localDateTime  the local date-time, not null
-     * @param offset  the zone offset, not null
-     * @param zone  the time-zone, not null
+     * @param localDateTime
+     *         the local date-time, not null
+     * @param offset
+     *         the zone offset, not null
+     * @param zone
+     *         the time-zone, not null
+     *
      * @return the zoned date-time, not null
      */
     private static ZonedDateTime ofLenient(LocalDateTime localDateTime, ZoneOffset offset, ZoneId zone) {
@@ -523,6 +561,7 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code ZonedDateTime} from a temporal object.
      * <p>
@@ -541,9 +580,13 @@ public final class ZonedDateTime
      * This method matches the signature of the functional interface {@link TemporalQuery}
      * allowing it to be used as a query via method reference, {@code ZonedDateTime::from}.
      *
-     * @param temporal  the temporal object to convert, not null
+     * @param temporal
+     *         the temporal object to convert, not null
+     *
      * @return the zoned date-time, not null
-     * @throws DateTimeException if unable to convert to an {@code ZonedDateTime}
+     *
+     * @throws DateTimeException
+     *         if unable to convert to an {@code ZonedDateTime}
      */
     public static ZonedDateTime from(TemporalAccessor temporal) {
         if (temporal instanceof ZonedDateTime) {
@@ -561,12 +604,12 @@ public final class ZonedDateTime
                 return of(date, time, zone);
             }
         } catch (DateTimeException ex) {
-            throw new DateTimeException("Unable to obtain ZonedDateTime from TemporalAccessor: " +
-                    temporal + " of type " + temporal.getClass().getName(), ex);
+            throw new DateTimeException("Unable to obtain ZonedDateTime from TemporalAccessor: " + temporal + " of type " + temporal.getClass().getName(), ex);
         }
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Obtains an instance of {@code ZonedDateTime} from a text string such as
      * {@code 2007-12-03T10:15:30+01:00[Europe/Paris]}.
@@ -574,9 +617,13 @@ public final class ZonedDateTime
      * The string must represent a valid date-time and is parsed using
      * {@link java.time.format.DateTimeFormatter#ISO_ZONED_DATE_TIME}.
      *
-     * @param text  the text to parse such as "2007-12-03T10:15:30+01:00[Europe/Paris]", not null
+     * @param text
+     *         the text to parse such as "2007-12-03T10:15:30+01:00[Europe/Paris]", not null
+     *
      * @return the parsed zoned date-time, not null
-     * @throws DateTimeParseException if the text cannot be parsed
+     *
+     * @throws DateTimeParseException
+     *         if the text cannot be parsed
      */
     public static ZonedDateTime parse(CharSequence text) {
         return parse(text, DateTimeFormatter.ISO_ZONED_DATE_TIME);
@@ -587,10 +634,15 @@ public final class ZonedDateTime
      * <p>
      * The text is parsed using the formatter, returning a date-time.
      *
-     * @param text  the text to parse, not null
-     * @param formatter  the formatter to use, not null
+     * @param text
+     *         the text to parse, not null
+     * @param formatter
+     *         the formatter to use, not null
+     *
      * @return the parsed zoned date-time, not null
-     * @throws DateTimeParseException if the text cannot be parsed
+     *
+     * @throws DateTimeParseException
+     *         if the text cannot be parsed
      */
     public static ZonedDateTime parse(CharSequence text, DateTimeFormatter formatter) {
         Objects.requireNonNull(formatter, "formatter");
@@ -598,12 +650,16 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Constructor.
      *
-     * @param dateTime  the date-time, validated as not null
-     * @param offset  the zone offset, validated as not null
-     * @param zone  the time-zone, validated as not null
+     * @param dateTime
+     *         the date-time, validated as not null
+     * @param offset
+     *         the zone offset, validated as not null
+     * @param zone
+     *         the time-zone, validated as not null
      */
     private ZonedDateTime(LocalDateTime dateTime, ZoneOffset offset, ZoneId zone) {
         this.dateTime = dateTime;
@@ -614,7 +670,9 @@ public final class ZonedDateTime
     /**
      * Resolves the new local date-time using this zone ID, retaining the offset if possible.
      *
-     * @param newDateTime  the new local date-time, not null
+     * @param newDateTime
+     *         the new local date-time, not null
+     *
      * @return the zoned date-time, not null
      */
     private ZonedDateTime resolveLocal(LocalDateTime newDateTime) {
@@ -624,7 +682,9 @@ public final class ZonedDateTime
     /**
      * Resolves the new local date-time using the offset to identify the instant.
      *
-     * @param newDateTime  the new local date-time, not null
+     * @param newDateTime
+     *         the new local date-time, not null
+     *
      * @return the zoned date-time, not null
      */
     private ZonedDateTime resolveInstant(LocalDateTime newDateTime) {
@@ -636,7 +696,9 @@ public final class ZonedDateTime
      * <p>
      * This typically ignores the offset, unless it can be used to switch offset in a DST overlap.
      *
-     * @param offset  the offset, not null
+     * @param offset
+     *         the offset, not null
+     *
      * @return the zoned date-time, not null
      */
     private ZonedDateTime resolveOffset(ZoneOffset offset) {
@@ -647,6 +709,7 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks if the specified field is supported.
      * <p>
@@ -696,7 +759,9 @@ public final class ZonedDateTime
      * passing {@code this} as the argument.
      * Whether the field is supported is determined by the field.
      *
-     * @param field  the field to check, null returns false
+     * @param field
+     *         the field to check, null returns false
+     *
      * @return true if the field is supported on this date-time, false if not
      */
     @Override
@@ -737,7 +802,9 @@ public final class ZonedDateTime
      * passing {@code this} as the argument.
      * Whether the unit is supported is determined by the unit.
      *
-     * @param unit  the unit to check, null returns false
+     * @param unit
+     *         the unit to check, null returns false
+     *
      * @return true if the unit can be added/subtracted, false if not
      */
     @Override  // override for Javadoc
@@ -746,6 +813,7 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the range of valid values for the specified field.
      * <p>
@@ -764,10 +832,15 @@ public final class ZonedDateTime
      * passing {@code this} as the argument.
      * Whether the range can be obtained is determined by the field.
      *
-     * @param field  the field to query the range for, not null
+     * @param field
+     *         the field to query the range for, not null
+     *
      * @return the range of valid values for the field, not null
-     * @throws DateTimeException if the range for the field cannot be obtained
-     * @throws UnsupportedTemporalTypeException if the field is not supported
+     *
+     * @throws DateTimeException
+     *         if the range for the field cannot be obtained
+     * @throws UnsupportedTemporalTypeException
+     *         if the field is not supported
      */
     @Override
     public ValueRange range(TemporalField field) {
@@ -800,22 +873,28 @@ public final class ZonedDateTime
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
-     * @param field  the field to get, not null
+     * @param field
+     *         the field to get, not null
+     *
      * @return the value for the field
-     * @throws DateTimeException if a value for the field cannot be obtained or
+     *
+     * @throws DateTimeException
+     *         if a value for the field cannot be obtained or
      *         the value is outside the range of valid values for the field
-     * @throws UnsupportedTemporalTypeException if the field is not supported or
+     * @throws UnsupportedTemporalTypeException
+     *         if the field is not supported or
      *         the range of values exceeds an {@code int}
-     * @throws ArithmeticException if numeric overflow occurs
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override  // override for Javadoc and performance
     public int get(TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
-                case INSTANT_SECONDS:
-                    throw new UnsupportedTemporalTypeException("Invalid field 'InstantSeconds' for get() method, use getLong() instead");
-                case OFFSET_SECONDS:
-                    return getOffset().getTotalSeconds();
+            case INSTANT_SECONDS:
+                throw new UnsupportedTemporalTypeException("Invalid field 'InstantSeconds' for get() method, use getLong() instead");
+            case OFFSET_SECONDS:
+                return getOffset().getTotalSeconds();
             }
             return dateTime.get(field);
         }
@@ -839,18 +918,26 @@ public final class ZonedDateTime
      * passing {@code this} as the argument. Whether the value can be obtained,
      * and what the value represents, is determined by the field.
      *
-     * @param field  the field to get, not null
+     * @param field
+     *         the field to get, not null
+     *
      * @return the value for the field
-     * @throws DateTimeException if a value for the field cannot be obtained
-     * @throws UnsupportedTemporalTypeException if the field is not supported
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if a value for the field cannot be obtained
+     * @throws UnsupportedTemporalTypeException
+     *         if the field is not supported
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override
     public long getLong(TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
-                case INSTANT_SECONDS: return toEpochSecond();
-                case OFFSET_SECONDS: return getOffset().getTotalSeconds();
+            case INSTANT_SECONDS:
+                return toEpochSecond();
+            case OFFSET_SECONDS:
+                return getOffset().getTotalSeconds();
             }
             return dateTime.getLong(field);
         }
@@ -858,6 +945,7 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the zone offset, such as '+01:00'.
      * <p>
@@ -927,6 +1015,7 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the time-zone, such as 'Europe/Paris'.
      * <p>
@@ -959,7 +1048,9 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param zone  the time-zone to change to, not null
+     * @param zone
+     *         the time-zone to change to, not null
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the requested zone, not null
      */
     @Override
@@ -981,15 +1072,18 @@ public final class ZonedDateTime
      * To change the offset while keeping the local time,
      * use {@link #withZoneSameLocal(ZoneId)}.
      *
-     * @param zone  the time-zone to change to, not null
+     * @param zone
+     *         the time-zone to change to, not null
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the requested zone, not null
-     * @throws DateTimeException if the result exceeds the supported date range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported date range
      */
     @Override
     public ZonedDateTime withZoneSameInstant(ZoneId zone) {
         Objects.requireNonNull(zone, "zone");
-        return this.zone.equals(zone) ? this :
-            create(dateTime.toEpochSecond(offset), dateTime.getNano(), zone);
+        return this.zone.equals(zone) ? this : create(dateTime.toEpochSecond(offset), dateTime.getNano(), zone);
     }
 
     /**
@@ -1014,6 +1108,7 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the {@code LocalDateTime} part of this date-time.
      * <p>
@@ -1028,6 +1123,7 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the {@code LocalDate} part of this date-time.
      * <p>
@@ -1063,6 +1159,7 @@ public final class ZonedDateTime
      * is used by calling {@link #getMonth()}.
      *
      * @return the month-of-year, from 1 to 12
+     *
      * @see #getMonth()
      */
     public int getMonthValue() {
@@ -1078,6 +1175,7 @@ public final class ZonedDateTime
      * provides the {@link Month#getValue() int value}.
      *
      * @return the month-of-year, not null
+     *
      * @see #getMonthValue()
      */
     public Month getMonth() {
@@ -1124,6 +1222,7 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Gets the {@code LocalTime} part of this date-time.
      * <p>
@@ -1174,6 +1273,7 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns an adjusted copy of this date-time.
      * <p>
@@ -1219,10 +1319,15 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjuster the adjuster to use, not null
+     * @param adjuster
+     *         the adjuster to use, not null
+     *
      * @return a {@code ZonedDateTime} based on {@code this} with the adjustment made, not null
-     * @throws DateTimeException if the adjustment cannot be made
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if the adjustment cannot be made
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override
     public ZonedDateTime with(TemporalAdjuster adjuster) {
@@ -1290,23 +1395,30 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param field  the field to set in the result, not null
-     * @param newValue  the new value of the field in the result
+     * @param field
+     *         the field to set in the result, not null
+     * @param newValue
+     *         the new value of the field in the result
+     *
      * @return a {@code ZonedDateTime} based on {@code this} with the specified field set, not null
-     * @throws DateTimeException if the field cannot be set
-     * @throws UnsupportedTemporalTypeException if the field is not supported
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if the field cannot be set
+     * @throws UnsupportedTemporalTypeException
+     *         if the field is not supported
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override
     public ZonedDateTime with(TemporalField field, long newValue) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             switch (f) {
-                case INSTANT_SECONDS:
-                    return create(newValue, getNano(), zone);
-                case OFFSET_SECONDS:
-                    ZoneOffset offset = ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue));
-                    return resolveOffset(offset);
+            case INSTANT_SECONDS:
+                return create(newValue, getNano(), zone);
+            case OFFSET_SECONDS:
+                ZoneOffset offset = ZoneOffset.ofTotalSeconds(f.checkValidIntValue(newValue));
+                return resolveOffset(offset);
             }
             return resolveLocal(dateTime.with(field, newValue));
         }
@@ -1314,6 +1426,7 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns a copy of this {@code ZonedDateTime} with the year altered.
      * <p>
@@ -1328,9 +1441,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to set in the result, from MIN_YEAR to MAX_YEAR
+     * @param year
+     *         the year to set in the result, from MIN_YEAR to MAX_YEAR
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the requested year, not null
-     * @throws DateTimeException if the year value is invalid
+     *
+     * @throws DateTimeException
+     *         if the year value is invalid
      */
     public ZonedDateTime withYear(int year) {
         return resolveLocal(dateTime.withYear(year));
@@ -1350,9 +1467,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param month  the month-of-year to set in the result, from 1 (January) to 12 (December)
+     * @param month
+     *         the month-of-year to set in the result, from 1 (January) to 12 (December)
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the requested month, not null
-     * @throws DateTimeException if the month-of-year value is invalid
+     *
+     * @throws DateTimeException
+     *         if the month-of-year value is invalid
      */
     public ZonedDateTime withMonth(int month) {
         return resolveLocal(dateTime.withMonth(month));
@@ -1372,10 +1493,14 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfMonth  the day-of-month to set in the result, from 1 to 28-31
+     * @param dayOfMonth
+     *         the day-of-month to set in the result, from 1 to 28-31
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the requested day, not null
-     * @throws DateTimeException if the day-of-month value is invalid,
-     *  or if the day-of-month is invalid for the month-year
+     *
+     * @throws DateTimeException
+     *         if the day-of-month value is invalid,
+     *         or if the day-of-month is invalid for the month-year
      */
     public ZonedDateTime withDayOfMonth(int dayOfMonth) {
         return resolveLocal(dateTime.withDayOfMonth(dayOfMonth));
@@ -1395,16 +1520,21 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfYear  the day-of-year to set in the result, from 1 to 365-366
+     * @param dayOfYear
+     *         the day-of-year to set in the result, from 1 to 365-366
+     *
      * @return a {@code ZonedDateTime} based on this date with the requested day, not null
-     * @throws DateTimeException if the day-of-year value is invalid,
-     *  or if the day-of-year is invalid for the year
+     *
+     * @throws DateTimeException
+     *         if the day-of-year value is invalid,
+     *         or if the day-of-year is invalid for the year
      */
     public ZonedDateTime withDayOfYear(int dayOfYear) {
         return resolveLocal(dateTime.withDayOfYear(dayOfYear));
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns a copy of this {@code ZonedDateTime} with the hour-of-day altered.
      * <p>
@@ -1419,9 +1549,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hour  the hour-of-day to set in the result, from 0 to 23
+     * @param hour
+     *         the hour-of-day to set in the result, from 0 to 23
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the requested hour, not null
-     * @throws DateTimeException if the hour value is invalid
+     *
+     * @throws DateTimeException
+     *         if the hour value is invalid
      */
     public ZonedDateTime withHour(int hour) {
         return resolveLocal(dateTime.withHour(hour));
@@ -1441,9 +1575,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minute  the minute-of-hour to set in the result, from 0 to 59
+     * @param minute
+     *         the minute-of-hour to set in the result, from 0 to 59
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the requested minute, not null
-     * @throws DateTimeException if the minute value is invalid
+     *
+     * @throws DateTimeException
+     *         if the minute value is invalid
      */
     public ZonedDateTime withMinute(int minute) {
         return resolveLocal(dateTime.withMinute(minute));
@@ -1463,9 +1601,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param second  the second-of-minute to set in the result, from 0 to 59
+     * @param second
+     *         the second-of-minute to set in the result, from 0 to 59
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the requested second, not null
-     * @throws DateTimeException if the second value is invalid
+     *
+     * @throws DateTimeException
+     *         if the second value is invalid
      */
     public ZonedDateTime withSecond(int second) {
         return resolveLocal(dateTime.withSecond(second));
@@ -1485,15 +1627,20 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param nanoOfSecond  the nano-of-second to set in the result, from 0 to 999,999,999
+     * @param nanoOfSecond
+     *         the nano-of-second to set in the result, from 0 to 999,999,999
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the requested nanosecond, not null
-     * @throws DateTimeException if the nano value is invalid
+     *
+     * @throws DateTimeException
+     *         if the nano value is invalid
      */
     public ZonedDateTime withNano(int nanoOfSecond) {
         return resolveLocal(dateTime.withNano(nanoOfSecond));
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns a copy of this {@code ZonedDateTime} with the time truncated.
      * <p>
@@ -1518,16 +1665,22 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param unit  the unit to truncate to, not null
+     * @param unit
+     *         the unit to truncate to, not null
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the time truncated, not null
-     * @throws DateTimeException if unable to truncate
-     * @throws UnsupportedTemporalTypeException if the unit is not supported
+     *
+     * @throws DateTimeException
+     *         if unable to truncate
+     * @throws UnsupportedTemporalTypeException
+     *         if the unit is not supported
      */
     public ZonedDateTime truncatedTo(TemporalUnit unit) {
         return resolveLocal(dateTime.truncatedTo(unit));
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns a copy of this date-time with the specified amount added.
      * <p>
@@ -1543,10 +1696,15 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToAdd  the amount to add, not null
+     * @param amountToAdd
+     *         the amount to add, not null
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the addition made, not null
-     * @throws DateTimeException if the addition cannot be made
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if the addition cannot be made
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override
     public ZonedDateTime plus(TemporalAmount amountToAdd) {
@@ -1588,12 +1746,19 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToAdd  the amount of the unit to add to the result, may be negative
-     * @param unit  the unit of the amount to add, not null
+     * @param amountToAdd
+     *         the amount of the unit to add to the result, may be negative
+     * @param unit
+     *         the unit of the amount to add, not null
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the specified amount added, not null
-     * @throws DateTimeException if the addition cannot be made
-     * @throws UnsupportedTemporalTypeException if the unit is not supported
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if the addition cannot be made
+     * @throws UnsupportedTemporalTypeException
+     *         if the unit is not supported
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override
     public ZonedDateTime plus(long amountToAdd, TemporalUnit unit) {
@@ -1608,6 +1773,7 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified number of years added.
      * <p>
@@ -1622,9 +1788,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to add, may be negative
+     * @param years
+     *         the years to add, may be negative
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the years added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported date range
      */
     public ZonedDateTime plusYears(long years) {
         return resolveLocal(dateTime.plusYears(years));
@@ -1644,9 +1814,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the months to add, may be negative
+     * @param months
+     *         the months to add, may be negative
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the months added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported date range
      */
     public ZonedDateTime plusMonths(long months) {
         return resolveLocal(dateTime.plusMonths(months));
@@ -1666,9 +1840,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param weeks  the weeks to add, may be negative
+     * @param weeks
+     *         the weeks to add, may be negative
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the weeks added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported date range
      */
     public ZonedDateTime plusWeeks(long weeks) {
         return resolveLocal(dateTime.plusWeeks(weeks));
@@ -1688,15 +1866,20 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param days  the days to add, may be negative
+     * @param days
+     *         the days to add, may be negative
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the days added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported date range
      */
     public ZonedDateTime plusDays(long days) {
         return resolveLocal(dateTime.plusDays(days));
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified number of hours added.
      * <p>
@@ -1717,9 +1900,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hours  the hours to add, may be negative
+     * @param hours
+     *         the hours to add, may be negative
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the hours added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported date range
      */
     public ZonedDateTime plusHours(long hours) {
         return resolveInstant(dateTime.plusHours(hours));
@@ -1735,9 +1922,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minutes  the minutes to add, may be negative
+     * @param minutes
+     *         the minutes to add, may be negative
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the minutes added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported date range
      */
     public ZonedDateTime plusMinutes(long minutes) {
         return resolveInstant(dateTime.plusMinutes(minutes));
@@ -1753,9 +1944,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param seconds  the seconds to add, may be negative
+     * @param seconds
+     *         the seconds to add, may be negative
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the seconds added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported date range
      */
     public ZonedDateTime plusSeconds(long seconds) {
         return resolveInstant(dateTime.plusSeconds(seconds));
@@ -1771,15 +1966,20 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param nanos  the nanos to add, may be negative
+     * @param nanos
+     *         the nanos to add, may be negative
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the nanoseconds added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported date range
      */
     public ZonedDateTime plusNanos(long nanos) {
         return resolveInstant(dateTime.plusNanos(nanos));
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns a copy of this date-time with the specified amount subtracted.
      * <p>
@@ -1795,10 +1995,15 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToSubtract  the amount to subtract, not null
+     * @param amountToSubtract
+     *         the amount to subtract, not null
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the subtraction made, not null
-     * @throws DateTimeException if the subtraction cannot be made
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if the subtraction cannot be made
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override
     public ZonedDateTime minus(TemporalAmount amountToSubtract) {
@@ -1836,12 +2041,19 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToSubtract  the amount of the unit to subtract from the result, may be negative
-     * @param unit  the unit of the amount to subtract, not null
+     * @param amountToSubtract
+     *         the amount of the unit to subtract from the result, may be negative
+     * @param unit
+     *         the unit of the amount to subtract, not null
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the specified amount subtracted, not null
-     * @throws DateTimeException if the subtraction cannot be made
-     * @throws UnsupportedTemporalTypeException if the unit is not supported
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if the subtraction cannot be made
+     * @throws UnsupportedTemporalTypeException
+     *         if the unit is not supported
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override
     public ZonedDateTime minus(long amountToSubtract, TemporalUnit unit) {
@@ -1849,6 +2061,7 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified number of years subtracted.
      * <p>
@@ -1863,9 +2076,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to subtract, may be negative
+     * @param years
+     *         the years to subtract, may be negative
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the years subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported date range
      */
     public ZonedDateTime minusYears(long years) {
         return (years == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-years));
@@ -1885,9 +2102,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the months to subtract, may be negative
+     * @param months
+     *         the months to subtract, may be negative
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the months subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported date range
      */
     public ZonedDateTime minusMonths(long months) {
         return (months == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-months));
@@ -1907,9 +2128,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param weeks  the weeks to subtract, may be negative
+     * @param weeks
+     *         the weeks to subtract, may be negative
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the weeks subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported date range
      */
     public ZonedDateTime minusWeeks(long weeks) {
         return (weeks == Long.MIN_VALUE ? plusWeeks(Long.MAX_VALUE).plusWeeks(1) : plusWeeks(-weeks));
@@ -1929,15 +2154,20 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param days  the days to subtract, may be negative
+     * @param days
+     *         the days to subtract, may be negative
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the days subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported date range
      */
     public ZonedDateTime minusDays(long days) {
         return (days == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-days));
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Returns a copy of this {@code ZonedDateTime} with the specified number of hours subtracted.
      * <p>
@@ -1958,9 +2188,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hours  the hours to subtract, may be negative
+     * @param hours
+     *         the hours to subtract, may be negative
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the hours subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported date range
      */
     public ZonedDateTime minusHours(long hours) {
         return (hours == Long.MIN_VALUE ? plusHours(Long.MAX_VALUE).plusHours(1) : plusHours(-hours));
@@ -1976,9 +2210,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minutes  the minutes to subtract, may be negative
+     * @param minutes
+     *         the minutes to subtract, may be negative
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the minutes subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported date range
      */
     public ZonedDateTime minusMinutes(long minutes) {
         return (minutes == Long.MIN_VALUE ? plusMinutes(Long.MAX_VALUE).plusMinutes(1) : plusMinutes(-minutes));
@@ -1994,9 +2232,13 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param seconds  the seconds to subtract, may be negative
+     * @param seconds
+     *         the seconds to subtract, may be negative
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the seconds subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported date range
      */
     public ZonedDateTime minusSeconds(long seconds) {
         return (seconds == Long.MIN_VALUE ? plusSeconds(Long.MAX_VALUE).plusSeconds(1) : plusSeconds(-seconds));
@@ -2012,15 +2254,20 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param nanos  the nanos to subtract, may be negative
+     * @param nanos
+     *         the nanos to subtract, may be negative
+     *
      * @return a {@code ZonedDateTime} based on this date-time with the nanoseconds subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
+     *
+     * @throws DateTimeException
+     *         if the result exceeds the supported date range
      */
     public ZonedDateTime minusNanos(long nanos) {
         return (nanos == Long.MIN_VALUE ? plusNanos(Long.MAX_VALUE).plusNanos(1) : plusNanos(-nanos));
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Queries this date-time using the specified query.
      * <p>
@@ -2033,11 +2280,17 @@ public final class ZonedDateTime
      * {@link TemporalQuery#queryFrom(TemporalAccessor)} method on the
      * specified query passing {@code this} as the argument.
      *
-     * @param <R> the type of the result
-     * @param query  the query to invoke, not null
+     * @param <R>
+     *         the type of the result
+     * @param query
+     *         the query to invoke, not null
+     *
      * @return the query result, null may be returned (defined by the query)
-     * @throws DateTimeException if unable to query (defined by the query)
-     * @throws ArithmeticException if numeric overflow occurs (defined by the query)
+     *
+     * @throws DateTimeException
+     *         if unable to query (defined by the query)
+     * @throws ArithmeticException
+     *         if numeric overflow occurs (defined by the query)
      */
     @SuppressWarnings("unchecked")
     @Override  // override for Javadoc
@@ -2106,13 +2359,20 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param endExclusive  the end date, exclusive, which is converted to a {@code ZonedDateTime}, not null
-     * @param unit  the unit to measure the amount in, not null
+     * @param endExclusive
+     *         the end date, exclusive, which is converted to a {@code ZonedDateTime}, not null
+     * @param unit
+     *         the unit to measure the amount in, not null
+     *
      * @return the amount of time between this date-time and the end date-time
-     * @throws DateTimeException if the amount cannot be calculated, or the end
-     *  temporal cannot be converted to a {@code ZonedDateTime}
-     * @throws UnsupportedTemporalTypeException if the unit is not supported
-     * @throws ArithmeticException if numeric overflow occurs
+     *
+     * @throws DateTimeException
+     *         if the amount cannot be calculated, or the end
+     *         temporal cannot be converted to a {@code ZonedDateTime}
+     * @throws UnsupportedTemporalTypeException
+     *         if the unit is not supported
+     * @throws ArithmeticException
+     *         if numeric overflow occurs
      */
     @Override
     public long until(Temporal endExclusive, TemporalUnit unit) {
@@ -2133,9 +2393,13 @@ public final class ZonedDateTime
      * <p>
      * This date-time will be passed to the formatter to produce a string.
      *
-     * @param formatter  the formatter to use, not null
+     * @param formatter
+     *         the formatter to use, not null
+     *
      * @return the formatted date-time string, not null
-     * @throws DateTimeException if an error occurs during printing
+     *
+     * @throws DateTimeException
+     *         if an error occurs during printing
      */
     @Override  // override for Javadoc and performance
     public String format(DateTimeFormatter formatter) {
@@ -2144,6 +2408,7 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Converts this date-time to an {@code OffsetDateTime}.
      * <p>
@@ -2157,13 +2422,16 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Checks if this date-time is equal to another date-time.
      * <p>
      * The comparison is based on the offset date-time and the zone.
      * Only objects of type {@code ZonedDateTime} are compared, other types return false.
      *
-     * @param obj  the object to check, null returns false
+     * @param obj
+     *         the object to check, null returns false
+     *
      * @return true if this is equal to the other date-time
      */
     @Override
@@ -2173,9 +2441,7 @@ public final class ZonedDateTime
         }
         if (obj instanceof ZonedDateTime) {
             ZonedDateTime other = (ZonedDateTime) obj;
-            return dateTime.equals(other.dateTime) &&
-                offset.equals(other.offset) &&
-                zone.equals(other.zone);
+            return dateTime.equals(other.dateTime) && offset.equals(other.offset) && zone.equals(other.zone);
         }
         return false;
     }
@@ -2191,6 +2457,7 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Outputs this date-time as a {@code String}, such as
      * {@code 2007-12-03T10:15:30+01:00[Europe/Paris]}.
@@ -2211,16 +2478,10 @@ public final class ZonedDateTime
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * Writes the object using a
      * <a href="../../serialized-form.html#java.time.Ser">dedicated serialized form</a>.
-     * @serialData
-     * <pre>
-     *  out.writeByte(6);  // identifies a ZonedDateTime
-     *  // the <a href="../../serialized-form.html#java.time.LocalDateTime">dateTime</a> excluding the one byte header
-     *  // the <a href="../../serialized-form.html#java.time.ZoneOffset">offset</a> excluding the one byte header
-     *  // the <a href="../../serialized-form.html#java.time.ZoneId">zone ID</a> excluding the one byte header
-     * </pre>
      *
      * @return the instance of {@code Ser}, not null
      */
@@ -2231,8 +2492,11 @@ public final class ZonedDateTime
     /**
      * Defend against malicious streams.
      *
-     * @param s the stream to read
-     * @throws InvalidObjectException always
+     * @param s
+     *         the stream to read
+     *
+     * @throws InvalidObjectException
+     *         always
      */
     private void readObject(ObjectInputStream s) throws InvalidObjectException {
         throw new InvalidObjectException("Deserialization via serialization delegate");

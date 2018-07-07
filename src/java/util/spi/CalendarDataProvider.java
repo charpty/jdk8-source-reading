@@ -33,8 +33,8 @@ import java.util.Locale;
  * Calendar} parameters.
  *
  * @author Masayoshi Okutsu
- * @since 1.8
  * @see CalendarNameProvider
+ * @since 1.8
  */
 public abstract class CalendarDataProvider extends LocaleServiceProvider {
 
@@ -51,10 +51,12 @@ public abstract class CalendarDataProvider extends LocaleServiceProvider {
      * week-related calendar fields.
      *
      * @param locale
-     *        the desired locale
+     *         the desired locale
+     *
      * @return the first day of a week; one of {@link Calendar#SUNDAY} ..
-     *         {@link Calendar#SATURDAY},
-     *         or 0 if the value isn't available for the {@code locale}
+     * {@link Calendar#SATURDAY},
+     * or 0 if the value isn't available for the {@code locale}
+     *
      * @throws NullPointerException
      *         if {@code locale} is {@code null}.
      * @see java.util.Calendar#getFirstDayOfWeek()
@@ -70,9 +72,11 @@ public abstract class CalendarDataProvider extends LocaleServiceProvider {
      * the first week</a>.
      *
      * @param locale
-     *        the desired locale
+     *         the desired locale
+     *
      * @return the minimal number of days of the first week,
-     *         or 0 if the value isn't available for the {@code locale}
+     * or 0 if the value isn't available for the {@code locale}
+     *
      * @throws NullPointerException
      *         if {@code locale} is {@code null}.
      * @see java.util.Calendar#getMinimalDaysInFirstWeek()

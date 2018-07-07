@@ -27,8 +27,8 @@ package java.nio.channels;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.SocketOption;
 import java.net.SocketAddress;
+import java.net.SocketOption;
 import java.nio.channels.spi.AbstractSelectableChannel;
 import java.nio.channels.spi.SelectorProvider;
 
@@ -41,24 +41,24 @@ import java.nio.channels.spi.SelectorProvider;
  * open but not yet bound.  An attempt to invoke the {@link #accept() accept}
  * method of an unbound server-socket channel will cause a {@link NotYetBoundException}
  * to be thrown. A server-socket channel can be bound by invoking one of the
- * {@link #bind(java.net.SocketAddress,int) bind} methods defined by this class.
+ * {@link #bind(java.net.SocketAddress, int) bind} methods defined by this class.
  *
- * <p> Socket options are configured using the {@link #setOption(SocketOption,Object)
+ * <p> Socket options are configured using the {@link #setOption(SocketOption, Object)
  * setOption} method. Server-socket channels support the following options:
  * <blockquote>
  * <table border summary="Socket options">
- *   <tr>
- *     <th>Option Name</th>
- *     <th>Description</th>
- *   </tr>
- *   <tr>
- *     <td> {@link java.net.StandardSocketOptions#SO_RCVBUF SO_RCVBUF} </td>
- *     <td> The size of the socket receive buffer </td>
- *   </tr>
- *   <tr>
- *     <td> {@link java.net.StandardSocketOptions#SO_REUSEADDR SO_REUSEADDR} </td>
- *     <td> Re-use address </td>
- *   </tr>
+ * <tr>
+ * <th>Option Name</th>
+ * <th>Description</th>
+ * </tr>
+ * <tr>
+ * <td> {@link java.net.StandardSocketOptions#SO_RCVBUF SO_RCVBUF} </td>
+ * <td> The size of the socket receive buffer </td>
+ * </tr>
+ * <tr>
+ * <td> {@link java.net.StandardSocketOptions#SO_REUSEADDR SO_REUSEADDR} </td>
+ * <td> Re-use address </td>
+ * </tr>
  * </table>
  * </blockquote>
  * Additional (implementation specific) options may also be supported.
@@ -71,15 +71,12 @@ import java.nio.channels.spi.SelectorProvider;
  * @since 1.4
  */
 
-public abstract class ServerSocketChannel
-    extends AbstractSelectableChannel
-    implements NetworkChannel
-{
+public abstract class ServerSocketChannel extends AbstractSelectableChannel implements NetworkChannel {
 
     /**
      * Initializes a new instance of this class.
      *
-     * @param  provider
+     * @param provider
      *         The provider that created this channel
      */
     protected ServerSocketChannel(SelectorProvider provider) {
@@ -99,10 +96,10 @@ public abstract class ServerSocketChannel
      * java.net.ServerSocket#bind(SocketAddress) bind} methods before
      * connections can be accepted.  </p>
      *
-     * @return  A new socket channel
+     * @return A new socket channel
      *
-     * @throws  IOException
-     *          If an I/O error occurs
+     * @throws IOException
+     *         If an I/O error occurs
      */
     public static ServerSocketChannel open() throws IOException {
         return SelectorProvider.provider().openServerSocketChannel();
@@ -116,12 +113,11 @@ public abstract class ServerSocketChannel
      * connections, so this method returns {@link SelectionKey#OP_ACCEPT}.
      * </p>
      *
-     * @return  The valid-operation set
+     * @return The valid-operation set
      */
     public final int validOps() {
         return SelectionKey.OP_ACCEPT;
     }
-
 
     // -- ServerSocket-specific operations --
 
@@ -134,26 +130,27 @@ public abstract class ServerSocketChannel
      * bind(local, 0);
      * </pre></blockquote>
      *
-     * @param   local
-     *          The local address to bind the socket, or {@code null} to bind
-     *          to an automatically assigned socket address
+     * @param local
+     *         The local address to bind the socket, or {@code null} to bind
+     *         to an automatically assigned socket address
      *
-     * @return  This channel
+     * @return This channel
      *
-     * @throws  AlreadyBoundException               {@inheritDoc}
-     * @throws  UnsupportedAddressTypeException     {@inheritDoc}
-     * @throws  ClosedChannelException              {@inheritDoc}
-     * @throws  IOException                         {@inheritDoc}
-     * @throws  SecurityException
-     *          If a security manager has been installed and its {@link
-     *          SecurityManager#checkListen checkListen} method denies the
-     *          operation
-     *
+     * @throws AlreadyBoundException
+     *         {@inheritDoc}
+     * @throws UnsupportedAddressTypeException
+     *         {@inheritDoc}
+     * @throws ClosedChannelException
+     *         {@inheritDoc}
+     * @throws IOException
+     *         {@inheritDoc}
+     * @throws SecurityException
+     *         If a security manager has been installed and its {@link
+     *         SecurityManager#checkListen checkListen} method denies the
+     *         operation
      * @since 1.7
      */
-    public final ServerSocketChannel bind(SocketAddress local)
-        throws IOException
-    {
+    public final ServerSocketChannel bind(SocketAddress local) throws IOException {
         return bind(local, 0);
     }
 
@@ -172,42 +169,42 @@ public abstract class ServerSocketChannel
      * the value {@code 0}, or a negative value, then an implementation specific
      * default is used.
      *
-     * @param   local
-     *          The address to bind the socket, or {@code null} to bind to an
-     *          automatically assigned socket address
-     * @param   backlog
-     *          The maximum number of pending connections
+     * @param local
+     *         The address to bind the socket, or {@code null} to bind to an
+     *         automatically assigned socket address
+     * @param backlog
+     *         The maximum number of pending connections
      *
-     * @return  This channel
+     * @return This channel
      *
-     * @throws  AlreadyBoundException
-     *          If the socket is already bound
-     * @throws  UnsupportedAddressTypeException
-     *          If the type of the given address is not supported
-     * @throws  ClosedChannelException
-     *          If this channel is closed
-     * @throws  IOException
-     *          If some other I/O error occurs
-     * @throws  SecurityException
-     *          If a security manager has been installed and its {@link
-     *          SecurityManager#checkListen checkListen} method denies the
-     *          operation
-     *
+     * @throws AlreadyBoundException
+     *         If the socket is already bound
+     * @throws UnsupportedAddressTypeException
+     *         If the type of the given address is not supported
+     * @throws ClosedChannelException
+     *         If this channel is closed
+     * @throws IOException
+     *         If some other I/O error occurs
+     * @throws SecurityException
+     *         If a security manager has been installed and its {@link
+     *         SecurityManager#checkListen checkListen} method denies the
+     *         operation
      * @since 1.7
      */
-    public abstract ServerSocketChannel bind(SocketAddress local, int backlog)
-        throws IOException;
+    public abstract ServerSocketChannel bind(SocketAddress local, int backlog) throws IOException;
 
     /**
-     * @throws  UnsupportedOperationException           {@inheritDoc}
-     * @throws  IllegalArgumentException                {@inheritDoc}
-     * @throws  ClosedChannelException                  {@inheritDoc}
-     * @throws  IOException                             {@inheritDoc}
-     *
+     * @throws UnsupportedOperationException
+     *         {@inheritDoc}
+     * @throws IllegalArgumentException
+     *         {@inheritDoc}
+     * @throws ClosedChannelException
+     *         {@inheritDoc}
+     * @throws IOException
+     *         {@inheritDoc}
      * @since 1.7
      */
-    public abstract <T> ServerSocketChannel setOption(SocketOption<T> name, T value)
-        throws IOException;
+    public abstract <T> ServerSocketChannel setOption(SocketOption<T> name, T value) throws IOException;
 
     /**
      * Retrieves a server socket associated with this channel.
@@ -215,7 +212,7 @@ public abstract class ServerSocketChannel
      * <p> The returned object will not declare any public methods that are not
      * declared in the {@link java.net.ServerSocket} class.  </p>
      *
-     * @return  A server socket associated with this channel
+     * @return A server socket associated with this channel
      */
     public abstract ServerSocket socket();
 
@@ -238,33 +235,28 @@ public abstract class ServerSocketChannel
      * permitted by the security manager's {@link
      * java.lang.SecurityManager#checkAccept checkAccept} method.  </p>
      *
-     * @return  The socket channel for the new connection,
-     *          or <tt>null</tt> if this channel is in non-blocking mode
-     *          and no connection is available to be accepted
+     * @return The socket channel for the new connection,
+     * or <tt>null</tt> if this channel is in non-blocking mode
+     * and no connection is available to be accepted
      *
-     * @throws  ClosedChannelException
-     *          If this channel is closed
-     *
-     * @throws  AsynchronousCloseException
-     *          If another thread closes this channel
-     *          while the accept operation is in progress
-     *
-     * @throws  ClosedByInterruptException
-     *          If another thread interrupts the current thread
-     *          while the accept operation is in progress, thereby
-     *          closing the channel and setting the current thread's
-     *          interrupt status
-     *
-     * @throws  NotYetBoundException
-     *          If this channel's socket has not yet been bound
-     *
-     * @throws  SecurityException
-     *          If a security manager has been installed
-     *          and it does not permit access to the remote endpoint
-     *          of the new connection
-     *
-     * @throws  IOException
-     *          If some other I/O error occurs
+     * @throws ClosedChannelException
+     *         If this channel is closed
+     * @throws AsynchronousCloseException
+     *         If another thread closes this channel
+     *         while the accept operation is in progress
+     * @throws ClosedByInterruptException
+     *         If another thread interrupts the current thread
+     *         while the accept operation is in progress, thereby
+     *         closing the channel and setting the current thread's
+     *         interrupt status
+     * @throws NotYetBoundException
+     *         If this channel's socket has not yet been bound
+     * @throws SecurityException
+     *         If a security manager has been installed
+     *         and it does not permit access to the remote endpoint
+     *         of the new connection
+     * @throws IOException
+     *         If some other I/O error occurs
      */
     public abstract SocketChannel accept() throws IOException;
 
@@ -278,13 +270,15 @@ public abstract class ServerSocketChannel
      * {@link java.net.InetAddress#getLoopbackAddress loopback} address and the
      * local port of the channel's socket is returned.
      *
-     * @return  The {@code SocketAddress} that the socket is bound to, or the
-     *          {@code SocketAddress} representing the loopback address if
-     *          denied by the security manager, or {@code null} if the
-     *          channel's socket is not bound
+     * @return The {@code SocketAddress} that the socket is bound to, or the
+     * {@code SocketAddress} representing the loopback address if
+     * denied by the security manager, or {@code null} if the
+     * channel's socket is not bound
      *
-     * @throws  ClosedChannelException     {@inheritDoc}
-     * @throws  IOException                {@inheritDoc}
+     * @throws ClosedChannelException
+     *         {@inheritDoc}
+     * @throws IOException
+     *         {@inheritDoc}
      */
     @Override
     public abstract SocketAddress getLocalAddress() throws IOException;

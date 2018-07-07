@@ -44,10 +44,9 @@ package java.security.cert;
  * provide the necessary locking. Multiple threads each manipulating
  * separate objects need not synchronize.
  *
+ * @author Sean Mullan
  * @see CertPathBuilder
- *
- * @since       1.4
- * @author      Sean Mullan
+ * @since 1.4
  */
 public interface CertPathBuilderResult extends Cloneable {
 

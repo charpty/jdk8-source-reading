@@ -51,7 +51,8 @@ public class CertificateExpiredException extends CertificateException {
      * message. A detail message is a String that describes this
      * particular exception.
      *
-     * @param message the detail message.
+     * @param message
+     *         the detail message.
      */
     public CertificateExpiredException(String message) {
         super(message);

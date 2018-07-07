@@ -30,18 +30,18 @@ import java.io.IOException;
 /**
  * Thrown to indicate that there is an error creating or accessing a Socket.
  *
- * @author  Jonathan Payne
- * @since   JDK1.0
+ * @author Jonathan Payne
+ * @since JDK1.0
  */
-public
-class SocketException extends IOException {
+public class SocketException extends IOException {
     private static final long serialVersionUID = -5935874303556886934L;
 
     /**
      * Constructs a new {@code SocketException} with the
      * specified detail message.
      *
-     * @param msg the detail message.
+     * @param msg
+     *         the detail message.
      */
     public SocketException(String msg) {
         super(msg);

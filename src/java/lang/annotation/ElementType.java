@@ -65,10 +65,8 @@ package java.lang.annotation;
  * variables of other classes to be non-null or not non-null based on whether
  * {@code @NonNull} appears at the variable's declaration.
  *
- * @author  Joshua Bloch
+ * @author Joshua Bloch
  * @since 1.5
- * @jls 9.6.4.1 @Target
- * @jls 4.1 The Kinds of Types and Values
  */
 public enum ElementType {
     /** Class, interface (including annotation type), or enum declaration */

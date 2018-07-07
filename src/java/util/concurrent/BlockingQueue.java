@@ -55,34 +55,34 @@ import java.util.Queue;
  *
  * <table BORDER CELLPADDING=3 CELLSPACING=1>
  * <caption>Summary of BlockingQueue methods</caption>
- *  <tr>
- *    <td></td>
- *    <td ALIGN=CENTER><em>Throws exception</em></td>
- *    <td ALIGN=CENTER><em>Special value</em></td>
- *    <td ALIGN=CENTER><em>Blocks</em></td>
- *    <td ALIGN=CENTER><em>Times out</em></td>
- *  </tr>
- *  <tr>
- *    <td><b>Insert</b></td>
- *    <td>{@link #add add(e)}</td>
- *    <td>{@link #offer offer(e)}</td>
- *    <td>{@link #put put(e)}</td>
- *    <td>{@link #offer(Object, long, TimeUnit) offer(e, time, unit)}</td>
- *  </tr>
- *  <tr>
- *    <td><b>Remove</b></td>
- *    <td>{@link #remove remove()}</td>
- *    <td>{@link #poll poll()}</td>
- *    <td>{@link #take take()}</td>
- *    <td>{@link #poll(long, TimeUnit) poll(time, unit)}</td>
- *  </tr>
- *  <tr>
- *    <td><b>Examine</b></td>
- *    <td>{@link #element element()}</td>
- *    <td>{@link #peek peek()}</td>
- *    <td><em>not applicable</em></td>
- *    <td><em>not applicable</em></td>
- *  </tr>
+ * <tr>
+ * <td></td>
+ * <td ALIGN=CENTER><em>Throws exception</em></td>
+ * <td ALIGN=CENTER><em>Special value</em></td>
+ * <td ALIGN=CENTER><em>Blocks</em></td>
+ * <td ALIGN=CENTER><em>Times out</em></td>
+ * </tr>
+ * <tr>
+ * <td><b>Insert</b></td>
+ * <td>{@link #add add(e)}</td>
+ * <td>{@link #offer offer(e)}</td>
+ * <td>{@link #put put(e)}</td>
+ * <td>{@link #offer(Object, long, TimeUnit) offer(e, time, unit)}</td>
+ * </tr>
+ * <tr>
+ * <td><b>Remove</b></td>
+ * <td>{@link #remove remove()}</td>
+ * <td>{@link #poll poll()}</td>
+ * <td>{@link #take take()}</td>
+ * <td>{@link #poll(long, TimeUnit) poll(time, unit)}</td>
+ * </tr>
+ * <tr>
+ * <td><b>Examine</b></td>
+ * <td>{@link #element element()}</td>
+ * <td>{@link #peek peek()}</td>
+ * <td><em>not applicable</em></td>
+ * <td><em>not applicable</em></td>
+ * </tr>
  * </table>
  *
  * <p>A {@code BlockingQueue} does not accept {@code null} elements.
@@ -127,7 +127,7 @@ import java.util.Queue;
  * Usage example, based on a typical producer-consumer scenario.
  * Note that a {@code BlockingQueue} can safely be used with multiple
  * producers and multiple consumers.
- *  <pre> {@code
+ * <pre> {@code
  * class Producer implements Runnable {
  *   private final BlockingQueue queue;
  *   Producer(BlockingQueue q) { queue = q; }
@@ -173,9 +173,11 @@ import java.util.Queue;
  * <a href="{@docRoot}/../technotes/guides/collections/index.html">
  * Java Collections Framework</a>.
  *
- * @since 1.5
+ * @param <E>
+ *         the type of elements held in this collection
+ *
  * @author Doug Lea
- * @param <E> the type of elements held in this collection
+ * @since 1.5
  */
 public interface BlockingQueue<E> extends Queue<E> {
     /**
@@ -186,14 +188,21 @@ public interface BlockingQueue<E> extends Queue<E> {
      * When using a capacity-restricted queue, it is generally preferable to
      * use {@link #offer(Object) offer}.
      *
-     * @param e the element to add
+     * @param e
+     *         the element to add
+     *
      * @return {@code true} (as specified by {@link Collection#add})
-     * @throws IllegalStateException if the element cannot be added at this
+     *
+     * @throws IllegalStateException
+     *         if the element cannot be added at this
      *         time due to capacity restrictions
-     * @throws ClassCastException if the class of the specified element
+     * @throws ClassCastException
+     *         if the class of the specified element
      *         prevents it from being added to this queue
-     * @throws NullPointerException if the specified element is null
-     * @throws IllegalArgumentException if some property of the specified
+     * @throws NullPointerException
+     *         if the specified element is null
+     * @throws IllegalArgumentException
+     *         if some property of the specified
      *         element prevents it from being added to this queue
      */
     boolean add(E e);
@@ -206,13 +215,19 @@ public interface BlockingQueue<E> extends Queue<E> {
      * generally preferable to {@link #add}, which can fail to insert an
      * element only by throwing an exception.
      *
-     * @param e the element to add
+     * @param e
+     *         the element to add
+     *
      * @return {@code true} if the element was added to this queue, else
-     *         {@code false}
-     * @throws ClassCastException if the class of the specified element
+     * {@code false}
+     *
+     * @throws ClassCastException
+     *         if the class of the specified element
      *         prevents it from being added to this queue
-     * @throws NullPointerException if the specified element is null
-     * @throws IllegalArgumentException if some property of the specified
+     * @throws NullPointerException
+     *         if the specified element is null
+     * @throws IllegalArgumentException
+     *         if some property of the specified
      *         element prevents it from being added to this queue
      */
     boolean offer(E e);
@@ -221,12 +236,18 @@ public interface BlockingQueue<E> extends Queue<E> {
      * Inserts the specified element into this queue, waiting if necessary
      * for space to become available.
      *
-     * @param e the element to add
-     * @throws InterruptedException if interrupted while waiting
-     * @throws ClassCastException if the class of the specified element
+     * @param e
+     *         the element to add
+     *
+     * @throws InterruptedException
+     *         if interrupted while waiting
+     * @throws ClassCastException
+     *         if the class of the specified element
      *         prevents it from being added to this queue
-     * @throws NullPointerException if the specified element is null
-     * @throws IllegalArgumentException if some property of the specified
+     * @throws NullPointerException
+     *         if the specified element is null
+     * @throws IllegalArgumentException
+     *         if some property of the specified
      *         element prevents it from being added to this queue
      */
     void put(E e) throws InterruptedException;
@@ -235,29 +256,39 @@ public interface BlockingQueue<E> extends Queue<E> {
      * Inserts the specified element into this queue, waiting up to the
      * specified wait time if necessary for space to become available.
      *
-     * @param e the element to add
-     * @param timeout how long to wait before giving up, in units of
-     *        {@code unit}
-     * @param unit a {@code TimeUnit} determining how to interpret the
-     *        {@code timeout} parameter
+     * @param e
+     *         the element to add
+     * @param timeout
+     *         how long to wait before giving up, in units of
+     *         {@code unit}
+     * @param unit
+     *         a {@code TimeUnit} determining how to interpret the
+     *         {@code timeout} parameter
+     *
      * @return {@code true} if successful, or {@code false} if
-     *         the specified waiting time elapses before space is available
-     * @throws InterruptedException if interrupted while waiting
-     * @throws ClassCastException if the class of the specified element
+     * the specified waiting time elapses before space is available
+     *
+     * @throws InterruptedException
+     *         if interrupted while waiting
+     * @throws ClassCastException
+     *         if the class of the specified element
      *         prevents it from being added to this queue
-     * @throws NullPointerException if the specified element is null
-     * @throws IllegalArgumentException if some property of the specified
+     * @throws NullPointerException
+     *         if the specified element is null
+     * @throws IllegalArgumentException
+     *         if some property of the specified
      *         element prevents it from being added to this queue
      */
-    boolean offer(E e, long timeout, TimeUnit unit)
-        throws InterruptedException;
+    boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException;
 
     /**
      * Retrieves and removes the head of this queue, waiting if necessary
      * until an element becomes available.
      *
      * @return the head of this queue
-     * @throws InterruptedException if interrupted while waiting
+     *
+     * @throws InterruptedException
+     *         if interrupted while waiting
      */
     E take() throws InterruptedException;
 
@@ -265,16 +296,20 @@ public interface BlockingQueue<E> extends Queue<E> {
      * Retrieves and removes the head of this queue, waiting up to the
      * specified wait time if necessary for an element to become available.
      *
-     * @param timeout how long to wait before giving up, in units of
-     *        {@code unit}
-     * @param unit a {@code TimeUnit} determining how to interpret the
-     *        {@code timeout} parameter
+     * @param timeout
+     *         how long to wait before giving up, in units of
+     *         {@code unit}
+     * @param unit
+     *         a {@code TimeUnit} determining how to interpret the
+     *         {@code timeout} parameter
+     *
      * @return the head of this queue, or {@code null} if the
-     *         specified waiting time elapses before an element is available
-     * @throws InterruptedException if interrupted while waiting
+     * specified waiting time elapses before an element is available
+     *
+     * @throws InterruptedException
+     *         if interrupted while waiting
      */
-    E poll(long timeout, TimeUnit unit)
-        throws InterruptedException;
+    E poll(long timeout, TimeUnit unit) throws InterruptedException;
 
     /**
      * Returns the number of additional elements that this queue can ideally
@@ -299,12 +334,17 @@ public interface BlockingQueue<E> extends Queue<E> {
      * Returns {@code true} if this queue contained the specified element
      * (or equivalently, if this queue changed as a result of the call).
      *
-     * @param o element to be removed from this queue, if present
+     * @param o
+     *         element to be removed from this queue, if present
+     *
      * @return {@code true} if this queue changed as a result of the call
-     * @throws ClassCastException if the class of the specified element
+     *
+     * @throws ClassCastException
+     *         if the class of the specified element
      *         is incompatible with this queue
      *         (<a href="../Collection.html#optional-restrictions">optional</a>)
-     * @throws NullPointerException if the specified element is null
+     * @throws NullPointerException
+     *         if the specified element is null
      *         (<a href="../Collection.html#optional-restrictions">optional</a>)
      */
     boolean remove(Object o);
@@ -314,12 +354,17 @@ public interface BlockingQueue<E> extends Queue<E> {
      * More formally, returns {@code true} if and only if this queue contains
      * at least one element {@code e} such that {@code o.equals(e)}.
      *
-     * @param o object to be checked for containment in this queue
+     * @param o
+     *         object to be checked for containment in this queue
+     *
      * @return {@code true} if this queue contains the specified element
-     * @throws ClassCastException if the class of the specified element
+     *
+     * @throws ClassCastException
+     *         if the class of the specified element
      *         is incompatible with this queue
      *         (<a href="../Collection.html#optional-restrictions">optional</a>)
-     * @throws NullPointerException if the specified element is null
+     * @throws NullPointerException
+     *         if the specified element is null
      *         (<a href="../Collection.html#optional-restrictions">optional</a>)
      */
     public boolean contains(Object o);
@@ -336,14 +381,21 @@ public interface BlockingQueue<E> extends Queue<E> {
      * this operation is undefined if the specified collection is
      * modified while the operation is in progress.
      *
-     * @param c the collection to transfer elements into
+     * @param c
+     *         the collection to transfer elements into
+     *
      * @return the number of elements transferred
-     * @throws UnsupportedOperationException if addition of elements
+     *
+     * @throws UnsupportedOperationException
+     *         if addition of elements
      *         is not supported by the specified collection
-     * @throws ClassCastException if the class of an element of this queue
+     * @throws ClassCastException
+     *         if the class of an element of this queue
      *         prevents it from being added to the specified collection
-     * @throws NullPointerException if the specified collection is null
-     * @throws IllegalArgumentException if the specified collection is this
+     * @throws NullPointerException
+     *         if the specified collection is null
+     * @throws IllegalArgumentException
+     *         if the specified collection is this
      *         queue, or some property of an element of this queue prevents
      *         it from being added to the specified collection
      */
@@ -360,15 +412,23 @@ public interface BlockingQueue<E> extends Queue<E> {
      * this operation is undefined if the specified collection is
      * modified while the operation is in progress.
      *
-     * @param c the collection to transfer elements into
-     * @param maxElements the maximum number of elements to transfer
+     * @param c
+     *         the collection to transfer elements into
+     * @param maxElements
+     *         the maximum number of elements to transfer
+     *
      * @return the number of elements transferred
-     * @throws UnsupportedOperationException if addition of elements
+     *
+     * @throws UnsupportedOperationException
+     *         if addition of elements
      *         is not supported by the specified collection
-     * @throws ClassCastException if the class of an element of this queue
+     * @throws ClassCastException
+     *         if the class of an element of this queue
      *         prevents it from being added to the specified collection
-     * @throws NullPointerException if the specified collection is null
-     * @throws IllegalArgumentException if the specified collection is this
+     * @throws NullPointerException
+     *         if the specified collection is null
+     * @throws IllegalArgumentException
+     *         if the specified collection is this
      *         queue, or some property of an element of this queue prevents
      *         it from being added to the specified collection
      */

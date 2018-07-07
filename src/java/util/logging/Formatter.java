@@ -23,7 +23,6 @@
  *
  */
 
-
 package java.util.logging;
 
 /**
@@ -56,11 +55,12 @@ public abstract class Formatter {
      * It is recommended to use the {@link Formatter#formatMessage}
      * convenience method to localize and format the message field.
      *
-     * @param record the log record to be formatted.
+     * @param record
+     *         the log record to be formatted.
+     *
      * @return the formatted log record
      */
     public abstract String format(LogRecord record);
-
 
     /**
      * Return the header string for a set of formatted records.
@@ -68,8 +68,10 @@ public abstract class Formatter {
      * This base class returns an empty string, but this may be
      * overridden by subclasses.
      *
-     * @param   h  The target handler (can be null)
-     * @return  header string
+     * @param h
+     *         The target handler (can be null)
+     *
+     * @return header string
      */
     public String getHead(Handler h) {
         return "";
@@ -81,13 +83,14 @@ public abstract class Formatter {
      * This base class returns an empty string, but this may be
      * overridden by subclasses.
      *
-     * @param   h  The target handler (can be null)
-     * @return  tail string
+     * @param h
+     *         The target handler (can be null)
+     *
+     * @return tail string
      */
     public String getTail(Handler h) {
         return "";
     }
-
 
     /**
      * Localize and format the message string from a log record.  This
@@ -102,13 +105,15 @@ public abstract class Formatter {
      * <ul>
      * <li>If there are no parameters, no formatter is used.
      * <li>Otherwise, if the string contains "{0" then
-     *     java.text.MessageFormat  is used to format the string.
+     * java.text.MessageFormat  is used to format the string.
      * <li>Otherwise no formatting is performed.
      * </ul>
      * <p>
      *
-     * @param  record  the log record containing the raw message
-     * @return   a localized and formatted message
+     * @param record
+     *         the log record containing the raw message
+     *
+     * @return a localized and formatted message
      */
     public synchronized String formatMessage(LogRecord record) {
         String format = record.getMessage();
@@ -133,8 +138,7 @@ public abstract class Formatter {
             // Pattern.compile("\\{\\d").matcher(format).find())
             // However the cost is 14% higher, so we cheaply check for
             // 1 of the first 4 parameters
-            if (format.indexOf("{0") >= 0 || format.indexOf("{1") >=0 ||
-                        format.indexOf("{2") >=0|| format.indexOf("{3") >=0) {
+            if (format.indexOf("{0") >= 0 || format.indexOf("{1") >= 0 || format.indexOf("{2") >= 0 || format.indexOf("{3") >= 0) {
                 return java.text.MessageFormat.format(format, parameters);
             }
             return format;

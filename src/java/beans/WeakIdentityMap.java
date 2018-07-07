@@ -48,7 +48,7 @@ abstract class WeakIdentityMap<T> {
 
     private final ReferenceQueue<Object> queue = new ReferenceQueue<Object>();
 
-    private volatile Entry<T>[] table = newTable(1<<3); // table's length MUST be a power of two
+    private volatile Entry<T>[] table = newTable(1 << 3); // table's length MUST be a power of two
     private int threshold = 6; // the next size value at which to resize
     private int size = 0; // the number of key-value mappings
 
@@ -81,8 +81,7 @@ abstract class WeakIdentityMap<T> {
             if (++this.size >= this.threshold) {
                 if (this.table.length == MAXIMUM_CAPACITY) {
                     this.threshold = Integer.MAX_VALUE;
-                }
-                else {
+                } else {
                     removeStaleEntries();
                     table = newTable(this.table.length * 2);
                     transfer(this.table, table);
@@ -92,8 +91,7 @@ abstract class WeakIdentityMap<T> {
                     if (this.size >= this.threshold / 2) {
                         this.table = table;
                         this.threshold *= 2;
-                    }
-                    else {
+                    } else {
                         transfer(table, this.table);
                     }
                 }
@@ -120,8 +118,7 @@ abstract class WeakIdentityMap<T> {
                         if (current == entry) {
                             if (prev == entry) {
                                 this.table[index] = next;
-                            }
-                            else {
+                            } else {
                                 prev.next = next;
                             }
                             entry.value = null; // Help GC
@@ -133,8 +130,7 @@ abstract class WeakIdentityMap<T> {
                         current = next;
                     }
                     ref = this.queue.poll();
-                }
-                while (ref != null);
+                } while (ref != null);
             }
         }
     }
@@ -150,8 +146,7 @@ abstract class WeakIdentityMap<T> {
                     entry.value = null; // Help GC
                     entry.next = null; // Help GC
                     this.size--;
-                }
-                else {
+                } else {
                     int index = getIndex(newTable, entry.hash);
                     entry.next = newTable[index];
                     newTable[index] = entry;
@@ -160,7 +155,6 @@ abstract class WeakIdentityMap<T> {
             }
         }
     }
-
 
     @SuppressWarnings("unchecked")
     private Entry<T>[] newTable(int length) {
@@ -180,7 +174,7 @@ abstract class WeakIdentityMap<T> {
             super(key, queue);
             this.hash = hash;
             this.value = value;
-            this.next  = next;
+            this.next = next;
         }
 
         boolean isMatched(Object key, int hash) {

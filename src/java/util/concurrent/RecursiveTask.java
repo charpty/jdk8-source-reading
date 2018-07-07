@@ -40,7 +40,7 @@ package java.util.concurrent;
  *
  * <p>For a classic example, here is a task computing Fibonacci numbers:
  *
- *  <pre> {@code
+ * <pre> {@code
  * class Fibonacci extends RecursiveTask<Integer> {
  *   final int n;
  *   Fibonacci(int n) { this.n = n; }
@@ -62,8 +62,8 @@ package java.util.concurrent;
  * minimum granularity size (for example 10 here) for which you always
  * sequentially solve rather than subdividing.
  *
- * @since 1.7
  * @author Doug Lea
+ * @since 1.7
  */
 public abstract class RecursiveTask<V> extends ForkJoinTask<V> {
     private static final long serialVersionUID = 5232453952276485270L;
@@ -75,6 +75,7 @@ public abstract class RecursiveTask<V> extends ForkJoinTask<V> {
 
     /**
      * The main computation performed by this task.
+     *
      * @return the result of the computation
      */
     protected abstract V compute();
