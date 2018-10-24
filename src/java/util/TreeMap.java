@@ -2420,6 +2420,8 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements NavigableMap<K, 
     }
 
     /** From CLR */
+    // 以p节点为核心将树结构左旋
+    // p成为p的右孩子的左孩子，p的右孩子的左孩子成为p的右孩子
     private void rotateLeft(Entry<K, V> p) {
         if (p != null) {
             Entry<K, V> r = p.right;
@@ -2463,33 +2465,53 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements NavigableMap<K, 
 
     /** From CLR */
     private void fixAfterInsertion(Entry<K, V> x) {
+        // 插入节点设为红色，避免与"节点到其子节点路径有相同数目的黑节点"违背
+        // 这个特性维护判断起来比较麻烦，在插入时就解决掉比较好
         x.color = RED;
 
+        // 两种情况：一是父节点本来就是黑色，这本来就不违背"子父节点不能同时为红"的理论，什么都不要改
+        // 二是父节点为红色，这就冲突了，冲突时则分为三种情况，写代码时有左右之分4种逻辑
         while (x != null && x != root && x.parent.color == RED) {
+
             if (parentOf(x) == leftOf(parentOf(parentOf(x)))) {
+                // 当前节点的父节点是爷爷节点左边的孩子时
                 Entry<K, V> y = rightOf(parentOf(parentOf(x)));
                 if (colorOf(y) == RED) {
+                    // 如果叔叔是红色，爷爷节点是黑色，这种情况比较简单，此时无论父节点是爷爷节点的左还是右节点
+                    // 都是将父节点设置为黑色，叔叔节点设置为黑色，祖父节点设置为红色
+                    // 这样一来，子父为红-红的情况自然是不存在了，父节点和叔叔节点由红-红变成了黑-黑
+                    // 经过这两个节点的到根节点路径黑色节点数没变，都是增加了一个黑色节点
+                    // 经过爷爷节点到根路径的黑色节点数量则无变化，爷爷节点变成了红色，但是它的两个孩子不论选哪条路都加1了
                     setColor(parentOf(x), BLACK);
                     setColor(y, BLACK);
                     setColor(parentOf(parentOf(x)), RED);
+                    // 爷爷节点设置为红色之后，继续向上判断它和其父节点是否冲突
                     x = parentOf(parentOf(x));
                 } else {
+                    // 如果叔叔节点是黑色就需要旋转树了，如果x为父节点的左孩子，先要进行左旋
                     if (x == rightOf(parentOf(x))) {
                         x = parentOf(x);
                         rotateLeft(x);
                     }
+                    // 先假设x为父节点的左节点，这样比较简单，弄清楚了一样的道理
                     setColor(parentOf(x), BLACK);
                     setColor(parentOf(parentOf(x)), RED);
+                    // 上面两行代码已解决了"子父节点不能同为红色"的问题，这样经过爷爷节点走左边的话黑色节点计数还是不变的
+                    // 但是原本通过爷爷节点走右边的话有两个黑节点的，现在只有一个了，此时只有一个了
+                    // 关键来了，在节点为红-黑-红-黑（顶上为红）的情况下，右旋使得旋转节点的右孩子路径上黑色节点数加1
                     rotateRight(parentOf(parentOf(x)));
                 }
             } else {
+                // 当前节点是爷爷节点左边的孩子
                 Entry<K, V> y = leftOf(parentOf(parentOf(x)));
                 if (colorOf(y) == RED) {
+                    // 叔叔节点为红操作都一样
                     setColor(parentOf(x), BLACK);
                     setColor(y, BLACK);
                     setColor(parentOf(parentOf(x)), RED);
                     x = parentOf(parentOf(x));
                 } else {
+                    // 和上面一个逻辑相反
                     if (x == leftOf(parentOf(x))) {
                         x = parentOf(x);
                         rotateRight(x);
