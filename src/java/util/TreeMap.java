@@ -2582,11 +2582,15 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements NavigableMap<K, 
 
     /** From CLR */
     private void fixAfterDeletion(Entry<K, V> x) {
+        // 首先，删除的节点的颜色是黑色才需要调整
         while (x != root && colorOf(x) == BLACK) {
             if (x == leftOf(parentOf(x))) {
                 Entry<K, V> sib = rightOf(parentOf(x));
 
+                // 兄弟节点是红色，则将其转换为"兄弟节点是黑色"的情况
                 if (colorOf(sib) == RED) {
+                    // 经过一次处理可能转为多种情况
+                    // 但不可能转为"兄弟及其孩子节点均为黑色"的情况
                     setColor(sib, BLACK);
                     setColor(parentOf(x), RED);
                     rotateLeft(parentOf(x));
@@ -2594,15 +2598,19 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements NavigableMap<K, 
                 }
 
                 if (colorOf(leftOf(sib)) == BLACK && colorOf(rightOf(sib)) == BLACK) {
+                    // 兄弟节点及其孩子节点均为黑色的情况下，则将其转换为"兄弟节点为红色"
                     setColor(sib, RED);
                     x = parentOf(x);
                 } else {
                     if (colorOf(rightOf(sib)) == BLACK) {
+                        // 直接转换为"兄弟节点右孩子为红色"情况
                         setColor(leftOf(sib), BLACK);
                         setColor(sib, RED);
                         rotateRight(sib);
                         sib = rightOf(parentOf(x));
                     }
+                    // 兄弟节点右孩子为红色的情况可以一步到位达到平衡
+                    // 其他情况（除x父红其他均黑色）都要向这个情况靠拢来最终达到平衡
                     setColor(sib, colorOf(parentOf(x)));
                     setColor(parentOf(x), BLACK);
                     setColor(rightOf(sib), BLACK);
